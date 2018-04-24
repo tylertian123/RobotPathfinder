@@ -19,6 +19,10 @@ public class Testing {
 		final double t_delta = 0.001;
 		ArrayList<Double> xs = new ArrayList<Double>();
 		ArrayList<Double> ys = new ArrayList<Double>();
+		ArrayList<Double> leftxs = new ArrayList<Double>();
+		ArrayList<Double> leftys = new ArrayList<Double>();
+		ArrayList<Double> rightxs = new ArrayList<Double>();
+		ArrayList<Double> rightys = new ArrayList<Double>();
 		ArrayList<Double> ts = new ArrayList<Double>();
 		ArrayList<Double> xvs = new ArrayList<Double>();
 		ArrayList<Double> yvs = new ArrayList<Double>();
@@ -26,24 +30,25 @@ public class Testing {
 		ArrayList<Double> yas = new ArrayList<Double>();
 		
 		Waypoint[] waypoints = new Waypoint[] {
-				/*new Waypoint(0, 0),
-				new Waypoint(-5, 4),
-				new Waypoint(-5, 7),
-				new Waypoint(0, 10),
-				new Waypoint(10, 10),*/
+				new Waypoint(0, 0, Math.PI / 2),
+				new Waypoint(-5, 4, Math.PI / 2),
+				new Waypoint(-5, 7, Math.PI / 2),
 				new Waypoint(0, 10, Math.PI / 2),
-				new Waypoint(10, 10, -Math.PI / 2),
-				new Waypoint(-10, 10, Math.PI / 4),
-				new Waypoint(-10, 20, 0),
-				new Waypoint(-8, 15, 0),
+				new Waypoint(10, 10, Math.PI / 2),
 		};
 		
-		RobotPath path = new RobotPath(7, waypoints);
+		RobotPath path = new RobotPath(10, waypoints, 0.5);
 		for(double t = 0; t <= 1; t += t_delta) {
 			Vec2D w = path.at(t);
 			xs.add(w.getX());
 			ys.add(w.getY());
 			ts.add(t);
+			Vec2D l = path.leftWheelAt(t);
+			leftxs.add(l.getX());
+			leftys.add(l.getY());
+			Vec2D r = path.rightWheelAt(t);
+			rightxs.add(r.getX());
+			rightys.add(r.getY());
 			Vec2D v = path.derivAt(t);
 			Vec2D a = path.secondDerivAt(t);
 			xvs.add(v.getX());
@@ -54,6 +59,8 @@ public class Testing {
 		
 		Plot2DPanel plot = new Plot2DPanel();
 		plot.addLinePlot("Position", primitiveArr(xs), primitiveArr(ys));
+		plot.addLinePlot("Left Wheel", primitiveArr(leftxs), primitiveArr(leftys));
+		plot.addLinePlot("Right Wheel", primitiveArr(rightxs), primitiveArr(rightys));
 		double[] waypointX = new double[waypoints.length];
 		double[] waypointY = new double[waypoints.length];
 		for(int i = 0; i < waypoints.length; i ++) {

@@ -82,5 +82,25 @@ public class RobotPath {
 		return new Vec2D(xSegs[(int) Math.floor(t)].secondDerivAt(localT), ySegs[(int) Math.floor(t)].secondDerivAt(localT));
 	}
 	
-	
+	public Vec2D leftWheelAt(double t) {
+		Vec2D pos = at(t);
+		Vec2D vel = derivAt(t);
+		
+		double heading = Math.atan2(vel.getY(), vel.getX());
+		heading += Math.PI / 2;
+		
+		return new Vec2D(pos.getX() + Math.cos(heading) * baseRadius, pos.getY() + Math.sin(heading) * baseRadius);
+	}
+	public Vec2D rightWheelAt(double t) {
+		Vec2D pos = at(t);
+		Vec2D vel = derivAt(t);
+		
+		if(!Double.isFinite(vel.getY() / vel.getX()))
+			System.out.println("Infinite");
+		
+		double heading = Math.atan2(vel.getY(), vel.getX());
+		heading -= Math.PI / 2;
+		
+		return new Vec2D(pos.getX() + Math.cos(heading) * baseRadius, pos.getY() + Math.sin(heading) * baseRadius);
+	}
 }

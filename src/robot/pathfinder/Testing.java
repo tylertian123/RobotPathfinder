@@ -31,26 +31,14 @@ public class Testing {
 				new Waypoint(-5, 7),
 				new Waypoint(0, 10),
 				new Waypoint(10, 10),*/
-				new Waypoint(0, 10),
-				new Waypoint(10, 10),
-				new Waypoint(-10, 10),
-				new Waypoint(-10, 20),
-				new Waypoint(-8, 15),
-		};
-		double[] headings = new double[] {
-				/*Math.PI / 2,
-				Math.PI / 2,
-				Math.PI / 2,
-				Math.PI / 2,
-				3 * Math.PI / 2,*/
-				Math.PI / 2,
-				-Math.PI / 2,
-				Math.PI / 4,
-				0,
-				0,
+				new Waypoint(0, 10, Math.PI / 2),
+				new Waypoint(10, 10, -Math.PI / 2),
+				new Waypoint(-10, 10, Math.PI / 4),
+				new Waypoint(-10, 20, 0),
+				new Waypoint(-8, 15, 0),
 		};
 		
-		RobotPath path = new RobotPath(10, waypoints, headings);
+		RobotPath path = new RobotPath(7, waypoints);
 		for(double t = 0; t <= 1; t += t_delta) {
 			Waypoint w = path.at(t);
 			xs.add(w.getX());

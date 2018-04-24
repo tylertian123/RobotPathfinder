@@ -9,12 +9,9 @@ public class RobotPath {
 	
 	double scalingFactor;
 	
-	public RobotPath(double maxDeriv, Waypoint[] waypoints, double[] headings) {
+	public RobotPath(double maxDeriv, Waypoint[] waypoints) {
 		if(waypoints.length < 2) {
 			throw new IllegalArgumentException("Too few waypoints");
-		}
-		if(waypoints.length != headings.length) {
-			throw new IllegalArgumentException("The number of waypoints does not match the number of headings");
 		}
 		
 		xSegs = new CubicSplineSegment[waypoints.length - 1];
@@ -24,7 +21,7 @@ public class RobotPath {
 		double[] dy = new double[waypoints.length];
 		
 		for(int i = 0; i < waypoints.length; i ++) {
-			double c = Math.tan(headings[i]);
+			double c = Math.tan(waypoints[i].getHeading());
 			if(Math.abs(c) > 1) {
 				dx[i] = maxDeriv / c;
 			}

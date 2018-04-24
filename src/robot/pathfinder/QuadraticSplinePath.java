@@ -22,16 +22,16 @@ public class QuadraticSplinePath {
 		scalingFactor = waypoints.length - 1;
 	}
 	
-	public Waypoint at(double t) {
+	public Vec2D at(double t) {
 		t *= scalingFactor;
-		return new Waypoint(xSpline.at(t), ySpline.at(t));
+		return new Vec2D(xSpline.at(t), ySpline.at(t));
 	}
-	public Waypoint derivAt(double t) {
+	public Vec2D derivAt(double t) {
 		t *= scalingFactor;
-		return new Waypoint(xSpline.derivAt(t), ySpline.derivAt(t));
+		return new Vec2D(xSpline.derivAt(t), ySpline.derivAt(t));
 	}
-	public Waypoint secondDerivAt(double t) {
+	public Vec2D secondDerivAt(double t) {
 		t *= scalingFactor;
-		return new Waypoint(xSpline.secondDerivAt(t), ySpline.secondDerivAt(t));
+		return new Vec2D(xSpline.secondDerivAt(t), ySpline.secondDerivAt(t));
 	}
 }

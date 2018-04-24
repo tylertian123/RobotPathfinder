@@ -40,12 +40,12 @@ public class Testing {
 		
 		RobotPath path = new RobotPath(7, waypoints);
 		for(double t = 0; t <= 1; t += t_delta) {
-			Waypoint w = path.at(t);
+			Vec2D w = path.at(t);
 			xs.add(w.getX());
 			ys.add(w.getY());
 			ts.add(t);
-			Waypoint v = path.derivAt(t);
-			Waypoint a = path.secondDerivAt(t);
+			Vec2D v = path.derivAt(t);
+			Vec2D a = path.secondDerivAt(t);
 			xvs.add(v.getX());
 			yvs.add(v.getY());
 			xas.add(a.getX());

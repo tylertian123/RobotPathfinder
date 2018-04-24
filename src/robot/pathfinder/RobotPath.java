@@ -9,6 +9,8 @@ public class RobotPath {
 	
 	double scalingFactor;
 	
+	double baseRadius;
+	
 	public RobotPath(double maxDeriv, Waypoint[] waypoints) {
 		if(waypoints.length < 2) {
 			throw new IllegalArgumentException("Too few waypoints");
@@ -49,26 +51,36 @@ public class RobotPath {
 		}
 		scalingFactor = waypoints.length - 1;
 	}
+	public RobotPath(double maxDeriv, Waypoint[] waypoints, double baseRadius) {
+		this(maxDeriv, waypoints);
+		this.baseRadius = baseRadius;
+	}
 	
-	public Waypoint at(double t) {
+	public void setBaseRadius(double baseRadius) {
+		this.baseRadius = baseRadius;
+	}
+	
+	public Vec2D at(double t) {
 		t *= scalingFactor;
 		
 		double localT = t - Math.floor(t);
 		
-		return new Waypoint(xSegs[(int) Math.floor(t)].at(localT), ySegs[(int) Math.floor(t)].at(localT));
+		return new Vec2D(xSegs[(int) Math.floor(t)].at(localT), ySegs[(int) Math.floor(t)].at(localT));
 	}
-	public Waypoint derivAt(double t) {
+	public Vec2D derivAt(double t) {
 		t *= scalingFactor;
 		
 		double localT = t - Math.floor(t);
 		
-		return new Waypoint(xSegs[(int) Math.floor(t)].derivAt(localT), ySegs[(int) Math.floor(t)].derivAt(localT));
+		return new Vec2D(xSegs[(int) Math.floor(t)].derivAt(localT), ySegs[(int) Math.floor(t)].derivAt(localT));
 	}
-	public Waypoint secondDerivAt(double t) {
+	public Vec2D secondDerivAt(double t) {
 		t *= scalingFactor;
 		
 		double localT = t - Math.floor(t);
 		
-		return new Waypoint(xSegs[(int) Math.floor(t)].secondDerivAt(localT), ySegs[(int) Math.floor(t)].secondDerivAt(localT));
+		return new Vec2D(xSegs[(int) Math.floor(t)].secondDerivAt(localT), ySegs[(int) Math.floor(t)].secondDerivAt(localT));
 	}
+	
+	
 }

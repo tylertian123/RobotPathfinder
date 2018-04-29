@@ -1,5 +1,7 @@
 package robot.pathfinder;
 
+import robot.pathfinder.math.MathUtils;
+import robot.pathfinder.math.Vec2D;
 import robot.pathfinder.spline.CubicSplineSegment;
 
 public class RobotPath {
@@ -46,8 +48,8 @@ public class RobotPath {
 				{ 3 * Math.pow(0, 2), 2 * 0, 1, 0, dy[i] },
 				{ 3 * Math.pow(1, 2), 2 * 1, 1, 0, dy[i + 1] },
 			};
-			xSegs[i] = new CubicSplineSegment(Solver.solve(matX), 0, 1);
-			ySegs[i] = new CubicSplineSegment(Solver.solve(matY), 0, 1);
+			xSegs[i] = new CubicSplineSegment(MathUtils.solve(matX), 0, 1);
+			ySegs[i] = new CubicSplineSegment(MathUtils.solve(matY), 0, 1);
 		}
 		scalingFactor = waypoints.length - 1;
 	}

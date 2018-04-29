@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import org.math.plot.Plot2DPanel;
 
 import robot.pathfinder.bezier.BezierPath;
+import robot.pathfinder.math.Vec2D;
 
 public class Testing {
 	static double[] primitiveArr(ArrayList<Double> a) {

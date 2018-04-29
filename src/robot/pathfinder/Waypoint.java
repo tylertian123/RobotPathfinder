@@ -1,5 +1,7 @@
 package robot.pathfinder;
 
+import robot.pathfinder.math.Vec2D;
+
 public class Waypoint {
 	double x, y, heading;
 	

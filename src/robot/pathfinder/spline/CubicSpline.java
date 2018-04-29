@@ -1,7 +1,7 @@
 package robot.pathfinder.spline;
 
-import robot.pathfinder.Solver;
 import robot.pathfinder.Waypoint;
+import robot.pathfinder.math.MathUtils;
 
 public class CubicSpline {
 	
@@ -68,7 +68,7 @@ public class CubicSpline {
 				{ 3 * Math.pow(bounds[0], 2), 2 * bounds[0], 1, 0, 0},
 			};
 			//Solve and construct our first spline
-			segments[0] = new CubicSplineSegment(Solver.solve(firstSegmentMat), bounds[0], bounds[1]);
+			segments[0] = new CubicSplineSegment(MathUtils.solve(firstSegmentMat), bounds[0], bounds[1]);
 			//Now construct subsequent segments
 			for(int i = 1; i < segments.length; i ++) {
 				//Check if we are on the last segment
@@ -82,7 +82,7 @@ public class CubicSpline {
 						//First derivative at start equals previous first derivative
 						{ 3 * Math.pow(bounds[i], 2), 2 * bounds[i], 1, 0, segments[i - 1].derivAt(segments[i - 1].getEnd()) },
 					};
-					segments[i] = new CubicSplineSegment(Solver.solve(segmentMat), bounds[i], bounds[i + 1]);
+					segments[i] = new CubicSplineSegment(MathUtils.solve(segmentMat), bounds[i], bounds[i + 1]);
 				}
 				else {
 					double[][] segmentMat = new double[][] {
@@ -94,7 +94,7 @@ public class CubicSpline {
 						//First derivative at start equals previous first derivative
 						{ 3 * Math.pow(bounds[i], 2), 2 * bounds[i], 1, 0, segments[i - 1].derivAt(segments[i - 1].getEnd()) },
 					};
-					segments[i] = new CubicSplineSegment(Solver.solve(segmentMat), bounds[i], bounds[i + 1]);
+					segments[i] = new CubicSplineSegment(MathUtils.solve(segmentMat), bounds[i], bounds[i + 1]);
 				}
 			}
 		}
@@ -110,7 +110,7 @@ public class CubicSpline {
 				{ 3 * Math.pow(bounds[0], 2), 2 * bounds[0], 1, 0, 0 },
 			};
 			//Solve and construct our first spline
-			segments[0] = new CubicSplineSegment(Solver.solve(firstSegmentMat), bounds[0], bounds[1]);
+			segments[0] = new CubicSplineSegment(MathUtils.solve(firstSegmentMat), bounds[0], bounds[1]);
 		}
 	}
 	

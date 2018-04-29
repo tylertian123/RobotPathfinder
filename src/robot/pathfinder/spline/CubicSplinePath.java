@@ -1,7 +1,7 @@
 package robot.pathfinder.spline;
 
-import robot.pathfinder.Vec2D;
 import robot.pathfinder.Waypoint;
+import robot.pathfinder.math.Vec2D;
 
 public class CubicSplinePath {
 	

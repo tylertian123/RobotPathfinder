@@ -121,7 +121,58 @@ public class Testing {
 		frame.setContentPane(plot);
 		frame.setVisible(true);
 	}
+	public static void test3() {
+		Waypoint[] waypoints = new Waypoint[] {
+				new Waypoint(0, 10, Math.PI / 2),
+				new Waypoint(10, 20, Math.PI / 2),
+		};
+		BezierTrajectory b = new BezierTrajectory(waypoints, 10, 3, 2, 0.5, 100);
+		final double t_delta = 0.001;
+		ArrayList<Double> xs = new ArrayList<Double>();
+		ArrayList<Double> ys = new ArrayList<Double>();
+		ArrayList<Double> ds = new ArrayList<Double>();
+		ArrayList<Double> vs = new ArrayList<Double>();
+		ArrayList<Double> as = new ArrayList<Double>();
+		ArrayList<Double> ts = new ArrayList<Double>();
+		
+		for(double t = 0; t <= 1; t += t_delta) {
+			Vec2D v = b.pathAt(t);
+			xs.add(v.getX());
+			ys.add(v.getY());
+		}
+		System.out.println(b.totalTime());
+		for(double t = 0; t <= b.totalTime(); t += 0.01) {
+			Moment m = b.getMoment(t);
+			ds.add(m.getDist());
+			vs.add(m.getVelo());
+			as.add(m.getAccel());
+			ts.add(t);
+		}
+		
+		Plot2DPanel plot = new Plot2DPanel();
+		plot.addLinePlot("Bezier", primitiveArr(xs), primitiveArr(ys));
+		JFrame frame = new JFrame("Bezier");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		frame.setContentPane(plot);
+		frame.setVisible(true);
+		
+		Plot2DPanel plot2 = new Plot2DPanel();
+		System.out.println(ts.size());
+		System.out.println(ds.size());
+		System.out.println(vs.size());
+		System.out.println(as.size());
+		plot2.addLinePlot("Position", primitiveArr(ts), primitiveArr(ds));
+		plot2.addLinePlot("Velocity", primitiveArr(ts), primitiveArr(vs));
+		plot2.addLinePlot("Acceleration", primitiveArr(ts), primitiveArr(as));
+		plot2.setLegendOrientation("EAST");
+		JFrame frame2 = new JFrame("PVA");
+		frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame2.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		frame2.setContentPane(plot2);
+		frame2.setVisible(true);
+	}
 	public static void main(String[] args) {
-		test2();
+		test3();
 	}
 }

@@ -107,4 +107,8 @@ public class BezierTrajectory {
 	public Vec2D pathAt(double t) {
 		return path.at(t);
 	}
+	
+	public double totalTime() {
+		return timestamps[timestamps.length - 1];
+	}
 }

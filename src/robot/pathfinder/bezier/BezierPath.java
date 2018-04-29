@@ -7,6 +7,10 @@ public class BezierPath {
 	
 	Bezier[] beziers;
 	
+	Vec2D lastPoint;
+	double currentDist = 0;
+	double currentT = 0;
+	
 	public BezierPath(Waypoint[] waypoints, double alpha) {
 		if(waypoints.length < 2) {
 			throw new IllegalArgumentException("Not enough waypoints");
@@ -17,6 +21,7 @@ public class BezierPath {
 					new Vec2D(Math.cos(waypoints[i].getHeading()) * alpha, Math.sin(waypoints[i].getHeading()) * alpha),
 					new Vec2D(Math.cos(waypoints[i + 1].getHeading()) * alpha, Math.sin(waypoints[i + 1].getHeading()) * alpha));
 		}
+		lastPoint = at(0);
 	}
 	
 	public Vec2D at(double t) {
@@ -26,5 +31,24 @@ public class BezierPath {
 	public Vec2D derivAt(double t) {
 		t *= beziers.length;
 		return beziers[(int) Math.floor(t)].derivAt(t % 1.0);
+	}
+	
+	public double integrateLen(double dt) {
+		currentT += dt;
+		if(currentT > 1) {
+			return currentDist;
+		}
+		Vec2D currentPoint = at(currentT);
+		currentDist += lastPoint.distTo(currentPoint);
+		lastPoint = currentPoint;
+		return currentDist;
+	}
+	public void resetIntegration() {
+		currentT = 0;
+		lastPoint = at(0);
+		currentDist = 0;
+	}
+	public double getIntegratedLen() {
+		return currentDist;
 	}
 }

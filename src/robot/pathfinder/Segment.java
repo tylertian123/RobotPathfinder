@@ -1,16 +1,14 @@
 package robot.pathfinder;
 
 public class Segment {
-	public double start, end;
+	
 	public double maxVelo;
+	public double r;
+	public double start, end;
 	
 	public Segment(double start, double end) {
-		this(start, end, 0);
-	}
-	public Segment(double start, double end, double maxVelo) {
 		this.start = start;
 		this.end = end;
-		this.maxVelo = maxVelo;
 	}
 	
 	public void setMaxVelo(double maxVelo) {
@@ -19,7 +17,11 @@ public class Segment {
 	public double getMaxVelo() {
 		return maxVelo;
 	}
-	public double getMid() {
-		return (start + end) / 2;
+	public void setR(double r) {
+		this.r = r;
 	}
+	public double getR() {
+		return r;
+	}
+	
 }

@@ -124,4 +124,21 @@ public class MathUtils {
 		Vec2D centerVec = new Vec2D(center[0], center[1]);
 		return new Circle(centerVec, centerVec.distTo(a));
 	}
+	
+	public static double[] findQuadraticRoots(double a, double b, double c) {
+		double r = Math.sqrt(b * b - 4 * a * c);
+		return new double[] {
+				(-b + r) / (2 * a),
+				(-b - r) / (2 * a),
+		};
+	}
+	public static double findPositiveQuadraticRoot(double a, double b, double c) {
+		double[] roots = findQuadraticRoots(a, b, c);
+		if(roots[0] >= 0)
+			return roots[0];
+		else if(roots[1] >= 0)
+			return roots[1];
+		else
+			return Double.NaN;
+	}
 }

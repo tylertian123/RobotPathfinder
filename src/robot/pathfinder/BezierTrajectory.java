@@ -43,13 +43,13 @@ public class BezierTrajectory {
 		//Forwards pass
 		moments[0] = new Moment(0, 0, 0, 0);
 		for(int i = 1; i < segments.length + 1; i ++) {
-			double dt = segments[i].end - segments[i].start;
+			double dt = segments[i - 1].end - segments[i - 1].start;
 			double dist = path.integrateLen(dt);
 			double maxReachableVelo = moments[i - 1].getVelo() + maxAccel * dt;
 			double velo;
 			
-			if(maxReachableVelo > segments[i].getMaxVelo()) {
-				velo = segments[i].getMaxVelo();
+			if(maxReachableVelo > segments[i - 1].getMaxVelo()) {
+				velo = segments[i - 1].getMaxVelo();
 			}
 			else {
 				velo = maxReachableVelo;
@@ -65,12 +65,12 @@ public class BezierTrajectory {
 			double maxReachableVelo = moments[i + 1].getVelo() + maxAccel * dt;
 			double velo;
 			
-			if(maxReachableVelo > segments[i].getMaxVelo()) {
-				velo = segments[i].getMaxVelo();
+			if(maxReachableVelo > moments[i].getVelo()) {
+				velo = moments[i].getVelo();
 			}
 			else {
 				velo = maxReachableVelo;
-				moments[i - 1].setAccel(-maxAccel);
+				moments[i].setAccel(-maxAccel);
 			}
 			moments[i].setVelo(velo);
 		}
@@ -103,5 +103,8 @@ public class BezierTrajectory {
 		}
 		//Just so that the compiler stops complaining
 		return null;
+	}
+	public Vec2D pathAt(double t) {
+		return path.at(t);
 	}
 }

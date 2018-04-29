@@ -101,15 +101,14 @@ public class Testing {
 		Waypoint[] waypoints = new Waypoint[] {
 				new Waypoint(0, 10, Math.PI / 2),
 				new Waypoint(10, 20, Math.PI / 2),
-				new Waypoint(5, 10, -Math.PI / 2),
 		};
-		BezierPath b = new BezierPath(waypoints, 10);
+		BezierTrajectory b = new BezierTrajectory(waypoints, 10, 3, 2, 0.5, 100);
 		final double t_delta = 0.001;
 		ArrayList<Double> xs = new ArrayList<Double>();
 		ArrayList<Double> ys = new ArrayList<Double>();
 		
 		for(double t = 0; t <= 1; t += t_delta) {
-			Vec2D v = b.at(t);
+			Vec2D v = b.pathAt(t);
 			xs.add(v.getX());
 			ys.add(v.getY());
 		}

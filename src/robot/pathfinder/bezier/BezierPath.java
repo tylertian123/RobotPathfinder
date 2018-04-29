@@ -26,7 +26,12 @@ public class BezierPath {
 	
 	public Vec2D at(double t) {
 		t *= beziers.length;
-		return beziers[(int) Math.floor(t)].at(t % 1.0);
+		try {
+			return beziers[(int) Math.floor(t)].at(t % 1.0);
+		}
+		catch(ArrayIndexOutOfBoundsException e) {
+			return beziers[beziers.length - 1].at(t % 1.0);
+		}
 	}
 	public Vec2D derivAt(double t) {
 		t *= beziers.length;

@@ -6,6 +6,8 @@ import javax.swing.JFrame;
 
 import org.math.plot.Plot2DPanel;
 
+import robot.pathfinder.bezier.Bezier;
+
 public class Testing {
 	static double[] primitiveArr(ArrayList<Double> a) {
 		Double[] arr = new Double[a.size()];
@@ -15,7 +17,7 @@ public class Testing {
 			d[i] = arr[i];
 		return d;
 	}
-	public static void main(String[] args) {
+	public static void test1() {
 		final double t_delta = 0.001;
 		ArrayList<Double> xs = new ArrayList<Double>();
 		ArrayList<Double> ys = new ArrayList<Double>();
@@ -93,5 +95,28 @@ public class Testing {
 		frame2.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		frame2.setContentPane(plot2);
 		frame2.setVisible(true);
+	}
+	public static void test2() {
+		Bezier b = Bezier.getFromHermite(new Vec2D(0, 10), new Vec2D(10, 20), new Vec2D(10, -10), new Vec2D(0, 10));
+		final double t_delta = 0.001;
+		ArrayList<Double> xs = new ArrayList<Double>();
+		ArrayList<Double> ys = new ArrayList<Double>();
+		
+		for(double t = 0; t <= 1; t += t_delta) {
+			Vec2D v = b.at(t);
+			xs.add(v.getX());
+			ys.add(v.getY());
+		}
+		
+		Plot2DPanel plot = new Plot2DPanel();
+		plot.addLinePlot("Bezier", primitiveArr(xs), primitiveArr(ys));
+		JFrame frame = new JFrame();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		frame.setContentPane(plot);
+		frame.setVisible(true);
+	}
+	public static void main(String[] args) {
+		test2();
 	}
 }

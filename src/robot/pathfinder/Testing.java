@@ -6,7 +6,7 @@ import javax.swing.JFrame;
 
 import org.math.plot.Plot2DPanel;
 
-import robot.pathfinder.bezier.Bezier;
+import robot.pathfinder.bezier.BezierPath;
 
 public class Testing {
 	static double[] primitiveArr(ArrayList<Double> a) {
@@ -97,7 +97,12 @@ public class Testing {
 		frame2.setVisible(true);
 	}
 	public static void test2() {
-		Bezier b = Bezier.getFromHermite(new Vec2D(0, 10), new Vec2D(10, 20), new Vec2D(10, -10), new Vec2D(0, 10));
+		Waypoint[] waypoints = new Waypoint[] {
+				new Waypoint(0, 10, Math.PI / 2),
+				new Waypoint(10, 20, Math.PI / 2),
+				new Waypoint(5, 10, -Math.PI / 2),
+		};
+		BezierPath b = new BezierPath(waypoints, 10);
 		final double t_delta = 0.001;
 		ArrayList<Double> xs = new ArrayList<Double>();
 		ArrayList<Double> ys = new ArrayList<Double>();

@@ -25,11 +25,14 @@ public class Vec2D {
 		return v;
 	}
 	
-	public Vec2D multiplyBy(double scalar) {
+	public Vec2D multiply(double scalar) {
 		return new Vec2D(x * scalar, y * scalar);
 	}
-	public Vec2D addTo(Vec2D vec) {
+	public Vec2D add(Vec2D vec) {
 		return new Vec2D(x + vec.x, y + vec.y);
+	}
+	public Vec2D subtract(Vec2D vec) {
+		return new Vec2D(x - vec.x, y + vec.y);
 	}
 	
 }

@@ -22,4 +22,7 @@ public class Waypoint {
 	public double getHeading() {
 		return heading;
 	}
+	public Vec2D getPosVec() {
+		return new Vec2D(x, y);
+	}
 }

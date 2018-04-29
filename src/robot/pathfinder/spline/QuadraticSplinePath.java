@@ -1,14 +1,15 @@
-package robot.pathfinder;
+package robot.pathfinder.spline;
 
-import robot.pathfinder.spline.CubicSpline;
+import robot.pathfinder.Vec2D;
+import robot.pathfinder.Waypoint;
 
-public class CubicSplinePath {
-	
-	CubicSpline xSpline, ySpline;
+public class QuadraticSplinePath {
+
+	QuadraticSpline xSpline, ySpline;
 	
 	double scalingFactor;
 	
-	public CubicSplinePath(Waypoint... waypoints) {
+	public QuadraticSplinePath(Waypoint... waypoints) {
 		Waypoint[] xWaypoints = new Waypoint[waypoints.length];
 		Waypoint[] yWaypoints = new Waypoint[waypoints.length];
 		
@@ -16,8 +17,8 @@ public class CubicSplinePath {
 			xWaypoints[i] = new Waypoint(i, waypoints[i].getX());
 			yWaypoints[i] = new Waypoint(i, waypoints[i].getY());
 		}
-		xSpline = new CubicSpline(xWaypoints);
-		ySpline = new CubicSpline(yWaypoints);
+		xSpline = new QuadraticSpline(xWaypoints);
+		ySpline = new QuadraticSpline(yWaypoints);
 		
 		scalingFactor = waypoints.length - 1;
 	}

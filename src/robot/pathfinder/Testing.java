@@ -125,6 +125,7 @@ public class Testing {
 		Waypoint[] waypoints = new Waypoint[] {
 				new Waypoint(0, 10, Math.PI / 2),
 				new Waypoint(10, 20, Math.PI / 2),
+				new Waypoint(5, 10, -Math.PI / 2),
 		};
 		BezierTrajectory b = new BezierTrajectory(waypoints, 10, 3, 2, 0.5, 1000);
 		final double t_delta = 0.001;
@@ -134,6 +135,7 @@ public class Testing {
 		ArrayList<Double> vs = new ArrayList<Double>();
 		ArrayList<Double> as = new ArrayList<Double>();
 		ArrayList<Double> ts = new ArrayList<Double>();
+		ArrayList<Double> mvs = new ArrayList<Double>();
 		
 		for(double t = 0; t <= 1; t += t_delta) {
 			Vec2D v = b.pathAt(t);
@@ -146,6 +148,7 @@ public class Testing {
 			vs.add(m.getVelo());
 			as.add(m.getAccel());
 			ts.add(t);
+			mvs.add(m.getMaxVelo());
 		}
 		
 		Plot2DPanel plot = new Plot2DPanel();
@@ -160,6 +163,7 @@ public class Testing {
 		plot2.addLinePlot("Position", primitiveArr(ts), primitiveArr(ds));
 		plot2.addLinePlot("Velocity", primitiveArr(ts), primitiveArr(vs));
 		plot2.addLinePlot("Acceleration", primitiveArr(ts), primitiveArr(as));
+		plot2.addLinePlot("Theoretical Max Velocity", primitiveArr(ts), primitiveArr(mvs));
 		plot2.setLegendOrientation("EAST");
 		JFrame frame2 = new JFrame("PVA");
 		frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

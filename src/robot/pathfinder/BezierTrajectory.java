@@ -59,6 +59,7 @@ public class BezierTrajectory {
 				moments[i - 1].setAccel(maxAccel);
 			}
 			moments[i] = new Moment(dist, velo, 0);
+			moments[i].theoreticalMax = segments[i - 1].getMaxVelo();
 		}
 		//Backwards pass
 		moments[segments.length].setVelo(0);

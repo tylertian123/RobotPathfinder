@@ -5,6 +5,7 @@ public class Moment {
 	public double dist;
 	public double velo;
 	public double accel;
+	public double theoreticalMax;
 	public double t;
 	
 	public Moment() {
@@ -42,5 +43,11 @@ public class Moment {
 	}
 	public double getT() {
 		return t;
+	}
+	public void setMaxVelo(double velo) {
+		this.theoreticalMax = velo;
+	}
+	public double getMaxVelo() {
+		return this.theoreticalMax;
 	}
 }

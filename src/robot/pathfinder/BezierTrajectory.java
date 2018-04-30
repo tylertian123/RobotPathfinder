@@ -33,7 +33,16 @@ public class BezierTrajectory {
 			segments[i] = new Segment(start, end);
 			
 			Vec2D endVec = path.at(end);
-			double r = MathUtils.getCircleFromPoints(lastEndVec, path.at(mid), endVec).getRadius();
+			//double r = MathUtils.getCircleFromPoints(lastEndVec, path.at(mid), endVec).getRadius();
+			Vec2D deriv = path.derivAt(mid);
+			double xDeriv = deriv.getX();
+			double yDeriv = deriv.getY();
+			Vec2D secondDeriv = path.secondDerivAt(mid);
+			double xSecondDeriv = secondDeriv.getX();
+			double ySecondDeriv = secondDeriv.getY();
+			double curvature = (xDeriv * ySecondDeriv - yDeriv * xSecondDeriv) 
+					/ Math.pow(Math.pow(xDeriv, 2) + Math.pow(yDeriv, 2), 3.0 / 2);
+			double r = Math.abs(1 / curvature);
 			lastEndVec = endVec;
 			segments[i].setMaxVelo(Math.min(maxVel, r / baseWidth));
 			segments[i].setR(r);

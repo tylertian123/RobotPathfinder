@@ -36,4 +36,9 @@ public class Bezier {
 				controlPoints[2].subtract(controlPoints[1]).multiply(6 * u * t), 
 				controlPoints[3].subtract(controlPoints[2]).multiply(3 * tt));
 	}
+	public Vec2D secondDerivAt(double t) {
+		double u = 1 - t;
+		return Vec2D.addVecs(controlPoints[2].subtract(controlPoints[1].multiply(2)).add(controlPoints[0]).multiply(u * 6),
+				controlPoints[3].subtract(controlPoints[2].multiply(2)).add(controlPoints[1]).multiply(6 * t));
+	}
 }

@@ -37,6 +37,10 @@ public class BezierPath {
 		t *= beziers.length;
 		return beziers[(int) Math.floor(t)].derivAt(t % 1.0);
 	}
+	public Vec2D secondDerivAt(double t) {
+		t *= beziers.length;
+		return beziers[(int) Math.floor(t)].secondDerivAt(t % 1.0);
+	}
 	
 	public double integrateLen(double dt) {
 		currentT += dt;

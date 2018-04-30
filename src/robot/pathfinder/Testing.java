@@ -126,7 +126,7 @@ public class Testing {
 				new Waypoint(0, 10, Math.PI / 2),
 				new Waypoint(10, 20, Math.PI / 2),
 		};
-		BezierTrajectory b = new BezierTrajectory(waypoints, 10, 3, 2, 0.5, 100);
+		BezierTrajectory b = new BezierTrajectory(waypoints, 10, 3, 2, 0.5, 1000);
 		final double t_delta = 0.001;
 		ArrayList<Double> xs = new ArrayList<Double>();
 		ArrayList<Double> ys = new ArrayList<Double>();
@@ -140,8 +140,7 @@ public class Testing {
 			xs.add(v.getX());
 			ys.add(v.getY());
 		}
-		System.out.println(b.totalTime());
-		for(double t = 0; t <= b.totalTime(); t += 0.01) {
+		for(double t = 0; t <= b.totalTime(); t += 0.005) {
 			Moment m = b.getMoment(t);
 			ds.add(m.getDist());
 			vs.add(m.getVelo());
@@ -158,10 +157,6 @@ public class Testing {
 		frame.setVisible(true);
 		
 		Plot2DPanel plot2 = new Plot2DPanel();
-		System.out.println(ts.size());
-		System.out.println(ds.size());
-		System.out.println(vs.size());
-		System.out.println(as.size());
 		plot2.addLinePlot("Position", primitiveArr(ts), primitiveArr(ds));
 		plot2.addLinePlot("Velocity", primitiveArr(ts), primitiveArr(vs));
 		plot2.addLinePlot("Acceleration", primitiveArr(ts), primitiveArr(as));

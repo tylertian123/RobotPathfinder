@@ -44,12 +44,15 @@ public class BezierTrajectory {
 		moments[0] = new Moment(0, 0, 0, 0);
 		for(int i = 1; i < segments.length + 1; i ++) {
 			double dt = segments[i - 1].end - segments[i - 1].start;
+			double lastDist = path.getIntegratedLen();
 			double dist = path.integrateLen(dt);
-			double maxReachableVelo = moments[i - 1].getVelo() + maxAccel * dt;
+			double distDiff = dist - lastDist;
+			double maxReachableVelo = Math.sqrt(Math.pow(moments[i - 1].getVelo(), 2) + 2 * maxAccel * distDiff);
 			double velo;
 			
 			if(maxReachableVelo > segments[i - 1].getMaxVelo()) {
 				velo = segments[i - 1].getMaxVelo();
+				moments[i - 1].setAccel(0);
 			}
 			else {
 				velo = maxReachableVelo;
@@ -62,7 +65,8 @@ public class BezierTrajectory {
 		moments[segments.length].setAccel(0);
 		for(int i = segments.length - 1; i >= 0; i --) {
 			double dt = segments[i].end - segments[i].start;
-			double maxReachableVelo = moments[i + 1].getVelo() + maxAccel * dt;
+			double distDiff = moments[i + 1].getDist() - moments[i].getDist();
+			double maxReachableVelo = Math.sqrt(Math.pow(moments[i + 1].getVelo(), 2) + 2 * maxAccel * distDiff);
 			double velo;
 			
 			if(maxReachableVelo > moments[i].getVelo()) {
@@ -83,26 +87,43 @@ public class BezierTrajectory {
 			double accel = moments[i - 1].getAccel();
 			
 			double dt = MathUtils.findPositiveQuadraticRoot(accel / 2, vel, -distDiff);
+			if(Double.isNaN(dt))
+				System.out.printf("Accel: %f, Velo: %f, Dist: %f\n", accel, vel, distDiff);
 			moments[i].setT(moments[i - 1].getT() + dt);
 			timestamps[i] = moments[i].getT();
 		}
 	}
 	
 	public Moment getMoment(double t) {
-		for(int i = 0; i < timestamps.length; i ++) {
-			if(i == timestamps.length - 1)
-				return moments[i];
-			if(t <= timestamps[i + 1]) {
-				if(t - timestamps[i] > timestamps[i + 1] - t) {
-					return moments[i];
+		//Use binary search
+		int start = 0;
+		int end = timestamps.length - 1;
+		int mid;
+		
+		while(true) {
+			mid = (start + end) / 2;
+			if(timestamps[mid] == t) 
+				return moments[mid];
+			if(mid == timestamps.length - 1)
+				return moments[mid];
+			if(timestamps[mid] <= t && timestamps[mid + 1] >= t) {
+				if(Math.abs(t - timestamps[mid]) > Math.abs(t - timestamps[mid + 1])) {
+					return moments[mid + 1];
 				}
 				else {
-					return moments[i + 1];
+					return moments[mid];
 				}
 			}
+			
+			if(timestamps[mid] < t) {
+				start = mid;
+				continue;
+			}
+			else if(timestamps[mid] > t) {
+				end = mid;
+				continue;
+			}
 		}
-		//Just so that the compiler stops complaining
-		return null;
 	}
 	public Vec2D pathAt(double t) {
 		return path.at(t);

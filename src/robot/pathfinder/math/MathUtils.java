@@ -126,6 +126,13 @@ public class MathUtils {
 	}
 	
 	public static double[] findQuadraticRoots(double a, double b, double c) {
+		//Special case
+		if(a == 0) {
+			return new double[] {
+					-c / b,
+					-c / b
+			};
+		}
 		double r = Math.sqrt(b * b - 4 * a * c);
 		return new double[] {
 				(-b + r) / (2 * a),

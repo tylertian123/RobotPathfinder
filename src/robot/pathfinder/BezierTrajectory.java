@@ -1,5 +1,11 @@
 package robot.pathfinder;
 
+import java.util.ArrayList;
+
+import javax.swing.JFrame;
+
+import org.math.plot.Plot2DPanel;
+
 import robot.pathfinder.bezier.BezierPath;
 import robot.pathfinder.math.MathUtils;
 import robot.pathfinder.math.Vec2D;
@@ -17,6 +23,14 @@ public class BezierTrajectory {
 	double baseWidth;
 	
 	public BezierTrajectory(Waypoint[] waypoints, double alpha, double maxVel, double maxAccel, double baseWidth, int segs) {
+		/*ArrayList<Double> xD = new ArrayList<Double>();
+		ArrayList<Double> yD = new ArrayList<Double>();
+		ArrayList<Double> xV = new ArrayList<Double>();
+		ArrayList<Double> yV = new ArrayList<Double>();
+		ArrayList<Double> x2D = new ArrayList<Double>();
+		ArrayList<Double> y2D = new ArrayList<Double>();
+		ArrayList<Double> time = new ArrayList<Double>();*/
+		
 		path = new BezierPath(waypoints, alpha);
 		this.maxVel = maxVel;
 		this.maxAccel = maxAccel;
@@ -35,22 +49,45 @@ public class BezierTrajectory {
 			Vec2D endVec = path.at(end);
 			double r = MathUtils.getCircleFromPoints(lastEndVec, path.at(mid), endVec).getRadius();
 			double curvature = 1 / r;
-			/*Vec2D deriv = path.derivAt(mid);
+			
+			Vec2D deriv = path.derivAt(mid);
 			double xDeriv = deriv.getX();
 			double yDeriv = deriv.getY();
 			Vec2D secondDeriv = path.secondDerivAt(mid);
 			double xSecondDeriv = secondDeriv.getX();
 			double ySecondDeriv = secondDeriv.getY();
-			double curvature = (xDeriv * ySecondDeriv - yDeriv * xSecondDeriv) 
-					/ Math.pow(Math.pow(xDeriv, 2) + Math.pow(yDeriv, 2), 3.0 / 2);
-			double r = Math.abs(1 / curvature);*/
+			double curvature2 = (xDeriv * ySecondDeriv - yDeriv * xSecondDeriv) /
+					Math.pow(xDeriv * xDeriv + yDeriv * yDeriv, 3.0/2.0);
+			double r2 = 1 / curvature2;
+			/*Vec2D val = path.at(mid);
+			xV.add(val.getX());
+			yV.add(val.getY());
+			xD.add(xDeriv);
+			yD.add(yDeriv);
+			x2D.add(xSecondDeriv);
+			y2D.add(ySecondDeriv);
+			time.add(mid);*/
+			System.out.printf("Estimate: %f, Deriv: %f\n", r, r2);
 			
 			lastEndVec = endVec;
 			//segments[i].setMaxVelo(Math.min(maxVel, r / baseWidth));
 			//segments[i].setMaxVelo((2 * maxVel - Math.abs(curvature) * baseWidth) / 2);
-			segments[i].setMaxVelo((2 * r * maxVel) / (2 * r + baseWidth)); 
+			segments[i].setMaxVelo((2 * Math.abs(r2) * maxVel) / (2 * Math.abs(r2) + baseWidth)); 
 			segments[i].setR(r);
 		}
+		/*Plot2DPanel plot = new Plot2DPanel();
+		plot.addLinePlot("X", Testing.primitiveArr(time), Testing.primitiveArr(xV));
+		plot.addLinePlot("Y", Testing.primitiveArr(time), Testing.primitiveArr(yV));
+		plot.addLinePlot("X Derivative", Testing.primitiveArr(time), Testing.primitiveArr(xD));
+		plot.addLinePlot("Y Derivative", Testing.primitiveArr(time), Testing.primitiveArr(yD));
+		plot.addLinePlot("X Second Derivative", Testing.primitiveArr(time), Testing.primitiveArr(x2D));
+		plot.addLinePlot("Y Second Derivative", Testing.primitiveArr(time), Testing.primitiveArr(y2D));
+		plot.setLegendOrientation("EAST");
+		JFrame frame = new JFrame("Derivatives");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		frame.setContentPane(plot);
+		frame.setVisible(true);*/
 		moments = new Moment[segments.length + 1];
 		
 		//Forwards pass

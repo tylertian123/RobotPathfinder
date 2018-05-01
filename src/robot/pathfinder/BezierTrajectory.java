@@ -1,12 +1,7 @@
 package robot.pathfinder;
 
-import java.util.ArrayList;
-
-import javax.swing.JFrame;
-
-import org.math.plot.Plot2DPanel;
-
 import robot.pathfinder.bezier.BezierPath;
+import robot.pathfinder.math.Circle;
 import robot.pathfinder.math.MathUtils;
 import robot.pathfinder.math.Vec2D;
 
@@ -47,10 +42,14 @@ public class BezierTrajectory {
 			segments[i] = new Segment(start, end);
 			
 			Vec2D endVec = path.at(end);
-			double r = MathUtils.getCircleFromPoints(lastEndVec, path.at(mid), endVec).getRadius();
+			Circle c = MathUtils.getCircleFromPoints(lastEndVec, path.at(mid), endVec);
+			double r = c.getRadius();
 			double curvature = 1 / r;
 			
 			Vec2D deriv = path.derivAt(mid);
+			double heading = Math.atan2(deriv.getY(), deriv.getX());
+			double centerHeading = Math.atan2(c.getCenter().getY() - lastEndVec.getY(), c.getCenter().getX() - lastEndVec.getX());
+			int m = heading > centerHeading ? -1 : 1;
 			double xDeriv = deriv.getX();
 			double yDeriv = deriv.getY();
 			Vec2D secondDeriv = path.secondDerivAt(mid);
@@ -67,12 +66,12 @@ public class BezierTrajectory {
 			x2D.add(xSecondDeriv);
 			y2D.add(ySecondDeriv);
 			time.add(mid);*/
-			System.out.printf("Estimate: %f, Deriv: %f\n", r, r2);
+			System.out.printf("Estimate: %f, Deriv: %f, Point: %f\n", r * m, r2, mid);
 			
 			lastEndVec = endVec;
 			//segments[i].setMaxVelo(Math.min(maxVel, r / baseWidth));
 			//segments[i].setMaxVelo((2 * maxVel - Math.abs(curvature) * baseWidth) / 2);
-			segments[i].setMaxVelo((2 * Math.abs(r2) * maxVel) / (2 * Math.abs(r2) + baseWidth)); 
+			segments[i].setMaxVelo((2 * Math.abs(r) * maxVel) / (2 * Math.abs(r) + baseWidth)); 
 			segments[i].setR(r);
 		}
 		/*Plot2DPanel plot = new Plot2DPanel();

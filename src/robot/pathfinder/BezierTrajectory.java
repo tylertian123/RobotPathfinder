@@ -33,8 +33,9 @@ public class BezierTrajectory {
 			segments[i] = new Segment(start, end);
 			
 			Vec2D endVec = path.at(end);
-			//double r = MathUtils.getCircleFromPoints(lastEndVec, path.at(mid), endVec).getRadius();
-			Vec2D deriv = path.derivAt(mid);
+			double r = MathUtils.getCircleFromPoints(lastEndVec, path.at(mid), endVec).getRadius();
+			double curvature = 1 / r;
+			/*Vec2D deriv = path.derivAt(mid);
 			double xDeriv = deriv.getX();
 			double yDeriv = deriv.getY();
 			Vec2D secondDeriv = path.secondDerivAt(mid);
@@ -42,9 +43,12 @@ public class BezierTrajectory {
 			double ySecondDeriv = secondDeriv.getY();
 			double curvature = (xDeriv * ySecondDeriv - yDeriv * xSecondDeriv) 
 					/ Math.pow(Math.pow(xDeriv, 2) + Math.pow(yDeriv, 2), 3.0 / 2);
-			double r = Math.abs(1 / curvature);
+			double r = Math.abs(1 / curvature);*/
+			
 			lastEndVec = endVec;
-			segments[i].setMaxVelo(Math.min(maxVel, r / baseWidth));
+			//segments[i].setMaxVelo(Math.min(maxVel, r / baseWidth));
+			//segments[i].setMaxVelo((2 * maxVel - Math.abs(curvature) * baseWidth) / 2);
+			segments[i].setMaxVelo((2 * r * maxVel) / (2 * r + baseWidth)); 
 			segments[i].setR(r);
 		}
 		moments = new Moment[segments.length + 1];
@@ -74,7 +78,6 @@ public class BezierTrajectory {
 		moments[segments.length].setVelo(0);
 		moments[segments.length].setAccel(0);
 		for(int i = segments.length - 1; i >= 0; i --) {
-			double dt = segments[i].end - segments[i].start;
 			double distDiff = moments[i + 1].getDist() - moments[i].getDist();
 			double maxReachableVelo = Math.sqrt(Math.pow(moments[i + 1].getVelo(), 2) + 2 * maxAccel * distDiff);
 			double velo;

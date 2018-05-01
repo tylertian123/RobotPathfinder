@@ -125,10 +125,10 @@ public class Testing {
 		Waypoint[] waypoints = new Waypoint[] {
 				new Waypoint(0, 10, Math.PI / 2),
 				new Waypoint(10, 20, Math.PI / 2),
-				new Waypoint(5, 10, -Math.PI / 2),
+				//new Waypoint(5, 10, -Math.PI / 2),
 		};
 		long time = System.currentTimeMillis();
-		BezierTrajectory b = new BezierTrajectory(waypoints, 10, 3, 2, 3, 1000);
+		BezierTrajectory b = new BezierTrajectory(waypoints, 10, 3, 2, 2, 1000);
 		System.out.println("Trajectory generation took " + (System.currentTimeMillis() - time) + " milliseconds.");
 		final double t_delta = 0.001;
 		ArrayList<Double> xs = new ArrayList<Double>();

@@ -109,55 +109,20 @@ public class Testing {
 		final double t_delta = 0.001;
 		ArrayList<Double> xs = new ArrayList<Double>();
 		ArrayList<Double> ys = new ArrayList<Double>();
-		ArrayList<Double> lx = new ArrayList<Double>();
-		ArrayList<Double> rx = new ArrayList<Double>();
-		ArrayList<Double> ly = new ArrayList<Double>();
-		ArrayList<Double> ry = new ArrayList<Double>();
-		ArrayList<Double> xP = new ArrayList<Double>();
-		ArrayList<Double> xD = new ArrayList<Double>();
-		ArrayList<Double> yP = new ArrayList<Double>();
-		ArrayList<Double> yD = new ArrayList<Double>();
-		ArrayList<Double> y2D = new ArrayList<Double>();
-		ArrayList<Double> ts = new ArrayList<Double>();
 		
 		for(double t = 0; t <= 1; t += t_delta) {
 			Vec2D v = b.at(t);
 			xs.add(v.getX());
 			ys.add(v.getY());
-			Vec2D[] wheels = b.wheelsAt(t);
-			lx.add(wheels[0].getX());
-			ly.add(wheels[0].getY());
-			rx.add(wheels[1].getX());
-			ry.add(wheels[1].getY());
-			xP.add(b.at(t).getX());
-			xD.add(b.derivAt(t).getX());
-			yP.add(b.at(t).getY());
-			yD.add(b.derivAt(t).getY());
-			y2D.add(b.secondDerivAt(t).getY());
-			ts.add(t);
 		}
 		
 		Plot2DPanel plot = new Plot2DPanel();
 		plot.addLinePlot("Bezier", primitiveArr(xs), primitiveArr(ys));
-		plot.addLinePlot("Left Wheel", primitiveArr(lx), primitiveArr(ly));
-		plot.addLinePlot("Right Wheel", primitiveArr(rx), primitiveArr(ry));
 		JFrame frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		frame.setContentPane(plot);
 		frame.setVisible(true);
-		
-		Plot2DPanel plot2 = new Plot2DPanel();
-		plot2.addLinePlot("Pos", primitiveArr(ts), primitiveArr(xP));
-		plot2.addLinePlot("Vel", primitiveArr(ts), primitiveArr(xD));
-		plot2.addLinePlot("Y Pos", primitiveArr(ts), primitiveArr(yP));
-		plot2.addLinePlot("Y Vel", primitiveArr(ts), primitiveArr(yD));
-		plot2.addLinePlot("Y Accl", primitiveArr(ts), primitiveArr(y2D));
-		JFrame frame2 = new JFrame("Deriv");
-		frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame2.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		frame2.setContentPane(plot2);
-		frame2.setVisible(true);
 	}
 	public static void test3() {
 		Waypoint[] waypoints = new Waypoint[] {
@@ -211,7 +176,68 @@ public class Testing {
 		frame2.setContentPane(plot2);
 		frame2.setVisible(true);
 	}
+	public static void test4() {
+		Waypoint[] waypoints = new Waypoint[] {
+				new Waypoint(0, 10, Math.PI / 2),
+				new Waypoint(10, 20, Math.PI / 2),
+				new Waypoint(5, 10, -Math.PI / 2),
+		};
+		long time = System.currentTimeMillis();
+		TankDriveTrajectory b = new TankDriveTrajectory(waypoints, 3, 2, 2, 10, 1000);
+		System.out.println("Trajectory generation took " + (System.currentTimeMillis() - time) + " milliseconds.");
+		final double t_delta = 0.001;
+		ArrayList<Double> xs = new ArrayList<Double>();
+		ArrayList<Double> ys = new ArrayList<Double>();
+		
+		ArrayList<Double> lds = new ArrayList<Double>();
+		ArrayList<Double> lvs = new ArrayList<Double>();
+		ArrayList<Double> las = new ArrayList<Double>();
+		ArrayList<Double> rds = new ArrayList<Double>();
+		ArrayList<Double> rvs = new ArrayList<Double>();
+		ArrayList<Double> ras = new ArrayList<Double>();
+		ArrayList<Double> ts = new ArrayList<Double>();
+		
+		for(double t = 0; t <= 1; t += t_delta) {
+			Vec2D v = b.pathAt(t);
+			xs.add(v.getX());
+			ys.add(v.getY());
+		}
+		System.out.println(b.totalTime());
+		for(double t = 0; t <= b.totalTime(); t += 0.005) {
+			robot.pathfinder.Moment left = b.getLeft(t);
+			robot.pathfinder.Moment right = b.getRight(t);
+			lds.add(left.getDistance());
+			rds.add(right.getDistance());
+			lvs.add(left.getVelocity());
+			rvs.add(right.getVelocity());
+			las.add(left.getAcceleration());
+			ras.add(right.getAcceleration());
+			ts.add(t);
+		}
+		
+		Plot2DPanel plot = new Plot2DPanel();
+		plot.addLinePlot("Bezier", primitiveArr(xs), primitiveArr(ys));
+		JFrame frame = new JFrame("Bezier");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		frame.setContentPane(plot);
+		frame.setVisible(true);
+		
+		Plot2DPanel plot2 = new Plot2DPanel();
+		plot2.addLinePlot("Left Position", primitiveArr(ts), primitiveArr(lds));
+		plot2.addLinePlot("Left Velocity", primitiveArr(ts), primitiveArr(lvs));
+		plot2.addLinePlot("Left Acceleration", primitiveArr(ts), primitiveArr(las));
+		plot2.addLinePlot("Right Position", primitiveArr(ts), primitiveArr(rds));
+		plot2.addLinePlot("Right Velocity", primitiveArr(ts), primitiveArr(rvs));
+		plot2.addLinePlot("Right Acceleration", primitiveArr(ts), primitiveArr(ras));
+		plot2.setLegendOrientation("EAST");
+		JFrame frame2 = new JFrame("PVA");
+		frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame2.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		frame2.setContentPane(plot2);
+		frame2.setVisible(true);
+	}
 	public static void main(String[] args) {
-		test3();
+		test4();
 	}
 }

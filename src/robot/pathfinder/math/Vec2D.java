@@ -36,7 +36,7 @@ public class Vec2D {
 		return new Vec2D(x + vec.x, y + vec.y);
 	}
 	public Vec2D subtract(Vec2D vec) {
-		return new Vec2D(x - vec.x, y + vec.y);
+		return new Vec2D(x - vec.x, y - vec.y);
 	}
 	public double distTo(Vec2D vec) {
 		return Vec2D.dist(this, vec);

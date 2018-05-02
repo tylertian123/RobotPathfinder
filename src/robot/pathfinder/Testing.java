@@ -212,6 +212,6 @@ public class Testing {
 		frame2.setVisible(true);
 	}
 	public static void main(String[] args) {
-		test2();
+		test3();
 	}
 }

@@ -70,6 +70,7 @@ public class TankDriveTrajectory {
 			double[] currentDists = path.integrateWheelLens(dt);
 			double distDiffLeft = currentDists[0] - lastDists[0];
 			double distDiffRight = currentDists[1] - lastDists[1];
+			//System.out.printf("l: %f, r: %f\n", currentDists[0], currentDists[1]);
 			//System.out.printf("l: %f, r: %f\n", distDiffLeft, distDiffRight);
 			
 			//Use the fourth kinematic equation to figure out the maximum reachable velocity for each side

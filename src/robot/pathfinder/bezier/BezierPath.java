@@ -103,6 +103,6 @@ public class BezierPath {
 		currentWheelDists = new double[2];
 	}
 	public double[] getIntegratedWheelLens() {
-		return currentWheelDists;
+		return currentWheelDists.clone();
 	}
 }

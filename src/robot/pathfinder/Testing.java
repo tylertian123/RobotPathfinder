@@ -180,7 +180,7 @@ public class Testing {
 		Waypoint[] waypoints = new Waypoint[] {
 				new Waypoint(0, 10, Math.PI / 2),
 				new Waypoint(10, 20, Math.PI / 2),
-				new Waypoint(7, 25, Math.PI),
+				new Waypoint(3, 25, Math.PI),
 				new Waypoint(5, 10, -Math.PI / 2),
 		};
 		long time = System.currentTimeMillis();

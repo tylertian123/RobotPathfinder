@@ -180,7 +180,8 @@ public class Testing {
 		Waypoint[] waypoints = new Waypoint[] {
 				new Waypoint(0, 10, Math.PI / 2),
 				new Waypoint(10, 20, Math.PI / 2),
-				//new Waypoint(5, 10, -Math.PI / 2),
+				new Waypoint(7, 25, Math.PI),
+				new Waypoint(5, 10, -Math.PI / 2),
 		};
 		long time = System.currentTimeMillis();
 		TankDriveTrajectory b = new TankDriveTrajectory(waypoints, 3, 2, 2, 20, 1000);
@@ -222,6 +223,7 @@ public class Testing {
 			las.add(left.getAcceleration());
 			ras.add(right.getAcceleration());
 			ts.add(t);
+			//System.out.println(t);
 		}
 		
 		Plot2DPanel plot = new Plot2DPanel();

@@ -166,6 +166,9 @@ public class TankDriveTrajectory {
 		int end = leftTimes.length - 1;
 		int mid;
 		
+		if(t >= leftTimes[leftTimes.length - 1])
+			return leftMoments[leftMoments.length - 1];
+		
 		while(true) {
 			mid = (start + end) / 2;
 			
@@ -198,6 +201,9 @@ public class TankDriveTrajectory {
 		int start = 0;
 		int end = rightTimes.length - 1;
 		int mid;
+		
+		if(t >= rightTimes[rightTimes.length - 1])
+			return rightMoments[rightMoments.length - 1];
 		
 		while(true) {
 			mid = (start + end) / 2;

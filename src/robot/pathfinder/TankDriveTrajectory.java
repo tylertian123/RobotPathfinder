@@ -63,7 +63,7 @@ public class TankDriveTrajectory {
 		rightMoments[0] = new Moment(0, 0, 0);
 		
 		for(int i = 1; i < segmentCount + 1; i ++) {
-			double dt = segments[i - 1].getEnd() - segments[i - 1].getEnd();
+			double dt = segments[i - 1].getStart() - segments[i - 1].getEnd();
 			
 			//Integrate the path of both sides separately
 			double[] lastDists = path.getIntegratedWheelLens();
@@ -144,11 +144,20 @@ public class TankDriveTrajectory {
 			//This time is then used to give every Moment a timestamp
 			double dtLeft = MathUtils.findPositiveQuadraticRoot(leftAccel / 2, leftVel, -distDiffLeft);
 			double dtRight = MathUtils.findPositiveQuadraticRoot(rightAccel / 2, rightVel, -distDiffRight);
+			//System.out.printf("*LEFT* Accel: %f, Velo: %f, Dist: %f, Iteration: %d\n", leftAccel, leftVel, distDiffLeft, i);
+			//System.out.printf("*RIGHT* Accel: %f, Velo: %f, Dist: %f, Iteration: %d\n", rightAccel, rightVel, distDiffRight, i);
+			if(Double.isNaN(dtLeft)) {
+				dtLeft = 0.01;
+			}
+			if(Double.isNaN(dtRight)) {
+				dtRight = 0.01;
+			}
 			
 			leftMoments[i].setTime(leftMoments[i - 1].getTime() + dtLeft);
 			rightMoments[i].setTime(rightMoments[i - 1].getTime() + dtRight);
 			leftTimes[i] = leftMoments[i].getTime();
 			rightTimes[i] = rightMoments[i].getTime();
+			//System.out.printf("l: %f, r: %f\n", leftTimes[i], rightTimes[i]);
 		}
 	}
 	

@@ -88,7 +88,6 @@ public class BezierPath {
 	}
 	
 	public double[] integrateWheelLens(double dt) {
-		currentTWheels += dt;
 		if(currentTWheels > 1)
 			return currentWheelDists;
 		Vec2D[] currentWheels = wheelsAt(currentT);

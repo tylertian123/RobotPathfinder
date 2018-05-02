@@ -180,14 +180,18 @@ public class Testing {
 		Waypoint[] waypoints = new Waypoint[] {
 				new Waypoint(0, 10, Math.PI / 2),
 				new Waypoint(10, 20, Math.PI / 2),
-				new Waypoint(5, 10, -Math.PI / 2),
+				//new Waypoint(5, 10, -Math.PI / 2),
 		};
 		long time = System.currentTimeMillis();
-		TankDriveTrajectory b = new TankDriveTrajectory(waypoints, 3, 2, 2, 10, 1000);
+		TankDriveTrajectory b = new TankDriveTrajectory(waypoints, 3, 2, 2, 20, 1000);
 		System.out.println("Trajectory generation took " + (System.currentTimeMillis() - time) + " milliseconds.");
 		final double t_delta = 0.001;
 		ArrayList<Double> xs = new ArrayList<Double>();
 		ArrayList<Double> ys = new ArrayList<Double>();
+		ArrayList<Double> lx = new ArrayList<Double>();
+		ArrayList<Double> ly = new ArrayList<Double>();
+		ArrayList<Double> rx = new ArrayList<Double>();
+		ArrayList<Double> ry = new ArrayList<Double>();
 		
 		ArrayList<Double> lds = new ArrayList<Double>();
 		ArrayList<Double> lvs = new ArrayList<Double>();
@@ -201,6 +205,11 @@ public class Testing {
 			Vec2D v = b.pathAt(t);
 			xs.add(v.getX());
 			ys.add(v.getY());
+			Vec2D[] wheels = b.getPath().wheelsAt(t);
+			lx.add(wheels[0].getX());
+			ly.add(wheels[0].getY());
+			rx.add(wheels[1].getX());
+			ry.add(wheels[1].getY());
 		}
 		System.out.println(b.totalTime());
 		for(double t = 0; t <= b.totalTime(); t += 0.005) {
@@ -217,6 +226,9 @@ public class Testing {
 		
 		Plot2DPanel plot = new Plot2DPanel();
 		plot.addLinePlot("Bezier", primitiveArr(xs), primitiveArr(ys));
+		plot.addLinePlot("Left", primitiveArr(lx), primitiveArr(ly));
+		plot.addLinePlot("Right", primitiveArr(rx), primitiveArr(ry));
+		plot.setLegendOrientation("EAST");
 		JFrame frame = new JFrame("Bezier");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);

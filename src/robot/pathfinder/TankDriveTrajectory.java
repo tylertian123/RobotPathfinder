@@ -63,13 +63,14 @@ public class TankDriveTrajectory {
 		rightMoments[0] = new Moment(0, 0, 0);
 		
 		for(int i = 1; i < segmentCount + 1; i ++) {
-			double dt = segments[i - 1].getStart() - segments[i - 1].getEnd();
+			double dt = segments[i - 1].getEnd() - segments[i - 1].getStart();
 			
 			//Integrate the path of both sides separately
 			double[] lastDists = path.getIntegratedWheelLens();
 			double[] currentDists = path.integrateWheelLens(dt);
 			double distDiffLeft = currentDists[0] - lastDists[0];
 			double distDiffRight = currentDists[1] - lastDists[1];
+			//System.out.printf("l: %f, r: %f\n", distDiffLeft, distDiffRight);
 			
 			//Use the fourth kinematic equation to figure out the maximum reachable velocity for each side
 			double leftMax = Math.sqrt(Math.pow(leftMoments[i - 1].getVelocity(), 2) + 2 * maxAccel * distDiffLeft);
@@ -144,13 +145,11 @@ public class TankDriveTrajectory {
 			//This time is then used to give every Moment a timestamp
 			double dtLeft = MathUtils.findPositiveQuadraticRoot(leftAccel / 2, leftVel, -distDiffLeft);
 			double dtRight = MathUtils.findPositiveQuadraticRoot(rightAccel / 2, rightVel, -distDiffRight);
-			//System.out.printf("*LEFT* Accel: %f, Velo: %f, Dist: %f, Iteration: %d\n", leftAccel, leftVel, distDiffLeft, i);
-			//System.out.printf("*RIGHT* Accel: %f, Velo: %f, Dist: %f, Iteration: %d\n", rightAccel, rightVel, distDiffRight, i);
 			if(Double.isNaN(dtLeft)) {
-				dtLeft = 0.01;
+				System.out.printf("*LEFT* Accel: %f, Velo: %f, Dist: %f, Iteration: %d\n", leftAccel, leftVel, distDiffLeft, i);
 			}
 			if(Double.isNaN(dtRight)) {
-				dtRight = 0.01;
+				System.out.printf("*RIGHT* Accel: %f, Velo: %f, Dist: %f, Iteration: %d\n", rightAccel, rightVel, distDiffRight, i);
 			}
 			
 			leftMoments[i].setTime(leftMoments[i - 1].getTime() + dtLeft);

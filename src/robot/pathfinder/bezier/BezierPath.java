@@ -11,6 +11,8 @@ public class BezierPath {
 	double currentDist = 0;
 	double currentT = 0;
 	
+	double baseRadius;
+	
 	public BezierPath(Waypoint[] waypoints, double alpha) {
 		if(waypoints.length < 2) {
 			throw new IllegalArgumentException("Not enough waypoints");
@@ -24,6 +26,13 @@ public class BezierPath {
 		lastPoint = at(0);
 	}
 	
+	public void setBaseRadius(double b) {
+		baseRadius = b;
+	}
+	public double getBaseRaidus() {
+		return baseRadius;
+	}
+	
 	public Vec2D at(double t) {
 		t *= beziers.length;
 		try {
@@ -32,6 +41,19 @@ public class BezierPath {
 		catch(ArrayIndexOutOfBoundsException e) {
 			return beziers[beziers.length - 1].at(t % 1.0);
 		}
+	}
+	public Vec2D[] wheelsAt(double t) {
+		Vec2D position = at(t);
+		Vec2D derivative = derivAt(t);
+		
+		double heading = Math.atan2(derivative.getY(), derivative.getX());
+		double leftHeading = heading + Math.PI / 2;
+		double rightHeading = heading - Math.PI / 2;
+		
+		return new Vec2D[] {
+				new Vec2D(position.getX() + Math.cos(leftHeading) * baseRadius, position.getY() + Math.sin(leftHeading) * baseRadius),
+				new Vec2D(position.getX() + Math.cos(rightHeading) * baseRadius, position.getY() + Math.sin(rightHeading) * baseRadius)
+		};
 	}
 	public Vec2D derivAt(double t) {
 		t *= beziers.length;

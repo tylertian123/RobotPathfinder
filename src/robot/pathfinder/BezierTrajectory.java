@@ -4,6 +4,7 @@ import robot.pathfinder.bezier.BezierPath;
 import robot.pathfinder.math.Circle;
 import robot.pathfinder.math.MathUtils;
 import robot.pathfinder.math.Vec2D;
+import robot.pathfinder.old.Moment;
 
 public class BezierTrajectory {
 
@@ -50,14 +51,14 @@ public class BezierTrajectory {
 			double heading = Math.atan2(deriv.getY(), deriv.getX());
 			double centerHeading = Math.atan2(c.getCenter().getY() - lastEndVec.getY(), c.getCenter().getX() - lastEndVec.getX());
 			int m = heading > centerHeading ? -1 : 1;
-			double xDeriv = deriv.getX();
+			/*double xDeriv = deriv.getX();
 			double yDeriv = deriv.getY();
 			Vec2D secondDeriv = path.secondDerivAt(mid);
 			double xSecondDeriv = secondDeriv.getX();
 			double ySecondDeriv = secondDeriv.getY();
 			double curvature2 = (xDeriv * ySecondDeriv - yDeriv * xSecondDeriv) /
 					Math.pow(xDeriv * xDeriv + yDeriv * yDeriv, 3.0/2.0);
-			double r2 = 1 / curvature2;
+			double r2 = 1 / curvature2;*/
 			/*Vec2D val = path.at(mid);
 			xV.add(val.getX());
 			yV.add(val.getY());
@@ -66,12 +67,12 @@ public class BezierTrajectory {
 			x2D.add(xSecondDeriv);
 			y2D.add(ySecondDeriv);
 			time.add(mid);*/
-			System.out.printf("Estimate: %f, Deriv: %f, Point: %f\n", r * m, r2, mid);
+			//System.out.printf("Estimate: %f, Deriv: %f, Point: %f\n", r * m, r2, mid);
 			
 			lastEndVec = endVec;
 			//segments[i].setMaxVelo(Math.min(maxVel, r / baseWidth));
 			//segments[i].setMaxVelo((2 * maxVel - Math.abs(curvature) * baseWidth) / 2);
-			segments[i].setMaxVelo((2 * Math.abs(r) * maxVel) / (2 * Math.abs(r) + baseWidth)); 
+			segments[i].setMaxVelo((2 * maxVel) / (2 + baseWidth / r)); 
 			segments[i].setR(r);
 		}
 		/*Plot2DPanel plot = new Plot2DPanel();
@@ -91,6 +92,7 @@ public class BezierTrajectory {
 		
 		//Forwards pass
 		moments[0] = new Moment(0, 0, 0, 0);
+		moments[0].setMaxVelo(segments[0].getMaxVelo());
 		for(int i = 1; i < segments.length + 1; i ++) {
 			double dt = segments[i - 1].end - segments[i - 1].start;
 			double lastDist = path.getIntegratedLen();

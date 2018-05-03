@@ -26,8 +26,9 @@ public class BezierPath {
 					new Vec2D(Math.cos(waypoints[i].getHeading()) * alpha, Math.sin(waypoints[i].getHeading()) * alpha),
 					new Vec2D(Math.cos(waypoints[i + 1].getHeading()) * alpha, Math.sin(waypoints[i + 1].getHeading()) * alpha));
 		}
-		lastPoint = at(0);
-		lastWheelPositions = wheelsAt(0);
+		
+		resetIntegration();
+		resetWheelIntegration();
 	}
 	
 	public void setBaseRadius(double b) {
@@ -88,6 +89,9 @@ public class BezierPath {
 	}
 	
 	public double[] integrateWheelLens(double dt) {
+		//Mystery bug
+		if(currentTWheels == 0)
+			resetWheelIntegration();
 		currentTWheels += dt;
 		if(currentTWheels > 1)
 			return currentWheelDists;

@@ -52,6 +52,25 @@ public class TankDriveTrajectory {
 	 * @param segmentCount - How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
 	 */
 	public TankDriveTrajectory(Waypoint[] waypoints, double maxVelocity, double maxAcceleration, double baseWidth, double alpha, int segmentCount) {
+		this(waypoints, maxVelocity, maxAcceleration, baseWidth, alpha, segmentCount, false);
+	}
+	/**
+	 * Generates a trajectory based on a number of parameters.<br>
+	 * <br>
+	 * The units for the parameters must be consistent with each other. For example, if maximum velocity is in feet/second, 
+	 * then maximum acceleration must be in feet/second^2, base width must be in feet, and the units for waypoints also in feet.<br>
+	 * <br>
+	 * Note this process can take up to half a second, depending on the number of segments.
+	 * 
+	 * @param waypoints - The waypoints the path has to travel through
+	 * @param maxVelocity - The maximum velocity of the robot
+	 * @param maxAcceleration - The maximum acceleration of the robot
+	 * @param baseWidth - The width of the base plate of the robot (distance between left side wheels and right side wheels)
+	 * @param alpha - Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
+	 * @param segmentCount - How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
+	 * @param surpressExceptions - If set to true, an exception will <b>not</b> be thrown if the path is impossible
+	 */
+	public TankDriveTrajectory(Waypoint[] waypoints, double maxVelocity, double maxAcceleration, double baseWidth, double alpha, int segmentCount, boolean surpressExceptions) {
 		maxVel = maxVelocity;
 		maxAccel = maxAcceleration;
 		this.baseWidth = baseWidth;
@@ -113,7 +132,6 @@ public class TankDriveTrajectory {
 			double[] currentDists = path.integrateWheelLens(dt);
 			double distDiffLeft = currentDists[0] - lastDists[0];
 			double distDiffRight = currentDists[1] - lastDists[1];
-			
 			//Use the fourth kinematic equation to figure out the maximum reachable velocity for each side,
 			//while obeying constraints for max acceleration
 			double leftMax = Math.sqrt(Math.pow(leftMoments[i - 1].getVelocity(), 2) + 2 * maxAccel * distDiffLeft);
@@ -207,11 +225,15 @@ public class TankDriveTrajectory {
 			//A result of NaN or Infinity indicates that our path is impossible with the current configuration.
 			if(Double.isNaN(dtLeft) || Double.isInfinite(dtLeft)) {
 				System.out.printf("*LEFT* Accel: %f, Velo: %f, Dist: %f, Iteration: %d\n", leftAccel, leftVel, distDiffLeft, i);
-				throw new PathGenerationException("Path is impossible");
+				if(!surpressExceptions)
+					throw new PathGenerationException("Path is impossible");
+				dtLeft = 0.1;
 			}
 			if(Double.isNaN(dtRight) || Double.isInfinite(dtRight)) {
 				System.out.printf("*RIGHT* Accel: %f, Velo: %f, Dist: %f, Iteration: %d\n", rightAccel, rightVel, distDiffRight, i);
-				throw new PathGenerationException("Path is impossible");
+				if(!surpressExceptions)
+					throw new PathGenerationException("Path is impossible");
+				dtRight = 0.1;
 			}
 			
 			//Add the time differences to the accumulated time of the last moment to get the time of this moment

@@ -178,13 +178,18 @@ public class Testing {
 		Waypoint[] waypoints = new Waypoint[] {
 				//new Waypoint(0, 10, Math.PI / 2),
 				//new Waypoint(10, 20, Math.PI / 2),
-				//new Waypoint(3, 25, Math.PI),
+				//new Waypoint(3, 27, Math.PI),
 				//new Waypoint(5, 10, -Math.PI / 2),
-				new Waypoint(0, 0, Math.PI / 2),
-				new Waypoint(-5, 10, Math.PI / 2),
+				
+				//new Waypoint(0, 0, Math.PI / 2),
+				//new Waypoint(-5, 10, Math.PI / 2),
+				
+				new Waypoint(0, 10, Math.PI / 2),
+				new Waypoint(20, 15, Math.PI / 2),
+				new Waypoint(10, 5, -Math.PI / 4)
 		};
 		long time = System.currentTimeMillis();
-		TankDriveTrajectory b = new TankDriveTrajectory(waypoints, 5, 4, 2, 20, 1000);
+		TankDriveTrajectory b = new TankDriveTrajectory(waypoints, 5, 3.5, 2, 20, 5000, true);
 		System.out.println("Trajectory generation took " + (System.currentTimeMillis() - time) + " milliseconds.");
 		final double t_delta = 0.001;
 		ArrayList<Double> xs = new ArrayList<Double>();

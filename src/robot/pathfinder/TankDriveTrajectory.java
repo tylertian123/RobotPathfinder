@@ -6,10 +6,19 @@ import robot.pathfinder.math.Vec2D;
 import robot.pathfinder.Moment;
 
 /**
- * A trajectory for a tank drive robot.<br>
+ * A trajectory generator for a tank drive robot.<br>
  * <br>
- * This class written mainly based on the Cheesy Poofs' video, with some changes:<br>
- * https://youtu.be/8319J1BEHwM
+ * The algorithm used in this class is largely based on a video by the Cheesy Poofs (Team 254),
+ * with some small modifications here and there.<br>
+ * You can find the video on YouTube here: https://youtu.be/8319J1BEHwM<br>
+ * <br>
+ * In addition to the Poofs' algorithm, this class divides the trajectory into "moments".
+ * Each "moment" is a point in time, and has a desired displacement, velocity and acceleration.
+ * Using these "moments", a system can be set up that follows the desired values, thus achieving 
+ * motion control.<br>
+ * This class also uses Beziers to generate its path, instead of 2D Hermite spline fitting like in
+ * the video.
+ * 
  * @author Tyler
  *
  */
@@ -24,6 +33,7 @@ public class TankDriveTrajectory {
 	//Used to find the correct moment for a given time
 	double[] leftTimes, rightTimes;
 	
+	//Maximum velocity, acceleration and the width of the base plate
 	final double maxVel, maxAccel, baseWidth;
 	
 	/**
@@ -194,7 +204,7 @@ public class TankDriveTrajectory {
 			//This time is then used to give every Moment a timestamp (separately for left and right)
 			double dtLeft = MathUtils.findPositiveQuadraticRoot(leftAccel / 2, leftVel, -distDiffLeft);
 			double dtRight = MathUtils.findPositiveQuadraticRoot(rightAccel / 2, rightVel, -distDiffRight);
-			//
+			//A result of NaN or Infinity indicates that our path is impossible with the current configuration.
 			if(Double.isNaN(dtLeft) || Double.isInfinite(dtLeft)) {
 				System.out.printf("*LEFT* Accel: %f, Velo: %f, Dist: %f, Iteration: %d\n", leftAccel, leftVel, distDiffLeft, i);
 				throw new PathGenerationException("Path is impossible");
@@ -204,19 +214,26 @@ public class TankDriveTrajectory {
 				throw new PathGenerationException("Path is impossible");
 			}
 			
+			//Add the time differences to the accumulated time of the last moment to get the time of this moment
 			leftMoments[i].setTime(leftMoments[i - 1].getTime() + dtLeft);
 			rightMoments[i].setTime(rightMoments[i - 1].getTime() + dtRight);
 			leftTimes[i] = leftMoments[i].getTime();
 			rightTimes[i] = rightMoments[i].getTime();
-			//System.out.printf("l: %f, r: %f\n", leftTimes[i], rightTimes[i]);
 		}
 	}
 	
+	/**
+	 * Retrieves the {@code Moment} object associated with the left side at the specified time.
+	 * @param t - A positive real number that ranges from 0 to the return value of {@link #totalTime()}
+	 * @return The {@code Moment} object associated with the left side at time t
+	 */
 	public Moment getLeft(double t) {
+		//Do binary search to find the closest approximation
 		int start = 0;
 		int end = leftTimes.length - 1;
 		int mid;
 		
+		//If t is greater than the entire length in time of the left side, return the last Moment
 		if(t >= leftTimes[leftTimes.length - 1])
 			return leftMoments[leftMoments.length - 1];
 		
@@ -225,11 +242,12 @@ public class TankDriveTrajectory {
 			
 			if(leftTimes[mid] == t)
 				return leftMoments[mid];
-			
+			//If we reached the end, return the end
 			if(mid == leftTimes.length - 1)
 				return leftMoments[mid];
-			
+			//If t is sandwiched between 2 existing times, the return the closest one
 			if(leftTimes[mid] <= t && leftTimes[mid + 1] >= t) {
+				//Use absolute differences to find out the closer Moment
 				if(Math.abs(t - leftTimes[mid]) > Math.abs(t - leftTimes[mid + 1])) {
 					return leftMoments[mid + 1];
 				}
@@ -237,7 +255,7 @@ public class TankDriveTrajectory {
 					return leftMoments[mid];
 				}
 			}
-			
+			//Continue the binary search if not found
 			if(leftTimes[mid] < t) {
 				start = mid;
 				continue;
@@ -248,7 +266,13 @@ public class TankDriveTrajectory {
 			}
 		}
 	}
+	/**
+	 * Retrieves the {@code Moment} object associated with the right side at the specified time.
+	 * @param t - A positive real number that ranges from 0 to the return value of {@link #totalTime()}
+	 * @return The {@code Moment} object associated with the right side at time t
+	 */
 	public Moment getRight(double t) {
+		//For an explanation of the code, refer to getLeft()
 		int start = 0;
 		int end = rightTimes.length - 1;
 		int mid;
@@ -285,12 +309,27 @@ public class TankDriveTrajectory {
 		}
 	}
 	
+	/**
+	 * Retrieves the total time needed for the robot to complete this trajectory.
+	 * @return The total time required to complete this trajectory
+	 */
 	public double totalTime() {
+		//Return the length in time of the longer side
 		return Math.max(leftTimes[leftTimes.length - 1], rightTimes[rightTimes.length - 1]);
 	}
+	/**
+	 * Retrieves the underlying {@code BezierPath} used to generate this trajectory.
+	 * @return The internal {@code BezierPath}
+	 */
 	public BezierPath getPath() {
 		return path;
 	}
+	/**
+	 * Accesses the internal {@code BezierPath} object and returns the path value at the specified time.<br>
+	 * This value should <b>not</b> be used directly for motion planning. It is a path, not a trajectory.
+	 * @param t - A positive real number ranging from 0 to 1
+	 * @return The X and Y values at the specified time on the path
+	 */
 	public Vec2D pathAt(double t) {
 		return path.at(t);
 	}

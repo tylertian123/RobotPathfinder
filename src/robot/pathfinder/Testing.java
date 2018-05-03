@@ -219,8 +219,8 @@ public class Testing {
 		}
 		System.out.println(b.totalTime());
 		for(double t = 0; t <= b.totalTime(); t += 0.005) {
-			robot.pathfinder.Moment left = b.getLeft(t);
-			robot.pathfinder.Moment right = b.getRight(t);
+			Moment left = b.getLeftSmooth(t);
+			Moment right = b.getRightSmooth(t);
 			lds.add(left.getDistance());
 			rds.add(right.getDistance());
 			lvs.add(left.getVelocity());
@@ -230,6 +230,14 @@ public class Testing {
 			ts.add(t);
 			//System.out.println(t);
 		}
+		double testTime = b.totalTime() / 2;
+		long nanos = System.nanoTime();
+		@SuppressWarnings("unused")
+		Moment left = b.getLeftSmooth(testTime);
+		@SuppressWarnings("unused")
+		Moment right = b.getRightSmooth(testTime);
+		long nanosTime = System.nanoTime() - nanos;
+		System.out.println("Getting one pair of values took " + nanosTime + " nanoseconds");
 		
 		Plot2DPanel plot = new Plot2DPanel();
 		plot.addLinePlot("Bezier", primitiveArr(xs), primitiveArr(ys));

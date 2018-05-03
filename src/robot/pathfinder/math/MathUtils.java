@@ -116,14 +116,14 @@ public class MathUtils {
 		return solution;
 	}
 	
-	public static Circle getCircleFromPoints(Vec2D a, Vec2D b, Vec2D c) {
+	/*public static Circle getCircleFromPoints(Vec2D a, Vec2D b, Vec2D c) {
 		double[] center = MathUtils.solve(new double[][] {
 			{ 2 * (b.getX() - a.getX()), 2 * (b.getY() - a.getY()), b.getX() * b.getX() - a.getX() * a.getX() + b.getY() * b.getY() - a.getY() * a.getY() },
 			{ 2 * (c.getX() - b.getX()), 2 * (c.getY() - b.getY()), c.getX() * c.getX() - b.getX() * b.getX() + c.getY() * c.getY() - b.getY() * b.getY() },
 		});
 		Vec2D centerVec = new Vec2D(center[0], center[1]);
 		return new Circle(centerVec, centerVec.distTo(a));
-	}
+	}*/
 	
 	public static double[] findQuadraticRoots(double a, double b, double c) {
 		//Special case

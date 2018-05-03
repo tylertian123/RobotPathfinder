@@ -332,6 +332,108 @@ public class TankDriveTrajectory {
 	}
 	
 	/**
+	 * Retrieves the {@code Moment} object associated with the left side at the specified time.<br>
+	 * <br>
+	 * Instead of retrieving the {@code Moment} object that has a time closest to the specified time,
+	 * this method locates the closest 2 {@code Moment}s and returns a result based on a linear approximation
+	 * between them. Using this method will yield a smoother result than {@link #getLeft(double)}, but due
+	 * to the added steps it will take longer.
+	 * @param t - A positive real number that ranges from 0 to the return value of {@link #totalTime()}
+	 * @return The {@code Moment} object associated with the left side at time t
+	 */
+	public Moment getLeftSmooth(double t) {
+		//Do binary search to find the closest approximation
+		int start = 0;
+		int end = leftTimes.length - 1;
+		int mid;
+		
+		//If t is greater than the entire length in time of the left side, return the last Moment
+		if(t >= leftTimes[leftTimes.length - 1])
+			return leftMoments[leftMoments.length - 1];
+		
+		while(true) {
+			mid = (start + end) / 2;
+			
+			if(leftTimes[mid] == t)
+				return leftMoments[mid];
+			//If we reached the end, return the end
+			if(mid == leftTimes.length - 1)
+				return leftMoments[mid];
+			//If t is sandwiched between 2 existing times, the return the closest one
+			if(leftTimes[mid] <= t && leftTimes[mid + 1] >= t) {
+				//Get the slopes
+				double dt = leftTimes[mid + 1] - leftTimes[mid];
+				double mAccel = (leftMoments[mid + 1].getAcceleration() - leftMoments[mid].getAcceleration()) / dt;
+				double mVel = (leftMoments[mid + 1].getVelocity() - leftMoments[mid].getVelocity()) / dt;
+				double mDist = (leftMoments[mid + 1].getDistance() - leftMoments[mid].getDistance()) / dt;
+				//Linear approximation
+				double t2 = t - leftTimes[mid];
+				return new Moment(mDist * t2 + leftMoments[mid].getDistance(), 
+						mVel * t2 + leftMoments[mid].getVelocity(),
+						mAccel * t2 + leftMoments[mid].getAcceleration(), t);
+			}
+			//Continue the binary search if not found
+			if(leftTimes[mid] < t) {
+				start = mid;
+				continue;
+			}
+			else if(leftTimes[mid] > t) {
+				end = mid;
+				continue;
+			}
+		}
+	}
+	/**
+	 * Retrieves the {@code Moment} object associated with the right side at the specified time.<br>
+	 * <br>
+	 * Instead of retrieving the {@code Moment} object that has a time closest to the specified time,
+	 * this method locates the closest 2 {@code Moment}s and returns a result based on a linear approximation
+	 * between them. Using this method will yield a smoother result than {@link #getRight(double)}, but due
+	 * to the added steps it will take longer.
+	 * @param t - A positive real number that ranges from 0 to the return value of {@link #totalTime()}
+	 * @return The {@code Moment} object associated with the right side at time t
+	 */
+	public Moment getRightSmooth(double t) {
+		//For an explanation of the code, refer to getLeftSmooth()
+		int start = 0;
+		int end = rightTimes.length - 1;
+		int mid;
+		
+		if(t >= rightTimes[rightTimes.length - 1])
+			return rightMoments[rightMoments.length - 1];
+		
+		while(true) {
+			mid = (start + end) / 2;
+			
+			if(rightTimes[mid] == t)
+				return rightMoments[mid];
+			
+			if(mid == rightTimes.length - 1)
+				return rightMoments[mid];
+			
+			if(rightTimes[mid] <= t && rightTimes[mid + 1] >= t) {
+				double dt = rightTimes[mid + 1] - rightTimes[mid];
+				double mAccel = (rightMoments[mid + 1].getAcceleration() - rightMoments[mid].getAcceleration()) / dt;
+				double mVel = (rightMoments[mid + 1].getVelocity() - rightMoments[mid].getVelocity()) / dt;
+				double mDist = (rightMoments[mid + 1].getDistance() - rightMoments[mid].getDistance()) / dt;
+				double t2 = t - rightTimes[mid];
+				return new Moment(mDist * t2 + rightMoments[mid].getDistance(), 
+						mVel * t2 + rightMoments[mid].getVelocity(),
+						mAccel * t2 + rightMoments[mid].getAcceleration(), t);
+			}
+			
+			if(rightTimes[mid] < t) {
+				start = mid;
+				continue;
+			}
+			else if(rightTimes[mid] > t) {
+				end = mid;
+				continue;
+			}
+		}
+	}
+	
+	/**
 	 * Retrieves the total time needed for the robot to complete this trajectory.
 	 * @return The total time required to complete this trajectory
 	 */

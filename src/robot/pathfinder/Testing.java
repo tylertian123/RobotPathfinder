@@ -6,9 +6,7 @@ import javax.swing.JFrame;
 
 import org.math.plot.Plot2DPanel;
 
-import robot.pathfinder.bezier.BezierPath;
 import robot.pathfinder.math.Vec2D;
-import robot.pathfinder.old.Moment;
 
 public class Testing {
 	static double[] primitiveArr(ArrayList<Double> a) {
@@ -19,7 +17,7 @@ public class Testing {
 			d[i] = arr[i];
 		return d;
 	}
-	public static void test1() {
+	/*public static void test1() {
 		final double t_delta = 0.001;
 		ArrayList<Double> xs = new ArrayList<Double>();
 		ArrayList<Double> ys = new ArrayList<Double>();
@@ -175,16 +173,18 @@ public class Testing {
 		frame2.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		frame2.setContentPane(plot2);
 		frame2.setVisible(true);
-	}
+	}*/
 	public static void test4() {
 		Waypoint[] waypoints = new Waypoint[] {
-				new Waypoint(0, 10, Math.PI / 2),
-				new Waypoint(10, 20, Math.PI / 2),
-				new Waypoint(3, 25, Math.PI),
-				new Waypoint(5, 10, -Math.PI / 2),
+				//new Waypoint(0, 10, Math.PI / 2),
+				//new Waypoint(10, 20, Math.PI / 2),
+				//new Waypoint(3, 25, Math.PI),
+				//new Waypoint(5, 10, -Math.PI / 2),
+				new Waypoint(0, 0, Math.PI / 2),
+				new Waypoint(-5, 10, Math.PI / 2),
 		};
 		long time = System.currentTimeMillis();
-		TankDriveTrajectory b = new TankDriveTrajectory(waypoints, 3, 2, 2, 20, 1000);
+		TankDriveTrajectory b = new TankDriveTrajectory(waypoints, 5, 4, 2, 20, 1000);
 		System.out.println("Trajectory generation took " + (System.currentTimeMillis() - time) + " milliseconds.");
 		final double t_delta = 0.001;
 		ArrayList<Double> xs = new ArrayList<Double>();
@@ -230,6 +230,9 @@ public class Testing {
 		plot.addLinePlot("Bezier", primitiveArr(xs), primitiveArr(ys));
 		plot.addLinePlot("Left", primitiveArr(lx), primitiveArr(ly));
 		plot.addLinePlot("Right", primitiveArr(rx), primitiveArr(ry));
+		//plot.setAdjustBounds(false);
+		//plot.setFixedBounds(0, -10, 10);
+		//plot.setFixedBounds(1, 0, 40);
 		plot.setLegendOrientation("EAST");
 		JFrame frame = new JFrame("Bezier");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

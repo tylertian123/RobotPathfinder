@@ -26,8 +26,6 @@ public class TankDriveTrajectory {
 	
 	//The internal path that this trajectory is based on
 	BezierPath path;
-	//The path is divided into segments which are stored here
-	TankDrivePathSegment[] segments;
 	//"Moments" are generated for left and right separately
 	Moment[] leftMoments, rightMoments;
 	//Used to find the correct moment for a given time
@@ -81,7 +79,7 @@ public class TankDriveTrajectory {
 		double t_delta = 1.0 / segmentCount;
 		double t_delta2 = t_delta / 2;
 		
-		segments = new TankDrivePathSegment[segmentCount];
+		TankDrivePathSegment[] segments = new TankDrivePathSegment[segmentCount];
 		//Split the path into segments
 		for(int i = 0; i < segmentCount; i ++) {
 			//For each segment, compute the starting time, ending time and middle time

@@ -6,8 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -451,6 +453,48 @@ public class TrajectoryVisualizationTool {
 		});
 		saveButton.setPreferredSize(buttonSize);
 		buttonsPanel.add(saveButton);
+		
+		JButton loadButton = new JButton("Load");
+		loadButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fc = new JFileChooser();
+				fc.setDialogTitle("Load File...");
+				fc.setAcceptAllFileFilterUsed(false);
+				fc.setFileFilter(new CSVFilter());
+				fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				
+				int ret = fc.showSaveDialog(mainFrame);
+				if(ret == JFileChooser.APPROVE_OPTION) {
+					try(BufferedReader in = new BufferedReader(new FileReader(fc.getSelectedFile()))) {
+						String[] parameters = in.readLine().split(",");
+						maxVelocity.setText(parameters[0]);
+						maxAcceleration.setText(parameters[1]);
+						baseWidth.setText(parameters[2]);
+						alpha.setText(parameters[3]);
+						segments.setText(parameters[4]);
+						
+						waypoints.clear();
+						WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
+						tableModel.setRowCount(0);
+						
+						String line;
+						while((line = in.readLine()) != null && !line.equals("")) {
+							String[] point = line.split(",");
+							Waypoint w = new Waypoint(Double.parseDouble(point[0]), Double.parseDouble(point[1]), Math.toRadians(Double.parseDouble(point[2])));
+							waypoints.add(w);
+							tableModel.addRow(point);
+						}
+					}
+					catch (IOException e1) {
+						e1.printStackTrace();
+					}
+					
+				}
+			}
+		});
+		loadButton.setPreferredSize(buttonSize);
+		buttonsPanel.add(loadButton);
 		
 		mainPanel.add(buttonsPanel, BorderLayout.PAGE_END);
 		

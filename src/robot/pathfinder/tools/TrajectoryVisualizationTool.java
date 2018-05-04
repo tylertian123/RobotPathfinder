@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
@@ -20,7 +22,14 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableModel;
 
+import org.math.plot.Plot2DPanel;
+
+import robot.pathfinder.Moment;
+import robot.pathfinder.PathGenerationException;
+import robot.pathfinder.TankDriveTrajectory;
 import robot.pathfinder.Waypoint;
+import robot.pathfinder.bezier.BezierPath;
+import robot.pathfinder.math.Vec2D;
 
 public class TrajectoryVisualizationTool {
 
@@ -47,6 +56,15 @@ public class TrajectoryVisualizationTool {
 			"Y Position",
 			"Robot Direction (Degrees)"
 	};
+	
+	static double[] primitiveArr(ArrayList<Double> a) {
+		Double[] arr = new Double[a.size()];
+		a.toArray(arr);
+		double[] d = new double[arr.length];
+		for(int i = 0; i < arr.length; i ++)
+			d[i] = arr[i];
+		return d;
+	}
 	
 	static class WaypointTableModel extends DefaultTableModel {
 		/**
@@ -202,7 +220,8 @@ public class TrajectoryVisualizationTool {
 		generateButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				double maxVel, maxAccel, base, a, segmentCount;
+				double maxVel, maxAccel, base, a;
+				int segmentCount;
 				
 				try {
 					maxVel = Double.parseDouble(maxVelocity.getText());
@@ -212,10 +231,112 @@ public class TrajectoryVisualizationTool {
 					segmentCount = Integer.parseInt(segments.getText());
 				}
 				catch(NumberFormatException e1) {
-					JOptionPane.showMessageDialog(mainFrame, "Error: No waypoint selected.", "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(mainFrame, "Error: An invalid token was entered\nin one or more fields.", "Error", JOptionPane.ERROR_MESSAGE);
+					return;
 				}
+				
+				if(waypoints.size() < 1) {
+					JOptionPane.showMessageDialog(mainFrame, "Error: No waypoints.", "Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				
+				Waypoint[] waypointArray = new Waypoint[waypoints.size()];
+				for(int i = 0; i < waypointArray.length; i ++) {
+					waypointArray[i] = waypoints.get(i);
+				}
+				
+				TankDriveTrajectory trajectory = null;
+				try {
+					trajectory = new TankDriveTrajectory(waypointArray, maxVel, maxAccel, base, a, segmentCount);
+				}
+				catch(PathGenerationException pge) {
+					JOptionPane.showMessageDialog(mainFrame, "Error: Path is impossible with current constraints.", "Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				
+				ArrayList<Double> xPos = new ArrayList<Double>();
+				ArrayList<Double> yPos = new ArrayList<Double>();
+				ArrayList<Double> leftXPos = new ArrayList<Double>();
+				ArrayList<Double> rightXPos = new ArrayList<Double>();
+				ArrayList<Double> leftYPos = new ArrayList<Double>();
+				ArrayList<Double> rightYPos = new ArrayList<Double>();
+				
+				ArrayList<Double> time = new ArrayList<Double>();
+				ArrayList<Double> leftPosition = new ArrayList<Double>();
+				ArrayList<Double> rightPosition = new ArrayList<Double>();
+				ArrayList<Double> leftVelocity = new ArrayList<Double>();
+				ArrayList<Double> rightVelocity = new ArrayList<Double>();
+				ArrayList<Double> leftAcceleration = new ArrayList<Double>();
+				ArrayList<Double> rightAcceleration = new ArrayList<Double>();
+				
+				BezierPath path = trajectory.getPath();
+				for(double t = 0; t <= 1; t += 0.005) {
+					Vec2D centerPos = path.at(t);
+					Vec2D[] wheelsPos = path.wheelsAt(t);
+					
+					xPos.add(centerPos.getX());
+					yPos.add(centerPos.getY());
+					leftXPos.add(wheelsPos[0].getX());
+					rightXPos.add(wheelsPos[1].getX());
+					leftYPos.add(wheelsPos[0].getY());
+					rightYPos.add(wheelsPos[1].getY());
+				}
+				for(double t = 0; t <= trajectory.totalTime(); t += 0.001) {
+					time.add(t);
+					Moment left = trajectory.getLeftSmooth(t);
+					Moment right = trajectory.getRightSmooth(t);
+					
+					leftPosition.add(left.getDistance());
+					leftVelocity.add(left.getVelocity());
+					leftAcceleration.add(left.getAcceleration());
+					rightPosition.add(right.getDistance());
+					rightVelocity.add(right.getVelocity());
+					rightAcceleration.add(right.getAcceleration());
+				}
+				
+				Plot2DPanel pathPlot = new Plot2DPanel();
+				pathPlot.setLegendOrientation("EAST");
+				pathPlot.addLinePlot("Center Position", primitiveArr(xPos), primitiveArr(yPos));
+				pathPlot.addLinePlot("Left Position", primitiveArr(leftXPos), primitiveArr(leftYPos));
+				pathPlot.addLinePlot("Right Position", primitiveArr(rightXPos), primitiveArr(rightYPos));
+				
+				Plot2DPanel movementPlot = new Plot2DPanel();
+				movementPlot.setLegendOrientation("EAST");
+				double[] timeArr = primitiveArr(time);
+				movementPlot.addLinePlot("Left Position", timeArr, primitiveArr(leftPosition));
+				movementPlot.addLinePlot("Left Velocity", timeArr, primitiveArr(leftVelocity));
+				movementPlot.addLinePlot("Left Acceleration", timeArr, primitiveArr(leftVelocity));
+				movementPlot.addLinePlot("Right Position", timeArr, primitiveArr(rightPosition));
+				movementPlot.addLinePlot("Right Velocity", timeArr, primitiveArr(rightVelocity));
+				movementPlot.addLinePlot("Right Acceleration", timeArr, primitiveArr(rightAcceleration));
+				
+				JFrame pathFrame = new JFrame("Path");
+				JFrame movementFrame = new JFrame("Movement");
+				pathFrame.setContentPane(pathPlot);
+				movementFrame.setContentPane(movementPlot);
+				pathFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+				movementFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+				
+				WindowAdapter closeHook = new WindowAdapter() {
+					@Override
+					public void windowClosing(WindowEvent e) {
+						pathFrame.setVisible(false);
+						movementFrame.setVisible(false);
+						pathFrame.dispose();
+						movementFrame.dispose();
+						mainFrame.setVisible(true);
+					}
+				};
+				pathFrame.addWindowListener(closeHook);
+				movementFrame.addWindowListener(closeHook);
+				
+				mainFrame.setVisible(false);
+				movementFrame.setVisible(true);
+				pathFrame.setVisible(true);
 			}
 		});
+		generateButton.setPreferredSize(new Dimension(120, 30));
+		buttonsPanel.add(generateButton);
 		
 		JButton exitButton = new JButton("Exit");
 		exitButton.addActionListener(new ActionListener() {

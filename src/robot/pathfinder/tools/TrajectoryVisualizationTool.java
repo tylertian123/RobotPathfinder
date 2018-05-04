@@ -198,6 +198,25 @@ public class TrajectoryVisualizationTool {
 		deleteWaypointButton.setPreferredSize(new Dimension(120, 30));
 		buttonsPanel.add(deleteWaypointButton);
 		
+		JButton generateButton = new JButton("Generate");
+		generateButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				double maxVel, maxAccel, base, a, segmentCount;
+				
+				try {
+					maxVel = Double.parseDouble(maxVelocity.getText());
+					maxAccel = Double.parseDouble(maxAcceleration.getText());
+					base = Double.parseDouble(baseWidth.getText());
+					a = Double.parseDouble(alpha.getText());
+					segmentCount = Integer.parseInt(segments.getText());
+				}
+				catch(NumberFormatException e1) {
+					JOptionPane.showMessageDialog(mainFrame, "Error: No waypoint selected.", "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+		
 		JButton exitButton = new JButton("Exit");
 		exitButton.addActionListener(new ActionListener() {
 			@Override

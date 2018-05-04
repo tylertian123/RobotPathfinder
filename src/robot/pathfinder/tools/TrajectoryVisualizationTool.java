@@ -305,7 +305,7 @@ public class TrajectoryVisualizationTool {
 				double[] timeArr = primitiveArr(time);
 				movementPlot.addLinePlot("Left Position", timeArr, primitiveArr(leftPosition));
 				movementPlot.addLinePlot("Left Velocity", timeArr, primitiveArr(leftVelocity));
-				movementPlot.addLinePlot("Left Acceleration", timeArr, primitiveArr(leftVelocity));
+				movementPlot.addLinePlot("Left Acceleration", timeArr, primitiveArr(leftAcceleration));
 				movementPlot.addLinePlot("Right Position", timeArr, primitiveArr(rightPosition));
 				movementPlot.addLinePlot("Right Velocity", timeArr, primitiveArr(rightVelocity));
 				movementPlot.addLinePlot("Right Acceleration", timeArr, primitiveArr(rightAcceleration));
@@ -324,12 +324,24 @@ public class TrajectoryVisualizationTool {
 						movementFrame.setVisible(false);
 						pathFrame.dispose();
 						movementFrame.dispose();
+						try {
+							UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+						} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+								| UnsupportedLookAndFeelException e1) {
+							e1.printStackTrace();
+						}
 						mainFrame.setVisible(true);
 					}
 				};
 				pathFrame.addWindowListener(closeHook);
 				movementFrame.addWindowListener(closeHook);
 				
+				try {
+					UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+						| UnsupportedLookAndFeelException e1) {
+					e1.printStackTrace();
+				}
 				mainFrame.setVisible(false);
 				movementFrame.setVisible(true);
 				pathFrame.setVisible(true);

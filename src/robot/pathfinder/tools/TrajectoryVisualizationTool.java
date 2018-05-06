@@ -32,11 +32,11 @@ import javax.swing.table.DefaultTableModel;
 
 import org.math.plot.Plot2DPanel;
 
+import robot.pathfinder.BezierPath;
 import robot.pathfinder.Moment;
 import robot.pathfinder.PathGenerationException;
 import robot.pathfinder.TankDriveTrajectory;
 import robot.pathfinder.Waypoint;
-import robot.pathfinder.bezier.BezierPath;
 import robot.pathfinder.math.Vec2D;
 
 public class TrajectoryVisualizationTool {

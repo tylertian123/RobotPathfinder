@@ -1,6 +1,6 @@
-package robot.pathfinder.bezier;
+package robot.pathfinder;
 
-import robot.pathfinder.Waypoint;
+import robot.pathfinder.math.Bezier;
 import robot.pathfinder.math.Vec2D;
 
 public class BezierPath {

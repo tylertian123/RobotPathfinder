@@ -1,6 +1,4 @@
-package robot.pathfinder.bezier;
-
-import robot.pathfinder.math.Vec2D;
+package robot.pathfinder.math;
 
 public class Bezier {
 	Vec2D[] controlPoints;

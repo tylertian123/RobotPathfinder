@@ -1,6 +1,5 @@
 package robot.pathfinder;
 
-import robot.pathfinder.bezier.BezierPath;
 import robot.pathfinder.math.MathUtils;
 import robot.pathfinder.math.Vec2D;
 import robot.pathfinder.Moment;

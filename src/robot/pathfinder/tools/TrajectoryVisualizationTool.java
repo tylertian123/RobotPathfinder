@@ -284,7 +284,62 @@ public class TrajectoryVisualizationTool {
 					trajectory = new TankDriveTrajectory(waypointArray, maxVel, maxAccel, base, a, segmentCount);
 				}
 				catch(PathGenerationException pge) {
-					JOptionPane.showMessageDialog(mainFrame, "Error: Path is impossible with current constraints.", "Error", JOptionPane.ERROR_MESSAGE);
+					int ret = JOptionPane.showConfirmDialog(mainFrame, "Error: Trajectory generation is impossible with current constraints.\nProceed anyways with only the path?", "Error", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+					if(ret == JOptionPane.NO_OPTION)
+						return;
+					
+					BezierPath path = new BezierPath(waypointArray, a);
+					path.setBaseRadius(base / 2);
+					
+					ArrayList<Double> xPos = new ArrayList<Double>();
+					ArrayList<Double> yPos = new ArrayList<Double>();
+					ArrayList<Double> leftXPos = new ArrayList<Double>();
+					ArrayList<Double> rightXPos = new ArrayList<Double>();
+					ArrayList<Double> leftYPos = new ArrayList<Double>();
+					ArrayList<Double> rightYPos = new ArrayList<Double>();
+					
+					for(double t = 0; t <= 1; t += 0.005) {
+						Vec2D centerPos = path.at(t);
+						Vec2D[] wheelsPos = path.wheelsAt(t);
+						
+						xPos.add(centerPos.getX());
+						yPos.add(centerPos.getY());
+						leftXPos.add(wheelsPos[0].getX());
+						rightXPos.add(wheelsPos[1].getX());
+						leftYPos.add(wheelsPos[0].getY());
+						rightYPos.add(wheelsPos[1].getY());
+					}
+					
+					Plot2DPanel pathPlot = new Plot2DPanel();
+					pathPlot.setLegendOrientation("EAST");
+					pathPlot.addLinePlot("Center Position", primitiveArr(xPos), primitiveArr(yPos));
+					pathPlot.addLinePlot("Left Position", primitiveArr(leftXPos), primitiveArr(leftYPos));
+					pathPlot.addLinePlot("Right Position", primitiveArr(rightXPos), primitiveArr(rightYPos));
+					JFrame pathFrame = new JFrame("Path");
+					pathFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+					pathFrame.setContentPane(pathPlot);
+					pathFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+					pathFrame.addWindowListener(new WindowAdapter() {
+						@Override
+						public void windowClosing(WindowEvent e) {
+							try {
+								UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+							} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+									| UnsupportedLookAndFeelException e1) {
+								e1.printStackTrace();
+							}
+							mainFrame.setVisible(true);
+						}
+					});
+					
+					try {
+						UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+							| UnsupportedLookAndFeelException e1) {
+						e1.printStackTrace();
+					}
+					mainFrame.setVisible(false);
+					pathFrame.setVisible(true);
 					return;
 				}
 				

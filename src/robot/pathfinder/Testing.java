@@ -184,9 +184,12 @@ public class Testing {
 				//new Waypoint(0, 0, Math.PI / 2),
 				//new Waypoint(-5, 10, Math.PI / 2),
 				
-				new Waypoint(0, 10, Math.PI / 2),
-				new Waypoint(20, 15, Math.PI / 2),
-				new Waypoint(10, 5, -Math.PI / 4)
+				//new Waypoint(0, 10, Math.PI / 2),
+				//new Waypoint(20, 15, Math.PI / 2),
+				//new Waypoint(10, 5, -Math.PI / 4)
+				
+				new Waypoint(0, 0, Math.PI / 2),
+				new Waypoint(-10, 50, 0),
 		};
 		long time = System.currentTimeMillis();
 		TankDriveTrajectory b = new TankDriveTrajectory(waypoints, 5, 3.5, 2, 20, 5000, true);

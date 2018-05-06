@@ -34,6 +34,11 @@ public class TankDriveTrajectory {
 	//Maximum velocity, acceleration and the width of the base plate
 	final double maxVel, maxAccel, baseWidth;
 	
+	//Used in solving quadratic equations
+	//If |b^2-4ac| <= this number, it will be set to 0 to avoid having no real solutions
+	//due to rounding errors.
+	static double minUnit = 1.0e-5;
+	
 	/**
 	 * Generates a trajectory based on a number of parameters.<br>
 	 * <br>
@@ -218,8 +223,8 @@ public class TankDriveTrajectory {
 			
 			//Use the second kinematic formula to find the amount of time needed to reach the desired distance
 			//This time is then used to give every Moment a timestamp (separately for left and right)
-			double dtLeft = MathUtils.findPositiveQuadraticRoot(leftAccel / 2, leftVel, -distDiffLeft);
-			double dtRight = MathUtils.findPositiveQuadraticRoot(rightAccel / 2, rightVel, -distDiffRight);
+			double dtLeft = MathUtils.findPositiveQuadraticRoot(leftAccel / 2, leftVel, -distDiffLeft, minUnit);
+			double dtRight = MathUtils.findPositiveQuadraticRoot(rightAccel / 2, rightVel, -distDiffRight, minUnit);
 			//A result of NaN or Infinity indicates that our path is impossible with the current configuration.
 			if(Double.isNaN(dtLeft) || Double.isInfinite(dtLeft)) {
 				System.out.printf("*LEFT* Accel: %f, Velo: %f, Dist: %f, Iteration: %d\n", leftAccel, leftVel, distDiffLeft, i);
@@ -432,6 +437,43 @@ public class TankDriveTrajectory {
 	}
 	
 	/**
+	 * Retrieves the rounding limit for the solving of quadratic equations.<br>
+	 * <br>
+	 * During the last stage of trajectory generation, a time is assigned to every moment.
+	 * This is done by using the third kinematic equation and thus requires solving quadratic equations.
+	 * As with the quadratic formula, if the quantity {@code b^2-4ac < 0}, the equation will have no real solutions
+	 * and will result in {@code NaN}. Sometimes this value dips just below 0, causing a seemingly possible
+	 * trajectory to fail. However, a robot in real life would never need such a high degree of precision,
+	 * and floating-point math can also introduce rounding errors that accumulate. To fix this issue, when solving
+	 * quadratic equations, if the absolute value of {@code b^2-4ac} is less than or equals to the rounding
+	 * limit, it will be rounded to 0.<br>
+	 * <br>
+	 * The default value for the rounding limit is 1.0e-5.
+	 * @return The rounding limit
+	 */
+	public static double getSolverRoundingLimit() {
+		return minUnit;
+	}
+	/**
+	 * Sets the rounding limit for the solving of quadratic equations.<br>
+	 * <br>
+	 * During the last stage of trajectory generation, a time is assigned to every moment.
+	 * This is done by using the third kinematic equation and thus requires solving quadratic equations.
+	 * As with the quadratic formula, if the quantity {@code b^2-4ac < 0}, the equation will have no real solutions
+	 * and will result in {@code NaN}. Sometimes this value dips just below 0, causing a seemingly possible
+	 * trajectory to fail. However, a robot in real life would never need such a high degree of precision,
+	 * and floating-point math can also introduce rounding errors that accumulate. To fix this issue, when solving
+	 * quadratic equations, if the absolute value of {@code b^2-4ac} is less than or equals to the rounding
+	 * limit, it will be rounded to 0.<br>
+	 * <br>
+	 * The default value for the rounding limit is 1.0e-5.
+	 * @param min - The new rounding limit
+	 */
+	public static void setSolverRoundingLimit(double min) {
+		minUnit = min;
+	}
+	
+	/**
 	 * Retrieves the total time needed for the robot to complete this trajectory.
 	 * @return The total time required to complete this trajectory
 	 */
@@ -439,6 +481,7 @@ public class TankDriveTrajectory {
 		//Return the length in time of the longer side
 		return Math.max(leftTimes[leftTimes.length - 1], rightTimes[rightTimes.length - 1]);
 	}
+	
 	/**
 	 * Retrieves the underlying {@code BezierPath} used to generate this trajectory.
 	 * @return The internal {@code BezierPath}

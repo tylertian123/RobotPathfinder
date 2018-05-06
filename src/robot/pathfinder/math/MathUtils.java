@@ -126,6 +126,9 @@ public class MathUtils {
 	}*/
 	
 	public static double[] findQuadraticRoots(double a, double b, double c) {
+		return findQuadraticRoots(a, b, c, 0);
+	}
+	public static double[] findQuadraticRoots(double a, double b, double c, double minUnit) {
 		//Special case
 		if(a == 0) {
 			return new double[] {
@@ -133,7 +136,10 @@ public class MathUtils {
 					-c / b
 			};
 		}
-		double r = Math.sqrt(b * b - 4 * a * c);
+		double d = b * b - 4 * a * c;
+		if(Math.abs(d) <= minUnit)
+			d = 0;
+		double r = Math.sqrt(d);
 		return new double[] {
 				(-b + r) / (2 * a),
 				(-b - r) / (2 * a),
@@ -141,6 +147,15 @@ public class MathUtils {
 	}
 	public static double findPositiveQuadraticRoot(double a, double b, double c) {
 		double[] roots = findQuadraticRoots(a, b, c);
+		if(roots[0] >= 0)
+			return roots[0];
+		else if(roots[1] >= 0)
+			return roots[1];
+		else
+			return Double.NaN;
+	}
+	public static double findPositiveQuadraticRoot(double a, double b, double c, double minUnit) {
+		double[] roots = findQuadraticRoots(a, b, c, minUnit);
 		if(roots[0] >= 0)
 			return roots[0];
 		else if(roots[1] >= 0)

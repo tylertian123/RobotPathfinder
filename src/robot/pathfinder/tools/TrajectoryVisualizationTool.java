@@ -55,6 +55,7 @@ public class TrajectoryVisualizationTool {
 	static JTextField segments = new JTextField();
 	static JTextField maxVelocity = new JTextField();
 	static JTextField maxAcceleration = new JTextField();
+	static JTextField roundingLimit = new JTextField("1.0e-5");
 	static JPanel argumentsPanel;
 	
 	static ArrayList<Waypoint> waypoints = new ArrayList<Waypoint>();
@@ -147,22 +148,13 @@ public class TrajectoryVisualizationTool {
 		mainPanel.add(scrollPane, BorderLayout.PAGE_START);
 		
 		argumentsPanel = new JPanel();
-		maxVelocity = new JTextField();
-		maxAcceleration = new JTextField();
-		baseWidth = new JTextField();
-		alpha = new JTextField();
-		segments = new JTextField();
 		Dimension textFieldSize = new Dimension(75, 20);
 		maxVelocity.setPreferredSize(textFieldSize);
-		//maxVelocity.setMaximumSize(textFieldSize);
 		maxAcceleration.setPreferredSize(textFieldSize);
-		//maxAcceleration.setMaximumSize(textFieldSize);
 		baseWidth.setPreferredSize(textFieldSize);
-		//baseWidth.setMaximumSize(textFieldSize);
 		alpha.setPreferredSize(textFieldSize);
-		//alpha.setMaximumSize(textFieldSize);
 		segments.setPreferredSize(textFieldSize);
-		//segments.setMaximumSize(textFieldSize);
+		roundingLimit.setPreferredSize(textFieldSize);
 		
 		JPanel subPanel1 = new JPanel();
 		subPanel1.setLayout(new BoxLayout(subPanel1, BoxLayout.PAGE_AXIS));
@@ -180,6 +172,8 @@ public class TrajectoryVisualizationTool {
 		subPanel3.setLayout(new BoxLayout(subPanel3, BoxLayout.PAGE_AXIS));
 		subPanel3.add(new JLabel("Number of Segments"));
 		subPanel3.add(segments);
+		subPanel3.add(new JLabel("Rounding Limit"));
+		subPanel3.add(roundingLimit);
 		
 		argumentsPanel.add(subPanel1);
 		argumentsPanel.add(subPanel2);
@@ -254,7 +248,7 @@ public class TrajectoryVisualizationTool {
 		generateButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				double maxVel, maxAccel, base, a;
+				double maxVel, maxAccel, base, a, minUnit;
 				int segmentCount;
 				
 				try {
@@ -263,6 +257,7 @@ public class TrajectoryVisualizationTool {
 					base = Double.parseDouble(baseWidth.getText());
 					a = Double.parseDouble(alpha.getText());
 					segmentCount = Integer.parseInt(segments.getText());
+					minUnit = Double.parseDouble(roundingLimit.getText());
 				}
 				catch(NumberFormatException e1) {
 					JOptionPane.showMessageDialog(mainFrame, "Error: An invalid token was entered\nin one or more fields.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -281,6 +276,7 @@ public class TrajectoryVisualizationTool {
 				
 				TankDriveTrajectory trajectory = null;
 				try {
+					TankDriveTrajectory.setSolverRoundingLimit(minUnit);
 					trajectory = new TankDriveTrajectory(waypointArray, maxVel, maxAccel, base, a, segmentCount);
 				}
 				catch(PathGenerationException pge) {
@@ -450,7 +446,7 @@ public class TrajectoryVisualizationTool {
 					return;
 				}
 				
-				double maxVel, maxAccel, base, a;
+				double maxVel, maxAccel, base, a, minUnit;
 				int segmentCount;
 				
 				try {
@@ -459,6 +455,7 @@ public class TrajectoryVisualizationTool {
 					base = Double.parseDouble(baseWidth.getText());
 					a = Double.parseDouble(alpha.getText());
 					segmentCount = Integer.parseInt(segments.getText());
+					minUnit = Double.parseDouble(roundingLimit.getText());
 				}
 				catch(NumberFormatException e1) {
 					JOptionPane.showMessageDialog(mainFrame, "Error: An invalid token was entered\nin one or more fields.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -478,17 +475,7 @@ public class TrajectoryVisualizationTool {
 						path += ".csv";
 					
 					try(BufferedWriter out = new BufferedWriter(new FileWriter(path))) {
-						StringBuilder contents = new StringBuilder(String.valueOf(maxVel));
-						contents.append(",")
-						.append(String.valueOf(maxAccel))
-						.append(",")
-						.append(String.valueOf(base))
-						.append(",")
-						.append(String.valueOf(a))
-						.append(",")
-						.append(String.valueOf(segmentCount))
-						.append("\n");
-						out.write(contents.toString());
+						out.write(maxVel + "," + maxAccel + "," + base + "," + a + "," + segmentCount + "," + minUnit + "\n");
 						
 						WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
 						for(int row = 0; row < tableModel.getRowCount(); row ++) {
@@ -523,11 +510,16 @@ public class TrajectoryVisualizationTool {
 				if(ret == JFileChooser.APPROVE_OPTION) {
 					try(BufferedReader in = new BufferedReader(new FileReader(fc.getSelectedFile()))) {
 						String[] parameters = in.readLine().split(",");
+						if(parameters.length < 6) {
+							JOptionPane.showMessageDialog(mainFrame, "Error: The file format is invalid.", "Error", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
 						maxVelocity.setText(parameters[0]);
 						maxAcceleration.setText(parameters[1]);
 						baseWidth.setText(parameters[2]);
 						alpha.setText(parameters[3]);
 						segments.setText(parameters[4]);
+						roundingLimit.setText(parameters[5]);
 						
 						waypoints.clear();
 						WaypointTableModel tableModel = (WaypointTableModel) table.getModel();

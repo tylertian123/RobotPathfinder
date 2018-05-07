@@ -34,11 +34,16 @@ import org.math.plot.Plot2DPanel;
 
 import robot.pathfinder.BezierPath;
 import robot.pathfinder.Moment;
-import robot.pathfinder.PathGenerationException;
+import robot.pathfinder.TrajectoryGenerationException;
 import robot.pathfinder.TankDriveTrajectory;
 import robot.pathfinder.Waypoint;
 import robot.pathfinder.math.Vec2D;
 
+/**
+ * A GUI tool build with Swing to help visualize trajectories. 
+ * @author Tyler
+ *
+ */
 public class TrajectoryVisualizationTool {
 
 	static JFrame mainFrame;
@@ -279,7 +284,7 @@ public class TrajectoryVisualizationTool {
 					TankDriveTrajectory.setSolverRoundingLimit(minUnit);
 					trajectory = new TankDriveTrajectory(waypointArray, maxVel, maxAccel, base, a, segmentCount);
 				}
-				catch(PathGenerationException pge) {
+				catch(TrajectoryGenerationException pge) {
 					int ret = JOptionPane.showConfirmDialog(mainFrame, "Error: Trajectory generation is impossible with current constraints.\nProceed anyways with only the path?", "Error", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 					if(ret == JOptionPane.NO_OPTION)
 						return;

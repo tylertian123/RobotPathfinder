@@ -3,8 +3,9 @@ package robot.pathfinder;
 import robot.pathfinder.math.Vec2D;
 
 /**
- * A waypoint in a path.
- * @author tyler
+ * Represents a waypoint in a path or trajectory. A waypoint consists of an X and Y value, along with an 
+ * optional direction.
+ * @author Tyler
  *
  */
 public class Waypoint {

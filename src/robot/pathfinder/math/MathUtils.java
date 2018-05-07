@@ -1,7 +1,17 @@
 package robot.pathfinder.math;
 
+/**
+ * A class containing a collection of static math utility methods.
+ * @author Tyler
+ *
+ */
 public class MathUtils {
 	
+	/**
+	 * Swaps two rows of a matrix/two arrays.
+	 * @param a - The first row
+	 * @param b - The second row
+	 */
 	public static void rowSwap(double[] a, double[] b) {
 		double[] temp = new double[a.length];
 		for(int i = 0; i < temp.length; i ++) {
@@ -11,11 +21,24 @@ public class MathUtils {
 			b[i] = temp[i];
 		}
 	}
+	/**
+	 * Multiplies a row of a matrix/an array by a scalar
+	 * @param a - The row to work with
+	 * @param b - A scalar to multiply by
+	 */
 	public static void rowMultiply(double[] a, double b) {
 		for(int i = 0; i < a.length; i ++) {
 			a[i] *= b;
 		}
 	}
+	/**
+	 * Multiplies a row of a matrix/an array by a scalar, and return the result. <br>
+	 * <br>
+	 * Unlike in {@link MathUtils#rowMultiply(double[], double) rowMutiply()}, the original row/array is not modified.
+	 * @param a - The row to work with
+	 * @param b - A scalar to multiply by
+	 * @return The row with each term multiplied by the scalar
+	 */
 	public static double[] rowMultiply2(double[] a, double b) {
 		double[] c = new double[a.length];
 		for(int i = 0; i < c.length; i ++) {
@@ -23,13 +46,20 @@ public class MathUtils {
 		}
 		return c;
 	}
+	/**
+	 * Adds each term of a row of a matrix/an array to another row/array.
+	 * @param a - The row to add to
+	 * @param b - The row to add
+	 */
 	public static void rowAdd(double[] a, double[] b) {
 		for(int i = 0; i < a.length; i ++) {
 			a[i] += b[i];
 		}
 	}
 	
-	public static int lcIndex(double[] a) {
+	static int lcIndex(double[] a) {
+		//Finds the leading coefficient's index in a row.
+		//A larger index means the leading coefficient is closer to the left
 		for(int i = 0; i < a.length - 1; i ++) {
 			if(a[i] != 0)
 				return a.length - 1 - i;
@@ -37,6 +67,13 @@ public class MathUtils {
 		return 0;
 	}
 	
+	/**
+	 * Solves a system of linear equations represented in a matrix, using the Gauss-Jordan elimination method.<br>
+	 * <br>
+	 * For more information see <a href="https://en.wikipedia.org/wiki/Gaussian_elimination">this Wikipedia article</a>.
+	 * @param mat - The matrix representing the system of equations
+	 * @return The value of each unknown in order
+	 */
 	public static double[] solve(double[][] mat) {
 		if(mat.length + 1 != mat[0].length)
 			throw new IllegalArgumentException();
@@ -116,18 +153,34 @@ public class MathUtils {
 		return solution;
 	}
 	
-	/*public static Circle getCircleFromPoints(Vec2D a, Vec2D b, Vec2D c) {
-		double[] center = MathUtils.solve(new double[][] {
-			{ 2 * (b.getX() - a.getX()), 2 * (b.getY() - a.getY()), b.getX() * b.getX() - a.getX() * a.getX() + b.getY() * b.getY() - a.getY() * a.getY() },
-			{ 2 * (c.getX() - b.getX()), 2 * (c.getY() - b.getY()), c.getX() * c.getX() - b.getX() * b.getX() + c.getY() * c.getY() - b.getY() * b.getY() },
-		});
-		Vec2D centerVec = new Vec2D(center[0], center[1]);
-		return new Circle(centerVec, centerVec.distTo(a));
-	}*/
-	
+	/**
+	 * Finds the roots of a quadratic equation in standard form.<br>
+	 * <br>
+	 * If no real roots exist, the resulting array will contain {@code [NaN, NaN]}; if the two roots
+	 * are the same, the two elements of the array will be the same number.
+	 * @param a - The squared term coefficient
+	 * @param b - The linear term coefficient
+	 * @param c - The constant
+	 * @return The roots of the equation
+	 */
 	public static double[] findQuadraticRoots(double a, double b, double c) {
 		return findQuadraticRoots(a, b, c, 0);
 	}
+	/**
+	 * Finds the roots of a quadratic equation in standard form.<br>
+	 * <br>
+	 * If no real roots exist, the resulting array will contain {@code [NaN, NaN]}; if the two roots
+	 * are the same, the two elements of the array will be the same number.<br>
+	 * <br>
+	 * If the absolute value of {@code b^2-4ac} is less than or equal to the rounding limit, it will
+	 * be rounded down to 0; this can help prevent the situation in which perfectly fine equations become
+	 * unsolvable due to rounding issues.
+	 * @param a - The squared term coefficient
+	 * @param b - The linear term coefficient
+	 * @param c - The constant
+	 * @param minUnit - The rounding limit for {@code b^2-4ac}
+	 * @return The roots of the equation
+	 */
 	public static double[] findQuadraticRoots(double a, double b, double c, double minUnit) {
 		//Special case
 		if(a == 0) {
@@ -145,6 +198,14 @@ public class MathUtils {
 				(-b - r) / (2 * a),
 		};
 	}
+	/**
+	 * Finds the roots of a quadratic equation using {@link MathUtils#findQuadraticRoots(double, double, double) findQuadraticRoots()},
+	 * and returns the positive root. If both roots are negative, this method will return {@code NaN}.
+	 * @param a - The squared term coefficient
+	 * @param b - The linear term coefficient
+	 * @param c - The constant
+	 * @return The positive root of the quadratic equation, or if both roots are negative, {@code NaN}.
+	 */
 	public static double findPositiveQuadraticRoot(double a, double b, double c) {
 		double[] roots = findQuadraticRoots(a, b, c);
 		if(roots[0] >= 0)
@@ -154,6 +215,15 @@ public class MathUtils {
 		else
 			return Double.NaN;
 	}
+	/**
+	 * Finds the roots of a quadratic equation using {@link MathUtils#findQuadraticRoots(double, double, double, double) findQuadraticRoots()},
+	 * and returns the positive root. If both roots are negative, this method will return {@code NaN}.
+	 * @param a - The squared term coefficient
+	 * @param b - The linear term coefficient
+	 * @param c - The constant
+	 * @param minUnit - The rounding limit for {@code b^2-4ac} - For more information see {@link MathUtils#findQuadraticRoots(double, double, double, double) findQuadraticRoots()}.
+	 * @return The positive root of the quadratic equation, or if both roots are negative, {@code NaN}.
+	 */
 	public static double findPositiveQuadraticRoot(double a, double b, double c, double minUnit) {
 		double[] roots = findQuadraticRoots(a, b, c, minUnit);
 		if(roots[0] >= 0)

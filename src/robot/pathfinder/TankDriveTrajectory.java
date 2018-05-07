@@ -9,7 +9,7 @@ import robot.pathfinder.Moment;
  * <br>
  * The algorithm used in this class is largely based on a video by the Cheesy Poofs (Team 254),
  * with some small modifications here and there.<br>
- * You can find the video on YouTube here: https://youtu.be/8319J1BEHwM<br>
+ * You can find the video on YouTube <a href="https://youtu.be/8319J1BEHwM">here</a>.<br>
  * <br>
  * In addition to the Poofs' algorithm, this class divides the trajectory into "moments".
  * Each "moment" is a point in time, and has a desired displacement, velocity and acceleration.
@@ -38,6 +38,38 @@ public class TankDriveTrajectory {
 	//due to rounding errors.
 	static double minUnit = 1.0e-5;
 	
+	/**
+	 * Generates a trajectory based on a number of parameters.<br>
+	 * <br>
+	 * The units for the parameters must be consistent with each other. For example, if maximum velocity is in feet/second, 
+	 * then maximum acceleration must be in feet/second^2, base width must be in feet, and the units for waypoints also in feet.<br>
+	 * <br>
+	 * Note this process can take up to half a second, depending on the number of segments.
+	 * 
+	 * @param waypoints - The waypoints the path has to travel through
+	 * @param robotSpecs - A {@link robot.pathfinder.RobotSpecs RobotSpecs} object containing the specifications of the robot
+	 * @param alpha - Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
+	 * @param segmentCount - How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
+	 */
+	public TankDriveTrajectory(Waypoint[] waypoints, RobotSpecs robotSpecs, double alpha, int segmentCount) {
+		this(waypoints, robotSpecs, alpha, segmentCount, false);
+	}
+	/**
+	 * Generates a trajectory based on a number of parameters.<br>
+	 * <br>
+	 * The units for the parameters must be consistent with each other. For example, if maximum velocity is in feet/second, 
+	 * then maximum acceleration must be in feet/second^2, base width must be in feet, and the units for waypoints also in feet.<br>
+	 * <br>
+	 * Note this process can take up to half a second, depending on the number of segments.
+	 * 
+	 * @param waypoints - The waypoints the path has to travel through
+	 * @param robotSpecs - A {@link robot.pathfinder.RobotSpecs RobotSpecs} object containing the specifications of the robot	 * @param alpha - Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
+	 * @param segmentCount - How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
+	 * @param surpressExceptions - If set to true, an exception will <b>not</b> be thrown if the path is impossible
+	 */
+	public TankDriveTrajectory(Waypoint[] waypoints, RobotSpecs robotSpecs, double alpha, int segmentCount, boolean surpressExceptions) {
+		this(waypoints, robotSpecs.getMaxVelocity(), robotSpecs.getMaxAcceleration(), robotSpecs.getBaseWidth(), alpha, segmentCount, surpressExceptions);
+	}
 	/**
 	 * Generates a trajectory based on a number of parameters.<br>
 	 * <br>
@@ -228,13 +260,13 @@ public class TankDriveTrajectory {
 			if(Double.isNaN(dtLeft) || Double.isInfinite(dtLeft)) {
 				System.out.printf("*LEFT* Accel: %f, Velo: %f, Dist: %f, Iteration: %d\n", leftAccel, leftVel, distDiffLeft, i);
 				if(!surpressExceptions)
-					throw new PathGenerationException("Path is impossible");
+					throw new TrajectoryGenerationException("Path is impossible");
 				dtLeft = 0.1;
 			}
 			if(Double.isNaN(dtRight) || Double.isInfinite(dtRight)) {
 				System.out.printf("*RIGHT* Accel: %f, Velo: %f, Dist: %f, Iteration: %d\n", rightAccel, rightVel, distDiffRight, i);
 				if(!surpressExceptions)
-					throw new PathGenerationException("Path is impossible");
+					throw new TrajectoryGenerationException("Path is impossible");
 				dtRight = 0.1;
 			}
 			

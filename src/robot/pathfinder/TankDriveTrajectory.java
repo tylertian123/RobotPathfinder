@@ -258,13 +258,13 @@ public class TankDriveTrajectory {
 			double dtRight = MathUtils.findPositiveQuadraticRoot(rightAccel / 2, rightVel, -distDiffRight, minUnit);
 			//A result of NaN or Infinity indicates that our path is impossible with the current configuration.
 			if(Double.isNaN(dtLeft) || Double.isInfinite(dtLeft)) {
-				System.out.printf("*LEFT* Accel: %f, Velo: %f, Dist: %f, Iteration: %d\n", leftAccel, leftVel, distDiffLeft, i);
+				System.out.printf("*LEFT* Accel: %.10f, Velo: %.10f, Dist: %.10f, Iteration: %d\n", leftAccel, leftVel, distDiffLeft, i);
 				if(!surpressExceptions)
 					throw new TrajectoryGenerationException("Path is impossible");
 				dtLeft = 0.1;
 			}
 			if(Double.isNaN(dtRight) || Double.isInfinite(dtRight)) {
-				System.out.printf("*RIGHT* Accel: %f, Velo: %f, Dist: %f, Iteration: %d\n", rightAccel, rightVel, distDiffRight, i);
+				System.out.printf("*RIGHT* Accel: %.10f, Velo: %.10f, Dist: %.10f, Iteration: %d\n", rightAccel, rightVel, distDiffRight, i);
 				if(!surpressExceptions)
 					throw new TrajectoryGenerationException("Path is impossible");
 				dtRight = 0.1;

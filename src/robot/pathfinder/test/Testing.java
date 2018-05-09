@@ -39,6 +39,7 @@ public class Testing {
 				new Waypoint(-10, 50, 0),
 		};
 		long time = System.currentTimeMillis();
+		TankDriveTrajectory.setSolverRoundingLimit(0);
 		TankDriveTrajectory b = new TankDriveTrajectory(waypoints, 5, 3.5, 2, 20, 5000, true);
 		System.out.println("Trajectory generation took " + (System.currentTimeMillis() - time) + " milliseconds.");
 		final double t_delta = 0.001;

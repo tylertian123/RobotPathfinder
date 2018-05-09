@@ -23,18 +23,6 @@ public class Testing {
 	
 	public static void test4() {
 		Waypoint[] waypoints = new Waypoint[] {
-				//new Waypoint(0, 10, Math.PI / 2),
-				//new Waypoint(10, 20, Math.PI / 2),
-				//new Waypoint(3, 27, Math.PI),
-				//new Waypoint(5, 10, -Math.PI / 2),
-				
-				//new Waypoint(0, 0, Math.PI / 2),
-				//new Waypoint(-5, 10, Math.PI / 2),
-				
-				//new Waypoint(0, 10, Math.PI / 2),
-				//new Waypoint(20, 15, Math.PI / 2),
-				//new Waypoint(10, 5, -Math.PI / 4)
-				
 				new Waypoint(0, 0, Math.PI / 2),
 				new Waypoint(-10, 50, 0),
 		};
@@ -79,7 +67,6 @@ public class Testing {
 			las.add(left.getAcceleration());
 			ras.add(right.getAcceleration());
 			ts.add(t);
-			//System.out.println(t);
 		}
 		double testTime = b.totalTime() / 2;
 		long nanos = System.nanoTime();
@@ -94,9 +81,6 @@ public class Testing {
 		plot.addLinePlot("Bezier", primitiveArr(xs), primitiveArr(ys));
 		plot.addLinePlot("Left", primitiveArr(lx), primitiveArr(ly));
 		plot.addLinePlot("Right", primitiveArr(rx), primitiveArr(ry));
-		//plot.setAdjustBounds(false);
-		//plot.setFixedBounds(0, -10, 10);
-		//plot.setFixedBounds(1, 0, 40);
 		plot.setLegendOrientation("EAST");
 		JFrame frame = new JFrame("Bezier");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

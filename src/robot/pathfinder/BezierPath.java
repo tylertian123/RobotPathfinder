@@ -48,6 +48,9 @@ public class BezierPath {
 	 */
 	public void setBaseRadius(double b) {
 		baseRadius = b;
+		//Since a changed base radius means the wheels will start at different locations, the integration must
+		//be reset to avoid bugs
+		resetWheelIntegration();
 	}
 	/**
 	 * Retrieves the base radius (distance from the center of the robot to the wheels) of the robot following
@@ -146,9 +149,6 @@ public class BezierPath {
 	 * @return The length of the path after a time increment of dt
 	 */
 	public double[] integrateWheelLens(double dt) {
-		//Mystery bug
-		if(currentTWheels == 0)
-			resetWheelIntegration();
 		currentTWheels += dt;
 		if(currentTWheels > 1)
 			return currentWheelDists;

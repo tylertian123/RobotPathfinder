@@ -12,12 +12,15 @@ public class BezierPath {
 	
 	Bezier[] beziers;
 	
-	Vec2D lastPoint;
-	double currentDist = 0;
-	double currentT = 0;
-	Vec2D[] lastWheelPositions;
-	double currentWheelDists[] = new double[2];
-	double currentTWheels = 0;
+	//'i' stands for integration
+	Vec2D iLastPos;
+	double iCurrentDist = 0;
+	double iCurrentTime = 0;
+	
+	//'iw' stands for integration (wheels)
+	Vec2D[] iwLastPos;
+	double iwCurrentDists[] = new double[2];
+	double iwCurrentTime = 0;
 	
 	double baseRadius;
 	
@@ -118,29 +121,29 @@ public class BezierPath {
 	 * @return The length of the path after a time increment of dt
 	 */
 	public double integrateLen(double dt) {
-		currentT += dt;
-		if(currentT > 1) {
-			return currentDist;
+		iCurrentTime += dt;
+		if(iCurrentTime > 1) {
+			return iCurrentDist;
 		}
-		Vec2D currentPoint = at(currentT);
-		currentDist += lastPoint.distTo(currentPoint);
-		lastPoint = currentPoint;
-		return currentDist;
+		Vec2D currentPoint = at(iCurrentTime);
+		iCurrentDist += iLastPos.distTo(currentPoint);
+		iLastPos = currentPoint;
+		return iCurrentDist;
 	}
 	/**
 	 * Resets the integration of the length of the path.
 	 */
 	public void resetIntegration() {
-		currentT = 0;
-		lastPoint = at(0);
-		currentDist = 0;
+		iCurrentTime = 0;
+		iLastPos = at(0);
+		iCurrentDist = 0;
 	}
 	/**
 	 * Retrieves the length of the path integrated by {@link BezierPath#integrateLen(double) integrateLen()}.
 	 * @return The length of the path integrated by {@link BezierPath#integrateLen(double) integrateLen()}
 	 */
 	public double getIntegratedLen() {
-		return currentDist;
+		return iCurrentDist;
 	}
 	
 	/**
@@ -149,28 +152,29 @@ public class BezierPath {
 	 * @return The length of the path after a time increment of dt
 	 */
 	public double[] integrateWheelLens(double dt) {
-		currentTWheels += dt;
-		if(currentTWheels > 1)
-			return currentWheelDists;
-		Vec2D[] currentWheels = wheelsAt(currentTWheels);
-		currentWheelDists[0] += lastWheelPositions[0].distTo(currentWheels[0]);
-		currentWheelDists[1] += lastWheelPositions[1].distTo(currentWheels[1]);
-		lastWheelPositions = currentWheels;
-		return currentWheelDists;
+		iwCurrentTime += dt;
+		if(iwCurrentTime > 1)
+			return iwCurrentDists;
+		Vec2D[] iwCurrentPos = wheelsAt(iwCurrentTime);
+		iwCurrentDists[0] += iwLastPos[0].distTo(iwCurrentPos[0]);
+		iwCurrentDists[1] += iwLastPos[1].distTo(iwCurrentPos[1]);
+		iwLastPos = iwCurrentPos;
+		return iwCurrentDists;
 	}
 	/**
 	 * Resets the integration of the length of the path of the wheels.
 	 */
 	public void resetWheelIntegration() {
-		currentTWheels = 0;
-		lastWheelPositions = wheelsAt(0);
-		currentWheelDists = new double[2];
+		iwCurrentTime = 0;
+		iwLastPos = wheelsAt(0);
+		iwCurrentDists = new double[2];
 	}
 	/**
 	 * Retrieves the length of the path of the wheels integrated by {@link BezierPath#integrateWheelLens(double) integrateWheelLens()}.
 	 * @return The length of the path of the wheels integrated by {@link BezierPath#integrateWheelLens(double) integrateWheelLens()}
 	 */
 	public double[] getIntegratedWheelLens() {
-		return currentWheelDists.clone();
+		//Return a clone so we can't accidentally modify it outside the class
+		return iwCurrentDists.clone();
 	}
 }

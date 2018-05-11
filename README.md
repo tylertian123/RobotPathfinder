@@ -1,5 +1,5 @@
 # RobotPathfinder
-Experimental robot motion profiler/path planner, using B&#xe9;ziers for path generation.<br>
+Experimental robot motion profiler/path planner, using B&#xe9;ziers for path generation. Used on the robot of <a href="https://github.com/Arctos6135">FRC Team 6135 (Arctos)</a><br>
 Inspired and partially <a href="https://github.com/JacisNonsense/Pathfinder">Pathfinder by Jaci Brunning</a>.<br>
 This is just a passion project I created because I want to investigate how Pathfinder works.<br>
 <br>

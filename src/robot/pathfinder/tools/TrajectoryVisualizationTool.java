@@ -432,6 +432,7 @@ public class TrajectoryVisualizationTool {
 						| UnsupportedLookAndFeelException e1) {
 					e1.printStackTrace();
 				}
+				JOptionPane.showMessageDialog(mainFrame, "Trajectory Total Time: " + trajectory.totalTime() + " seconds");
 				mainFrame.setVisible(false);
 				movementFrame.setVisible(true);
 				pathFrame.setVisible(true);

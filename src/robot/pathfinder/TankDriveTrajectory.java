@@ -319,6 +319,21 @@ public class TankDriveTrajectory {
 			rightTimes[i] = rightMoments[i].getTime();
 		}
 	}
+	//Creates a trajectory with moments that are already generated
+	//Used in mirror()
+	protected TankDriveTrajectory(Moment[] lMoments, Moment[] rMoments) {
+		leftMoments = lMoments;
+		rightMoments = rMoments;
+		
+		leftTimes = new double[leftMoments.length];
+		rightTimes = new double[rightMoments.length];
+		for(int i = 0; i < leftMoments.length; i ++) {
+			leftTimes[i] = leftMoments[i].getTime();
+			rightTimes[i] = rightMoments[i].getTime();
+		}
+		
+		maxVel = maxAccel = maxDecel = baseWidth = Double.NaN;
+	}
 	
 	/**
 	 * Retrieves the {@code Moment} object associated with the left side at the specified time.
@@ -572,5 +587,15 @@ public class TankDriveTrajectory {
 	 */
 	public Vec2D pathAt(double t) {
 		return path.at(t);
+	}
+	
+	/**
+	 * Returns the mirror image of this trajectory. The path is exactly the same, except that every action
+	 * by the left is now the right and vice versa. This means that left turns will now become right turns
+	 * and vice versa.
+	 * @return The mirrored trajectory
+	 */
+	public TankDriveTrajectory mirror() {
+		return new TankDriveTrajectory(rightMoments, leftMoments);
 	}
 }

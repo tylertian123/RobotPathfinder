@@ -24,11 +24,11 @@ public class Testing {
 	public static void test4() {
 		Waypoint[] waypoints = new Waypoint[] {
 				new Waypoint(0, 0, Math.PI / 2),
-				new Waypoint(-10, 50, 0),
+				new Waypoint(-20, 20, Math.PI / 2),
 		};
 		long time = System.currentTimeMillis();
 		TankDriveTrajectory.setSolverRoundingLimit(0);
-		TankDriveTrajectory b = new TankDriveTrajectory(waypoints, 5, 3.5, 2, 20, 5000, true);
+		TankDriveTrajectory b = new TankDriveTrajectory(waypoints, 5, 3.5, 1.0, 2, 20, 5000, true);
 		System.out.println("Trajectory generation took " + (System.currentTimeMillis() - time) + " milliseconds.");
 		final double t_delta = 0.001;
 		ArrayList<Double> xs = new ArrayList<Double>();

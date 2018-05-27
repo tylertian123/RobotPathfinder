@@ -25,6 +25,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileFilter;
@@ -121,7 +122,7 @@ public class TrajectoryVisualizationTool {
 		}
 	}
 	
-	public static void main(String[] args) {
+	public TrajectoryVisualizationTool() {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
@@ -558,4 +559,14 @@ public class TrajectoryVisualizationTool {
 		mainFrame.setVisible(true);
 	}
 
+	
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				@SuppressWarnings("unused")
+				TrajectoryVisualizationTool tool = new TrajectoryVisualizationTool();
+			}
+		});
+	}
 }

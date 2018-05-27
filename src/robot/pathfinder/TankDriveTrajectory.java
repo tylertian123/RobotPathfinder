@@ -30,8 +30,8 @@ public class TankDriveTrajectory {
 	//Used to find the correct moment for a given time
 	double[] leftTimes, rightTimes;
 	
-	//Maximum velocity, acceleration and the width of the base plate
-	final double maxVel, maxAccel, baseWidth;
+	//Maximum velocity, acceleration, deceleration, and the width of the base plate
+	final double maxVel, maxAccel, maxDecel, baseWidth;
 	
 	//Used in solving quadratic equations
 	//If |b^2-4ac| <= this number, it will be set to 0 to avoid having no real solutions
@@ -63,12 +63,13 @@ public class TankDriveTrajectory {
 	 * Note this process can take up to half a second, depending on the number of segments.
 	 * 
 	 * @param waypoints - The waypoints the path has to travel through
-	 * @param robotSpecs - A {@link robot.pathfinder.RobotSpecs RobotSpecs} object containing the specifications of the robot	 * @param alpha - Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
+	 * @param robotSpecs - A {@link robot.pathfinder.RobotSpecs RobotSpecs} object containing the specifications of the robot	 
+	 * @param alpha - Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
 	 * @param segmentCount - How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
 	 * @param surpressExceptions - If set to true, an exception will <b>not</b> be thrown if the path is impossible
 	 */
 	public TankDriveTrajectory(Waypoint[] waypoints, RobotSpecs robotSpecs, double alpha, int segmentCount, boolean surpressExceptions) {
-		this(waypoints, robotSpecs.getMaxVelocity(), robotSpecs.getMaxAcceleration(), robotSpecs.getBaseWidth(), alpha, segmentCount, surpressExceptions);
+		this(waypoints, robotSpecs.getMaxVelocity(), robotSpecs.getMaxAcceleration(), robotSpecs.getMaxDeceleration(), robotSpecs.getBaseWidth(), alpha, segmentCount, surpressExceptions);
 	}
 	/**
 	 * Generates a trajectory based on a number of parameters.<br>
@@ -89,7 +90,7 @@ public class TankDriveTrajectory {
 		this(waypoints, maxVelocity, maxAcceleration, baseWidth, alpha, segmentCount, false);
 	}
 	/**
-	 * Generates a trajectory based on a number of parameters.<br>
+	 Generates a trajectory based on a number of parameters.<br>
 	 * <br>
 	 * The units for the parameters must be consistent with each other. For example, if maximum velocity is in feet/second, 
 	 * then maximum acceleration must be in feet/second^2, base width must be in feet, and the units for waypoints also in feet.<br>
@@ -105,8 +106,48 @@ public class TankDriveTrajectory {
 	 * @param surpressExceptions - If set to true, an exception will <b>not</b> be thrown if the path is impossible
 	 */
 	public TankDriveTrajectory(Waypoint[] waypoints, double maxVelocity, double maxAcceleration, double baseWidth, double alpha, int segmentCount, boolean surpressExceptions) {
+		this(waypoints, maxVelocity, maxAcceleration, maxAcceleration, baseWidth, alpha, segmentCount, surpressExceptions);
+	}
+	/**
+	 * Generates a trajectory based on a number of parameters.<br>
+	 * <br>
+	 * The units for the parameters must be consistent with each other. For example, if maximum velocity is in feet/second, 
+	 * then maximum acceleration must be in feet/second^2, base width must be in feet, and the units for waypoints also in feet.<br>
+	 * <br>
+	 * Note this process can take up to half a second, depending on the number of segments.
+	 * 
+	 * @param waypoints - The waypoints the path has to travel through
+	 * @param maxVelocity - The maximum velocity of the robot
+	 * @param maxAcceleration - The maximum acceleration of the robot
+	 * @param maxDeceleration - The maximum deceleration of the robot
+	 * @param baseWidth - The width of the base plate of the robot (distance between left side wheels and right side wheels)
+	 * @param alpha - Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
+	 * @param segmentCount - How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
+	 */
+	public TankDriveTrajectory(Waypoint[] waypoints, double maxVelocity, double maxAcceleration, double maxDeceleration, double baseWidth, double alpha, int segmentCount) {
+		this(waypoints, maxVelocity, maxAcceleration, maxDeceleration, baseWidth, alpha, segmentCount, false);
+	}
+	/**
+	 * Generates a trajectory based on a number of parameters.<br>
+	 * <br>
+	 * The units for the parameters must be consistent with each other. For example, if maximum velocity is in feet/second, 
+	 * then maximum acceleration must be in feet/second^2, base width must be in feet, and the units for waypoints also in feet.<br>
+	 * <br>
+	 * Note this process can take up to half a second, depending on the number of segments.
+	 * 
+	 * @param waypoints - The waypoints the path has to travel through
+	 * @param maxVelocity - The maximum velocity of the robot
+	 * @param maxAcceleration - The maximum acceleration of the robot
+	 * @param maxDeceleration - The maximum deceleration of the robot
+	 * @param baseWidth - The width of the base plate of the robot (distance between left side wheels and right side wheels)
+	 * @param alpha - Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
+	 * @param segmentCount - How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
+	 * @param surpressExceptions - If set to true, an exception will <b>not</b> be thrown if the path is impossible
+	 */
+	public TankDriveTrajectory(Waypoint[] waypoints, double maxVelocity, double maxAcceleration, double maxDeceleration, double baseWidth, double alpha, int segmentCount, boolean surpressExceptions) {
 		maxVel = maxVelocity;
 		maxAccel = maxAcceleration;
+		maxDecel = maxDeceleration;
 		this.baseWidth = baseWidth;
 		
 		//Generate the path
@@ -211,8 +252,9 @@ public class TankDriveTrajectory {
 			double rightDistDiff = rightMoments[i + 1].getDistance() - rightMoments[i].getDistance();
 			
 			//Use the fourth kinematic equation to find out the maximum reachable speed
-			double leftMax = Math.sqrt(Math.pow(leftMoments[i + 1].getVelocity(), 2) + 2 * maxAccel * leftDistDiff);
-			double rightMax = Math.sqrt(Math.pow(rightMoments[i + 1].getVelocity(), 2) + 2 * maxAccel * rightDistDiff);
+			//Since this is a backwards pass, we are now decelerating, so use maxDecel instead of maxAccel
+			double leftMax = Math.sqrt(Math.pow(leftMoments[i + 1].getVelocity(), 2) + 2 * maxDecel * leftDistDiff);
+			double rightMax = Math.sqrt(Math.pow(rightMoments[i + 1].getVelocity(), 2) + 2 * maxDecel * rightDistDiff);
 			double leftVel, rightVel;
 			
 			//Compare our maximum reachable velocity to the velocity generated by the forwards pass
@@ -223,7 +265,7 @@ public class TankDriveTrajectory {
 			else {
 				//If it's lower, then correct it, and set this moment to decelerate
 				leftVel = leftMax;
-				leftMoments[i].setAcceleration(-maxAccel);
+				leftMoments[i].setAcceleration(-maxDecel);
 			}
 			leftMoments[i].setVelocity(leftVel);
 			//Do the same for the right
@@ -232,7 +274,7 @@ public class TankDriveTrajectory {
 			}
 			else {
 				rightVel = rightMax;
-				rightMoments[i].setAcceleration(-maxAccel);
+				rightMoments[i].setAcceleration(-maxDecel);
 			}
 			rightMoments[i].setVelocity(rightVel);
 		}
@@ -280,6 +322,7 @@ public class TankDriveTrajectory {
 	
 	/**
 	 * Retrieves the {@code Moment} object associated with the left side at the specified time.
+	 * @deprecated Use {@link TankDriveTrajectory#getLeftSmooth(double)} instead.
 	 * @param t - A positive real number that ranges from 0 to the return value of {@link #totalTime()}
 	 * @return The {@code Moment} object associated with the left side at time t
 	 */
@@ -324,6 +367,7 @@ public class TankDriveTrajectory {
 	}
 	/**
 	 * Retrieves the {@code Moment} object associated with the right side at the specified time.
+	 * @deprecated Use {@link TankDriveTrajectory#getRightSmooth(double)} instead.
 	 * @param t - A positive real number that ranges from 0 to the return value of {@link #totalTime()}
 	 * @return The {@code Moment} object associated with the right side at time t
 	 */
@@ -368,9 +412,9 @@ public class TankDriveTrajectory {
 	/**
 	 * Retrieves the {@code Moment} object associated with the left side at the specified time.<br>
 	 * <br>
-	 * Instead of retrieving the {@code Moment} object that has a time closest to the specified time,
-	 * this method locates the closest 2 {@code Moment}s and returns a result based on a linear approximation
-	 * between them. Using this method will yield a smoother result than {@link #getLeft(double)}, but due
+	 * This method retrieves the 2 {@code Moment} objects closest to the specified time, and lerps them to get an
+	 * estimate.
+	 * Using this method will yield a smoother result than {@link #getLeft(double)}, but due
 	 * to the added steps it will take longer.
 	 * @param t - A positive real number that ranges from 0 to the return value of {@link #totalTime()}
 	 * @return The {@code Moment} object associated with the left side at time t
@@ -420,9 +464,9 @@ public class TankDriveTrajectory {
 	/**
 	 * Retrieves the {@code Moment} object associated with the right side at the specified time.<br>
 	 * <br>
-	 * Instead of retrieving the {@code Moment} object that has a time closest to the specified time,
-	 * this method locates the closest 2 {@code Moment}s and returns a result based on a linear approximation
-	 * between them. Using this method will yield a smoother result than {@link #getRight(double)}, but due
+	 * This method retrieves the 2 {@code Moment} objects closest to the specified time, and lerps them to get an
+	 * estimate.
+	 * Using this method will yield a smoother result than {@link #getRight(double)}, but due
 	 * to the added steps it will take longer.
 	 * @param t - A positive real number that ranges from 0 to the return value of {@link #totalTime()}
 	 * @return The {@code Moment} object associated with the right side at time t

@@ -35,8 +35,8 @@ import org.math.plot.Plot2DPanel;
 
 import robot.pathfinder.BezierPath;
 import robot.pathfinder.Moment;
-import robot.pathfinder.TrajectoryGenerationException;
 import robot.pathfinder.TankDriveTrajectory;
+import robot.pathfinder.TrajectoryGenerationException;
 import robot.pathfinder.Waypoint;
 import robot.pathfinder.math.Vec2D;
 
@@ -61,6 +61,7 @@ public class TrajectoryVisualizationTool {
 	static JTextField segments = new JTextField();
 	static JTextField maxVelocity = new JTextField();
 	static JTextField maxAcceleration = new JTextField();
+	static JTextField maxDeceleration = new JTextField();
 	static JTextField roundingLimit = new JTextField("1.0e-5");
 	static JPanel argumentsPanel;
 	
@@ -157,6 +158,7 @@ public class TrajectoryVisualizationTool {
 		Dimension textFieldSize = new Dimension(75, 20);
 		maxVelocity.setPreferredSize(textFieldSize);
 		maxAcceleration.setPreferredSize(textFieldSize);
+		maxDeceleration.setPreferredSize(textFieldSize);
 		baseWidth.setPreferredSize(textFieldSize);
 		alpha.setPreferredSize(textFieldSize);
 		segments.setPreferredSize(textFieldSize);
@@ -180,10 +182,15 @@ public class TrajectoryVisualizationTool {
 		subPanel3.add(segments);
 		subPanel3.add(new JLabel("Rounding Limit"));
 		subPanel3.add(roundingLimit);
+		JPanel subPanel4 = new JPanel();
+		subPanel4.setLayout(new BoxLayout(subPanel4, BoxLayout.PAGE_AXIS));
+		subPanel4.add(new JLabel("(Optional) Max Deceleration"));
+		subPanel4.add(maxDeceleration);
 		
 		argumentsPanel.add(subPanel1);
 		argumentsPanel.add(subPanel2);
 		argumentsPanel.add(subPanel3);
+		argumentsPanel.add(subPanel4);
 		
 		mainPanel.add(argumentsPanel, BorderLayout.CENTER);
 		
@@ -254,12 +261,18 @@ public class TrajectoryVisualizationTool {
 		generateButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				double maxVel, maxAccel, base, a, minUnit;
+				double maxVel, maxAccel, maxDecel, base, a, minUnit;
 				int segmentCount;
 				
 				try {
 					maxVel = Double.parseDouble(maxVelocity.getText());
 					maxAccel = Double.parseDouble(maxAcceleration.getText());
+					if(maxDeceleration.getText().equals("")) {
+						maxDecel = maxAccel;
+					}
+					else {
+						maxDecel = Double.parseDouble(maxDeceleration.getText());
+					}
 					base = Double.parseDouble(baseWidth.getText());
 					a = Double.parseDouble(alpha.getText());
 					segmentCount = Integer.parseInt(segments.getText());
@@ -283,7 +296,7 @@ public class TrajectoryVisualizationTool {
 				TankDriveTrajectory trajectory = null;
 				try {
 					TankDriveTrajectory.setSolverRoundingLimit(minUnit);
-					trajectory = new TankDriveTrajectory(waypointArray, maxVel, maxAccel, base, a, segmentCount);
+					trajectory = new TankDriveTrajectory(waypointArray, maxVel, maxAccel, maxDecel, base, a, segmentCount);
 				}
 				catch(TrajectoryGenerationException pge) {
 					int ret = JOptionPane.showConfirmDialog(mainFrame, "Error: Trajectory generation is impossible with current constraints.\nProceed anyways with only the path?", "Error", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
@@ -453,12 +466,18 @@ public class TrajectoryVisualizationTool {
 					return;
 				}
 				
-				double maxVel, maxAccel, base, a, minUnit;
+				double maxVel, maxAccel, maxDecel, base, a, minUnit;
 				int segmentCount;
 				
 				try {
 					maxVel = Double.parseDouble(maxVelocity.getText());
 					maxAccel = Double.parseDouble(maxAcceleration.getText());
+					if(maxDeceleration.getText().equals("")) {
+						maxDecel = Double.NaN;
+					}
+					else {
+						maxDecel = Double.parseDouble(maxDeceleration.getText());
+					}
 					base = Double.parseDouble(baseWidth.getText());
 					a = Double.parseDouble(alpha.getText());
 					segmentCount = Integer.parseInt(segments.getText());
@@ -482,7 +501,7 @@ public class TrajectoryVisualizationTool {
 						path += ".csv";
 					
 					try(BufferedWriter out = new BufferedWriter(new FileWriter(path))) {
-						out.write(maxVel + "," + maxAccel + "," + base + "," + a + "," + segmentCount + "," + minUnit + "\n");
+						out.write(maxVel + "," + maxAccel + "," + base + "," + a + "," + segmentCount + "," + minUnit + (Double.isNaN(maxDecel) ? "" : ("," + maxDecel)) + "\n");
 						
 						WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
 						for(int row = 0; row < tableModel.getRowCount(); row ++) {
@@ -513,7 +532,7 @@ public class TrajectoryVisualizationTool {
 				fc.setFileFilter(new CSVFilter());
 				fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				
-				int ret = fc.showSaveDialog(mainFrame);
+				int ret = fc.showOpenDialog(mainFrame);
 				if(ret == JFileChooser.APPROVE_OPTION) {
 					try(BufferedReader in = new BufferedReader(new FileReader(fc.getSelectedFile()))) {
 						String[] parameters = in.readLine().split(",");
@@ -527,6 +546,12 @@ public class TrajectoryVisualizationTool {
 						alpha.setText(parameters[3]);
 						segments.setText(parameters[4]);
 						roundingLimit.setText(parameters[5]);
+						if(parameters.length >= 7) {
+							maxDeceleration.setText(parameters[6]);
+						}
+						else {
+							maxDeceleration.setText("");
+						}
 						
 						waypoints.clear();
 						WaypointTableModel tableModel = (WaypointTableModel) table.getModel();

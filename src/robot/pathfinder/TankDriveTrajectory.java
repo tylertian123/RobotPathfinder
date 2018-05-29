@@ -321,16 +321,12 @@ public class TankDriveTrajectory {
 	}
 	//Creates a trajectory with moments that are already generated
 	//Used in mirror()
-	protected TankDriveTrajectory(Moment[] lMoments, Moment[] rMoments) {
+	protected TankDriveTrajectory(Moment[] lMoments, Moment[] rMoments, double[] lTimes, double[] rTimes) {
 		leftMoments = lMoments;
 		rightMoments = rMoments;
 		
-		leftTimes = new double[leftMoments.length];
-		rightTimes = new double[rightMoments.length];
-		for(int i = 0; i < leftMoments.length; i ++) {
-			leftTimes[i] = leftMoments[i].getTime();
-			rightTimes[i] = rightMoments[i].getTime();
-		}
+		leftTimes = lTimes;
+		rightTimes = rTimes;
 		
 		maxVel = maxAccel = maxDecel = baseWidth = Double.NaN;
 	}
@@ -592,10 +588,33 @@ public class TankDriveTrajectory {
 	/**
 	 * Returns the mirror image of this trajectory. The path is exactly the same, except that every action
 	 * by the left is now the right and vice versa. This means that left turns will now become right turns
-	 * and vice versa.
+	 * and vice versa.<br>
+	 * <br>
+	 * Unlike a {@link TankDriveTrajectory#reverse() reverse()} operation, this method simply makes a new object
+	 * with the left and right side's movements swapped, so no expensive copying operations are involved.
+	 * However, since no new arrays are being made, any modifications to the original copy will also modify the
+	 * mirrored copy.
+	 * @see TankDriveTrajectory#reverse() reverse()
 	 * @return The mirrored trajectory
 	 */
 	public TankDriveTrajectory mirror() {
-		return new TankDriveTrajectory(rightMoments, leftMoments);
+		return new TankDriveTrajectory(rightMoments, leftMoments, rightTimes, leftTimes);
+	}
+	/**
+	 * Returns the reverse of this trajectory. The path is exactly the same, except that moving forwards will
+	 * now become moving backwards and vice versa, effectively making the robot go in reverse.<br>
+	 * <br>
+	 * @see TankDriveTrajectory#mirror() mirror()
+	 * @return The reversed trajectory
+	 */
+	public TankDriveTrajectory reverse() {
+		Moment[] lMoments = new Moment[leftMoments.length];
+		Moment[] rMoments = new Moment[rightMoments.length];
+		
+		for(int i = 0; i < lMoments.length; i ++) {
+			lMoments[i] = new Moment(-leftMoments[i].getDistance(), -leftMoments[i].getVelocity(), -leftMoments[i].getAcceleration(), leftMoments[i].getTime());
+			rMoments[i] = new Moment(-rightMoments[i].getDistance(), -rightMoments[i].getVelocity(), -rightMoments[i].getAcceleration(), rightMoments[i].getTime());
+		}
+		return new TankDriveTrajectory(lMoments, rMoments, leftTimes, rightTimes);
 	}
 }

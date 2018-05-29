@@ -102,7 +102,22 @@ public class Testing {
 		frame2.setContentPane(plot2);
 		frame2.setVisible(true);
 	}
+	
+	public static void test5() {
+		Waypoint[] waypoints = new Waypoint[] {
+				new Waypoint(0, 0, Math.PI / 2),
+				new Waypoint(0, 100, Math.PI / 2),
+		};
+		TankDriveTrajectory b = new TankDriveTrajectory(waypoints, 5, 3.5, 1.0, 2, 20, 5000, true);
+
+		double dt = b.totalTime() / 5000;
+		long start = System.nanoTime();
+		b.getLeftSmooth(1.0);
+		long time = System.nanoTime() - start;
+		System.out.println(time);
+	}
+	
 	public static void main(String[] args) {
-		test4();
+		test5();
 	}
 }

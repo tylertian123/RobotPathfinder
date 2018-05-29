@@ -27,8 +27,6 @@ public class TankDriveTrajectory {
 	BezierPath path;
 	//"Moments" are generated for left and right separately
 	Moment[] leftMoments, rightMoments;
-	//Used to find the correct moment for a given time
-	double[] leftTimes, rightTimes;
 	
 	//Maximum velocity, acceleration, deceleration, and the width of the base plate
 	final double maxVel, maxAccel, maxDecel, baseWidth;
@@ -279,11 +277,6 @@ public class TankDriveTrajectory {
 			rightMoments[i].setVelocity(rightVel);
 		}
 		
-		//Initialize
-		leftTimes = new double[leftMoments.length];
-		rightTimes = new double[rightMoments.length];
-		leftTimes[0] = 0;
-		rightTimes[0] = 0;
 		//Now that we have the desired distances, velocities and accelerations, we need to assign each moment a time
 		for(int i = 1; i < leftMoments.length; i ++) {
 			//Get the desired distance, velocity and acceleration separately
@@ -315,18 +308,13 @@ public class TankDriveTrajectory {
 			//Add the time differences to the accumulated time of the last moment to get the time of this moment
 			leftMoments[i].setTime(leftMoments[i - 1].getTime() + dtLeft);
 			rightMoments[i].setTime(rightMoments[i - 1].getTime() + dtRight);
-			leftTimes[i] = leftMoments[i].getTime();
-			rightTimes[i] = rightMoments[i].getTime();
 		}
 	}
 	//Creates a trajectory with moments that are already generated
 	//Used in mirror()
-	protected TankDriveTrajectory(Moment[] lMoments, Moment[] rMoments, double[] lTimes, double[] rTimes) {
+	protected TankDriveTrajectory(Moment[] lMoments, Moment[] rMoments) {
 		leftMoments = lMoments;
 		rightMoments = rMoments;
-		
-		leftTimes = lTimes;
-		rightTimes = rTimes;
 		
 		maxVel = maxAccel = maxDecel = baseWidth = Double.NaN;
 	}
@@ -340,25 +328,25 @@ public class TankDriveTrajectory {
 	public Moment getLeft(double t) {
 		//Do binary search to find the closest approximation
 		int start = 0;
-		int end = leftTimes.length - 1;
+		int end = leftMoments.length - 1;
 		int mid;
 		
 		//If t is greater than the entire length in time of the left side, return the last Moment
-		if(t >= leftTimes[leftTimes.length - 1])
+		if(t >= leftMoments[leftMoments.length - 1].getTime())
 			return leftMoments[leftMoments.length - 1];
 		
 		while(true) {
 			mid = (start + end) / 2;
 			
-			if(leftTimes[mid] == t)
+			if(leftMoments[mid].getTime() == t)
 				return leftMoments[mid];
 			//If we reached the end, return the end
-			if(mid == leftTimes.length - 1)
+			if(mid == leftMoments.length - 1)
 				return leftMoments[mid];
 			//If t is sandwiched between 2 existing times, the return the closest one
-			if(leftTimes[mid] <= t && leftTimes[mid + 1] >= t) {
+			if(leftMoments[mid].getTime() <= t && leftMoments[mid + 1].getTime() >= t) {
 				//Use absolute differences to find out the closer Moment
-				if(Math.abs(t - leftTimes[mid]) > Math.abs(t - leftTimes[mid + 1])) {
+				if(Math.abs(t - leftMoments[mid].getTime()) > Math.abs(t - leftMoments[mid + 1].getTime())) {
 					return leftMoments[mid + 1];
 				}
 				else {
@@ -366,11 +354,11 @@ public class TankDriveTrajectory {
 				}
 			}
 			//Continue the binary search if not found
-			if(leftTimes[mid] < t) {
+			if(leftMoments[mid].getTime() < t) {
 				start = mid;
 				continue;
 			}
-			else if(leftTimes[mid] > t) {
+			else if(leftMoments[mid].getTime() > t) {
 				end = mid;
 				continue;
 			}
@@ -385,23 +373,23 @@ public class TankDriveTrajectory {
 	public Moment getRight(double t) {
 		//For an explanation of the code, refer to getLeft()
 		int start = 0;
-		int end = rightTimes.length - 1;
+		int end = rightMoments.length - 1;
 		int mid;
 		
-		if(t >= rightTimes[rightTimes.length - 1])
+		if(t >= rightMoments[rightMoments.length - 1].getTime())
 			return rightMoments[rightMoments.length - 1];
 		
 		while(true) {
 			mid = (start + end) / 2;
 			
-			if(rightTimes[mid] == t)
+			if(rightMoments[mid].getTime() == t)
 				return rightMoments[mid];
 			
-			if(mid == rightTimes.length - 1)
+			if(mid == rightMoments.length - 1)
 				return rightMoments[mid];
 			
-			if(rightTimes[mid] <= t && rightTimes[mid + 1] >= t) {
-				if(Math.abs(t - rightTimes[mid]) > Math.abs(t - rightTimes[mid + 1])) {
+			if(rightMoments[mid].getTime() <= t && rightMoments[mid + 1].getTime() >= t) {
+				if(Math.abs(t - rightMoments[mid].getTime()) > Math.abs(t - rightMoments[mid + 1].getTime())) {
 					return rightMoments[mid + 1];
 				}
 				else {
@@ -409,11 +397,11 @@ public class TankDriveTrajectory {
 				}
 			}
 			
-			if(rightTimes[mid] < t) {
+			if(rightMoments[mid].getTime() < t) {
 				start = mid;
 				continue;
 			}
-			else if(rightTimes[mid] > t) {
+			else if(rightMoments[mid].getTime() > t) {
 				end = mid;
 				continue;
 			}
@@ -433,40 +421,40 @@ public class TankDriveTrajectory {
 	public Moment getLeftSmooth(double t) {
 		//Do binary search to find the closest approximation
 		int start = 0;
-		int end = leftTimes.length - 1;
+		int end = leftMoments.length - 1;
 		int mid;
 		
 		//If t is greater than the entire length in time of the left side, return the last Moment
-		if(t >= leftTimes[leftTimes.length - 1])
+		if(t >= leftMoments[leftMoments.length - 1].getTime())
 			return leftMoments[leftMoments.length - 1];
 		
 		while(true) {
 			mid = (start + end) / 2;
 			
-			if(leftTimes[mid] == t)
+			if(leftMoments[mid].getTime() == t)
 				return leftMoments[mid];
 			//If we reached the end, return the end
-			if(mid == leftTimes.length - 1)
+			if(mid == leftMoments.length - 1)
 				return leftMoments[mid];
 			//If t is sandwiched between 2 existing times, the return the closest one
-			if(leftTimes[mid] <= t && leftTimes[mid + 1] >= t) {
+			if(leftMoments[mid].getTime() <= t && leftMoments[mid + 1].getTime() >= t) {
 				//Get the slopes
-				double dt = leftTimes[mid + 1] - leftTimes[mid];
+				double dt = leftMoments[mid + 1].getTime() - leftMoments[mid].getTime();
 				double mAccel = (leftMoments[mid + 1].getAcceleration() - leftMoments[mid].getAcceleration()) / dt;
 				double mVel = (leftMoments[mid + 1].getVelocity() - leftMoments[mid].getVelocity()) / dt;
 				double mDist = (leftMoments[mid + 1].getDistance() - leftMoments[mid].getDistance()) / dt;
 				//Linear approximation
-				double t2 = t - leftTimes[mid];
+				double t2 = t - leftMoments[mid].getTime();
 				return new Moment(mDist * t2 + leftMoments[mid].getDistance(), 
 						mVel * t2 + leftMoments[mid].getVelocity(),
 						mAccel * t2 + leftMoments[mid].getAcceleration(), t);
 			}
 			//Continue the binary search if not found
-			if(leftTimes[mid] < t) {
+			if(leftMoments[mid].getTime() < t) {
 				start = mid;
 				continue;
 			}
-			else if(leftTimes[mid] > t) {
+			else if(leftMoments[mid].getTime() > t) {
 				end = mid;
 				continue;
 			}
@@ -485,37 +473,37 @@ public class TankDriveTrajectory {
 	public Moment getRightSmooth(double t) {
 		//For an explanation of the code, refer to getLeftSmooth()
 		int start = 0;
-		int end = rightTimes.length - 1;
+		int end = rightMoments.length - 1;
 		int mid;
 		
-		if(t >= rightTimes[rightTimes.length - 1])
+		if(t >= rightMoments[rightMoments.length - 1].getTime())
 			return rightMoments[rightMoments.length - 1];
 		
 		while(true) {
 			mid = (start + end) / 2;
 			
-			if(rightTimes[mid] == t)
+			if(rightMoments[mid].getTime() == t)
 				return rightMoments[mid];
 			
-			if(mid == rightTimes.length - 1)
+			if(mid == rightMoments.length - 1)
 				return rightMoments[mid];
 			
-			if(rightTimes[mid] <= t && rightTimes[mid + 1] >= t) {
-				double dt = rightTimes[mid + 1] - rightTimes[mid];
+			if(rightMoments[mid].getTime() <= t && rightMoments[mid + 1].getTime() >= t) {
+				double dt = rightMoments[mid + 1].getTime() - rightMoments[mid].getTime();
 				double mAccel = (rightMoments[mid + 1].getAcceleration() - rightMoments[mid].getAcceleration()) / dt;
 				double mVel = (rightMoments[mid + 1].getVelocity() - rightMoments[mid].getVelocity()) / dt;
 				double mDist = (rightMoments[mid + 1].getDistance() - rightMoments[mid].getDistance()) / dt;
-				double t2 = t - rightTimes[mid];
+				double t2 = t - rightMoments[mid].getTime();
 				return new Moment(mDist * t2 + rightMoments[mid].getDistance(), 
 						mVel * t2 + rightMoments[mid].getVelocity(),
 						mAccel * t2 + rightMoments[mid].getAcceleration(), t);
 			}
 			
-			if(rightTimes[mid] < t) {
+			if(rightMoments[mid].getTime() < t) {
 				start = mid;
 				continue;
 			}
-			else if(rightTimes[mid] > t) {
+			else if(rightMoments[mid].getTime() > t) {
 				end = mid;
 				continue;
 			}
@@ -565,7 +553,7 @@ public class TankDriveTrajectory {
 	 */
 	public double totalTime() {
 		//Return the length in time of the longer side
-		return Math.max(leftTimes[leftTimes.length - 1], rightTimes[rightTimes.length - 1]);
+		return Math.max(leftMoments[leftMoments.length - 1].getTime(), rightMoments[rightMoments.length - 1].getTime());
 	}
 	
 	/**
@@ -598,7 +586,7 @@ public class TankDriveTrajectory {
 	 * @return The mirrored trajectory
 	 */
 	public TankDriveTrajectory mirror() {
-		return new TankDriveTrajectory(rightMoments, leftMoments, rightTimes, leftTimes);
+		return new TankDriveTrajectory(rightMoments, leftMoments);
 	}
 	/**
 	 * Returns the reverse of this trajectory. The path is exactly the same, except that moving forwards will
@@ -615,6 +603,6 @@ public class TankDriveTrajectory {
 			lMoments[i] = new Moment(-leftMoments[i].getDistance(), -leftMoments[i].getVelocity(), -leftMoments[i].getAcceleration(), leftMoments[i].getTime());
 			rMoments[i] = new Moment(-rightMoments[i].getDistance(), -rightMoments[i].getVelocity(), -rightMoments[i].getAcceleration(), rightMoments[i].getTime());
 		}
-		return new TankDriveTrajectory(lMoments, rMoments, leftTimes, rightTimes);
+		return new TankDriveTrajectory(lMoments, rMoments);
 	}
 }

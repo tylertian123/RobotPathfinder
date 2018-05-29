@@ -28,9 +28,6 @@ public class TankDriveTrajectory {
 	//"Moments" are generated for left and right separately
 	Moment[] leftMoments, rightMoments;
 	
-	//Maximum velocity, acceleration, deceleration, and the width of the base plate
-	final double maxVel, maxAccel, maxDecel, baseWidth;
-	
 	//Used in solving quadratic equations
 	//If |b^2-4ac| <= this number, it will be set to 0 to avoid having no real solutions
 	//due to rounding errors.
@@ -142,11 +139,7 @@ public class TankDriveTrajectory {
 	 * @param segmentCount - How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
 	 * @param surpressExceptions - If set to true, an exception will <b>not</b> be thrown if the path is impossible
 	 */
-	public TankDriveTrajectory(Waypoint[] waypoints, double maxVelocity, double maxAcceleration, double maxDeceleration, double baseWidth, double alpha, int segmentCount, boolean surpressExceptions) {
-		maxVel = maxVelocity;
-		maxAccel = maxAcceleration;
-		maxDecel = maxDeceleration;
-		this.baseWidth = baseWidth;
+	public TankDriveTrajectory(Waypoint[] waypoints, double maxVel, double maxAccel, double maxDecel, double baseWidth, double alpha, int segmentCount, boolean surpressExceptions) {
 		
 		//Generate the path
 		path = new BezierPath(waypoints, alpha);
@@ -315,8 +308,6 @@ public class TankDriveTrajectory {
 	protected TankDriveTrajectory(Moment[] lMoments, Moment[] rMoments) {
 		leftMoments = lMoments;
 		rightMoments = rMoments;
-		
-		maxVel = maxAccel = maxDecel = baseWidth = Double.NaN;
 	}
 	
 	/**
@@ -605,6 +596,9 @@ public class TankDriveTrajectory {
 	 * Returns the reverse of this trajectory. The path is exactly the same, except that moving forwards will
 	 * now become moving backwards and vice versa, effectively making the robot go in reverse.<br>
 	 * <br>
+	 * Unlike a {@link TankDriveTrajectory#mirror() mirror()} operation, this method creates new arrays and copies
+	 * their elements. This means that this method can be slow, but any modifications to the original object
+	 * will not modify the reversed copy.
 	 * @see TankDriveTrajectory#mirror() mirror()
 	 * @return The reversed trajectory
 	 */

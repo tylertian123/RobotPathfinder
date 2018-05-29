@@ -476,39 +476,47 @@ public class TankDriveTrajectory {
 	 * @return The {@code Moment} object associated with the right side at time t
 	 */
 	public Moment getRightSmooth(double t) {
-		//For an explanation of the code, refer to getLeftSmooth()
+		//Do binary search to find the closest approximation
 		int start = 0;
 		int end = rightMoments.length - 1;
 		int mid;
 		
+		//If t is greater than the entire length in time of the left side, return the last Moment
 		if(t >= rightMoments[rightMoments.length - 1].getTime())
 			return rightMoments[rightMoments.length - 1];
 		
 		while(true) {
 			mid = (start + end) / 2;
 			
-			if(rightMoments[mid].getTime() == t)
-				return rightMoments[mid];
+			double midTime = rightMoments[mid].getTime();
 			
+			if(midTime == t)
+				return rightMoments[mid];
+			//If we reached the end, return the end
 			if(mid == rightMoments.length - 1)
 				return rightMoments[mid];
 			
-			if(rightMoments[mid].getTime() <= t && rightMoments[mid + 1].getTime() >= t) {
-				double dt = rightMoments[mid + 1].getTime() - rightMoments[mid].getTime();
+			double nextTime = rightMoments[mid + 1].getTime();
+			
+			//If t is sandwiched between 2 existing times, the return the closest one
+			if(midTime <= t && nextTime >= t) {
+				//Get the slopes
+				double dt = nextTime - midTime;
 				double mAccel = (rightMoments[mid + 1].getAcceleration() - rightMoments[mid].getAcceleration()) / dt;
 				double mVel = (rightMoments[mid + 1].getVelocity() - rightMoments[mid].getVelocity()) / dt;
 				double mDist = (rightMoments[mid + 1].getDistance() - rightMoments[mid].getDistance()) / dt;
-				double t2 = t - rightMoments[mid].getTime();
+				//Linear approximation
+				double t2 = t - midTime;
 				return new Moment(mDist * t2 + rightMoments[mid].getDistance(), 
 						mVel * t2 + rightMoments[mid].getVelocity(),
 						mAccel * t2 + rightMoments[mid].getAcceleration(), t);
 			}
-			
-			if(rightMoments[mid].getTime() < t) {
+			//Continue the binary search if not found
+			if(midTime < t) {
 				start = mid;
 				continue;
 			}
-			else if(rightMoments[mid].getTime() > t) {
+			else if(midTime > t) {
 				end = mid;
 				continue;
 			}

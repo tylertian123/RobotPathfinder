@@ -431,30 +431,35 @@ public class TankDriveTrajectory {
 		while(true) {
 			mid = (start + end) / 2;
 			
-			if(leftMoments[mid].getTime() == t)
+			double midTime = leftMoments[mid].getTime();
+			
+			if(midTime == t)
 				return leftMoments[mid];
 			//If we reached the end, return the end
 			if(mid == leftMoments.length - 1)
 				return leftMoments[mid];
+			
+			double nextTime = leftMoments[mid + 1].getTime();
+			
 			//If t is sandwiched between 2 existing times, the return the closest one
-			if(leftMoments[mid].getTime() <= t && leftMoments[mid + 1].getTime() >= t) {
+			if(midTime <= t && nextTime >= t) {
 				//Get the slopes
-				double dt = leftMoments[mid + 1].getTime() - leftMoments[mid].getTime();
+				double dt = nextTime - midTime;
 				double mAccel = (leftMoments[mid + 1].getAcceleration() - leftMoments[mid].getAcceleration()) / dt;
 				double mVel = (leftMoments[mid + 1].getVelocity() - leftMoments[mid].getVelocity()) / dt;
 				double mDist = (leftMoments[mid + 1].getDistance() - leftMoments[mid].getDistance()) / dt;
 				//Linear approximation
-				double t2 = t - leftMoments[mid].getTime();
+				double t2 = t - midTime;
 				return new Moment(mDist * t2 + leftMoments[mid].getDistance(), 
 						mVel * t2 + leftMoments[mid].getVelocity(),
 						mAccel * t2 + leftMoments[mid].getAcceleration(), t);
 			}
 			//Continue the binary search if not found
-			if(leftMoments[mid].getTime() < t) {
+			if(midTime < t) {
 				start = mid;
 				continue;
 			}
-			else if(leftMoments[mid].getTime() > t) {
+			else if(midTime > t) {
 				end = mid;
 				continue;
 			}

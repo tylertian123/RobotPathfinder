@@ -112,7 +112,9 @@ public class Testing {
 
 		double dt = b.totalTime() / 5000;
 		long start = System.nanoTime();
-		b.getLeftSmooth(1.0);
+		for(double t = 0; t < b.totalTime(); t += dt) {
+			b.getLeftSmooth(t);
+		}
 		long time = System.nanoTime() - start;
 		System.out.println(time);
 	}

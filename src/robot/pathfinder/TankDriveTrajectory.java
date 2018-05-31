@@ -562,6 +562,9 @@ public class TankDriveTrajectory {
 	
 	/**
 	 * Retrieves the underlying {@code BezierPath} used to generate this trajectory.
+	 * <br>
+	 * <b>Warning: Trajectories created with the {@link #mirrorFrontBack()}, {@link #mirrorLeftRight()},
+	 * {@link #reverse()}, and {@link #retrace()} methods do not have an internal path, and will result in a value of {@code null} instead.</b>
 	 * @return The internal {@code BezierPath}
 	 */
 	public BezierPath getPath() {
@@ -569,7 +572,9 @@ public class TankDriveTrajectory {
 	}
 	/**
 	 * Accesses the internal {@code BezierPath} object and returns the path value at the specified time.<br>
-	 * This value should <b>not</b> be used directly for motion planning. It is a path, not a trajectory.
+	 * This value should <b>not</b> be used directly for motion planning. It is a path, not a trajectory.<br>
+	 * <b>Warning: Trajectories created with the {@link #mirrorFrontBack()}, {@link #mirrorLeftRight()},
+	 * {@link #reverse()}, and {@link #retrace()} methods do not have an internal path, and will result in a {@link NullPointerException} instead.</b>
 	 * @param t - A positive real number ranging from 0 to 1
 	 * @return The X and Y values at the specified time on the path
 	 */
@@ -578,37 +583,111 @@ public class TankDriveTrajectory {
 	}
 	
 	/**
-	 * Returns the mirror image of this trajectory. The path is exactly the same, except that every action
-	 * by the left is now the right and vice versa. This means that left turns will now become right turns
-	 * and vice versa.<br>
+	 * Returns the left-right mirror image of this trajectory. Every left turn will now become a right turn.<br>
+	 * <b>Warning: Trajectories created with this method do not have an internal path; {@link #getPath()} will
+	 * return null and {@link #pathAt(double)} will raise a {@link NullPointerException}.</b><br>
 	 * <br>
-	 * Unlike a {@link TankDriveTrajectory#reverse() reverse()} operation, this method simply makes a new object
-	 * with the left and right side's movements swapped, so no expensive copying operations are involved.
-	 * However, since no new arrays are being made, any modifications to the original copy will also modify the
-	 * mirrored copy.
-	 * @see TankDriveTrajectory#reverse() reverse()
+	 * Internally, this is done by creating a new trajectory with the left and right wheels swapped. No new 
+	 * arrays are created, so this method is very fast.
+	 * @see TankDriveTrajectory#mirrorFrontBack() mirrorFrontBack()
 	 * @return The mirrored trajectory
 	 */
-	public TankDriveTrajectory mirror() {
+	public TankDriveTrajectory mirrorLeftRight() {
+		//Just create a new one with the sides swapped
 		return new TankDriveTrajectory(rightMoments, leftMoments);
 	}
 	/**
-	 * Returns the reverse of this trajectory. The path is exactly the same, except that moving forwards will
-	 * now become moving backwards and vice versa, effectively making the robot go in reverse.<br>
+	 * Returns the front-back mirror image of this trajectory. Every forwards movement will now become
+	 * a backwards movement.<br>
+	 * <b>Warning: Trajectories created with this method do not have an internal path; {@link #getPath()} will
+	 * return null and {@link #pathAt(double)} will raise a {@link NullPointerException}.</b><br>
 	 * <br>
-	 * Unlike a {@link TankDriveTrajectory#mirror() mirror()} operation, this method creates new arrays and copies
-	 * their elements. This means that this method can be slow, but any modifications to the original object
-	 * will not modify the reversed copy.
-	 * @see TankDriveTrajectory#mirror() mirror()
-	 * @return The reversed trajectory
+	 * <b>Warning: The new trajectory created does not respect maximum deceleration constraints. If you wish
+	 * for the new trajectory to respect maximum deceleration constrains, construct a new trajectory with
+	 * maximum acceleration and deceleration swapped, and then call this method.</b><br>
+	 * <br>
+	 * Internally, this is done by creating a new trajectory in which every {@code Moment}'s position, velocity
+	 * and acceleration are negated. This means new arrays are being created and copied and thus this method
+	 * could be slow for trajectories with many segments.
+	 * 
+	 * @see TankDriveTrajectory#mirrorLeftRight() mirrorLeftRight()
+	 * @return The mirrored trajectory
+	 */
+	public TankDriveTrajectory mirrorFrontBack() {
+		Moment[] lMoments = new Moment[leftMoments.length];
+		Moment[] rMoments = new Moment[rightMoments.length];
+		
+		for(int i = 0; i < lMoments.length; i ++) {
+			//Negate the distances, velocities and accelerations to drive backwards
+			//Time, of course, always stays positive.
+			lMoments[i] = new Moment(-leftMoments[i].getDistance(), -leftMoments[i].getVelocity(), -leftMoments[i].getAcceleration(), leftMoments[i].getTime());
+			rMoments[i] = new Moment(-rightMoments[i].getDistance(), -rightMoments[i].getVelocity(), -rightMoments[i].getAcceleration(), rightMoments[i].getTime());
+		}
+		return new TankDriveTrajectory(lMoments, rMoments);
+	}
+	/**
+	 * Returns the reverse of this trajectory. Not to be confused with {@link #retrace()}.
+	 * Driving this path in reverse would retrace the trajectory.<br>
+	 * <b>Warning: Trajectories created with this method do not have an internal path; {@link #getPath()} will
+	 * return null and {@link #pathAt(double)} will raise a {@link NullPointerException}.</b><br>
+	 * <br>
+	 * <b>Warning: The new trajectory created does not respect maximum deceleration constraints. If you wish
+	 * for the new trajectory to respect maximum deceleration constrains, construct a new trajectory with
+	 * maximum acceleration and deceleration swapped, and then call this method.</b><br>
+	 * <br>
+	 * Internally, this is done by creating a new trajectory in which the movements are reversed, that is, the
+	 * last {@code Moment}s become the first {@code Moment}s, with the distances adjusted. This means new arrays are being created and copied and thus this method
+	 * could be slow for trajectories with many segments.
+	 * @see #retrace()
+	 * @return The reverse of this trajectory
 	 */
 	public TankDriveTrajectory reverse() {
 		Moment[] lMoments = new Moment[leftMoments.length];
 		Moment[] rMoments = new Moment[rightMoments.length];
 		
+		Moment lLast = leftMoments[leftMoments.length - 1];
+		Moment rLast = rightMoments[rightMoments.length - 1];
+		
 		for(int i = 0; i < lMoments.length; i ++) {
-			lMoments[i] = new Moment(-leftMoments[i].getDistance(), -leftMoments[i].getVelocity(), -leftMoments[i].getAcceleration(), leftMoments[i].getTime());
-			rMoments[i] = new Moment(-rightMoments[i].getDistance(), -rightMoments[i].getVelocity(), -rightMoments[i].getAcceleration(), rightMoments[i].getTime());
+			Moment lm = leftMoments[leftMoments.length - 1 - i];
+			Moment rm = rightMoments[rightMoments.length - 1 - i];
+			
+			//The velocities and accelerations and time stays the same
+			//Distance has to be adjusted since the last Moment has to have distance 0
+			lMoments[i] = new Moment(lLast.getDistance() - lm.getDistance(), lm.getVelocity(), lm.getAcceleration(), lm.getTime());
+			rMoments[i] = new Moment(rLast.getDistance() - rm.getDistance(), rm.getVelocity(), rm.getAcceleration(), rm.getTime());
+		}
+		return new TankDriveTrajectory(lMoments, rMoments);
+	}
+	/**
+	 * Returns the trajectory that, when driven, would retrace this trajectory and return the robot to its
+	 * original position. Not to be confused with {@link #reverse()}.<br>
+	 * <b>Warning: Trajectories created with this method do not have an internal path; {@link #getPath()} will
+	 * return null and {@link #pathAt(double)} will raise a {@link NullPointerException}.</b><br>
+	 * <br>
+	 * <b>Warning: The new trajectory created does not respect maximum deceleration constraints. If you wish
+	 * for the new trajectory to respect maximum deceleration constrains, construct a new trajectory with
+	 * maximum acceleration and deceleration swapped, and then call this method.</b><br>
+	 * <br>
+	 * Calling this method is essentially equivalent to calling {@link #reverse()} and {@code #mirrorFrontBack()}
+	 * in order, but with optimization. 
+	 * @see #reverse()
+	 * @return The trajectory that retraces this one
+	 */
+	public TankDriveTrajectory retrace() {
+		Moment[] lMoments = new Moment[leftMoments.length];
+		Moment[] rMoments = new Moment[rightMoments.length];
+		
+		Moment lLast = leftMoments[leftMoments.length - 1];
+		Moment rLast = rightMoments[rightMoments.length - 1];
+		
+		for(int i = 0; i < lMoments.length; i ++) {
+			Moment lm = leftMoments[leftMoments.length - 1 - i];
+			Moment rm = rightMoments[rightMoments.length - 1 - i];
+			
+			//Basically reverse() and mirrorFrontBack() combined
+			lMoments[i] = new Moment(-(lLast.getDistance() - lm.getDistance()), -lm.getVelocity(), -lm.getAcceleration(), lm.getTime());
+			rMoments[i] = new Moment(-(rLast.getDistance() - rm.getDistance()), -rm.getVelocity(), -rm.getAcceleration(), rm.getTime());
 		}
 		return new TankDriveTrajectory(lMoments, rMoments);
 	}

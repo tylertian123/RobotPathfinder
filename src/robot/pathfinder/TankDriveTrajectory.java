@@ -627,7 +627,9 @@ public class TankDriveTrajectory {
 	}
 	/**
 	 * Returns the reverse of this trajectory. Not to be confused with {@link #retrace()}.
-	 * Driving this path in reverse would retrace the trajectory.<br>
+	 * The new trajectory starts at the end of this trajectory and ends at the beginning of it. 
+	 * However because the direction is not reversed, the new trajectory does not retrace this trajectory.
+	 * Use {@link #retrace()} instead.<br>
 	 * <b>Warning: Trajectories created with this method do not have an internal path; {@link #getPath()} will
 	 * return null and {@link #pathAt(double)} will raise a {@link NullPointerException}.</b><br>
 	 * <br>

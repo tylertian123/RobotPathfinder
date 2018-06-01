@@ -2,7 +2,7 @@ package robot.pathfinder.math;
 
 /**
  * A class representing a cubic Bezier curve.
- * @author Tyler
+ * @author Tyler Tian
  *
  */
 public class Bezier {

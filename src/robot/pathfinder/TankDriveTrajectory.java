@@ -18,7 +18,7 @@ import robot.pathfinder.Moment;
  * This class also uses Beziers to generate its path, instead of 2D Hermite spline fitting like in
  * the video.
  * 
- * @author Tyler
+ * @author Tyler Tian
  *
  */
 public class TankDriveTrajectory {

@@ -2,7 +2,7 @@ package robot.pathfinder.math;
 
 /**
  * A class containing a collection of static math utility methods.
- * @author Tyler
+ * @author Tyler Tian
  *
  */
 public class MathUtils {

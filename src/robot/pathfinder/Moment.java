@@ -3,7 +3,7 @@ package robot.pathfinder;
 /**
  * Represents a moment in time of a trajectory; this class contains the time, as well as the desired distance,
  * velocity, and acceleration at that point in time.
- * @author Tyler
+ * @author Tyler Tian
  *
  */
 public class Moment {

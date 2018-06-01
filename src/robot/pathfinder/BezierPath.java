@@ -5,7 +5,7 @@ import robot.pathfinder.math.Vec2D;
 
 /**
  * A robot path composed of multiple Beziers.
- * @author Tyler
+ * @author Tyler Tian
  *
  */
 public class BezierPath {
@@ -70,13 +70,12 @@ public class BezierPath {
 	 * @return The position of the path at the specified time
 	 */
 	public Vec2D at(double t) {
+		if(t >= 1) {
+			return beziers[beziers.length - 1].at(1);
+		}
+		
 		t *= beziers.length;
-		try {
-			return beziers[(int) Math.floor(t)].at(t % 1.0);
-		}
-		catch(ArrayIndexOutOfBoundsException e) {
-			return beziers[beziers.length - 1].at(t % 1.0);
-		}
+		return beziers[(int) Math.floor(t)].at(t % 1.0);
 	}
 	/**
 	 * Returns the position of the wheels at a specified time in the path.
@@ -102,6 +101,10 @@ public class BezierPath {
 	 * @return The derivative of the path at the specified time
 	 */
 	public Vec2D derivAt(double t) {
+		if(t >= 1) {
+			return beziers[beziers.length - 1].derivAt(1);
+		}
+		
 		t *= beziers.length;
 		return beziers[(int) Math.floor(t)].derivAt(t % 1.0);
 	}
@@ -111,6 +114,10 @@ public class BezierPath {
 	 * @return The second derivative of the path at the specified time
 	 */
 	public Vec2D secondDerivAt(double t) {
+		if(t >= 1) {
+			return beziers[beziers.length - 1].secondDerivAt(1);
+		}
+		
 		t *= beziers.length;
 		return beziers[(int) Math.floor(t)].secondDerivAt(t % 1.0);
 	}

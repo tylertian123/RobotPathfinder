@@ -42,7 +42,7 @@ import robot.pathfinder.math.Vec2D;
 
 /**
  * A GUI tool build with Swing to help visualize trajectories. 
- * @author Tyler
+ * @author Tyler Tian
  *
  */
 public class TrajectoryVisualizationTool {

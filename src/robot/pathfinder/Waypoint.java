@@ -5,7 +5,7 @@ import robot.pathfinder.math.Vec2D;
 /**
  * Represents a waypoint in a path or trajectory. A waypoint consists of an X and Y value, along with an 
  * optional direction.
- * @author Tyler
+ * @author Tyler Tian
  *
  */
 public class Waypoint {

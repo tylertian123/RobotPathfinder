@@ -2,7 +2,7 @@ package robot.pathfinder.math;
 
 /**
  * A class that represents a vector in 2D space.
- * @author Tyler
+ * @author Tyler Tian
  *
  */
 public class Vec2D {

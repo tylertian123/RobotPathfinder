@@ -6,7 +6,7 @@ package robot.pathfinder;
  * This class stores information about the robot's max velocity, acceleration and base width,
  * and can be used in the construction of trajectory objects as an alternative to typing up 
  * the specifications each time.
- * @author Tyler
+ * @author Tyler Tian
  *
  */
 public class RobotSpecs {

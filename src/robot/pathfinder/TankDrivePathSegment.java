@@ -3,7 +3,7 @@ package robot.pathfinder;
 /**
  * Represents a segment of a path for a tank drive robot. This class is intended for use internally by trajectory
  * generators only.
- * @author Tyler
+ * @author Tyler Tian
  *
  */
 public class TankDrivePathSegment {

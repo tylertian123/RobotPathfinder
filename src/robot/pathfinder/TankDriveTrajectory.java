@@ -637,7 +637,17 @@ public class TankDriveTrajectory {
 			lMoments[i] = new Moment(-leftMoments[i].getDistance(), -leftMoments[i].getVelocity(), -leftMoments[i].getAcceleration(), leftMoments[i].getTime());
 			rMoments[i] = new Moment(-rightMoments[i].getDistance(), -rightMoments[i].getVelocity(), -rightMoments[i].getAcceleration(), rightMoments[i].getTime());
 		}
-		return new TankDriveTrajectory(lMoments, rMoments);
+		
+		//Create new path
+		Waypoint[] old = path.getWaypoints();
+		Waypoint[] waypoints = new Waypoint[old.length];
+		for(int i = 0; i < old.length; i ++) {
+			//New path is just the same as the old path, but with the order of the waypoints reversed,
+			//and headings flipped
+			waypoints[old.length - 1 - i] = new Waypoint(old[i].getX(), old[i].getY(), (old[i].getHeading() + Math.PI) % (2 * Math.PI));
+		}
+		
+		return new TankDriveTrajectory(lMoments, rMoments, new BezierPath(waypoints, path.getAlpha(), path.getBaseRaidus()));
 	}
 	/**
 	 * Returns the reverse of this trajectory. Not to be confused with {@link #retrace()}.

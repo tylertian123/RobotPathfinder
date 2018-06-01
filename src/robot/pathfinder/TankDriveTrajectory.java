@@ -608,7 +608,7 @@ public class TankDriveTrajectory {
 		}
 		
 		//Just create a new one with the sides swapped
-		return new TankDriveTrajectory(rightMoments, leftMoments, new BezierPath(waypoints, path.getAlpha()));
+		return new TankDriveTrajectory(rightMoments, leftMoments, new BezierPath(waypoints, path.getAlpha(), path.getBaseRaidus()));
 	}
 	/**
 	 * Returns the front-back mirror image of this trajectory. Every forwards movement will now become

@@ -49,6 +49,10 @@ public class BezierPath {
 		resetIntegration();
 		resetWheelIntegration();
 	}
+	public BezierPath(Waypoint[] waypoints, double alpha, double baseRadius) {
+		this(waypoints, alpha);
+		this.baseRadius = baseRadius;
+	}
 	
 	/**
 	 * Sets the base plate radius (distance from the center of the robot to the wheels) of the robot following

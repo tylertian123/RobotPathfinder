@@ -27,6 +27,9 @@ public class BezierPath {
 	Waypoint[] waypoints;
 	double alpha;
 	
+	//If set to true, the locations of left and right wheels are reversed
+	boolean drivingBackwards = false;
+	
 	/**
 	 * Constructs a Bezier path using the specified waypoints.
 	 * @param waypoints - The waypoints to pass through
@@ -97,8 +100,8 @@ public class BezierPath {
 		Vec2D derivative = derivAt(t);
 		
 		double heading = Math.atan2(derivative.getY(), derivative.getX());
-		double leftHeading = heading + Math.PI / 2;
-		double rightHeading = heading - Math.PI / 2;
+		double leftHeading = drivingBackwards ? heading - Math.PI / 2 : heading + Math.PI / 2;
+		double rightHeading = drivingBackwards ? heading + Math.PI / 2 : heading - Math.PI / 2;
 		
 		return new Vec2D[] {
 				new Vec2D(position.getX() + Math.cos(leftHeading) * baseRadius, position.getY() + Math.sin(leftHeading) * baseRadius),
@@ -208,5 +211,14 @@ public class BezierPath {
 	 */
 	public double getAlpha() {
 		return alpha;
+	}
+	
+	/**
+	 * Sets whether the robot that drives this path is driving backwards or not.
+	 * If this is set to true, the locations of the left and right wheels will be reversed.
+	 * @param drivingBackwards
+	 */
+	public void setDrivingBackwards(boolean drivingBackwards) {
+		this.drivingBackwards = drivingBackwards;
 	}
 }

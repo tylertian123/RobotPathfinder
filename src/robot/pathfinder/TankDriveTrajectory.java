@@ -648,7 +648,10 @@ public class TankDriveTrajectory {
 			waypoints[i] = new Waypoint(old[i].getX(), -refPoint.relative(old[i].asVector()).getY(), -old[i].getHeading());
 		}
 		
-		return new TankDriveTrajectory(lMoments, rMoments, new BezierPath(waypoints, path.getAlpha(), path.getBaseRaidus()));
+		BezierPath newPath = new BezierPath(waypoints, path.getAlpha(), path.getBaseRaidus());
+		newPath.setDrivingBackwards(true);
+		
+		return new TankDriveTrajectory(lMoments, rMoments, newPath);
 	}
 	/**
 	 * Returns the reverse of this trajectory. Not to be confused with {@link #retrace()}.
@@ -679,10 +682,11 @@ public class TankDriveTrajectory {
 			Moment lm = leftMoments[leftMoments.length - 1 - i];
 			Moment rm = rightMoments[rightMoments.length - 1 - i];
 			
-			//The velocities and accelerations stay the same
+			//The velocities stay the same
 			//Distance and time have to be adjusted since the last Moment has to have distance 0 and time 0
-			lMoments[i] = new Moment(lLast.getDistance() - lm.getDistance(), lm.getVelocity(), lm.getAcceleration(), lLast.getTime() - lm.getTime());
-			rMoments[i] = new Moment(rLast.getDistance() - rm.getDistance(), rm.getVelocity(), rm.getAcceleration(), rLast.getTime() - rm.getTime());
+			//Accelerations are negated because if time is reversed, acceleration becomes deceleration
+			lMoments[i] = new Moment(lLast.getDistance() - lm.getDistance(), lm.getVelocity(), -lm.getAcceleration(), lLast.getTime() - lm.getTime());
+			rMoments[i] = new Moment(rLast.getDistance() - rm.getDistance(), rm.getVelocity(), -rm.getAcceleration(), rLast.getTime() - rm.getTime());
 		}
 		
 		//Create new path
@@ -720,11 +724,25 @@ public class TankDriveTrajectory {
 		for(int i = 0; i < lMoments.length; i ++) {
 			Moment lm = leftMoments[leftMoments.length - 1 - i];
 			Moment rm = rightMoments[rightMoments.length - 1 - i];
-			
-			//Basically reverse() and mirrorFrontBack() combined
-			lMoments[i] = new Moment(-(lLast.getDistance() - lm.getDistance()), -lm.getVelocity(), -lm.getAcceleration(), lm.getTime());
-			rMoments[i] = new Moment(-(rLast.getDistance() - rm.getDistance()), -rm.getVelocity(), -rm.getAcceleration(), rm.getTime());
+
+			//A combination of reverse() and mirrorFrontBack()
+			lMoments[i] = new Moment(-(lLast.getDistance() - lm.getDistance()), -lm.getVelocity(), lm.getAcceleration(), lLast.getTime() - lm.getTime());
+			rMoments[i] = new Moment(-(rLast.getDistance() - rm.getDistance()), -rm.getVelocity(), rm.getAcceleration(), rLast.getTime() - rm.getTime());
 		}
-		return new TankDriveTrajectory(lMoments, rMoments);
+		
+		//Create new path
+		Waypoint[] old = path.getWaypoints();
+		Waypoint[] waypoints = new Waypoint[old.length];
+		for(int i = 0; i < old.length; i ++) {
+			//New path is just the same as the old path, but with the order of the waypoints reversed,
+			//and headings flipped
+			waypoints[old.length - 1 - i] = new Waypoint(old[i].getX(), old[i].getY(), (old[i].getHeading() + Math.PI) % (2 * Math.PI));
+		}
+		BezierPath newPath = new BezierPath(waypoints, path.getAlpha(), path.getBaseRaidus());
+		newPath.setDrivingBackwards(true);
+	
+		//Note that even though the final path looks exactly the same, the order of the waypoints is actually
+		//the opposite.
+		return new TankDriveTrajectory(lMoments, rMoments, newPath);
 	}
 }

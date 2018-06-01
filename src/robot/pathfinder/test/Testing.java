@@ -79,14 +79,14 @@ public class Testing {
 		};
 		long time = System.currentTimeMillis();
 		TankDriveTrajectory.setSolverRoundingLimit(0);
-		TankDriveTrajectory a = new TankDriveTrajectory(waypoints, 5, 3.5, 1.0, 2, 20, 5000, true);
-		TankDriveTrajectory b = a.reverse();
+		TankDriveTrajectory a = new TankDriveTrajectory(waypoints, 5, 4, 2, 20, 5000, true);
+		TankDriveTrajectory b = a.retrace();
 		System.out.println("Trajectory generation took " + (System.currentTimeMillis() - time) + " milliseconds.");
 		
-		JFrame pGraph = Grapher.graphTrajectory(a, 0.005);
+		JFrame pGraph = Grapher.graphTrajectory(b, 0.005);
 		pGraph.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		pGraph.setVisible(true);
-		JFrame pGraph2 = Grapher.graphTrajectory(b, 0.005);
+		JFrame pGraph2 = Grapher.graphPath(b.getPath(), 0.005);
 		pGraph2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		pGraph2.setVisible(true);
 	}

@@ -74,7 +74,7 @@ public class Waypoint {
 	 * Retrieves the position of this waypoint represented as a {@code Vec2D}
 	 * @return The position of this waypoint
 	 */
-	public Vec2D getPosVec() {
+	public Vec2D asVector() {
 		return new Vec2D(x, y);
 	}
 }

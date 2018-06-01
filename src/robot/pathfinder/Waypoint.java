@@ -31,6 +31,23 @@ public class Waypoint {
 		this.y = y;
 		this.heading = heading;
 	}
+	/**
+	 * Constructs a new waypoint at the specified location without heading.
+	 * @param location The location of the waypoint
+	 */
+	public Waypoint(Vec2D location) {
+		this.x = location.getX();
+		this.y = location.getY();
+	}
+	/**
+	 * Constructs a new waypoint at the specified location with the specified heading.
+	 * @param location The location of the waypoint
+	 */
+	public Waypoint(Vec2D location, double heading) {
+		this.x = location.getX();
+		this.y = location.getY();
+		this.heading = heading;
+	}
 	
 	/**
 	 * Retrieves the X value of this waypoint.

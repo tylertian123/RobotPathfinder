@@ -1,5 +1,7 @@
 package robot.pathfinder.math;
 
+import robot.pathfinder.Waypoint;
+
 /**
  * A class that represents a vector in 2D space.
  * @author Tyler Tian
@@ -17,6 +19,14 @@ public class Vec2D {
 	public Vec2D(double x, double y) {
 		this.x = x;
 		this.y = y;
+	}
+	/**
+	 * Constructs a new vector with the location of the waypoint. The heading is ignored.
+	 * @param w - The waypoint whose location will be taken
+	 */
+	public Vec2D(Waypoint w) {
+		this.x = w.getX();
+		this.y = w.getY();
 	}
 	
 	/**
@@ -75,8 +85,8 @@ public class Vec2D {
 	}
 	/**
 	 * Subtracts a vector from this vector and returns the result. Note that this vector is not modified int the process.
-	 * @param vec
-	 * @return
+	 * @param vec - The vector to subtract
+	 * @return The result of the subtraction
 	 */
 	public Vec2D subtract(Vec2D vec) {
 		return new Vec2D(x - vec.x, y - vec.y);
@@ -88,5 +98,14 @@ public class Vec2D {
 	 */
 	public double distTo(Vec2D vec) {
 		return Vec2D.dist(this, vec);
+	}
+	
+	/**
+	 * Calculates the coordinates of the vector given relative to this vector.
+	 * @param vec - The vector whose coordinates will be taken
+	 * @return The relative coordinates of the vector to this vector
+	 */
+	public Vec2D relative(Vec2D vec) {
+		return new Vec2D(vec.x - this.x, vec.y - this.y);
 	}
 }

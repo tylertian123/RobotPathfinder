@@ -304,10 +304,14 @@ public class TankDriveTrajectory {
 		}
 	}
 	//Creates a trajectory with moments that are already generated
-	//Used in mirror()
 	protected TankDriveTrajectory(Moment[] lMoments, Moment[] rMoments) {
 		leftMoments = lMoments;
 		rightMoments = rMoments;
+	}
+	protected TankDriveTrajectory(Moment[] lMoments, Moment[] rMoments, BezierPath path) {
+		leftMoments = lMoments;
+		rightMoments = rMoments;
+		this.path = path;
 	}
 	
 	/**
@@ -593,6 +597,8 @@ public class TankDriveTrajectory {
 	 * @return The mirrored trajectory
 	 */
 	public TankDriveTrajectory mirrorLeftRight() {
+		//Create new path
+		Vec2D refPoint = new Vec2D(path.getWaypoints()[0]);
 		//Just create a new one with the sides swapped
 		return new TankDriveTrajectory(rightMoments, leftMoments);
 	}

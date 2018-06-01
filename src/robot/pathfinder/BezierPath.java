@@ -24,6 +24,8 @@ public class BezierPath {
 	
 	double baseRadius;
 	
+	Waypoint[] waypoints;
+	
 	/**
 	 * Constructs a Bezier path using the specified waypoints.
 	 * @param waypoints - The waypoints to pass through
@@ -39,6 +41,8 @@ public class BezierPath {
 					new Vec2D(Math.cos(waypoints[i].getHeading()) * alpha, Math.sin(waypoints[i].getHeading()) * alpha),
 					new Vec2D(Math.cos(waypoints[i + 1].getHeading()) * alpha, Math.sin(waypoints[i + 1].getHeading()) * alpha));
 		}
+		
+		this.waypoints = waypoints;
 		
 		resetIntegration();
 		resetWheelIntegration();
@@ -183,5 +187,13 @@ public class BezierPath {
 	public double[] getIntegratedWheelLens() {
 		//Return a clone so we can't accidentally modify it outside the class
 		return iwCurrentDists.clone();
+	}
+	
+	/**
+	 * Retrieves the waypoints used to construct this path.
+	 * @return The waypoints that were used to construct this path
+	 */
+	public Waypoint[] getWaypoints() {
+		return waypoints;
 	}
 }

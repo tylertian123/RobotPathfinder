@@ -1,20 +1,12 @@
 package robot.pathfinder.test;
 
-import java.awt.Dimension;
-import java.awt.GraphicsEnvironment;
-import java.awt.Rectangle;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
-import org.math.plot.Plot2DPanel;
-
 import robot.pathfinder.Moment;
 import robot.pathfinder.TankDriveTrajectory;
 import robot.pathfinder.Waypoint;
-import robot.pathfinder.math.Vec2D;
 import robot.pathfinder.tools.Grapher;
 
 public class Testing {

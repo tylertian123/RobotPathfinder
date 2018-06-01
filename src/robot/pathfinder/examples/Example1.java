@@ -1,7 +1,5 @@
 package robot.pathfinder.examples;
 
-import java.util.ArrayList;
-
 import javax.swing.JFrame;
 
 import robot.pathfinder.TankDriveTrajectory;
@@ -15,19 +13,6 @@ import robot.pathfinder.tools.Grapher;
  *
  */
 public class Example1 {
-	/**
-	 * Creates a {@code double} array from an {@code ArrayList} of {@code Double}s.
-	 * @param a - An {@code ArrayList} of {@code Double}s
-	 * @return A {@code double} array with the elements in the list
-	 */
-	static double[] primitiveArr(ArrayList<Double> a) {
-		Double[] arr = new Double[a.size()];
-		a.toArray(arr);
-		double[] d = new double[arr.length];
-		for(int i = 0; i < arr.length; i ++)
-			d[i] = arr[i];
-		return d;
-	}
 	
 	public static void main(String[] args) {
 		//Create array of waypoints

@@ -563,12 +563,9 @@ public class TankDriveTrajectory {
 		//Return the length in time of the longer side
 		return Math.max(leftMoments[leftMoments.length - 1].getTime(), rightMoments[rightMoments.length - 1].getTime());
 	}
-	//TODO: Remove the lines about null paths!
+	
 	/**
 	 * Retrieves the underlying {@code BezierPath} used to generate this trajectory.
-	 * <br>
-	 * <b>Warning: Trajectories created with the {@link #mirrorFrontBack()}, {@link #mirrorLeftRight()},
-	 * {@link #reverse()}, and {@link #retrace()} methods do not have an internal path, and will result in a value of {@code null} instead.</b>
 	 * @return The internal {@code BezierPath}
 	 */
 	public BezierPath getPath() {
@@ -576,9 +573,7 @@ public class TankDriveTrajectory {
 	}
 	/**
 	 * Accesses the internal {@code BezierPath} object and returns the path value at the specified time.<br>
-	 * This value should <b>not</b> be used directly for motion planning. It is a path, not a trajectory.<br>
-	 * <b>Warning: Trajectories created with the {@link #mirrorFrontBack()}, {@link #mirrorLeftRight()},
-	 * {@link #reverse()}, and {@link #retrace()} methods do not have an internal path, and will result in a {@link NullPointerException} instead.</b>
+	 * This value should <b>not</b> be used directly for motion planning. It is a path, not a trajectory.
 	 * @param t - A positive real number ranging from 0 to 1
 	 * @return The X and Y values at the specified time on the path
 	 */
@@ -588,8 +583,6 @@ public class TankDriveTrajectory {
 	
 	/**
 	 * Returns the left-right mirror image of this trajectory. Every left turn will now become a right turn.<br>
-	 * <b>Warning: Trajectories created with this method do not have an internal path; {@link #getPath()} will
-	 * return null and {@link #pathAt(double)} will raise a {@link NullPointerException}.</b><br>
 	 * <br>
 	 * Internally, this is done by creating a new trajectory with the left and right wheels swapped. No new 
 	 * arrays are created, so this method is very fast.
@@ -613,9 +606,6 @@ public class TankDriveTrajectory {
 	/**
 	 * Returns the front-back mirror image of this trajectory. Every forwards movement will now become
 	 * a backwards movement.<br>
-	 * <b>Warning: Trajectories created with this method do not have an internal path; {@link #getPath()} will
-	 * return null and {@link #pathAt(double)} will raise a {@link NullPointerException}.</b><br>
-	 * <br>
 	 * <b>Warning: The new trajectory created does not respect maximum deceleration constraints. If you wish
 	 * for the new trajectory to respect maximum deceleration constrains, construct a new trajectory with
 	 * maximum acceleration and deceleration swapped, and then call this method.</b><br>
@@ -658,9 +648,6 @@ public class TankDriveTrajectory {
 	 * The new trajectory starts at the end of this trajectory and ends at the beginning of it. 
 	 * However because the direction is not reversed, the new trajectory does not retrace this trajectory.
 	 * Use {@link #retrace()} instead.<br>
-	 * <b>Warning: Trajectories created with this method do not have an internal path; {@link #getPath()} will
-	 * return null and {@link #pathAt(double)} will raise a {@link NullPointerException}.</b><br>
-	 * <br>
 	 * <b>Warning: The new trajectory created does not respect maximum deceleration constraints. If you wish
 	 * for the new trajectory to respect maximum deceleration constrains, construct a new trajectory with
 	 * maximum acceleration and deceleration swapped, and then call this method.</b><br>
@@ -702,9 +689,6 @@ public class TankDriveTrajectory {
 	/**
 	 * Returns the trajectory that, when driven, would retrace this trajectory and return the robot to its
 	 * original position. Not to be confused with {@link #reverse()}.<br>
-	 * <b>Warning: Trajectories created with this method do not have an internal path; {@link #getPath()} will
-	 * return null and {@link #pathAt(double)} will raise a {@link NullPointerException}.</b><br>
-	 * <br>
 	 * <b>Warning: The new trajectory created does not respect maximum deceleration constraints. If you wish
 	 * for the new trajectory to respect maximum deceleration constrains, construct a new trajectory with
 	 * maximum acceleration and deceleration swapped, and then call this method.</b><br>

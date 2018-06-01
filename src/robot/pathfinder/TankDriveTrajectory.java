@@ -563,7 +563,7 @@ public class TankDriveTrajectory {
 		//Return the length in time of the longer side
 		return Math.max(leftMoments[leftMoments.length - 1].getTime(), rightMoments[rightMoments.length - 1].getTime());
 	}
-	
+	//TODO: Remove the lines about null paths!
 	/**
 	 * Retrieves the underlying {@code BezierPath} used to generate this trajectory.
 	 * <br>
@@ -640,11 +640,12 @@ public class TankDriveTrajectory {
 		
 		//Create new path
 		Waypoint[] old = path.getWaypoints();
+		Vec2D refPoint = new Vec2D(old[0]);
 		Waypoint[] waypoints = new Waypoint[old.length];
-		for(int i = 0; i < old.length; i ++) {
-			//New path is just the same as the old path, but with the order of the waypoints reversed,
-			//and headings flipped
-			waypoints[old.length - 1 - i] = new Waypoint(old[i].getX(), old[i].getY(), (old[i].getHeading() + Math.PI) % (2 * Math.PI));
+		
+		for(int i = 0; i < waypoints.length; i ++) {
+			//Negate the relative y coordinates and the headings and keep the x coordinates
+			waypoints[i] = new Waypoint(old[i].getX(), -refPoint.relative(old[i].asVector()).getY(), -old[i].getHeading());
 		}
 		
 		return new TankDriveTrajectory(lMoments, rMoments, new BezierPath(waypoints, path.getAlpha(), path.getBaseRaidus()));
@@ -683,7 +684,16 @@ public class TankDriveTrajectory {
 			lMoments[i] = new Moment(lLast.getDistance() - lm.getDistance(), lm.getVelocity(), lm.getAcceleration(), lm.getTime());
 			rMoments[i] = new Moment(rLast.getDistance() - rm.getDistance(), rm.getVelocity(), rm.getAcceleration(), rm.getTime());
 		}
-		return new TankDriveTrajectory(lMoments, rMoments);
+		
+		//Create new path
+		Waypoint[] old = path.getWaypoints();
+		Waypoint[] waypoints = new Waypoint[old.length];
+		for(int i = 0; i < old.length; i ++) {
+			//New path is just the same as the old path, but with the order of the waypoints reversed,
+			//and headings flipped
+			waypoints[old.length - 1 - i] = new Waypoint(old[i].getX(), old[i].getY(), (old[i].getHeading() + Math.PI) % (2 * Math.PI));
+		}
+		return new TankDriveTrajectory(lMoments, rMoments, new BezierPath(waypoints, path.getAlpha(), path.getBaseRaidus()));
 	}
 	/**
 	 * Returns the trajectory that, when driven, would retrace this trajectory and return the robot to its

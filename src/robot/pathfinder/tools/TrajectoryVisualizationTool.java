@@ -31,14 +31,10 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 
-import org.math.plot.Plot2DPanel;
-
 import robot.pathfinder.BezierPath;
-import robot.pathfinder.Moment;
 import robot.pathfinder.TankDriveTrajectory;
 import robot.pathfinder.TrajectoryGenerationException;
 import robot.pathfinder.Waypoint;
-import robot.pathfinder.math.Vec2D;
 
 /**
  * A GUI tool build with Swing to help visualize trajectories. 
@@ -306,34 +302,7 @@ public class TrajectoryVisualizationTool {
 					BezierPath path = new BezierPath(waypointArray, a);
 					path.setBaseRadius(base / 2);
 					
-					ArrayList<Double> xPos = new ArrayList<Double>();
-					ArrayList<Double> yPos = new ArrayList<Double>();
-					ArrayList<Double> leftXPos = new ArrayList<Double>();
-					ArrayList<Double> rightXPos = new ArrayList<Double>();
-					ArrayList<Double> leftYPos = new ArrayList<Double>();
-					ArrayList<Double> rightYPos = new ArrayList<Double>();
-					
-					for(double t = 0; t <= 1; t += 0.005) {
-						Vec2D centerPos = path.at(t);
-						Vec2D[] wheelsPos = path.wheelsAt(t);
-						
-						xPos.add(centerPos.getX());
-						yPos.add(centerPos.getY());
-						leftXPos.add(wheelsPos[0].getX());
-						rightXPos.add(wheelsPos[1].getX());
-						leftYPos.add(wheelsPos[0].getY());
-						rightYPos.add(wheelsPos[1].getY());
-					}
-					
-					Plot2DPanel pathPlot = new Plot2DPanel();
-					pathPlot.setLegendOrientation("EAST");
-					pathPlot.addLinePlot("Center Position", primitiveArr(xPos), primitiveArr(yPos));
-					pathPlot.addLinePlot("Left Position", primitiveArr(leftXPos), primitiveArr(leftYPos));
-					pathPlot.addLinePlot("Right Position", primitiveArr(rightXPos), primitiveArr(rightYPos));
-					JFrame pathFrame = new JFrame("Path");
-					pathFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-					pathFrame.setContentPane(pathPlot);
-					pathFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+					JFrame pathFrame = Grapher.graphPath(path, 0.005);
 					pathFrame.addWindowListener(new WindowAdapter() {
 						@Override
 						public void windowClosing(WindowEvent e) {
@@ -358,68 +327,9 @@ public class TrajectoryVisualizationTool {
 					return;
 				}
 				
-				ArrayList<Double> xPos = new ArrayList<Double>();
-				ArrayList<Double> yPos = new ArrayList<Double>();
-				ArrayList<Double> leftXPos = new ArrayList<Double>();
-				ArrayList<Double> rightXPos = new ArrayList<Double>();
-				ArrayList<Double> leftYPos = new ArrayList<Double>();
-				ArrayList<Double> rightYPos = new ArrayList<Double>();
 				
-				ArrayList<Double> time = new ArrayList<Double>();
-				ArrayList<Double> leftPosition = new ArrayList<Double>();
-				ArrayList<Double> rightPosition = new ArrayList<Double>();
-				ArrayList<Double> leftVelocity = new ArrayList<Double>();
-				ArrayList<Double> rightVelocity = new ArrayList<Double>();
-				ArrayList<Double> leftAcceleration = new ArrayList<Double>();
-				ArrayList<Double> rightAcceleration = new ArrayList<Double>();
-				
-				BezierPath path = trajectory.getPath();
-				for(double t = 0; t <= 1; t += 0.005) {
-					Vec2D centerPos = path.at(t);
-					Vec2D[] wheelsPos = path.wheelsAt(t);
-					
-					xPos.add(centerPos.getX());
-					yPos.add(centerPos.getY());
-					leftXPos.add(wheelsPos[0].getX());
-					rightXPos.add(wheelsPos[1].getX());
-					leftYPos.add(wheelsPos[0].getY());
-					rightYPos.add(wheelsPos[1].getY());
-				}
-				for(double t = 0; t <= trajectory.totalTime(); t += 0.010) {
-					time.add(t);
-					Moment left = trajectory.getLeftSmooth(t);
-					Moment right = trajectory.getRightSmooth(t);
-					
-					leftPosition.add(left.getDistance());
-					leftVelocity.add(left.getVelocity());
-					leftAcceleration.add(left.getAcceleration());
-					rightPosition.add(right.getDistance());
-					rightVelocity.add(right.getVelocity());
-					rightAcceleration.add(right.getAcceleration());
-				}
-				
-				Plot2DPanel pathPlot = new Plot2DPanel();
-				pathPlot.setLegendOrientation("EAST");
-				pathPlot.addLinePlot("Center Position", primitiveArr(xPos), primitiveArr(yPos));
-				pathPlot.addLinePlot("Left Position", primitiveArr(leftXPos), primitiveArr(leftYPos));
-				pathPlot.addLinePlot("Right Position", primitiveArr(rightXPos), primitiveArr(rightYPos));
-				
-				Plot2DPanel movementPlot = new Plot2DPanel();
-				movementPlot.setLegendOrientation("EAST");
-				double[] timeArr = primitiveArr(time);
-				movementPlot.addLinePlot("Left Position", timeArr, primitiveArr(leftPosition));
-				movementPlot.addLinePlot("Left Velocity", timeArr, primitiveArr(leftVelocity));
-				movementPlot.addLinePlot("Left Acceleration", timeArr, primitiveArr(leftAcceleration));
-				movementPlot.addLinePlot("Right Position", timeArr, primitiveArr(rightPosition));
-				movementPlot.addLinePlot("Right Velocity", timeArr, primitiveArr(rightVelocity));
-				movementPlot.addLinePlot("Right Acceleration", timeArr, primitiveArr(rightAcceleration));
-				
-				JFrame pathFrame = new JFrame("Path");
-				JFrame movementFrame = new JFrame("Movement");
-				pathFrame.setContentPane(pathPlot);
-				movementFrame.setContentPane(movementPlot);
-				pathFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-				movementFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+				JFrame pathFrame = Grapher.graphPath(trajectory.getPath(), 0.005);
+				JFrame movementFrame = Grapher.graphTrajectory(trajectory, 0.001);
 				
 				WindowAdapter closeHook = new WindowAdapter() {
 					@Override

@@ -12,7 +12,7 @@ import robot.pathfinder.tools.Grapher;
  * @author Tyler Tian
  *
  */
-public class Example1 {
+public class TrajectoryGenerationDemo {
 	
 	public static void main(String[] args) {
 		//Create array of waypoints

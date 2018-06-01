@@ -20,7 +20,7 @@ For the path:
 And for the trajectory:
 ![Trajectory](http://tylertian123.github.io/images/RobotPathfinder/generatedtrajectory1.png)<br>
 Note that the distance between two wheels seem to be nonconstant in the first graph, but that caused by the scale on the X and Y axes being different.<br>
-The program that generated this trajectory can be found at `robot/pathfinder/examples/Example1.java`.
+The program that generated this trajectory can be found at `robot/pathfinder/examples/TrajectoryGenerationDemo.java`.
 
 ## GUI Trajectory Visualization Tool
 A GUI trajectory visualization tool is also included:

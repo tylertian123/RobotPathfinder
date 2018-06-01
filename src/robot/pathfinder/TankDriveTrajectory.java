@@ -679,10 +679,10 @@ public class TankDriveTrajectory {
 			Moment lm = leftMoments[leftMoments.length - 1 - i];
 			Moment rm = rightMoments[rightMoments.length - 1 - i];
 			
-			//The velocities and accelerations and time stays the same
-			//Distance has to be adjusted since the last Moment has to have distance 0
-			lMoments[i] = new Moment(lLast.getDistance() - lm.getDistance(), lm.getVelocity(), lm.getAcceleration(), lm.getTime());
-			rMoments[i] = new Moment(rLast.getDistance() - rm.getDistance(), rm.getVelocity(), rm.getAcceleration(), rm.getTime());
+			//The velocities and accelerations stay the same
+			//Distance and time have to be adjusted since the last Moment has to have distance 0 and time 0
+			lMoments[i] = new Moment(lLast.getDistance() - lm.getDistance(), lm.getVelocity(), lm.getAcceleration(), lLast.getTime() - lm.getTime());
+			rMoments[i] = new Moment(rLast.getDistance() - rm.getDistance(), rm.getVelocity(), rm.getAcceleration(), rLast.getTime() - rm.getTime());
 		}
 		
 		//Create new path

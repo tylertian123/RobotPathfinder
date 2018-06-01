@@ -598,9 +598,17 @@ public class TankDriveTrajectory {
 	 */
 	public TankDriveTrajectory mirrorLeftRight() {
 		//Create new path
-		Vec2D refPoint = new Vec2D(path.getWaypoints()[0]);
+		Waypoint[] old = path.getWaypoints();
+		Vec2D refPoint = new Vec2D(old[0]);
+		Waypoint[] waypoints = new Waypoint[old.length];
+		
+		for(int i = 0; i < waypoints.length; i ++) {
+			//Negate the relative x coordinates and keep everything else the same
+			waypoints[i] = new Waypoint(-refPoint.relative(old[i].asVector()).getX(), old[i].getY(), old[i].getHeading());
+		}
+		
 		//Just create a new one with the sides swapped
-		return new TankDriveTrajectory(rightMoments, leftMoments);
+		return new TankDriveTrajectory(rightMoments, leftMoments, new BezierPath(waypoints, path.getAlpha()));
 	}
 	/**
 	 * Returns the front-back mirror image of this trajectory. Every forwards movement will now become

@@ -25,6 +25,7 @@ public class BezierPath {
 	double baseRadius;
 	
 	Waypoint[] waypoints;
+	double alpha;
 	
 	/**
 	 * Constructs a Bezier path using the specified waypoints.
@@ -37,12 +38,13 @@ public class BezierPath {
 		}
 		beziers = new Bezier[waypoints.length - 1];
 		for(int i = 0; i < beziers.length; i ++) {
-			beziers[i] = Bezier.getFromHermite(waypoints[i].getPosVec(), waypoints[i + 1].getPosVec(),
+			beziers[i] = Bezier.getFromHermite(waypoints[i].asVector(), waypoints[i + 1].asVector(),
 					new Vec2D(Math.cos(waypoints[i].getHeading()) * alpha, Math.sin(waypoints[i].getHeading()) * alpha),
 					new Vec2D(Math.cos(waypoints[i + 1].getHeading()) * alpha, Math.sin(waypoints[i + 1].getHeading()) * alpha));
 		}
 		
 		this.waypoints = waypoints;
+		this.alpha = alpha;
 		
 		resetIntegration();
 		resetWheelIntegration();
@@ -195,5 +197,12 @@ public class BezierPath {
 	 */
 	public Waypoint[] getWaypoints() {
 		return waypoints;
+	}
+	/**
+	 * Retrieves the alpha (smoothness constant) of this path.
+	 * @return The alpha of this path
+	 */
+	public double getAlpha() {
+		return alpha;
 	}
 }

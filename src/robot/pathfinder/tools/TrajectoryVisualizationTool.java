@@ -16,8 +16,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -68,12 +70,18 @@ public class TrajectoryVisualizationTool {
 	static JTextField maxAcceleration = new JTextField();
 	static JTextField maxDeceleration = new JTextField();
 	static JTextField roundingLimit = new JTextField("1.0e-5");
+	static JCheckBox fastGraphing = new JCheckBox("Fast Graphing");
 	static JPanel argumentsPanel;
 	
 	static JMenuBar menuBar;
 	static JMenu fileMenu;
 	
 	static ArrayList<Waypoint> waypoints = new ArrayList<Waypoint>();
+	
+	static final double PATH_DT_DEFAULT = 0.005;
+	static final double TRAJ_DT_DEFAULT = 0.005;
+	static final double PATH_DT_FAST = 0.02;
+	static final double TRAJ_DT_FAST = 0.05;
 	
 	static final String[] COLUMN_NAMES = new String[] {
 			"X Position",
@@ -194,6 +202,9 @@ public class TrajectoryVisualizationTool {
 		subPanel4.setLayout(new BoxLayout(subPanel4, BoxLayout.PAGE_AXIS));
 		subPanel4.add(new JLabel("(Optional) Max Deceleration"));
 		subPanel4.add(maxDeceleration);
+		subPanel4.add(Box.createRigidArea(new Dimension(0, 12)));
+		fastGraphing.setFont(new JLabel().getFont());
+		subPanel4.add(fastGraphing);
 		
 		argumentsPanel.add(subPanel1);
 		argumentsPanel.add(subPanel2);
@@ -330,7 +341,7 @@ public class TrajectoryVisualizationTool {
 			BezierPath path = new BezierPath(waypointArray, a);
 			path.setBaseRadius(base / 2);
 			
-			JFrame pathFrame = Grapher.graphPath(path, 0.005);
+			JFrame pathFrame = Grapher.graphPath(path, fastGraphing.isSelected() ? PATH_DT_FAST : PATH_DT_DEFAULT);
 			pathFrame.addWindowListener(new WindowAdapter() {
 				@Override
 				public void windowClosing(WindowEvent e) {
@@ -396,7 +407,7 @@ public class TrajectoryVisualizationTool {
 				BezierPath path = new BezierPath(waypointArray, a);
 				path.setBaseRadius(base / 2);
 				
-				JFrame pathFrame = Grapher.graphPath(path, 0.005);
+				JFrame pathFrame = Grapher.graphPath(path, fastGraphing.isSelected() ? PATH_DT_FAST : PATH_DT_DEFAULT);
 				pathFrame.addWindowListener(new WindowAdapter() {
 					@Override
 					public void windowClosing(WindowEvent e) {
@@ -422,8 +433,8 @@ public class TrajectoryVisualizationTool {
 			}
 			
 			
-			JFrame pathFrame = Grapher.graphPath(trajectory.getPath(), 0.005);
-			JFrame movementFrame = Grapher.graphTrajectory(trajectory, 0.001);
+			JFrame pathFrame = Grapher.graphPath(trajectory.getPath(), fastGraphing.isSelected() ? PATH_DT_FAST : PATH_DT_DEFAULT);
+			JFrame movementFrame = Grapher.graphTrajectory(trajectory, fastGraphing.isSelected() ? TRAJ_DT_FAST : TRAJ_DT_DEFAULT);
 			
 			WindowAdapter closeHook = new WindowAdapter() {
 				@Override

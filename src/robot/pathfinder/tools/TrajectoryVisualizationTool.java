@@ -2,6 +2,9 @@ package robot.pathfinder.tools;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -25,6 +28,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
@@ -299,6 +303,52 @@ public class TrajectoryVisualizationTool {
 		deleteWaypointButton.setPreferredSize(buttonSize);
 		buttonsPanel.add(deleteWaypointButton);
 		
+
+		JButton previewButton = new JButton("Preview");
+		previewButton.addActionListener(e -> {
+			double base, a;
+			
+			try {
+				base = Double.parseDouble(baseWidth.getText());
+				a = Double.parseDouble(alpha.getText());
+			}
+			catch(NumberFormatException e1) {
+				JOptionPane.showMessageDialog(mainFrame, "Error: Please enter a valid base plate width and alpha value.", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
+			if(waypoints.size() < 2) {
+				JOptionPane.showMessageDialog(mainFrame, "Error: Not enough waypoints.", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
+			Waypoint[] waypointArray = new Waypoint[waypoints.size()];
+			for(int i = 0; i < waypointArray.length; i ++) {
+				waypointArray[i] = waypoints.get(i);
+			}
+			
+			BezierPath path = new BezierPath(waypointArray, a);
+			path.setBaseRadius(base / 2);
+			
+			JFrame pathFrame = Grapher.graphPath(path, 0.005);
+			pathFrame.addWindowListener(new WindowAdapter() {
+				@Override
+				public void windowClosing(WindowEvent e) {
+					try {
+						UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+							| UnsupportedLookAndFeelException e1) {
+						e1.printStackTrace();
+					}
+					mainFrame.setVisible(true);
+				}
+			});
+			mainFrame.setVisible(false);
+			pathFrame.setVisible(true);
+		});
+		previewButton.setPreferredSize(buttonSize);
+		buttonsPanel.add(previewButton);
+		
 		JButton generateButton = new JButton("Generate");
 		generateButton.addActionListener(e -> {
 			double maxVel, maxAccel, maxDecel, base, a, minUnit;
@@ -408,50 +458,76 @@ public class TrajectoryVisualizationTool {
 		generateButton.setPreferredSize(buttonSize);
 		buttonsPanel.add(generateButton);
 		
-		JButton previewButton = new JButton("Preview");
-		previewButton.addActionListener(e -> {
-			double base, a;
+		JPanel generatedCodePanel = new JPanel();
+		JTextArea generatedCodeTextArea = new JTextArea();
+		generatedCodeTextArea.setFont(new Font("monospaced", Font.PLAIN, 12));
+		generatedCodeTextArea.setEditable(false);
+		generatedCodeTextArea.setBackground(UIManager.getColor("Panel.background"));
+		generatedCodeTextArea.setBorder(new JTextField().getBorder());
+		generatedCodeTextArea.setTabSize(4);
+		generatedCodePanel.add(generatedCodeTextArea);
+		
+		JButton generateCodeButton = new JButton("Get Code");
+		generateCodeButton.addActionListener(e -> {
+			
+			double maxVel, maxAccel, maxDecel, base, a, minUnit;
+			int segmentCount;
 			
 			try {
+				maxVel = Double.parseDouble(maxVelocity.getText());
+				maxAccel = Double.parseDouble(maxAcceleration.getText());
+				if(maxDeceleration.getText().equals("")) {
+					maxDecel = Double.NaN;
+				}
+				else {
+					maxDecel = Double.parseDouble(maxDeceleration.getText());
+				}
 				base = Double.parseDouble(baseWidth.getText());
 				a = Double.parseDouble(alpha.getText());
+				segmentCount = Integer.parseInt(segments.getText());
+				minUnit = Double.parseDouble(roundingLimit.getText());
 			}
 			catch(NumberFormatException e1) {
-				JOptionPane.showMessageDialog(mainFrame, "Error: Please enter a valid base plate width and alpha value.", "Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(mainFrame, "Error: An invalid token was entered\nin one or more fields.", "Error", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			
+			if(waypoints.size() < 1) {
+				JOptionPane.showMessageDialog(mainFrame, "Error: You must specify at least one waypoint", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
 			if(waypoints.size() < 2) {
-				JOptionPane.showMessageDialog(mainFrame, "Error: Not enough waypoints.", "Error", JOptionPane.ERROR_MESSAGE);
-				return;
+				int ret = JOptionPane.showConfirmDialog(mainFrame, "Warning: There are not enough waypoints to create a valid trajectory.\nAre you sure you want to continue?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+				if(ret != JOptionPane.YES_OPTION)
+					return;
 			}
 			
-			Waypoint[] waypointArray = new Waypoint[waypoints.size()];
-			for(int i = 0; i < waypointArray.length; i ++) {
-				waypointArray[i] = waypoints.get(i);
+			StringBuilder generatedCode = new StringBuilder("TankDriveTrajectory.setSolverRoundingLimit(" + minUnit + ");\n");
+			generatedCode.append("TankDriveTrajectory trajectory = new TankDriveTrajectory(new Waypoint[] {\n");
+			for(Waypoint w : waypoints) {
+				String waypointCode = "\t\tnew Waypoint(" + String.valueOf(w.getX()) + ", " + String.valueOf(w.getY()) + ", " + String.valueOf(w.getHeading()) + "),\n";
+				generatedCode.append(waypointCode);
 			}
+			generatedCode.append("}, " + maxVel + ", " + maxAccel + ", ");
+			if(!Double.isNaN(maxDecel)) {
+				generatedCode.append(maxDecel + ", ");
+			}
+			generatedCode.append(base + ", " + a + ", " + segmentCount + ");");
 			
-			BezierPath path = new BezierPath(waypointArray, a);
-			path.setBaseRadius(base / 2);
 			
-			JFrame pathFrame = Grapher.graphPath(path, 0.005);
-			pathFrame.addWindowListener(new WindowAdapter() {
-				@Override
-				public void windowClosing(WindowEvent e) {
-					try {
-						UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-							| UnsupportedLookAndFeelException e1) {
-						e1.printStackTrace();
-					}
-					mainFrame.setVisible(true);
-				}
-			});
-			mainFrame.setVisible(false);
-			pathFrame.setVisible(true);
+			String[] options = {
+					"Copy to Clipboard",
+					"Close",
+			};
+			generatedCodeTextArea.setText(generatedCode.toString());
+			int ret = JOptionPane.showOptionDialog(mainFrame, generatedCodePanel, "Code", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+			if(ret == JOptionPane.YES_OPTION) {
+				Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(generatedCode.toString()), null);
+				JOptionPane.showMessageDialog(mainFrame, "Successfully copied to clipboard.", "Success", JOptionPane.INFORMATION_MESSAGE);
+			}
 		});
-		previewButton.setPreferredSize(buttonSize);
-		buttonsPanel.add(previewButton);
+		generateCodeButton.setPreferredSize(buttonSize);
+		buttonsPanel.add(generateCodeButton);
 		
 		menuBar = new JMenuBar();
 		fileMenu = new JMenu("File");

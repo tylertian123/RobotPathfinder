@@ -3,7 +3,6 @@ package robot.pathfinder.tools;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
@@ -203,197 +202,154 @@ public class TrajectoryVisualizationTool {
 		
 		Dimension buttonSize = new Dimension(120, 30);
 		JButton addWaypointButton = new JButton("Add Waypoint");
-		addWaypointButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				boolean error = false;
-				do {
-					int selectedRow = table.getSelectedRow();
-					
-					int response = JOptionPane.showConfirmDialog(mainFrame, waypointPanel, "New Waypoint...", JOptionPane.OK_CANCEL_OPTION);
-					if(response != JOptionPane.OK_OPTION)
-						break;
-					try {
-						double x = Double.parseDouble(waypointX.getText());
-						double y = Double.parseDouble(waypointY.getText());
-						double heading = Double.parseDouble(waypointHeading.getText());
-						
-						if(selectedRow == -1)
-							waypoints.add(new Waypoint(x, y, Math.toRadians(heading)));
-						else 
-							waypoints.add(selectedRow, new Waypoint(x, y, Math.toRadians(heading)));
-						WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
-						if(selectedRow == -1)
-							tableModel.addRow(new Object[] { String.valueOf(x), String.valueOf(y), String.valueOf(heading) });
-						else
-							tableModel.insertRow(selectedRow, new Object[] { String.valueOf(x), String.valueOf(y), String.valueOf(heading) });
-						
-						error = false;
-					}
-					catch(NumberFormatException e1) {
-						error = true;
-						JOptionPane.showMessageDialog(mainFrame, "Error: An invalid token was entered\nin one or more fields.", "Error", JOptionPane.ERROR_MESSAGE);
-					}
-				} while(error);
+		addWaypointButton.addActionListener(e -> {
+			boolean error = false;
+			do {
+				int selectedRow = table.getSelectedRow();
 				
-				waypointX.setText("");
-				waypointY.setText("");
-				waypointHeading.setText("");
-			}
+				int response = JOptionPane.showConfirmDialog(mainFrame, waypointPanel, "New Waypoint...", JOptionPane.OK_CANCEL_OPTION);
+				if(response != JOptionPane.OK_OPTION)
+					break;
+				try {
+					double x = Double.parseDouble(waypointX.getText());
+					double y = Double.parseDouble(waypointY.getText());
+					double heading = Double.parseDouble(waypointHeading.getText());
+					
+					if(selectedRow == -1)
+						waypoints.add(new Waypoint(x, y, Math.toRadians(heading)));
+					else 
+						waypoints.add(selectedRow, new Waypoint(x, y, Math.toRadians(heading)));
+					WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
+					if(selectedRow == -1)
+						tableModel.addRow(new Object[] { String.valueOf(x), String.valueOf(y), String.valueOf(heading) });
+					else
+						tableModel.insertRow(selectedRow, new Object[] { String.valueOf(x), String.valueOf(y), String.valueOf(heading) });
+					
+					error = false;
+				}
+				catch(NumberFormatException e1) {
+					error = true;
+					JOptionPane.showMessageDialog(mainFrame, "Error: An invalid token was entered\nin one or more fields.", "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			} while(error);
+			
+			waypointX.setText("");
+			waypointY.setText("");
+			waypointHeading.setText("");
 		});
 		addWaypointButton.setPreferredSize(buttonSize);
 		buttonsPanel.add(addWaypointButton);
 		
 		JButton editWaypointButton = new JButton("Edit Waypoint");
-		editWaypointButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int index = table.getSelectedRow();
-				if(index == -1) {
-					JOptionPane.showMessageDialog(mainFrame, "Error: No waypoint selected.", "Error", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				
-				WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
-				String xStr = (String) tableModel.getValueAt(index, 0);
-				String yStr = (String) tableModel.getValueAt(index, 1);
-				String headingStr = (String) tableModel.getValueAt(index, 2);
-				
-				waypointX.setText(xStr);
-				waypointY.setText(yStr);
-				waypointHeading.setText(headingStr);
-				
-				boolean error;
-				do {
-					int response = JOptionPane.showConfirmDialog(mainFrame, waypointPanel, "Edit Waypoint...", JOptionPane.OK_CANCEL_OPTION);
-					if(response != JOptionPane.OK_OPTION)
-						break;
-					
-					try {
-						double x = Double.parseDouble(waypointX.getText());
-						double y = Double.parseDouble(waypointY.getText());
-						double heading = Double.parseDouble(waypointHeading.getText());
-						
-						waypoints.set(index, new Waypoint(x, y, Math.toRadians(heading)));
-						tableModel.setValueAt(String.valueOf(x), index, 0);
-						tableModel.setValueAt(String.valueOf(y), index, 1);
-						tableModel.setValueAt(String.valueOf(heading), index, 2);
-						
-						error = false;
-					}
-					catch(NumberFormatException e1) {
-						error = true;
-						JOptionPane.showMessageDialog(mainFrame, "Error: An invalid token was entered\nin one or more fields.", "Error", JOptionPane.ERROR_MESSAGE);
-					}
-				} while(error);
+		editWaypointButton.addActionListener(e -> {
+			int index = table.getSelectedRow();
+			if(index == -1) {
+				JOptionPane.showMessageDialog(mainFrame, "Error: No waypoint selected.", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
 			}
+			
+			WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
+			String xStr = (String) tableModel.getValueAt(index, 0);
+			String yStr = (String) tableModel.getValueAt(index, 1);
+			String headingStr = (String) tableModel.getValueAt(index, 2);
+			
+			waypointX.setText(xStr);
+			waypointY.setText(yStr);
+			waypointHeading.setText(headingStr);
+			
+			boolean error;
+			do {
+				int response = JOptionPane.showConfirmDialog(mainFrame, waypointPanel, "Edit Waypoint...", JOptionPane.OK_CANCEL_OPTION);
+				if(response != JOptionPane.OK_OPTION)
+					break;
+				
+				try {
+					double x = Double.parseDouble(waypointX.getText());
+					double y = Double.parseDouble(waypointY.getText());
+					double heading = Double.parseDouble(waypointHeading.getText());
+					
+					waypoints.set(index, new Waypoint(x, y, Math.toRadians(heading)));
+					tableModel.setValueAt(String.valueOf(x), index, 0);
+					tableModel.setValueAt(String.valueOf(y), index, 1);
+					tableModel.setValueAt(String.valueOf(heading), index, 2);
+					
+					error = false;
+				}
+				catch(NumberFormatException e1) {
+					error = true;
+					JOptionPane.showMessageDialog(mainFrame, "Error: An invalid token was entered\nin one or more fields.", "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			} while(error);
 		});
 		editWaypointButton.setPreferredSize(buttonSize);
 		buttonsPanel.add(editWaypointButton);
 		
 		JButton deleteWaypointButton = new JButton("Remove Waypoint");
-		deleteWaypointButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int index = table.getSelectedRow();
-				if(index == -1) {
-					JOptionPane.showMessageDialog(mainFrame, "Error: No waypoint selected.", "Error", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				
-				waypoints.remove(index);
-				WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
-				tableModel.removeRow(index);
+		deleteWaypointButton.addActionListener(e -> {
+			int index = table.getSelectedRow();
+			if(index == -1) {
+				JOptionPane.showMessageDialog(mainFrame, "Error: No waypoint selected.", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
 			}
+			
+			waypoints.remove(index);
+			WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
+			tableModel.removeRow(index);
 		});
 		deleteWaypointButton.setPreferredSize(buttonSize);
 		buttonsPanel.add(deleteWaypointButton);
 		
 		JButton generateButton = new JButton("Generate");
-		generateButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				double maxVel, maxAccel, maxDecel, base, a, minUnit;
-				int segmentCount;
-				
-				try {
-					maxVel = Double.parseDouble(maxVelocity.getText());
-					maxAccel = Double.parseDouble(maxAcceleration.getText());
-					if(maxDeceleration.getText().equals("")) {
-						maxDecel = maxAccel;
-					}
-					else {
-						maxDecel = Double.parseDouble(maxDeceleration.getText());
-					}
-					base = Double.parseDouble(baseWidth.getText());
-					a = Double.parseDouble(alpha.getText());
-					segmentCount = Integer.parseInt(segments.getText());
-					minUnit = Double.parseDouble(roundingLimit.getText());
+		generateButton.addActionListener(e -> {
+			double maxVel, maxAccel, maxDecel, base, a, minUnit;
+			int segmentCount;
+			
+			try {
+				maxVel = Double.parseDouble(maxVelocity.getText());
+				maxAccel = Double.parseDouble(maxAcceleration.getText());
+				if(maxDeceleration.getText().equals("")) {
+					maxDecel = maxAccel;
 				}
-				catch(NumberFormatException e1) {
-					JOptionPane.showMessageDialog(mainFrame, "Error: An invalid token was entered\nin one or more fields.", "Error", JOptionPane.ERROR_MESSAGE);
+				else {
+					maxDecel = Double.parseDouble(maxDeceleration.getText());
+				}
+				base = Double.parseDouble(baseWidth.getText());
+				a = Double.parseDouble(alpha.getText());
+				segmentCount = Integer.parseInt(segments.getText());
+				minUnit = Double.parseDouble(roundingLimit.getText());
+			}
+			catch(NumberFormatException e1) {
+				JOptionPane.showMessageDialog(mainFrame, "Error: An invalid token was entered\nin one or more fields.", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
+			if(waypoints.size() < 2) {
+				JOptionPane.showMessageDialog(mainFrame, "Error: Not enough waypoints.", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
+			Waypoint[] waypointArray = new Waypoint[waypoints.size()];
+			for(int i = 0; i < waypointArray.length; i ++) {
+				waypointArray[i] = waypoints.get(i);
+			}
+			
+			TankDriveTrajectory trajectory = null;
+			try {
+				TankDriveTrajectory.setSolverRoundingLimit(minUnit);
+				trajectory = new TankDriveTrajectory(waypointArray, maxVel, maxAccel, maxDecel, base, a, segmentCount);
+			}
+			catch(TrajectoryGenerationException pge) {
+				int ret = JOptionPane.showConfirmDialog(mainFrame, "Error: Trajectory generation is impossible with current constraints.\nProceed anyways with only the path?", "Error", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+				if(ret == JOptionPane.NO_OPTION)
 					return;
-				}
 				
-				if(waypoints.size() < 2) {
-					JOptionPane.showMessageDialog(mainFrame, "Error: Not enough waypoints.", "Error", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
+				BezierPath path = new BezierPath(waypointArray, a);
+				path.setBaseRadius(base / 2);
 				
-				Waypoint[] waypointArray = new Waypoint[waypoints.size()];
-				for(int i = 0; i < waypointArray.length; i ++) {
-					waypointArray[i] = waypoints.get(i);
-				}
-				
-				TankDriveTrajectory trajectory = null;
-				try {
-					TankDriveTrajectory.setSolverRoundingLimit(minUnit);
-					trajectory = new TankDriveTrajectory(waypointArray, maxVel, maxAccel, maxDecel, base, a, segmentCount);
-				}
-				catch(TrajectoryGenerationException pge) {
-					int ret = JOptionPane.showConfirmDialog(mainFrame, "Error: Trajectory generation is impossible with current constraints.\nProceed anyways with only the path?", "Error", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-					if(ret == JOptionPane.NO_OPTION)
-						return;
-					
-					BezierPath path = new BezierPath(waypointArray, a);
-					path.setBaseRadius(base / 2);
-					
-					JFrame pathFrame = Grapher.graphPath(path, 0.005);
-					pathFrame.addWindowListener(new WindowAdapter() {
-						@Override
-						public void windowClosing(WindowEvent e) {
-							try {
-								UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-							} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-									| UnsupportedLookAndFeelException e1) {
-								e1.printStackTrace();
-							}
-							mainFrame.setVisible(true);
-						}
-					});
-					
-					try {
-						UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-							| UnsupportedLookAndFeelException e1) {
-						e1.printStackTrace();
-					}
-					mainFrame.setVisible(false);
-					pathFrame.setVisible(true);
-					return;
-				}
-				
-				
-				JFrame pathFrame = Grapher.graphPath(trajectory.getPath(), 0.005);
-				JFrame movementFrame = Grapher.graphTrajectory(trajectory, 0.001);
-				
-				WindowAdapter closeHook = new WindowAdapter() {
+				JFrame pathFrame = Grapher.graphPath(path, 0.005);
+				pathFrame.addWindowListener(new WindowAdapter() {
 					@Override
 					public void windowClosing(WindowEvent e) {
-						pathFrame.setVisible(false);
-						movementFrame.setVisible(false);
-						pathFrame.dispose();
-						movementFrame.dispose();
 						try {
 							UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 						} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
@@ -402,9 +358,7 @@ public class TrajectoryVisualizationTool {
 						}
 						mainFrame.setVisible(true);
 					}
-				};
-				pathFrame.addWindowListener(closeHook);
-				movementFrame.addWindowListener(closeHook);
+				});
 				
 				try {
 					UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
@@ -412,14 +366,92 @@ public class TrajectoryVisualizationTool {
 						| UnsupportedLookAndFeelException e1) {
 					e1.printStackTrace();
 				}
-				JOptionPane.showMessageDialog(mainFrame, "Trajectory Total Time: " + trajectory.totalTime() + " seconds");
 				mainFrame.setVisible(false);
-				movementFrame.setVisible(true);
 				pathFrame.setVisible(true);
+				return;
 			}
+			
+			
+			JFrame pathFrame = Grapher.graphPath(trajectory.getPath(), 0.005);
+			JFrame movementFrame = Grapher.graphTrajectory(trajectory, 0.001);
+			
+			WindowAdapter closeHook = new WindowAdapter() {
+				@Override
+				public void windowClosing(WindowEvent e) {
+					pathFrame.setVisible(false);
+					movementFrame.setVisible(false);
+					pathFrame.dispose();
+					movementFrame.dispose();
+					try {
+						UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+							| UnsupportedLookAndFeelException e1) {
+						e1.printStackTrace();
+					}
+					mainFrame.setVisible(true);
+				}
+			};
+			pathFrame.addWindowListener(closeHook);
+			movementFrame.addWindowListener(closeHook);
+			
+			try {
+				UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+					| UnsupportedLookAndFeelException e1) {
+				e1.printStackTrace();
+			}
+			JOptionPane.showMessageDialog(mainFrame, "Trajectory Total Time: " + trajectory.totalTime() + " seconds");
+			mainFrame.setVisible(false);
+			movementFrame.setVisible(true);
+			pathFrame.setVisible(true);
 		});
 		generateButton.setPreferredSize(buttonSize);
 		buttonsPanel.add(generateButton);
+		
+		JButton previewButton = new JButton("Preview");
+		previewButton.addActionListener(e -> {
+			double base, a;
+			
+			try {
+				base = Double.parseDouble(baseWidth.getText());
+				a = Double.parseDouble(alpha.getText());
+			}
+			catch(NumberFormatException e1) {
+				JOptionPane.showMessageDialog(mainFrame, "Error: Please enter a valid base plate width and alpha value.", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
+			if(waypoints.size() < 2) {
+				JOptionPane.showMessageDialog(mainFrame, "Error: Not enough waypoints.", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
+			Waypoint[] waypointArray = new Waypoint[waypoints.size()];
+			for(int i = 0; i < waypointArray.length; i ++) {
+				waypointArray[i] = waypoints.get(i);
+			}
+			
+			BezierPath path = new BezierPath(waypointArray, a);
+			path.setBaseRadius(base / 2);
+			
+			JFrame pathFrame = Grapher.graphPath(path, 0.005);
+			pathFrame.addWindowListener(new WindowAdapter() {
+				@Override
+				public void windowClosing(WindowEvent e) {
+					try {
+						UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+							| UnsupportedLookAndFeelException e1) {
+						e1.printStackTrace();
+					}
+					mainFrame.setVisible(true);
+				}
+			});
+			mainFrame.setVisible(false);
+			pathFrame.setVisible(true);
+		});
+		previewButton.setPreferredSize(buttonSize);
+		buttonsPanel.add(previewButton);
 		
 		menuBar = new JMenuBar();
 		fileMenu = new JMenu("File");
@@ -428,66 +460,63 @@ public class TrajectoryVisualizationTool {
 		
 		JMenuItem saveMenuItem = new JMenuItem("Save", KeyEvent.VK_S);
 		saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
-		saveMenuItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if(maxVelocity.getText().equals("") || maxAcceleration.getText().equals("") 
-						|| baseWidth.getText().equals("") || alpha.getText().equals("")
-						|| segments.getText().equals("")) {
-					JOptionPane.showMessageDialog(mainFrame, "Error: Please fill in max velocity, max acceleration,\nbase width, alpha and segment count before saving.", "Error", JOptionPane.ERROR_MESSAGE);
-					return;
+		saveMenuItem.addActionListener(e -> {
+			if(maxVelocity.getText().equals("") || maxAcceleration.getText().equals("") 
+					|| baseWidth.getText().equals("") || alpha.getText().equals("")
+					|| segments.getText().equals("")) {
+				JOptionPane.showMessageDialog(mainFrame, "Error: Please fill in max velocity, max acceleration,\nbase width, alpha and segment count before saving.", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
+			double maxVel, maxAccel, maxDecel, base, a, minUnit;
+			int segmentCount;
+			
+			try {
+				maxVel = Double.parseDouble(maxVelocity.getText());
+				maxAccel = Double.parseDouble(maxAcceleration.getText());
+				if(maxDeceleration.getText().equals("")) {
+					maxDecel = Double.NaN;
 				}
-				
-				double maxVel, maxAccel, maxDecel, base, a, minUnit;
-				int segmentCount;
-				
-				try {
-					maxVel = Double.parseDouble(maxVelocity.getText());
-					maxAccel = Double.parseDouble(maxAcceleration.getText());
-					if(maxDeceleration.getText().equals("")) {
-						maxDecel = Double.NaN;
-					}
-					else {
-						maxDecel = Double.parseDouble(maxDeceleration.getText());
-					}
-					base = Double.parseDouble(baseWidth.getText());
-					a = Double.parseDouble(alpha.getText());
-					segmentCount = Integer.parseInt(segments.getText());
-					minUnit = Double.parseDouble(roundingLimit.getText());
+				else {
+					maxDecel = Double.parseDouble(maxDeceleration.getText());
 				}
-				catch(NumberFormatException e1) {
-					JOptionPane.showMessageDialog(mainFrame, "Error: An invalid token was entered\nin one or more fields.", "Error", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
+				base = Double.parseDouble(baseWidth.getText());
+				a = Double.parseDouble(alpha.getText());
+				segmentCount = Integer.parseInt(segments.getText());
+				minUnit = Double.parseDouble(roundingLimit.getText());
+			}
+			catch(NumberFormatException e1) {
+				JOptionPane.showMessageDialog(mainFrame, "Error: An invalid token was entered\nin one or more fields.", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
+			JFileChooser fc = new JFileChooser();
+			fc.setDialogTitle("Save As...");
+			fc.setAcceptAllFileFilterUsed(false);
+			fc.setFileFilter(new CSVFilter());
+			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			
+			int ret = fc.showSaveDialog(mainFrame);
+			if(ret == JFileChooser.APPROVE_OPTION) {
+				String path = fc.getSelectedFile().getAbsolutePath();
+				if(!path.endsWith(".csv"))
+					path += ".csv";
 				
-				JFileChooser fc = new JFileChooser();
-				fc.setDialogTitle("Save As...");
-				fc.setAcceptAllFileFilterUsed(false);
-				fc.setFileFilter(new CSVFilter());
-				fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-				
-				int ret = fc.showSaveDialog(mainFrame);
-				if(ret == JFileChooser.APPROVE_OPTION) {
-					String path = fc.getSelectedFile().getAbsolutePath();
-					if(!path.endsWith(".csv"))
-						path += ".csv";
+				try(BufferedWriter out = new BufferedWriter(new FileWriter(path))) {
+					out.write(maxVel + "," + maxAccel + "," + base + "," + a + "," + segmentCount + "," + minUnit + (Double.isNaN(maxDecel) ? "" : ("," + maxDecel)) + "\n");
 					
-					try(BufferedWriter out = new BufferedWriter(new FileWriter(path))) {
-						out.write(maxVel + "," + maxAccel + "," + base + "," + a + "," + segmentCount + "," + minUnit + (Double.isNaN(maxDecel) ? "" : ("," + maxDecel)) + "\n");
+					WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
+					for(int row = 0; row < tableModel.getRowCount(); row ++) {
+						String x = (String) (tableModel.getValueAt(row, 0));
+						String y = (String) (tableModel.getValueAt(row, 1));
+						String heading = (String) (tableModel.getValueAt(row, 2));
 						
-						WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
-						for(int row = 0; row < tableModel.getRowCount(); row ++) {
-							String x = (String) (tableModel.getValueAt(row, 0));
-							String y = (String) (tableModel.getValueAt(row, 1));
-							String heading = (String) (tableModel.getValueAt(row, 2));
-							
-							out.write(x + "," + y + "," + heading + "\n");
-						}
-						JOptionPane.showMessageDialog(mainFrame, "Data saved successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+						out.write(x + "," + y + "," + heading + "\n");
 					}
-					catch (IOException e1) {
-						e1.printStackTrace();
-					}
+					JOptionPane.showMessageDialog(mainFrame, "Data saved successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+				}
+				catch (IOException e1) {
+					e1.printStackTrace();
 				}
 			}
 		});
@@ -495,53 +524,50 @@ public class TrajectoryVisualizationTool {
 		
 		JMenuItem loadMenuItem = new JMenuItem("Load", KeyEvent.VK_L);
 		loadMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
-		loadMenuItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JFileChooser fc = new JFileChooser();
-				fc.setDialogTitle("Load File...");
-				fc.setAcceptAllFileFilterUsed(false);
-				fc.setFileFilter(new CSVFilter());
-				fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-				
-				int ret = fc.showOpenDialog(mainFrame);
-				if(ret == JFileChooser.APPROVE_OPTION) {
-					try(BufferedReader in = new BufferedReader(new FileReader(fc.getSelectedFile()))) {
-						String[] parameters = in.readLine().split(",");
-						if(parameters.length < 6) {
-							JOptionPane.showMessageDialog(mainFrame, "Error: The file format is invalid.", "Error", JOptionPane.ERROR_MESSAGE);
-							return;
-						}
-						maxVelocity.setText(parameters[0]);
-						maxAcceleration.setText(parameters[1]);
-						baseWidth.setText(parameters[2]);
-						alpha.setText(parameters[3]);
-						segments.setText(parameters[4]);
-						roundingLimit.setText(parameters[5]);
-						if(parameters.length >= 7) {
-							maxDeceleration.setText(parameters[6]);
-						}
-						else {
-							maxDeceleration.setText("");
-						}
-						
-						waypoints.clear();
-						WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
-						tableModel.setRowCount(0);
-						
-						String line;
-						while((line = in.readLine()) != null && !line.equals("")) {
-							String[] point = line.split(",");
-							Waypoint w = new Waypoint(Double.parseDouble(point[0]), Double.parseDouble(point[1]), Math.toRadians(Double.parseDouble(point[2])));
-							waypoints.add(w);
-							tableModel.addRow(point);
-						}
+		loadMenuItem.addActionListener(e -> {
+			JFileChooser fc = new JFileChooser();
+			fc.setDialogTitle("Load File...");
+			fc.setAcceptAllFileFilterUsed(false);
+			fc.setFileFilter(new CSVFilter());
+			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			
+			int ret = fc.showOpenDialog(mainFrame);
+			if(ret == JFileChooser.APPROVE_OPTION) {
+				try(BufferedReader in = new BufferedReader(new FileReader(fc.getSelectedFile()))) {
+					String[] parameters = in.readLine().split(",");
+					if(parameters.length < 6) {
+						JOptionPane.showMessageDialog(mainFrame, "Error: The file format is invalid.", "Error", JOptionPane.ERROR_MESSAGE);
+						return;
 					}
-					catch (IOException e1) {
-						e1.printStackTrace();
+					maxVelocity.setText(parameters[0]);
+					maxAcceleration.setText(parameters[1]);
+					baseWidth.setText(parameters[2]);
+					alpha.setText(parameters[3]);
+					segments.setText(parameters[4]);
+					roundingLimit.setText(parameters[5]);
+					if(parameters.length >= 7) {
+						maxDeceleration.setText(parameters[6]);
+					}
+					else {
+						maxDeceleration.setText("");
 					}
 					
+					waypoints.clear();
+					WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
+					tableModel.setRowCount(0);
+					
+					String line;
+					while((line = in.readLine()) != null && !line.equals("")) {
+						String[] point = line.split(",");
+						Waypoint w = new Waypoint(Double.parseDouble(point[0]), Double.parseDouble(point[1]), Math.toRadians(Double.parseDouble(point[2])));
+						waypoints.add(w);
+						tableModel.addRow(point);
+					}
 				}
+				catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				
 			}
 		});
 		fileMenu.add(loadMenuItem);
@@ -558,12 +584,9 @@ public class TrajectoryVisualizationTool {
 
 	
 	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				@SuppressWarnings("unused")
-				TrajectoryVisualizationTool tool = new TrajectoryVisualizationTool();
-			}
+		SwingUtilities.invokeLater(() -> {
+			@SuppressWarnings("unused")
+			TrajectoryVisualizationTool t = new TrajectoryVisualizationTool();
 		});
 	}
 }

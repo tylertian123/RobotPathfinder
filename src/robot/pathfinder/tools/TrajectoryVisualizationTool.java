@@ -15,6 +15,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -89,6 +90,27 @@ public class TrajectoryVisualizationTool {
 			"Robot Direction (Degrees)"
 	};
 	
+	static HashMap<Double, String> specialAngles = new HashMap<>();
+	static {
+		specialAngles.put(Math.toRadians(30.0), "Math.PI / 6");
+		specialAngles.put(Math.toRadians(45.0), "Math.PI / 4");
+		specialAngles.put(Math.toRadians(60.0), "Math.PI / 3");
+		specialAngles.put(Math.toRadians(90.0), "Math.PI / 2");
+		specialAngles.put(Math.toRadians(120.0), "2 * Math.PI / 3");
+		specialAngles.put(Math.toRadians(135.0), "3 * Math.PI / 4");
+		specialAngles.put(Math.toRadians(150.0), "5 * Math.PI / 6");
+		
+		specialAngles.put(Math.toRadians(180.0), "Math.PI");
+		
+		specialAngles.put(Math.toRadians(-30.0), "-Math.PI / 6");
+		specialAngles.put(Math.toRadians(-45.0), "-Math.PI / 4");
+		specialAngles.put(Math.toRadians(-60.0), "-Math.PI / 3");
+		specialAngles.put(Math.toRadians(-90.0), "-Math.PI / 2");
+		specialAngles.put(Math.toRadians(-120.0), "-2 * Math.PI / 3");
+		specialAngles.put(Math.toRadians(-135.0), "-3 * Math.PI / 4");
+		specialAngles.put(Math.toRadians(-150.0), "-5 * Math.PI / 6");
+	}
+	
 	static double[] primitiveArr(ArrayList<Double> a) {
 		Double[] arr = new Double[a.size()];
 		a.toArray(arr);
@@ -96,6 +118,18 @@ public class TrajectoryVisualizationTool {
 		for(int i = 0; i < arr.length; i ++)
 			d[i] = arr[i];
 		return d;
+	}
+	
+	static double constrainAngle(double angle) {
+		if(angle <= 180.0 && angle > -180.0)
+			return angle;
+		while(angle > 180.0) {
+			angle -= 360.0;
+		}
+		while(angle <= -180.0) {
+			angle += 360.0;
+		}
+		return angle;
 	}
 	
 	static class CSVFilter extends FileFilter {
@@ -231,9 +265,9 @@ public class TrajectoryVisualizationTool {
 					double heading = Double.parseDouble(waypointHeading.getText());
 					
 					if(selectedRow == -1)
-						waypoints.add(new Waypoint(x, y, Math.toRadians(heading)));
+						waypoints.add(new Waypoint(x, y, Math.toRadians(constrainAngle(heading))));
 					else 
-						waypoints.add(selectedRow, new Waypoint(x, y, Math.toRadians(heading)));
+						waypoints.add(selectedRow, new Waypoint(x, y, Math.toRadians(constrainAngle(heading))));
 					WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
 					if(selectedRow == -1)
 						tableModel.addRow(new Object[] { String.valueOf(x), String.valueOf(y), String.valueOf(heading) });
@@ -283,7 +317,7 @@ public class TrajectoryVisualizationTool {
 					double y = Double.parseDouble(waypointY.getText());
 					double heading = Double.parseDouble(waypointHeading.getText());
 					
-					waypoints.set(index, new Waypoint(x, y, Math.toRadians(heading)));
+					waypoints.set(index, new Waypoint(x, y, Math.toRadians(constrainAngle(heading))));
 					tableModel.setValueAt(String.valueOf(x), index, 0);
 					tableModel.setValueAt(String.valueOf(y), index, 1);
 					tableModel.setValueAt(String.valueOf(heading), index, 2);
@@ -516,7 +550,9 @@ public class TrajectoryVisualizationTool {
 			StringBuilder generatedCode = new StringBuilder("TankDriveTrajectory.setSolverRoundingLimit(" + minUnit + ");\n");
 			generatedCode.append("TankDriveTrajectory trajectory = new TankDriveTrajectory(new Waypoint[] {\n");
 			for(Waypoint w : waypoints) {
-				String waypointCode = "\t\tnew Waypoint(" + String.valueOf(w.getX()) + ", " + String.valueOf(w.getY()) + ", " + String.valueOf(w.getHeading()) + "),\n";
+				double heading = w.getHeading();
+				String angle = specialAngles.containsKey(heading) ? specialAngles.get(heading) : String.valueOf(heading);
+				String waypointCode = "\t\tnew Waypoint(" + String.valueOf(w.getX()) + ", " + String.valueOf(w.getY()) + ", " + angle + "),\n";
 				generatedCode.append(waypointCode);
 			}
 			generatedCode.append("}, " + maxVel + ", " + maxAccel + ", ");
@@ -646,7 +682,7 @@ public class TrajectoryVisualizationTool {
 					String line;
 					while((line = in.readLine()) != null && !line.equals("")) {
 						String[] point = line.split(",");
-						Waypoint w = new Waypoint(Double.parseDouble(point[0]), Double.parseDouble(point[1]), Math.toRadians(Double.parseDouble(point[2])));
+						Waypoint w = new Waypoint(Double.parseDouble(point[0]), Double.parseDouble(point[1]), Math.toRadians(constrainAngle(Double.parseDouble(point[2]))));
 						waypoints.add(w);
 						tableModel.addRow(point);
 					}

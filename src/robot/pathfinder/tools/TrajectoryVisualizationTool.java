@@ -19,17 +19,23 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
+
+import com.sun.glass.events.KeyEvent;
 
 import robot.pathfinder.BezierPath;
 import robot.pathfinder.TankDriveTrajectory;
@@ -60,6 +66,9 @@ public class TrajectoryVisualizationTool {
 	static JTextField maxDeceleration = new JTextField();
 	static JTextField roundingLimit = new JTextField("1.0e-5");
 	static JPanel argumentsPanel;
+	
+	static JMenuBar menuBar;
+	static JMenu fileMenu;
 	
 	static ArrayList<Waypoint> waypoints = new ArrayList<Waypoint>();
 	
@@ -235,6 +244,53 @@ public class TrajectoryVisualizationTool {
 		addWaypointButton.setPreferredSize(buttonSize);
 		buttonsPanel.add(addWaypointButton);
 		
+		JButton editWaypointButton = new JButton("Edit Waypoint");
+		editWaypointButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int index = table.getSelectedRow();
+				if(index == -1) {
+					JOptionPane.showMessageDialog(mainFrame, "Error: No waypoint selected.", "Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				
+				WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
+				String xStr = (String) tableModel.getValueAt(index, 0);
+				String yStr = (String) tableModel.getValueAt(index, 1);
+				String headingStr = (String) tableModel.getValueAt(index, 2);
+				
+				waypointX.setText(xStr);
+				waypointY.setText(yStr);
+				waypointHeading.setText(headingStr);
+				
+				boolean error;
+				do {
+					int response = JOptionPane.showConfirmDialog(mainFrame, waypointPanel, "Edit Waypoint...", JOptionPane.OK_CANCEL_OPTION);
+					if(response != JOptionPane.OK_OPTION)
+						break;
+					
+					try {
+						double x = Double.parseDouble(waypointX.getText());
+						double y = Double.parseDouble(waypointY.getText());
+						double heading = Double.parseDouble(waypointHeading.getText());
+						
+						waypoints.set(index, new Waypoint(x, y, Math.toRadians(heading)));
+						tableModel.setValueAt(String.valueOf(x), index, 0);
+						tableModel.setValueAt(String.valueOf(y), index, 1);
+						tableModel.setValueAt(String.valueOf(heading), index, 2);
+						
+						error = false;
+					}
+					catch(NumberFormatException e1) {
+						error = true;
+						JOptionPane.showMessageDialog(mainFrame, "Error: An invalid token was entered\nin one or more fields.", "Error", JOptionPane.ERROR_MESSAGE);
+					}
+				} while(error);
+			}
+		});
+		editWaypointButton.setPreferredSize(buttonSize);
+		buttonsPanel.add(editWaypointButton);
+		
 		JButton deleteWaypointButton = new JButton("Remove Waypoint");
 		deleteWaypointButton.addActionListener(new ActionListener() {
 			@Override
@@ -365,8 +421,14 @@ public class TrajectoryVisualizationTool {
 		generateButton.setPreferredSize(buttonSize);
 		buttonsPanel.add(generateButton);
 		
-		JButton saveButton = new JButton("Save");
-		saveButton.addActionListener(new ActionListener() {
+		menuBar = new JMenuBar();
+		fileMenu = new JMenu("File");
+		fileMenu.setMnemonic(KeyEvent.VK_F);
+		menuBar.add(fileMenu);
+		
+		JMenuItem saveMenuItem = new JMenuItem("Save", KeyEvent.VK_S);
+		saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+		saveMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(maxVelocity.getText().equals("") || maxAcceleration.getText().equals("") 
@@ -429,11 +491,11 @@ public class TrajectoryVisualizationTool {
 				}
 			}
 		});
-		saveButton.setPreferredSize(buttonSize);
-		buttonsPanel.add(saveButton);
+		fileMenu.add(saveMenuItem);
 		
-		JButton loadButton = new JButton("Load");
-		loadButton.addActionListener(new ActionListener() {
+		JMenuItem loadMenuItem = new JMenuItem("Load", KeyEvent.VK_L);
+		loadMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
+		loadMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fc = new JFileChooser();
@@ -482,12 +544,12 @@ public class TrajectoryVisualizationTool {
 				}
 			}
 		});
-		loadButton.setPreferredSize(buttonSize);
-		buttonsPanel.add(loadButton);
+		fileMenu.add(loadMenuItem);
 		
 		mainPanel.add(buttonsPanel, BorderLayout.PAGE_END);
 		
 		mainFrame = new JFrame("Path Parameters");
+		mainFrame.setJMenuBar(menuBar);
 		mainFrame.setContentPane(mainPanel);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainFrame.pack();

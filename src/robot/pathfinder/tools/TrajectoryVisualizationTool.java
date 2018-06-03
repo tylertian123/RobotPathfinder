@@ -79,8 +79,8 @@ public class TrajectoryVisualizationTool {
 	
 	static ArrayList<Waypoint> waypoints = new ArrayList<Waypoint>();
 	
-	static final double PATH_DT_DEFAULT = 0.005;
-	static final double TRAJ_DT_DEFAULT = 0.005;
+	static final double PATH_DT_DEFAULT = 0.001;
+	static final double TRAJ_DT_DEFAULT = 0.001;
 	static final double PATH_DT_FAST = 0.02;
 	static final double TRAJ_DT_FAST = 0.05;
 	

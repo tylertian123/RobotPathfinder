@@ -29,8 +29,8 @@ public class Grapher {
 	 * {@code JFrame.DISPOSE_ON_CLOSE} and maximizes it.<br>
 	 * Note that this method does not show the window; the user needs to call {@link JFrame#setVisible(boolean) setVisible()}
 	 * explicitly in order to show the window.
-	 * @param trajectory - The {@link TankDriveTrajectory} to graph
-	 * @param dt - The time increment between samples
+	 * @param trajectory The {@link TankDriveTrajectory} to graph
+	 * @param dt The time increment between samples
 	 * @return A frame with the graphed trajectory inside
 	 */
 	public static JFrame graphTrajectory(TankDriveTrajectory trajectory, double dt) {
@@ -91,8 +91,8 @@ public class Grapher {
 	 * not recommended to change the size of the frame, as this might mess up the axis scales.<br>
 	 * Note that this method does not show the window; the user needs to call {@link JFrame#setVisible(boolean) setVisible()}
 	 * explicitly in order to show the window.
-	 * @param path - The {@link BezierPath} to show
-	 * @param dt - The time increment between samples (0 to 1)
+	 * @param path The {@link BezierPath} to show
+	 * @param dt The time increment between samples (0 to 1)
 	 * @return A frame with the graphed path inside
 	 */
 	public static JFrame graphPath(BezierPath path, double dt) {

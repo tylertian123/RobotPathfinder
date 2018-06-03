@@ -13,9 +13,9 @@ public class Moment {
 	
 	/**
 	 * Creates a new moment with the specified values.
-	 * @param distance - The desired distance
-	 * @param velocity - The desired velocity
-	 * @param acceleration - The desired acceleration
+	 * @param distance The desired distance
+	 * @param velocity The desired velocity
+	 * @param acceleration The desired acceleration
 	 */
 	public Moment(double distance, double velocity, double acceleration) {
 		d = distance;
@@ -24,10 +24,10 @@ public class Moment {
 	}
 	/**
 	 * Creates a new moment with the specified values.
-	 * @param distance - The desired distance
-	 * @param velocity - The desired velocity
-	 * @param acceleration - The desired acceleration
-	 * @param t - The point in time this moment is located
+	 * @param distance The desired distance
+	 * @param velocity The desired velocity
+	 * @param acceleration The desired acceleration
+	 * @param t The point in time this moment is located
 	 */
 	public Moment(double distance, double velocity, double acceleration, double t) {
 		this(distance, velocity, acceleration);
@@ -36,7 +36,7 @@ public class Moment {
 	
 	/**
 	 * Sets the time of the moment.
-	 * @param t - The new time
+	 * @param t The new time
 	 */
 	public void setTime(double t) {
 		this.t = t;
@@ -50,7 +50,7 @@ public class Moment {
 	}
 	/**
 	 * Sets the distance of the moment.
-	 * @param distance - The new distance
+	 * @param distance The new distance
 	 */
 	public void setDistance(double distance) {
 		d = distance;
@@ -64,7 +64,7 @@ public class Moment {
 	}
 	/**
 	 * Sets the velocity of the moment.
-	 * @param velocity - The new velocity
+	 * @param velocity The new velocity
 	 */
 	public void setVelocity(double velocity) {
 		v = velocity;
@@ -78,7 +78,7 @@ public class Moment {
 	}
 	/**
 	 * Sets the acceleration of the moment
-	 * @param acceleration - The new acceleration
+	 * @param acceleration The new acceleration
 	 */
 	public void setAcceleration(double acceleration) {
 		a = acceleration;

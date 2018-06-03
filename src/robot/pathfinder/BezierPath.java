@@ -32,8 +32,8 @@ public class BezierPath {
 	
 	/**
 	 * Constructs a Bezier path using the specified waypoints.
-	 * @param waypoints - The waypoints to pass through
-	 * @param alpha - The smoothness of the turns; a greater value will result in smoother turns and a small value will result in tight turns.
+	 * @param waypoints The waypoints to pass through
+	 * @param alpha The smoothness of the turns; a greater value will result in smoother turns and a small value will result in tight turns.
 	 */
 	public BezierPath(Waypoint[] waypoints, double alpha) {
 		if(waypoints.length < 2) {
@@ -60,7 +60,7 @@ public class BezierPath {
 	/**
 	 * Sets the base plate radius (distance from the center of the robot to the wheels) of the robot following
 	 * this path. This value is used to compute the result from {@link BezierPath#wheelsAt(double) wheelsAt()}.
-	 * @param b - The new base radius
+	 * @param b The new base radius
 	 */
 	public void setBaseRadius(double b) {
 		baseRadius = b;
@@ -79,7 +79,7 @@ public class BezierPath {
 	
 	/**
 	 * Returns the position at a specified time in the path.
-	 * @param t - A positive real number in the range 0 to 1
+	 * @param t A positive real number in the range 0 to 1
 	 * @return The position of the path at the specified time
 	 */
 	public Vec2D at(double t) {
@@ -92,7 +92,7 @@ public class BezierPath {
 	}
 	/**
 	 * Returns the position of the wheels at a specified time in the path.
-	 * @param t - A positive real number in the range 0 to 1
+	 * @param t A positive real number in the range 0 to 1
 	 * @return The position of the wheels at the specified time; element 0 is the left wheel, element 1 is the right wheel.
 	 */
 	public Vec2D[] wheelsAt(double t) {
@@ -110,7 +110,7 @@ public class BezierPath {
 	}
 	/**
 	 * Returns the derivative at a specified time in the path.
-	 * @param t - A positive real number in the range 0 to 1
+	 * @param t A positive real number in the range 0 to 1
 	 * @return The derivative of the path at the specified time
 	 */
 	public Vec2D derivAt(double t) {
@@ -123,7 +123,7 @@ public class BezierPath {
 	}
 	/**
 	 * Returns the second derivative at a specified time in the path.
-	 * @param t - A positive real number in the range 0 to 1
+	 * @param t A positive real number in the range 0 to 1
 	 * @return The second derivative of the path at the specified time
 	 */
 	public Vec2D secondDerivAt(double t) {
@@ -137,7 +137,7 @@ public class BezierPath {
 	
 	/**
 	 * Integrates length of the path.
-	 * @param dt - dt
+	 * @param dt dt
 	 * @return The length of the path after a time increment of dt
 	 */
 	public double integrateLen(double dt) {
@@ -168,7 +168,7 @@ public class BezierPath {
 	
 	/**
 	 * Integrates length of the path of the wheels.
-	 * @param dt - dt
+	 * @param dt dt
 	 * @return The length of the path after a time increment of dt
 	 */
 	public double[] integrateWheelLens(double dt) {
@@ -216,7 +216,7 @@ public class BezierPath {
 	/**
 	 * Sets whether the robot that drives this path is driving backwards or not.
 	 * If this is set to true, the locations of the left and right wheels will be reversed.
-	 * @param drivingBackwards - Whether this path should be driven backwards
+	 * @param drivingBackwards Whether this path should be driven backwards
 	 */
 	public void setDrivingBackwards(boolean drivingBackwards) {
 		this.drivingBackwards = drivingBackwards;

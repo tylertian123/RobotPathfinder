@@ -13,8 +13,8 @@ public class Vec2D {
 	
 	/**
 	 * Constructs a new vector with the specified x and y values.
-	 * @param x - The X value of the vector
-	 * @param y - The Y value of the vector
+	 * @param x The X value of the vector
+	 * @param y The Y value of the vector
 	 */
 	public Vec2D(double x, double y) {
 		this.x = x;
@@ -22,7 +22,7 @@ public class Vec2D {
 	}
 	/**
 	 * Constructs a new vector with the location of the waypoint. The heading is ignored.
-	 * @param w - The waypoint whose location will be taken
+	 * @param w The waypoint whose location will be taken
 	 */
 	public Vec2D(Waypoint w) {
 		this.x = w.getX();
@@ -46,7 +46,7 @@ public class Vec2D {
 	
 	/**
 	 * Adds 2 or more vectors and returns the result.
-	 * @param vecs - The vectors to add
+	 * @param vecs The vectors to add
 	 * @return The result from adding the vectors
 	 */
 	public static Vec2D addVecs(Vec2D... vecs) {
@@ -59,8 +59,8 @@ public class Vec2D {
 	}
 	/**
 	 * Calculates the distance between 2 vectors
-	 * @param a - The first vector
-	 * @param b - The second vector
+	 * @param a The first vector
+	 * @param b The second vector
 	 * @return The distance between the 2 vectors
 	 */
 	
@@ -69,7 +69,7 @@ public class Vec2D {
 	}
 	/**
 	 * Multiplies this vector by a scalar and returns the result. Note that this vector is not modified in the process.
-	 * @param scalar - The scalar to multiply by
+	 * @param scalar The scalar to multiply by
 	 * @return The result of the multiplication
 	 */
 	public Vec2D multiply(double scalar) {
@@ -77,7 +77,7 @@ public class Vec2D {
 	}
 	/**
 	 * Adds this vector to another vector and returns the result. Note that this vector is not modified in the process.
-	 * @param vec - The vector to add to
+	 * @param vec The vector to add to
 	 * @return The result of the addition
 	 */
 	public Vec2D add(Vec2D vec) {
@@ -85,7 +85,7 @@ public class Vec2D {
 	}
 	/**
 	 * Subtracts a vector from this vector and returns the result. Note that this vector is not modified int the process.
-	 * @param vec - The vector to subtract
+	 * @param vec The vector to subtract
 	 * @return The result of the subtraction
 	 */
 	public Vec2D subtract(Vec2D vec) {
@@ -93,7 +93,7 @@ public class Vec2D {
 	}
 	/**
 	 * Calculates the distance between this vector and another vector.
-	 * @param vec - The other vector
+	 * @param vec The other vector
 	 * @return The distance between the two
 	 */
 	public double distTo(Vec2D vec) {
@@ -102,7 +102,7 @@ public class Vec2D {
 	
 	/**
 	 * Calculates the coordinates of the vector given relative to this vector.
-	 * @param vec - The vector whose coordinates will be taken
+	 * @param vec The vector whose coordinates will be taken
 	 * @return The relative coordinates of the vector to this vector
 	 */
 	public Vec2D relative(Vec2D vec) {

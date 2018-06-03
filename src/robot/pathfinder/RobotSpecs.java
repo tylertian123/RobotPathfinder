@@ -17,9 +17,9 @@ public class RobotSpecs {
 	/**
 	 * Constructs a new robot specification object with the specified values. This constructor sets the value of the max
 	 * deceleration to be the same as the max acceleration.
-	 * @param maxVelocity - The absolute value of the max velocity of the robot
-	 * @param maxAcceleration - The absolute value of the max acceleration of the robot
-	 * @param baseWidth - The width of the base plate of the robot (distance between wheels on different sides)
+	 * @param maxVelocity The absolute value of the max velocity of the robot
+	 * @param maxAcceleration The absolute value of the max acceleration of the robot
+	 * @param baseWidth The width of the base plate of the robot (distance between wheels on different sides)
 	 */
 	public RobotSpecs(double maxVelocity, double maxAcceleration, double baseWidth) {
 		this.maxVelocity = maxVelocity;
@@ -28,10 +28,10 @@ public class RobotSpecs {
 	}
 	/**
 	 * Constructs a new robot specification object with the specified values.
-	 * @param maxVelocity - The absolute value of the max velocity of the robot
-	 * @param maxAcceleration - The absolute value of the max acceleration of the robot
-	 * @param maxDeceleration - The absolute value of the max deceleration of the robot
-	 * @param baseWidth - The width of the robot's base
+	 * @param maxVelocity The absolute value of the max velocity of the robot
+	 * @param maxAcceleration The absolute value of the max acceleration of the robot
+	 * @param maxDeceleration The absolute value of the max deceleration of the robot
+	 * @param baseWidth The width of the robot's base
 	 */
 	public RobotSpecs(double maxVelocity, double maxAcceleration, double maxDeceleration, double baseWidth) {
 		this.maxVelocity = maxVelocity;
@@ -50,7 +50,7 @@ public class RobotSpecs {
 	}
 	/**
 	 * Sets the base width of this robot specifications object.
-	 * @param baseWidth - The new base width
+	 * @param baseWidth The new base width
 	 */
 	public void setBaseWidth(double baseWidth) {
 		this.baseWidth = baseWidth;
@@ -64,7 +64,7 @@ public class RobotSpecs {
 	}
 	/**
 	 * Sets the max velocity of this robot specifications object.
-	 * @param maxVelocity - The new max velocity
+	 * @param maxVelocity The new max velocity
 	 */
 	public void setMaxVelocity(double maxVelocity) {
 		this.maxVelocity = maxVelocity;
@@ -78,7 +78,7 @@ public class RobotSpecs {
 	}
 	/**
 	 * Sets the max acceleration of this robot specifications object.
-	 * @param maxAcceleration - The new max acceleration
+	 * @param maxAcceleration The new max acceleration
 	 */
 	public void setMaxAcceleration(double maxAcceleration) {
 		this.maxAcceleration = maxAcceleration;
@@ -92,7 +92,7 @@ public class RobotSpecs {
 	}
 	/**
 	 * Sets the max deceleration of this robot specifications object.
-	 * @param maxDeceleration - The max deceleration of the robot
+	 * @param maxDeceleration The max deceleration of the robot
 	 */
 	public void setMaxDeceleration(double maxDeceleration) {
 		this.maxDeceleration = maxDeceleration;

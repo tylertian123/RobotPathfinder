@@ -9,8 +9,8 @@ public class MathUtils {
 	
 	/**
 	 * Swaps two rows of a matrix/two arrays.
-	 * @param a - The first row
-	 * @param b - The second row
+	 * @param a The first row
+	 * @param b The second row
 	 */
 	public static void rowSwap(double[] a, double[] b) {
 		double[] temp = new double[a.length];
@@ -23,8 +23,8 @@ public class MathUtils {
 	}
 	/**
 	 * Multiplies a row of a matrix/an array by a scalar
-	 * @param a - The row to work with
-	 * @param b - A scalar to multiply by
+	 * @param a The row to work with
+	 * @param b A scalar to multiply by
 	 */
 	public static void rowMultiply(double[] a, double b) {
 		for(int i = 0; i < a.length; i ++) {
@@ -35,8 +35,8 @@ public class MathUtils {
 	 * Multiplies a row of a matrix/an array by a scalar, and return the result. <br>
 	 * <br>
 	 * Unlike in {@link MathUtils#rowMultiply(double[], double) rowMutiply()}, the original row/array is not modified.
-	 * @param a - The row to work with
-	 * @param b - A scalar to multiply by
+	 * @param a The row to work with
+	 * @param b A scalar to multiply by
 	 * @return The row with each term multiplied by the scalar
 	 */
 	public static double[] rowMultiply2(double[] a, double b) {
@@ -48,8 +48,8 @@ public class MathUtils {
 	}
 	/**
 	 * Adds each term of a row of a matrix/an array to another row/array.
-	 * @param a - The row to add to
-	 * @param b - The row to add
+	 * @param a The row to add to
+	 * @param b The row to add
 	 */
 	public static void rowAdd(double[] a, double[] b) {
 		for(int i = 0; i < a.length; i ++) {
@@ -71,7 +71,7 @@ public class MathUtils {
 	 * Solves a system of linear equations represented in a matrix, using the Gauss-Jordan elimination method.<br>
 	 * <br>
 	 * For more information see <a href="https://en.wikipedia.org/wiki/Gaussian_elimination">this Wikipedia article</a>.
-	 * @param mat - The matrix representing the system of equations
+	 * @param mat The matrix representing the system of equations
 	 * @return The value of each unknown in order
 	 */
 	public static double[] solve(double[][] mat) {
@@ -158,9 +158,9 @@ public class MathUtils {
 	 * <br>
 	 * If no real roots exist, the resulting array will contain {@code [NaN, NaN]}; if the two roots
 	 * are the same, the two elements of the array will be the same number.
-	 * @param a - The squared term coefficient
-	 * @param b - The linear term coefficient
-	 * @param c - The constant
+	 * @param a The squared term coefficient
+	 * @param b The linear term coefficient
+	 * @param c The constant
 	 * @return The roots of the equation
 	 */
 	public static double[] findQuadraticRoots(double a, double b, double c) {
@@ -175,10 +175,10 @@ public class MathUtils {
 	 * If the absolute value of {@code b^2-4ac} is less than or equal to the rounding limit, it will
 	 * be rounded down to 0; this can help prevent the situation in which perfectly fine equations become
 	 * unsolvable due to rounding issues.
-	 * @param a - The squared term coefficient
-	 * @param b - The linear term coefficient
-	 * @param c - The constant
-	 * @param minUnit - The rounding limit for {@code b^2-4ac}
+	 * @param a The squared term coefficient
+	 * @param b The linear term coefficient
+	 * @param c The constant
+	 * @param minUnit The rounding limit for {@code b^2-4ac}
 	 * @return The roots of the equation
 	 */
 	public static double[] findQuadraticRoots(double a, double b, double c, double minUnit) {
@@ -201,9 +201,9 @@ public class MathUtils {
 	/**
 	 * Finds the roots of a quadratic equation using {@link MathUtils#findQuadraticRoots(double, double, double) findQuadraticRoots()},
 	 * and returns the positive root. If both roots are negative, this method will return {@code NaN}.
-	 * @param a - The squared term coefficient
-	 * @param b - The linear term coefficient
-	 * @param c - The constant
+	 * @param a The squared term coefficient
+	 * @param b The linear term coefficient
+	 * @param c The constant
 	 * @return The positive root of the quadratic equation, or if both roots are negative, {@code NaN}.
 	 */
 	public static double findPositiveQuadraticRoot(double a, double b, double c) {
@@ -218,10 +218,10 @@ public class MathUtils {
 	/**
 	 * Finds the roots of a quadratic equation using {@link MathUtils#findQuadraticRoots(double, double, double, double) findQuadraticRoots()},
 	 * and returns the positive root. If both roots are negative, this method will return {@code NaN}.
-	 * @param a - The squared term coefficient
-	 * @param b - The linear term coefficient
-	 * @param c - The constant
-	 * @param minUnit - The rounding limit for {@code b^2-4ac} - For more information see {@link MathUtils#findQuadraticRoots(double, double, double, double) findQuadraticRoots()}.
+	 * @param a The squared term coefficient
+	 * @param b The linear term coefficient
+	 * @param c The constant
+	 * @param minUnit - The rounding limit for {@code b^2-4ac} For more information see {@link MathUtils#findQuadraticRoots(double, double, double, double) findQuadraticRoots()}.
 	 * @return The positive root of the quadratic equation, or if both roots are negative, {@code NaN}.
 	 */
 	public static double findPositiveQuadraticRoot(double a, double b, double c, double minUnit) {

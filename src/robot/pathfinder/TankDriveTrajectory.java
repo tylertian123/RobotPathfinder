@@ -41,10 +41,10 @@ public class TankDriveTrajectory {
 	 * <br>
 	 * Note this process can take up to half a second, depending on the number of segments.
 	 * 
-	 * @param waypoints - The waypoints the path has to travel through
-	 * @param robotSpecs - A {@link robot.pathfinder.RobotSpecs RobotSpecs} object containing the specifications of the robot
-	 * @param alpha - Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
-	 * @param segmentCount - How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
+	 * @param waypoints The waypoints the path has to travel through
+	 * @param robotSpecs A {@link robot.pathfinder.RobotSpecs RobotSpecs} object containing the specifications of the robot
+	 * @param alpha Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
+	 * @param segmentCount How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
 	 */
 	public TankDriveTrajectory(Waypoint[] waypoints, RobotSpecs robotSpecs, double alpha, int segmentCount) {
 		this(waypoints, robotSpecs, alpha, segmentCount, false);
@@ -57,11 +57,11 @@ public class TankDriveTrajectory {
 	 * <br>
 	 * Note this process can take up to half a second, depending on the number of segments.
 	 * 
-	 * @param waypoints - The waypoints the path has to travel through
-	 * @param robotSpecs - A {@link robot.pathfinder.RobotSpecs RobotSpecs} object containing the specifications of the robot	 
-	 * @param alpha - Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
-	 * @param segmentCount - How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
-	 * @param surpressExceptions - If set to true, an exception will <b>not</b> be thrown if the path is impossible
+	 * @param waypoints The waypoints the path has to travel through
+	 * @param robotSpecs A {@link robot.pathfinder.RobotSpecs RobotSpecs} object containing the specifications of the robot	 
+	 * @param alpha Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
+	 * @param segmentCount How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
+	 * @param surpressExceptions If set to true, an exception will <b>not</b> be thrown if the path is impossible
 	 */
 	public TankDriveTrajectory(Waypoint[] waypoints, RobotSpecs robotSpecs, double alpha, int segmentCount, boolean surpressExceptions) {
 		this(waypoints, robotSpecs.getMaxVelocity(), robotSpecs.getMaxAcceleration(), robotSpecs.getMaxDeceleration(), robotSpecs.getBaseWidth(), alpha, segmentCount, surpressExceptions);
@@ -74,12 +74,12 @@ public class TankDriveTrajectory {
 	 * <br>
 	 * Note this process can take up to half a second, depending on the number of segments.
 	 * 
-	 * @param waypoints - The waypoints the path has to travel through
-	 * @param maxVelocity - The maximum velocity of the robot
-	 * @param maxAcceleration - The maximum acceleration of the robot
-	 * @param baseWidth - The width of the base plate of the robot (distance between left side wheels and right side wheels)
-	 * @param alpha - Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
-	 * @param segmentCount - How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
+	 * @param waypoints The waypoints the path has to travel through
+	 * @param maxVelocity The maximum velocity of the robot
+	 * @param maxAcceleration The maximum acceleration of the robot
+	 * @param baseWidth The width of the base plate of the robot (distance between left side wheels and right side wheels)
+	 * @param alpha Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
+	 * @param segmentCount How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
 	 */
 	public TankDriveTrajectory(Waypoint[] waypoints, double maxVelocity, double maxAcceleration, double baseWidth, double alpha, int segmentCount) {
 		this(waypoints, maxVelocity, maxAcceleration, baseWidth, alpha, segmentCount, false);
@@ -92,13 +92,13 @@ public class TankDriveTrajectory {
 	 * <br>
 	 * Note this process can take up to half a second, depending on the number of segments.
 	 * 
-	 * @param waypoints - The waypoints the path has to travel through
-	 * @param maxVelocity - The maximum velocity of the robot
-	 * @param maxAcceleration - The maximum acceleration of the robot
-	 * @param baseWidth - The width of the base plate of the robot (distance between left side wheels and right side wheels)
-	 * @param alpha - Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
-	 * @param segmentCount - How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
-	 * @param surpressExceptions - If set to true, an exception will <b>not</b> be thrown if the path is impossible
+	 * @param waypoints The waypoints the path has to travel through
+	 * @param maxVelocity The maximum velocity of the robot
+	 * @param maxAcceleration The maximum acceleration of the robot
+	 * @param baseWidth The width of the base plate of the robot (distance between left side wheels and right side wheels)
+	 * @param alpha Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
+	 * @param segmentCount How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
+	 * @param surpressExceptions If set to true, an exception will <b>not</b> be thrown if the path is impossible
 	 */
 	public TankDriveTrajectory(Waypoint[] waypoints, double maxVelocity, double maxAcceleration, double baseWidth, double alpha, int segmentCount, boolean surpressExceptions) {
 		this(waypoints, maxVelocity, maxAcceleration, maxAcceleration, baseWidth, alpha, segmentCount, surpressExceptions);
@@ -111,13 +111,13 @@ public class TankDriveTrajectory {
 	 * <br>
 	 * Note this process can take up to half a second, depending on the number of segments.
 	 * 
-	 * @param waypoints - The waypoints the path has to travel through
-	 * @param maxVelocity - The maximum velocity of the robot
-	 * @param maxAcceleration - The maximum acceleration of the robot
-	 * @param maxDeceleration - The maximum deceleration of the robot
-	 * @param baseWidth - The width of the base plate of the robot (distance between left side wheels and right side wheels)
-	 * @param alpha - Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
-	 * @param segmentCount - How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
+	 * @param waypoints The waypoints the path has to travel through
+	 * @param maxVelocity The maximum velocity of the robot
+	 * @param maxAcceleration The maximum acceleration of the robot
+	 * @param maxDeceleration The maximum deceleration of the robot
+	 * @param baseWidth The width of the base plate of the robot (distance between left side wheels and right side wheels)
+	 * @param alpha Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
+	 * @param segmentCount How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
 	 */
 	public TankDriveTrajectory(Waypoint[] waypoints, double maxVelocity, double maxAcceleration, double maxDeceleration, double baseWidth, double alpha, int segmentCount) {
 		this(waypoints, maxVelocity, maxAcceleration, maxDeceleration, baseWidth, alpha, segmentCount, false);
@@ -130,14 +130,14 @@ public class TankDriveTrajectory {
 	 * <br>
 	 * Note this process can take up to half a second, depending on the number of segments.
 	 * 
-	 * @param waypoints - The waypoints the path has to travel through
-	 * @param maxVel - The maximum velocity of the robot
-	 * @param maxAccel - The maximum acceleration of the robot
-	 * @param maxDecel - The maximum deceleration of the robot
-	 * @param baseWidth - The width of the base plate of the robot (distance between left side wheels and right side wheels)
-	 * @param alpha - Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
-	 * @param segmentCount - How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
-	 * @param surpressExceptions - If set to true, an exception will <b>not</b> be thrown if the path is impossible
+	 * @param waypoints The waypoints the path has to travel through
+	 * @param maxVel The maximum velocity of the robot
+	 * @param maxAccel The maximum acceleration of the robot
+	 * @param maxDecel The maximum deceleration of the robot
+	 * @param baseWidth The width of the base plate of the robot (distance between left side wheels and right side wheels)
+	 * @param alpha Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
+	 * @param segmentCount How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
+	 * @param surpressExceptions If set to true, an exception will <b>not</b> be thrown if the path is impossible
 	 */
 	public TankDriveTrajectory(Waypoint[] waypoints, double maxVel, double maxAccel, double maxDecel, double baseWidth, double alpha, int segmentCount, boolean surpressExceptions) {
 		
@@ -317,7 +317,7 @@ public class TankDriveTrajectory {
 	/**
 	 * Retrieves the {@code Moment} object associated with the left side at the specified time.
 	 * @deprecated Use {@link TankDriveTrajectory#getLeftSmooth(double)} instead.
-	 * @param t - A positive real number that ranges from 0 to the return value of {@link #totalTime()}
+	 * @param t A positive real number that ranges from 0 to the return value of {@link #totalTime()}
 	 * @return The {@code Moment} object associated with the left side at time t
 	 */
 	public Moment getLeft(double t) {
@@ -362,7 +362,7 @@ public class TankDriveTrajectory {
 	/**
 	 * Retrieves the {@code Moment} object associated with the right side at the specified time.
 	 * @deprecated Use {@link TankDriveTrajectory#getRightSmooth(double)} instead.
-	 * @param t - A positive real number that ranges from 0 to the return value of {@link #totalTime()}
+	 * @param t A positive real number that ranges from 0 to the return value of {@link #totalTime()}
 	 * @return The {@code Moment} object associated with the right side at time t
 	 */
 	public Moment getRight(double t) {
@@ -410,7 +410,7 @@ public class TankDriveTrajectory {
 	 * estimate.
 	 * Using this method will yield a smoother result than {@link #getLeft(double)}, but due
 	 * to the added steps it will take longer.
-	 * @param t - A positive real number that ranges from 0 to the return value of {@link #totalTime()}
+	 * @param t A positive real number that ranges from 0 to the return value of {@link #totalTime()}
 	 * @return The {@code Moment} object associated with the left side at time t
 	 */
 	public Moment getLeftSmooth(double t) {
@@ -467,7 +467,7 @@ public class TankDriveTrajectory {
 	 * estimate.
 	 * Using this method will yield a smoother result than {@link #getRight(double)}, but due
 	 * to the added steps it will take longer.
-	 * @param t - A positive real number that ranges from 0 to the return value of {@link #totalTime()}
+	 * @param t A positive real number that ranges from 0 to the return value of {@link #totalTime()}
 	 * @return The {@code Moment} object associated with the right side at time t
 	 */
 	public Moment getRightSmooth(double t) {
@@ -549,7 +549,7 @@ public class TankDriveTrajectory {
 	 * limit, it will be rounded to 0.<br>
 	 * <br>
 	 * The default value for the rounding limit is 1.0e-5.
-	 * @param min - The new rounding limit
+	 * @param min The new rounding limit
 	 */
 	public static void setSolverRoundingLimit(double min) {
 		minUnit = min;
@@ -574,7 +574,7 @@ public class TankDriveTrajectory {
 	/**
 	 * Accesses the internal {@code BezierPath} object and returns the path value at the specified time.<br>
 	 * This value should <b>not</b> be used directly for motion planning. It is a path, not a trajectory.
-	 * @param t - A positive real number ranging from 0 to 1
+	 * @param t A positive real number ranging from 0 to 1
 	 * @return The X and Y values at the specified time on the path
 	 */
 	public Vec2D pathAt(double t) {

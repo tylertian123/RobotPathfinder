@@ -13,8 +13,8 @@ public class TankDrivePathSegment {
 	
 	/**
 	 * Constructs a new segment with the specified values.
-	 * @param start - The start of the segment
-	 * @param end - The end of the segment
+	 * @param start The start of the segment
+	 * @param end The end of the segment
 	 */
 	public TankDrivePathSegment(double start, double end) {
 		this.start = start;
@@ -22,10 +22,10 @@ public class TankDrivePathSegment {
 	}
 	/**
 	 * Constructs a new segment with the specified values.
-	 * @param start - The start of the segment
-	 * @param end - The end of the segment
-	 * @param leftMaxVelocity - The max velocity of the left side in the segment
-	 * @param rightMaxVelocity - The max velocity of the right side in the segment
+	 * @param start The start of the segment
+	 * @param end The end of the segment
+	 * @param leftMaxVelocity The max velocity of the left side in the segment
+	 * @param rightMaxVelocity The max velocity of the right side in the segment
 	 */
 	public TankDrivePathSegment(double start, double end, double leftMaxVelocity, double rightMaxVelocity) {
 		this(start, end);
@@ -35,8 +35,8 @@ public class TankDrivePathSegment {
 	
 	/**
 	 * Sets the maximum velocities for both sides in this segment.
-	 * @param leftMaxVelocity - The max velocity of the left side in the segment
-	 * @param rightMaxVelocity - The max velocity of the right side in the segment
+	 * @param leftMaxVelocity The max velocity of the left side in the segment
+	 * @param rightMaxVelocity The max velocity of the right side in the segment
 	 */
 	public void setMaxVelocities(double leftMaxVelocity, double rightMaxVelocity) {
 		this.leftMaxVelocity = leftMaxVelocity;

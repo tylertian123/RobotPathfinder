@@ -596,8 +596,8 @@ public class TankDriveTrajectory {
 		Waypoint[] waypoints = new Waypoint[old.length];
 		
 		for(int i = 0; i < waypoints.length; i ++) {
-			//Negate the relative x coordinates and keep everything else the same
-			waypoints[i] = new Waypoint(-refPoint.relative(old[i].asVector()).getX(), old[i].getY(), old[i].getHeading());
+			//Negate the relative x coordinates and flip the angles
+			waypoints[i] = new Waypoint(-refPoint.relative(old[i].asVector()).getX(), old[i].getY(), -old[i].getHeading() + Math.PI);
 		}
 		
 		//Just create a new one with the sides swapped

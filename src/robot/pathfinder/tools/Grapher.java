@@ -145,10 +145,14 @@ public class Grapher {
 		//We want the smallest square that can fit the whole graph
 		double len = Math.max(maxX - minX, maxY - minY);
 		
+		double xOffset = (len - (maxX - minX)) / 2;
+		double yOffset = (len - (maxY - minY)) / 2;
+		
+		
 		//Set bounds to make the x and y scales the same
 		//Make the square a bit bigger than the graph to leave a margin
-		plot.setFixedBounds(0, minX - 2 * path.getBaseRaidus(), minX + len + 2 * path.getBaseRaidus());
-		plot.setFixedBounds(1, minY - 2 * path.getBaseRaidus(), minY + len + 2 * path.getBaseRaidus());
+		plot.setFixedBounds(0, minX - 2 * path.getBaseRaidus() - xOffset, minX + len + 2 * path.getBaseRaidus() - xOffset);
+		plot.setFixedBounds(1, minY - 2 * path.getBaseRaidus() - yOffset, minY + len + 2 * path.getBaseRaidus() - yOffset);
 		
 		//Create the window that will hold the graph
 		JFrame frame = new JFrame("Path Graph");

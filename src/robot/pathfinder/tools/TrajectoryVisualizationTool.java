@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
@@ -251,7 +252,7 @@ public class TrajectoryVisualizationTool {
 		
 		Dimension buttonSize = new Dimension(120, 30);
 		JButton addWaypointButton = new JButton("Add Waypoint");
-		addWaypointButton.addActionListener(e -> {
+		ActionListener addWaypointAction = e -> {
 			boolean error = false;
 			do {
 				int selectedRow = table.getSelectedRow();
@@ -285,12 +286,13 @@ public class TrajectoryVisualizationTool {
 			waypointX.setText("");
 			waypointY.setText("");
 			waypointHeading.setText("");
-		});
+		};
+		addWaypointButton.addActionListener(addWaypointAction);
 		addWaypointButton.setPreferredSize(buttonSize);
 		buttonsPanel.add(addWaypointButton);
 		
 		JButton editWaypointButton = new JButton("Edit Waypoint");
-		editWaypointButton.addActionListener(e -> {
+		ActionListener editWaypointAction = e -> {
 			int index = table.getSelectedRow();
 			if(index == -1) {
 				JOptionPane.showMessageDialog(mainFrame, "Error: No waypoint selected.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -333,12 +335,13 @@ public class TrajectoryVisualizationTool {
 			waypointX.setText("");
 			waypointY.setText("");
 			waypointHeading.setText("");
-		});
+		};
+		editWaypointButton.addActionListener(editWaypointAction);
 		editWaypointButton.setPreferredSize(buttonSize);
 		buttonsPanel.add(editWaypointButton);
 		
 		JButton deleteWaypointButton = new JButton("Remove Waypoint");
-		deleteWaypointButton.addActionListener(e -> {
+		ActionListener deleteWaypointAction = e -> {
 			int index = table.getSelectedRow();
 			if(index == -1) {
 				JOptionPane.showMessageDialog(mainFrame, "Error: No waypoint selected.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -348,7 +351,8 @@ public class TrajectoryVisualizationTool {
 			waypoints.remove(index);
 			WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
 			tableModel.removeRow(index);
-		});
+		};
+		deleteWaypointButton.addActionListener(deleteWaypointAction);
 		deleteWaypointButton.setPreferredSize(buttonSize);
 		buttonsPanel.add(deleteWaypointButton);
 		
@@ -679,6 +683,12 @@ public class TrajectoryVisualizationTool {
 						maxDeceleration.setText("");
 					}
 					
+					in.mark(512);
+					String nextLine;
+					if((nextLine = in.readLine()) == null || nextLine.equals(""))
+						return;
+					in.reset();
+					
 					waypoints.clear();
 					WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
 					tableModel.setRowCount(0);
@@ -698,6 +708,33 @@ public class TrajectoryVisualizationTool {
 			}
 		});
 		fileMenu.add(loadMenuItem);
+		
+		JMenu waypointMenu = new JMenu("Waypoint");
+		
+		JMenuItem addWaypointMenuItem = new JMenuItem("Add...");
+		addWaypointMenuItem.addActionListener(addWaypointAction);
+		waypointMenu.add(addWaypointMenuItem);
+		
+		JMenuItem editWaypointMenuItem = new JMenuItem("Edit...");
+		editWaypointMenuItem.addActionListener(editWaypointAction);
+		waypointMenu.add(editWaypointMenuItem);
+		
+		JMenuItem deleteWaypointMenuItem = new JMenuItem("Delete");
+		deleteWaypointMenuItem.addActionListener(deleteWaypointAction);
+		waypointMenu.add(deleteWaypointMenuItem);
+		
+		JMenuItem clearWaypointsMenuItem = new JMenuItem("Clear All");
+		clearWaypointsMenuItem.addActionListener(e -> {
+			int ret = JOptionPane.showConfirmDialog(mainFrame, "Are you sure you want to clear all waypoints?", "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+			if(ret == JOptionPane.NO_OPTION)
+				return;
+			
+			waypoints.clear();
+			WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
+			tableModel.setRowCount(0);
+		});
+		waypointMenu.add(clearWaypointsMenuItem);
+		menuBar.add(waypointMenu);
 		
 		mainPanel.add(buttonsPanel, BorderLayout.PAGE_END);
 		

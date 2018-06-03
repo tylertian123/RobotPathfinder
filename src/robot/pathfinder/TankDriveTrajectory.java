@@ -131,9 +131,9 @@ public class TankDriveTrajectory {
 	 * Note this process can take up to half a second, depending on the number of segments.
 	 * 
 	 * @param waypoints - The waypoints the path has to travel through
-	 * @param maxVelocity - The maximum velocity of the robot
-	 * @param maxAcceleration - The maximum acceleration of the robot
-	 * @param maxDeceleration - The maximum deceleration of the robot
+	 * @param maxVel - The maximum velocity of the robot
+	 * @param maxAccel - The maximum acceleration of the robot
+	 * @param maxDecel - The maximum deceleration of the robot
 	 * @param baseWidth - The width of the base plate of the robot (distance between left side wheels and right side wheels)
 	 * @param alpha - Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
 	 * @param segmentCount - How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate

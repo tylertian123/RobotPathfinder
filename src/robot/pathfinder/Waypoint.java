@@ -33,7 +33,7 @@ public class Waypoint {
 	}
 	/**
 	 * Constructs a new waypoint at the specified location without heading.
-	 * @param location The location of the waypoint
+	 * @param location - The location of the waypoint
 	 */
 	public Waypoint(Vec2D location) {
 		this.x = location.getX();
@@ -41,7 +41,8 @@ public class Waypoint {
 	}
 	/**
 	 * Constructs a new waypoint at the specified location with the specified heading.
-	 * @param location The location of the waypoint
+	 * @param location - The location of the waypoint
+	 * @param heading - The direction the robot is heading at this waypoint
 	 */
 	public Waypoint(Vec2D location, double heading) {
 		this.x = location.getX();

@@ -29,7 +29,7 @@ public class Bezier {
 	 * @param at1 - The ending control point
 	 * @param derivAt0 - The derivative at the starting control point
 	 * @param derivAt1 - The derivative at the ending control point
-	 * @return
+	 * @return A new {@code Bezier} instance that follows the constraints
 	 */
 	public static Bezier getFromHermite(Vec2D at0, Vec2D at1, Vec2D derivAt0, Vec2D derivAt1) {
 		Vec2D p1 = at0.add(derivAt0.multiply(1.0 / 3.0));

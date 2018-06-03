@@ -85,7 +85,7 @@ public class RobotSpecs {
 	}
 	/**
 	 * Retrieves the max deceleration of this robot specifications object. By default this value is the same as the max acceleration.
-	 * @return
+	 * @return The max deceleration of the robot
 	 */
 	public double getMaxDeceleration() {
 		return maxDeceleration;

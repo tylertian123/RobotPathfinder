@@ -216,7 +216,7 @@ public class BezierPath {
 	/**
 	 * Sets whether the robot that drives this path is driving backwards or not.
 	 * If this is set to true, the locations of the left and right wheels will be reversed.
-	 * @param drivingBackwards
+	 * @param drivingBackwards - Whether this path should be driven backwards
 	 */
 	public void setDrivingBackwards(boolean drivingBackwards) {
 		this.drivingBackwards = drivingBackwards;

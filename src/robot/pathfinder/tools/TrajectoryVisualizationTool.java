@@ -53,6 +53,7 @@ import robot.pathfinder.Waypoint;
  * A GUI tool build with Swing to help visualize trajectories. 
  * @author Tyler Tian
  *
+ * @deprecated does not use jerk
  */
 public class TrajectoryVisualizationTool {
 

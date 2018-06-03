@@ -12,18 +12,20 @@ package robot.pathfinder;
 public class RobotSpecs {
 	
 	double baseWidth;
-	double maxVelocity, maxAcceleration, maxDeceleration;
+	double maxVelocity, maxAcceleration, maxDeceleration, maxJerk;
 	
 	/**
 	 * Constructs a new robot specification object with the specified values. This constructor sets the value of the max
 	 * deceleration to be the same as the max acceleration.
 	 * @param maxVelocity The absolute value of the max velocity of the robot
 	 * @param maxAcceleration The absolute value of the max acceleration of the robot
+	 * @param maxJerk The max jerk (change in acceleration) of the robot
 	 * @param baseWidth The width of the base plate of the robot (distance between wheels on different sides)
 	 */
-	public RobotSpecs(double maxVelocity, double maxAcceleration, double baseWidth) {
+	public RobotSpecs(double maxVelocity, double maxAcceleration, double maxJerk, double baseWidth) {
 		this.maxVelocity = maxVelocity;
 		this.maxAcceleration = this.maxDeceleration = maxAcceleration;
+		this.maxJerk = maxJerk;
 		this.baseWidth = baseWidth;
 	}
 	/**
@@ -31,12 +33,14 @@ public class RobotSpecs {
 	 * @param maxVelocity The absolute value of the max velocity of the robot
 	 * @param maxAcceleration The absolute value of the max acceleration of the robot
 	 * @param maxDeceleration The absolute value of the max deceleration of the robot
+	 * @param maxJerk The max jerk (change in acceleration) of the robot
 	 * @param baseWidth The width of the robot's base
 	 */
-	public RobotSpecs(double maxVelocity, double maxAcceleration, double maxDeceleration, double baseWidth) {
+	public RobotSpecs(double maxVelocity, double maxAcceleration, double maxDeceleration, double maxJerk, double baseWidth) {
 		this.maxVelocity = maxVelocity;
 		this.maxAcceleration = maxAcceleration;
 		this.maxDeceleration = maxDeceleration;
+		this.maxJerk = maxJerk;
 		this.baseWidth = baseWidth;
 	}
 	
@@ -96,5 +100,19 @@ public class RobotSpecs {
 	 */
 	public void setMaxDeceleration(double maxDeceleration) {
 		this.maxDeceleration = maxDeceleration;
+	}
+	/**
+	 * Retrieves the max jerk (change in acceleration) of the robot.
+	 * @return The max jerk
+	 */
+	public double getMaxJerk() {
+		return maxJerk;
+	}
+	/**
+	 * Sets the max jerk (change in acceleration) of the robot.
+	 * @param maxJerk The max jerk
+	 */
+	public void setMaxJerk(double maxJerk) {
+		this.maxJerk = maxJerk;
 	}
 }

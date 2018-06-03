@@ -1,5 +1,6 @@
 package robot.pathfinder.tools;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
@@ -11,6 +12,7 @@ import org.math.plot.Plot2DPanel;
 import robot.pathfinder.BezierPath;
 import robot.pathfinder.Moment;
 import robot.pathfinder.TankDriveTrajectory;
+import robot.pathfinder.Waypoint;
 import robot.pathfinder.math.Vec2D;
 
 /**
@@ -139,6 +141,15 @@ public class Grapher {
 		plot.addLinePlot("Robot Center", x, y);
 		plot.addLinePlot("Left Wheel", leftX, leftY);
 		plot.addLinePlot("Right Wheel", rightX, rightY);
+		
+		double[] waypointX = new double[path.getWaypoints().length];
+		double[] waypointY = new double[path.getWaypoints().length];
+		Waypoint[] waypoints = path.getWaypoints();
+		for(int j = 0; j < path.getWaypoints().length; j ++) {
+			waypointX[j] = waypoints[j].getX();
+			waypointY[j] = waypoints[j].getY();
+		}
+		plot.addScatterPlot("Waypoints", Color.BLACK, waypointX, waypointY);
 		
 
 		//Take the longer of the two differences

@@ -329,6 +329,10 @@ public class TrajectoryVisualizationTool {
 					JOptionPane.showMessageDialog(mainFrame, "Error: An invalid token was entered\nin one or more fields.", "Error", JOptionPane.ERROR_MESSAGE);
 				}
 			} while(error);
+			
+			waypointX.setText("");
+			waypointY.setText("");
+			waypointHeading.setText("");
 		});
 		editWaypointButton.setPreferredSize(buttonSize);
 		buttonsPanel.add(editWaypointButton);

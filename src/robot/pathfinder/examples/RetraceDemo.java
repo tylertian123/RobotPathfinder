@@ -11,6 +11,7 @@ import robot.pathfinder.tools.Grapher;
  * to create a backwards trajectory.
  * @author Tyler Tian
  *
+ *@deprecated does not use jerk
  */
 public class RetraceDemo {
 

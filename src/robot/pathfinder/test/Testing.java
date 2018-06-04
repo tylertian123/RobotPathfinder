@@ -63,7 +63,7 @@ public class Testing {
 		System.out.println(time);
 	}
 	
-	public static void test6() {
+	/*public static void test6() {
 		Waypoint[] waypoints = new Waypoint[] {
 				new Waypoint(0, 0, Math.PI / 2),
 				new Waypoint(-5, 10, 3 * Math.PI / 4),
@@ -81,9 +81,9 @@ public class Testing {
 		JFrame pGraph2 = Grapher.graphPath(b.getPath(), 0.005);
 		pGraph2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		pGraph2.setVisible(true);
-	}
+	}*/
 	
 	public static void main(String[] args) {
-		test6();
+		//test6();
 	}
 }

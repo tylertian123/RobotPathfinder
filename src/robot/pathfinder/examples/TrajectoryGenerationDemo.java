@@ -11,6 +11,7 @@ import robot.pathfinder.tools.Grapher;
  * This was the program that generated the graphs in the project README.
  * @author Tyler Tian
  *
+ *@deprecated does not use jerk
  */
 public class TrajectoryGenerationDemo {
 	

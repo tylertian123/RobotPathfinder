@@ -64,7 +64,7 @@ public class TankDriveTrajectory {
 	 * @param surpressExceptions If set to true, an exception will <b>not</b> be thrown if the path is impossible
 	 */
 	public TankDriveTrajectory(Waypoint[] waypoints, RobotSpecs robotSpecs, double alpha, int segmentCount, boolean surpressExceptions) {
-		this(waypoints, robotSpecs.getMaxVelocity(), robotSpecs.getMaxAcceleration(), robotSpecs.getMaxDeceleration(), robotSpecs.getBaseWidth(), alpha, segmentCount, surpressExceptions);
+		this(waypoints, robotSpecs.getMaxVelocity(), robotSpecs.getMaxAcceleration(), robotSpecs.getMaxDeceleration(), robotSpecs.getMaxJerk(), robotSpecs.getBaseWidth(), alpha, segmentCount, surpressExceptions);
 	}
 	/**
 	 * Generates a trajectory based on a number of parameters.<br>
@@ -77,12 +77,13 @@ public class TankDriveTrajectory {
 	 * @param waypoints The waypoints the path has to travel through
 	 * @param maxVelocity The maximum velocity of the robot
 	 * @param maxAcceleration The maximum acceleration of the robot
+	 * @param maxJerk The maximum jerk (change in acceleration) of the robot
 	 * @param baseWidth The width of the base plate of the robot (distance between left side wheels and right side wheels)
 	 * @param alpha Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
 	 * @param segmentCount How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
 	 */
-	public TankDriveTrajectory(Waypoint[] waypoints, double maxVelocity, double maxAcceleration, double baseWidth, double alpha, int segmentCount) {
-		this(waypoints, maxVelocity, maxAcceleration, baseWidth, alpha, segmentCount, false);
+	public TankDriveTrajectory(Waypoint[] waypoints, double maxVelocity, double maxAcceleration, double maxJerk, double baseWidth, double alpha, int segmentCount) {
+		this(waypoints, maxVelocity, maxAcceleration, maxJerk, baseWidth, alpha, segmentCount, false);
 	}
 	/**
 	 Generates a trajectory based on a number of parameters.<br>
@@ -95,13 +96,14 @@ public class TankDriveTrajectory {
 	 * @param waypoints The waypoints the path has to travel through
 	 * @param maxVelocity The maximum velocity of the robot
 	 * @param maxAcceleration The maximum acceleration of the robot
+	 * @param maxJerk The maximum jerk (change in acceleration) of the robot
 	 * @param baseWidth The width of the base plate of the robot (distance between left side wheels and right side wheels)
 	 * @param alpha Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
 	 * @param segmentCount How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
 	 * @param surpressExceptions If set to true, an exception will <b>not</b> be thrown if the path is impossible
 	 */
-	public TankDriveTrajectory(Waypoint[] waypoints, double maxVelocity, double maxAcceleration, double baseWidth, double alpha, int segmentCount, boolean surpressExceptions) {
-		this(waypoints, maxVelocity, maxAcceleration, maxAcceleration, baseWidth, alpha, segmentCount, surpressExceptions);
+	public TankDriveTrajectory(Waypoint[] waypoints, double maxVelocity, double maxAcceleration, double maxJerk, double baseWidth, double alpha, int segmentCount, boolean surpressExceptions) {
+		this(waypoints, maxVelocity, maxAcceleration, maxAcceleration, maxJerk, baseWidth, alpha, segmentCount, surpressExceptions);
 	}
 	/**
 	 * Generates a trajectory based on a number of parameters.<br>
@@ -115,12 +117,13 @@ public class TankDriveTrajectory {
 	 * @param maxVelocity The maximum velocity of the robot
 	 * @param maxAcceleration The maximum acceleration of the robot
 	 * @param maxDeceleration The maximum deceleration of the robot
+	 * @param maxJerk The maximum jerk (change in acceleration) of the robot
 	 * @param baseWidth The width of the base plate of the robot (distance between left side wheels and right side wheels)
 	 * @param alpha Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
 	 * @param segmentCount How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
 	 */
-	public TankDriveTrajectory(Waypoint[] waypoints, double maxVelocity, double maxAcceleration, double maxDeceleration, double baseWidth, double alpha, int segmentCount) {
-		this(waypoints, maxVelocity, maxAcceleration, maxDeceleration, baseWidth, alpha, segmentCount, false);
+	public TankDriveTrajectory(Waypoint[] waypoints, double maxVelocity, double maxAcceleration, double maxDeceleration, double maxJerk, double baseWidth, double alpha, int segmentCount) {
+		this(waypoints, maxVelocity, maxAcceleration, maxDeceleration, maxJerk, baseWidth, alpha, segmentCount, false);
 	}
 	/**
 	 * Generates a trajectory based on a number of parameters.<br>
@@ -134,12 +137,13 @@ public class TankDriveTrajectory {
 	 * @param maxVel The maximum velocity of the robot
 	 * @param maxAccel The maximum acceleration of the robot
 	 * @param maxDecel The maximum deceleration of the robot
+	 * @param maxJerk The maximum jerk (change in acceleration) of the robot
 	 * @param baseWidth The width of the base plate of the robot (distance between left side wheels and right side wheels)
 	 * @param alpha Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
 	 * @param segmentCount How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
 	 * @param surpressExceptions If set to true, an exception will <b>not</b> be thrown if the path is impossible
 	 */
-	public TankDriveTrajectory(Waypoint[] waypoints, double maxVel, double maxAccel, double maxDecel, double baseWidth, double alpha, int segmentCount, boolean surpressExceptions) {
+	public TankDriveTrajectory(Waypoint[] waypoints, double maxVel, double maxAccel, double maxDecel, double maxJerk, double baseWidth, double alpha, int segmentCount, boolean surpressExceptions) {
 		
 		//Generate the path
 		path = new BezierPath(waypoints, alpha);

@@ -142,14 +142,22 @@ public class Grapher {
 		plot.addLinePlot("Left Wheel", leftX, leftY);
 		plot.addLinePlot("Right Wheel", rightX, rightY);
 		
-		double[] waypointX = new double[path.getWaypoints().length];
-		double[] waypointY = new double[path.getWaypoints().length];
 		Waypoint[] waypoints = path.getWaypoints();
+		//Fixes a bug with JMathPlot
+		double[][] xy = new double[2][waypoints.length > 2 ? waypoints.length : 3];
 		for(int j = 0; j < path.getWaypoints().length; j ++) {
-			waypointX[j] = waypoints[j].getX();
-			waypointY[j] = waypoints[j].getY();
+			xy[0][j] = waypoints[j].getX();
+			xy[1][j] = waypoints[j].getY();
 		}
-		plot.addScatterPlot("Waypoints", Color.BLACK, waypointX, waypointY);
+		if(waypoints.length < 3) {
+			if(waypoints.length < 2) {
+				xy[0][1] = Double.MIN_VALUE;
+				xy[1][1] = Double.MIN_VALUE;
+			}
+			xy[0][2] = Double.MIN_VALUE;
+			xy[1][2] = Double.MIN_VALUE;
+		}
+		plot.addScatterPlot("Waypoints", Color.BLACK, xy);
 		
 
 		//Take the longer of the two differences

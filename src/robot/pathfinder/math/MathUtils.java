@@ -233,4 +233,36 @@ public class MathUtils {
 		else
 			return Double.NaN;
 	}
+	
+	/**
+	 * Finds the discriminant of a cubic polynomial.<br>
+	 * <br>
+	 * If this value is positive, then the polynomial has 3 distinct real roots.<br>
+	 * If this value is zero, then the polynomial has a multiple root and all 3 roots are real.<br>
+	 * If this value is negative, then the polynomial has one real root, and 2 complex roots.
+	 * @param a The cubed term coefficient
+	 * @param b The squared term coefficient
+	 * @param c The linear term coefficient
+	 * @param d The constant term
+	 * @return The discriminant of the polynomial
+	 */
+	public static double cubicDiscriminant(double a, double b, double c, double d) {
+		return 18 * a * b * c * d - 4 * Math.pow(b, 3) * d + Math.pow(b, 2) * Math.pow(c, 2) - 4 * a * Math.pow(c, 3) - 27 * Math.pow(a, 2) * Math.pow(d, 2);
+	}
+	/**
+	 * Finds the real root of a cubic polynomial. This method assumes that the discriminant of the polynomial is negative, that is,
+	 * the polynomial has only one real root and 2 complex roots.
+	 * @param a The cubed term coefficient
+	 * @param b The squared term coefficient
+	 * @param c The linear term coefficient
+	 * @param d The constant term
+	 * @return The real root
+	 */
+	public static double realCubicRoot(double a, double b, double c, double d) {
+		double d0 = b * b - 3 * a * c;
+		double d1 = 2 * Math.pow(b, 3) - 9 * a * b * c + 27 * Math.pow(a, 2) * d;
+		double C = Math.cbrt((d1 - Math.sqrt(Math.pow(d1, 2) - 4 * Math.pow(d0, 3))) / 2);
+		
+		return -1 / (3 * a) * (b + C + d0 / C);
+	}
 }

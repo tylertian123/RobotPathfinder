@@ -211,35 +211,87 @@ public class TankDriveTrajectory {
 			double lTime = MathUtils.realCubicRoot(la, lb, lc, ld);
 			double rTime = MathUtils.realCubicRoot(ra, rb, rc, rd);
 			//Solve for the maximum reachable velocity
-			double leftMax = leftMoments[i - 1].getVelocity() + leftMoments[i - 1].getAcceleration() * lTime + 0.5 * maxJerk * Math.pow(lTime, 2);
-			double rightMax = rightMoments[i - 1].getVelocity() + rightMoments[i - 1].getAcceleration() * rTime + 0.5 * maxJerk * Math.pow(rTime, 2);
-			double leftVel, rightVel;
+			double leftMaxVel = leftMoments[i - 1].getVelocity() + leftMoments[i - 1].getAcceleration() * lTime + 0.5 * maxJerk * Math.pow(lTime, 2);
+			double rightMaxVel = rightMoments[i - 1].getVelocity() + rightMoments[i - 1].getAcceleration() * rTime + 0.5 * maxJerk * Math.pow(rTime, 2);
+			//Solve for the maximum reachable acceleration
+			double leftMaxAccel = leftMoments[i - 1].getAcceleration() + maxJerk * lTime;
+			double rightMaxAccel = rightMoments[i - 1].getAcceleration() + maxJerk * rTime;
 			
-			//Check if our maximum reachable velocity is above our maximum velocity
-			if(leftMax > segments[i - 1].getLeftMaxVelocity()) {
+			double leftVel, rightVel;
+			double leftAccel, rightAccel;
+			
+			//Check if our maximum reachable velocity or acceleration is greater than our limit
+			//Because the calculation of the max velocity from the segment already takes into account the physical max,
+			//we don't need to check for it
+			//If our maximum reachable velocity is greater than our limit, then do not accelerate or increase acceleration
+			if(leftMaxVel > segments[i - 1].getLeftMaxVelocity()) {
+				//Constrain velocity so we don't exceed the max
 				leftVel = segments[i - 1].getLeftMaxVelocity();
-				//If yes, then do not accelerate, so set the acceleration for the last moment to be 0
-				leftMoments[i - 1].setAcceleration(0);
+				//Since acceleration does not increase, we can set the left acceleration to the acceleration from the last moment
+				leftAccel = leftMoments[i - 1].getAcceleration();
+				//Make the jerk from the last moment 0 so acceleration does not increase
+				leftMoments[i - 1].setJerk(0);
+				//Even though this will make us exceed the limit, the backwards pass will fix it
 			}
+			//If our maximum reachable acceleration is greater than our limit, but our maximum reachable velocity is not,
+			//Then don't increase acceleration but still accelerate
+			else if(leftMaxAccel > maxAccel) {
+				//Since acceleration does not increase, we can set the left acceleration to the acceleration from the last moment
+				leftAccel = leftMoments[i - 1].getAcceleration();
+				//Make the jerk from the last moment 0 so acceleration does not increase
+				leftMoments[i - 1].setJerk(0);
+				//Calculate the velocity we would reach with just our acceleration
+				//This value is guaranteed to be smaller than leftMaxVel
+				//Use the kinematic equation for constant acceleration
+				leftVel = Math.sqrt(Math.pow(leftMoments[i - 1].getVelocity(), 2) + 2 * maxAccel * distDiffLeft);
+			}
+			//Otherwise just accelerate fully and set jerk to maximum
 			else {
-				leftVel = leftMax;
-				//Otherwise set the acceleration of the last moment to the maximum acceleration
-				leftMoments[i - 1].setAcceleration(maxAccel);
+				//Set the velocity to our maximum reachable velocity
+				leftVel = leftMaxVel;
+				//Set the acceleration to our maximum reachable acceleration
+				leftAccel = leftMaxAccel;
+				//Set the jerk of the last moment to the maximum jerk
+				leftMoments[i - 1].setJerk(maxJerk);
 			}
+			
+			
 			//Do the same thing for the right
-			if(rightMax > segments[i - 1].getRightMaxVelocity()) {
+			if(rightMaxVel > segments[i - 1].getRightMaxVelocity()) {
+				//Constrain velocity so we don't exceed the max
 				rightVel = segments[i - 1].getRightMaxVelocity();
-				rightMoments[i - 1].setAcceleration(0);
+				//Since acceleration does not increase, we can set the right acceleration to the acceleration from the last moment
+				rightAccel = rightMoments[i - 1].getAcceleration();
+				//Make the jerk from the last moment 0 so acceleration does not increase
+				rightMoments[i - 1].setJerk(0);
+				//Even though this will make us exceed the limit, the backwards pass will fix it
 			}
+			//If our maximum reachable acceleration is greater than our limit, but our maximum reachable velocity is not,
+			//Then don't increase acceleration but still accelerate
+			else if(rightMaxAccel > maxAccel) {
+				//Since acceleration does not increase, we can set the right acceleration to the acceleration from the last moment
+				rightAccel = rightMoments[i - 1].getAcceleration();
+				//Make the jerk from the last moment 0 so acceleration does not increase
+				rightMoments[i - 1].setJerk(0);
+				//Calculate the velocity we would reach with just our acceleration
+				//This value is guaranteed to be smaller than rightMaxVel
+				//Use the kinematic equation for constant acceleration
+				rightVel = Math.sqrt(Math.pow(rightMoments[i - 1].getVelocity(), 2) + 2 * maxAccel * distDiffRight);
+			}
+			//Otherwise just accelerate fully and set jerk to maximum
 			else {
-				rightVel = rightMax;
-				rightMoments[i - 1].setAcceleration(maxAccel);
+				//Set the velocity to our maximum reachable velocity
+				rightVel = rightMaxVel;
+				//Set the acceleration to our maximum reachable acceleration
+				rightAccel = rightMaxAccel;
+				//Set the jerk of the last moment to the maximum jerk
+				rightMoments[i - 1].setJerk(maxJerk);
 			}
 			
 			//Create our Moment objects with the desired distance and velocity and a default acceleration of 0
 			//which will be changed later if necessary.
-			leftMoments[i] = new Moment(currentDists[0], leftVel, 0);
-			rightMoments[i] = new Moment(currentDists[1], rightVel, 0);
+			leftMoments[i] = new Moment(currentDists[0], leftVel, leftAccel, 0);
+			rightMoments[i] = new Moment(currentDists[1], rightVel, rightAccel, 0);
 		}
 		
 		//Prepare for backwards pass

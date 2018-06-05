@@ -247,11 +247,14 @@ public class MathUtils {
 	 * @return The discriminant of the polynomial
 	 */
 	public static double cubicDiscriminant(double a, double b, double c, double d) {
+		//Formula can be found on Wikipedia: https://en.wikipedia.org/wiki/Cubic_function#General_formula
 		return 18 * a * b * c * d - 4 * Math.pow(b, 3) * d + Math.pow(b, 2) * Math.pow(c, 2) - 4 * a * Math.pow(c, 3) - 27 * Math.pow(a, 2) * Math.pow(d, 2);
 	}
 	/**
 	 * Finds the real root of a cubic polynomial. This method assumes that the discriminant of the polynomial is negative, that is,
-	 * the polynomial has only one real root and 2 complex roots.
+	 * the polynomial has only one real root and 2 complex roots.<br>
+	 * <br>
+	 * If the discriminant is greater than 0, this method will return {@code NaN}.
 	 * @param a The cubed term coefficient
 	 * @param b The squared term coefficient
 	 * @param c The linear term coefficient
@@ -259,9 +262,25 @@ public class MathUtils {
 	 * @return The real root
 	 */
 	public static double realCubicRoot(double a, double b, double c, double d) {
+		//Formula can be found on Wikipedia: https://en.wikipedia.org/wiki/Cubic_function#General_formula
 		double d0 = b * b - 3 * a * c;
 		double d1 = 2 * Math.pow(b, 3) - 9 * a * b * c + 27 * Math.pow(a, 2) * d;
-		double C = Math.cbrt((d1 - Math.sqrt(Math.pow(d1, 2) - 4 * Math.pow(d0, 3))) / 2);
+		double C;
+		//"In addition either sign in front of the square root may be chosen unless d0 = 0
+		//in which case the sign must be chosen so that the two terms inside the cube root do not cancel."
+		if(d0 != 0) {
+			C = Math.cbrt((d1 - Math.sqrt(Math.pow(d1, 2) - 4 * Math.pow(d0, 3))) / 2);
+		}
+		else {
+			if(d1 >= 0) {
+				//If d1 is greater than 0, then we must add, because the result of the square root is always going to be positive
+				C = Math.cbrt((d1 + Math.sqrt(Math.pow(d1, 2) - 4 * Math.pow(d0, 3))) / 2);
+			}
+			else {
+				//If d1 is less than 0, we must subtract
+				C = Math.cbrt((d1 - Math.sqrt(Math.pow(d1, 2) - 4 * Math.pow(d0, 3))) / 2);
+			}
+		}
 		
 		return -1 / (3 * a) * (b + C + d0 / C);
 	}

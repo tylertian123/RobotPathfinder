@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import robot.pathfinder.Moment;
 import robot.pathfinder.TankDriveTrajectory;
 import robot.pathfinder.Waypoint;
+import robot.pathfinder.math.MathUtils;
 import robot.pathfinder.tools.Grapher;
 
 public class Testing {
@@ -84,6 +85,9 @@ public class Testing {
 	}*/
 	
 	public static void main(String[] args) {
-		//test6();
+		double discriminant = MathUtils.cubicDiscriminant(1, -1, 2, -8);
+		double root = MathUtils.realCubicRoot(1, -1, 2, -8);
+		System.out.println(discriminant);
+		System.out.println(root);
 	}
 }

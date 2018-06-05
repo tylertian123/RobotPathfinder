@@ -203,16 +203,13 @@ public class TankDriveTrajectory {
 			double distDiffLeft = currentDists[0] - lastDists[0];
 			double distDiffRight = currentDists[1] - lastDists[1];
 			
-			//Use the fourth kinematic equation to figure out the maximum reachable velocity for each side,
-			//while obeying constraints for max acceleration
-			double leftMax = Math.sqrt(Math.pow(leftMoments[i - 1].getVelocity(), 2) + 2 * maxAccel * distDiffLeft);
-			double rightMax = Math.sqrt(Math.pow(rightMoments[i - 1].getVelocity(), 2) + 2 * maxAccel * distDiffRight);
-			
+			//Use the kinematic equation for constant jerk
+			//First calculate the coefficients
 			double la = maxJerk / 6, lb = leftMoments[i - 1].getAcceleration() / 2, lc = leftMoments[i - 1].getVelocity(), ld = -distDiffLeft;
 			double ra = maxJerk / 6, rb = rightMoments[i - 1].getAcceleration() / 2, rc = rightMoments[i - 1].getVelocity(), rd = -distDiffRight;
-			
-			double root = MathUtils.realCubicRoot(la, lb, lc, ld);
-			System.out.println(Math.pow(root, 3) * la + Math.pow(root, 2) * lb + root * lc + ld);
+			//Solve for the time, which is the (only) real root of this cubic polynomial
+			double lTime = MathUtils.realCubicRoot(la, lb, lc, ld);
+			double rTIme = MathUtils.realCubicRoot(ra, rb, rc, rd);
 			
 			double leftVel, rightVel;
 			

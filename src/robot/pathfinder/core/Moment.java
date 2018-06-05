@@ -6,10 +6,12 @@ package robot.pathfinder.core;
  * @author Tyler Tian
  *
  */
-public class Moment {
+final public class Moment {
 	
 	double d, v, a, j;
 	double t;
+	
+	boolean locked = false;
 	
 	/**
 	 * Creates a new moment with the specified values.
@@ -49,10 +51,31 @@ public class Moment {
 	}
 	
 	/**
+	 * Returns whether this object is locked. Attempting to modify a locked object will cause a {@link LockedException} to be thrown.
+	 * @return
+	 */
+	public boolean isLocked() {
+		return locked;
+	}
+	
+	/**
+	 * Locks the object. Any subsequent attempts to modify will cause a {@link LockedException} to be thrown.
+	 */
+	public void lock() {
+		locked = true;
+	}
+	
+	protected void unlock() {
+		locked = false;
+	}
+	
+	/**
 	 * Sets the time of the moment.
 	 * @param t The new time
 	 */
 	public void setTime(double t) {
+		if(isLocked())
+			throw new LockedException("Attempt to modify a locked Moment");
 		this.t = t;
 	}
 	/**
@@ -67,6 +90,8 @@ public class Moment {
 	 * @param distance The new distance
 	 */
 	public void setDistance(double distance) {
+		if(isLocked())
+			throw new LockedException("Attempt to modify a locked Moment");
 		d = distance;
 	}
 	/**
@@ -81,6 +106,8 @@ public class Moment {
 	 * @param velocity The new velocity
 	 */
 	public void setVelocity(double velocity) {
+		if(isLocked())
+			throw new LockedException("Attempt to modify a locked Moment");
 		v = velocity;
 	}
 	/**
@@ -95,6 +122,8 @@ public class Moment {
 	 * @param acceleration The new acceleration
 	 */
 	public void setAcceleration(double acceleration) {
+		if(isLocked())
+			throw new LockedException("Attempt to modify a locked Moment");
 		a = acceleration;
 	}
 	/**
@@ -109,6 +138,8 @@ public class Moment {
 	 * @param jerk The desired jerk
 	 */
 	public void setJerk(double jerk) {
+		if(isLocked())
+			throw new LockedException("Attempt to modify a locked Moment");
 		j = jerk;
 	}
 	/**

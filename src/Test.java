@@ -33,9 +33,9 @@ public class Test {
 		double testTime = b.totalTime() / 2;
 		long nanos = System.nanoTime();
 		@SuppressWarnings("unused")
-		Moment left = b.getLeftSmooth(testTime);
+		Moment left = b.getLeft(testTime);
 		@SuppressWarnings("unused")
-		Moment right = b.getRightSmooth(testTime);
+		Moment right = b.getRight(testTime);
 		long nanosTime = System.nanoTime() - nanos;
 		System.out.println("Getting one pair of values took " + nanosTime + " nanoseconds");
 		
@@ -58,7 +58,7 @@ public class Test {
 		double dt = b.totalTime() / 5000;
 		long start = System.nanoTime();
 		for(double t = 0; t < b.totalTime(); t += dt) {
-			b.getLeftSmooth(t);
+			b.getLeft(t);
 		}
 		long time = System.nanoTime() - start;
 		System.out.println(time);

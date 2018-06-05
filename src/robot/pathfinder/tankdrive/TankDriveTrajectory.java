@@ -290,7 +290,7 @@ public class TankDriveTrajectory {
 				rightMoments[i - 1].setJerk(maxJerk);
 			}
 			
-			//Create our Moment objects with the desired distance and velocity and a default acceleration of 0
+			//Create our Moment objects with the desired distance, velocity, acceleration and a default jerk of 0
 			//which will be changed later if necessary.
 			leftMoments[i] = new Moment(currentDists[0], leftVel, leftAccel, 0);
 			rightMoments[i] = new Moment(currentDists[1], rightVel, rightAccel, 0);
@@ -366,6 +366,9 @@ public class TankDriveTrajectory {
 			//Add the time differences to the accumulated time of the last moment to get the time of this moment
 			leftMoments[i].setTime(leftMoments[i - 1].getTime() + dtLeft);
 			rightMoments[i].setTime(rightMoments[i - 1].getTime() + dtRight);
+			
+			leftMoments[i].lock();
+			rightMoments[i].lock();
 		}
 	}
 	//Creates a trajectory with moments that are already generated
@@ -380,12 +383,14 @@ public class TankDriveTrajectory {
 	}
 	
 	/**
-	 * Retrieves the {@code Moment} object associated with the left side at the specified time.
-	 * @deprecated Use {@link TankDriveTrajectory#getLeftSmooth(double)} instead.
+	 * Retrieves the {@code Moment} object associated with the left side at the specified time.<br>
+	 * <br>
+	 * This method does not interpolate between two {@code Moment}s and thus gives rough results.
+	 * Only use if necessary.
 	 * @param t A positive real number that ranges from 0 to the return value of {@link #totalTime()}
 	 * @return The {@code Moment} object associated with the left side at time t
 	 */
-	public Moment getLeft(double t) {
+	public Moment getLeftRaw(double t) {
 		//Do binary search to find the closest approximation
 		int start = 0;
 		int end = leftMoments.length - 1;
@@ -425,12 +430,14 @@ public class TankDriveTrajectory {
 		}
 	}
 	/**
-	 * Retrieves the {@code Moment} object associated with the right side at the specified time.
-	 * @deprecated Use {@link TankDriveTrajectory#getRightSmooth(double)} instead.
+	 * Retrieves the {@code Moment} object associated with the right side at the specified time.<br>
+	 * <br>
+	 * This method does not interpolate between two {@code Moment}s and thus gives rough results.
+	 * Only use if necessary.
 	 * @param t A positive real number that ranges from 0 to the return value of {@link #totalTime()}
 	 * @return The {@code Moment} object associated with the right side at time t
 	 */
-	public Moment getRight(double t) {
+	public Moment getRightRaw(double t) {
 		//For an explanation of the code, refer to getLeft()
 		int start = 0;
 		int end = rightMoments.length - 1;
@@ -473,12 +480,10 @@ public class TankDriveTrajectory {
 	 * <br>
 	 * This method retrieves the 2 {@code Moment} objects closest to the specified time, and lerps them to get an
 	 * estimate.
-	 * Using this method will yield a smoother result than {@link #getLeft(double)}, but due
-	 * to the added steps it will take longer.
 	 * @param t A positive real number that ranges from 0 to the return value of {@link #totalTime()}
 	 * @return The {@code Moment} object associated with the left side at time t
 	 */
-	public Moment getLeftSmooth(double t) {
+	public Moment getLeft(double t) {
 		//Do binary search to find the closest approximation
 		int start = 0;
 		int end = leftMoments.length - 1;
@@ -530,12 +535,10 @@ public class TankDriveTrajectory {
 	 * <br>
 	 * This method retrieves the 2 {@code Moment} objects closest to the specified time, and lerps them to get an
 	 * estimate.
-	 * Using this method will yield a smoother result than {@link #getRight(double)}, but due
-	 * to the added steps it will take longer.
 	 * @param t A positive real number that ranges from 0 to the return value of {@link #totalTime()}
 	 * @return The {@code Moment} object associated with the right side at time t
 	 */
-	public Moment getRightSmooth(double t) {
+	public Moment getRight(double t) {
 		//Do binary search to find the closest approximation
 		int start = 0;
 		int end = rightMoments.length - 1;

@@ -52,8 +52,8 @@ public class Grapher {
 		for(double t = 0; t <= trajectory.totalTime(); t += dt) {
 			//Collect data
 			time[i] = t;
-			Moment leftMoment = trajectory.getLeftSmooth(t);
-			Moment rightMoment = trajectory.getRightSmooth(t);
+			Moment leftMoment = trajectory.getLeft(t);
+			Moment rightMoment = trajectory.getRight(t);
 			
 			leftPos[i] = leftMoment.getDistance();
 			leftVel[i] = leftMoment.getVelocity();

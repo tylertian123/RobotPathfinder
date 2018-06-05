@@ -209,8 +209,10 @@ public class TankDriveTrajectory {
 			double ra = maxJerk / 6, rb = rightMoments[i - 1].getAcceleration() / 2, rc = rightMoments[i - 1].getVelocity(), rd = -distDiffRight;
 			//Solve for the time, which is the (only) real root of this cubic polynomial
 			double lTime = MathUtils.realCubicRoot(la, lb, lc, ld);
-			double rTIme = MathUtils.realCubicRoot(ra, rb, rc, rd);
-			
+			double rTime = MathUtils.realCubicRoot(ra, rb, rc, rd);
+			//Solve for the maximum reachable velocity
+			double leftMax = leftMoments[i - 1].getVelocity() + leftMoments[i - 1].getAcceleration() * lTime + 0.5 * maxJerk * Math.pow(lTime, 2);
+			double rightMax = rightMoments[i - 1].getVelocity() + rightMoments[i - 1].getAcceleration() * rTime + 0.5 * maxJerk * Math.pow(rTime, 2);
 			double leftVel, rightVel;
 			
 			//Check if our maximum reachable velocity is above our maximum velocity

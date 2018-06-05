@@ -7,12 +7,7 @@ package robot.pathfinder.math;
  */
 public class MathUtils {
 	
-	/**
-	 * Swaps two rows of a matrix/two arrays.
-	 * @param a The first row
-	 * @param b The second row
-	 */
-	public static void rowSwap(double[] a, double[] b) {
+	private static void rowSwap(double[] a, double[] b) {
 		double[] temp = new double[a.length];
 		for(int i = 0; i < temp.length; i ++) {
 			
@@ -21,43 +16,24 @@ public class MathUtils {
 			b[i] = temp[i];
 		}
 	}
-	/**
-	 * Multiplies a row of a matrix/an array by a scalar
-	 * @param a The row to work with
-	 * @param b A scalar to multiply by
-	 */
-	public static void rowMultiply(double[] a, double b) {
+	private static void rowMultiply(double[] a, double b) {
 		for(int i = 0; i < a.length; i ++) {
 			a[i] *= b;
 		}
 	}
-	/**
-	 * Multiplies a row of a matrix/an array by a scalar, and return the result. <br>
-	 * <br>
-	 * Unlike in {@link MathUtils#rowMultiply(double[], double) rowMutiply()}, the original row/array is not modified.
-	 * @param a The row to work with
-	 * @param b A scalar to multiply by
-	 * @return The row with each term multiplied by the scalar
-	 */
-	public static double[] rowMultiply2(double[] a, double b) {
+	private static double[] rowMultiply2(double[] a, double b) {
 		double[] c = new double[a.length];
 		for(int i = 0; i < c.length; i ++) {
 			c[i] = a[i] * b;
 		}
 		return c;
 	}
-	/**
-	 * Adds each term of a row of a matrix/an array to another row/array.
-	 * @param a The row to add to
-	 * @param b The row to add
-	 */
-	public static void rowAdd(double[] a, double[] b) {
+	private static void rowAdd(double[] a, double[] b) {
 		for(int i = 0; i < a.length; i ++) {
 			a[i] += b[i];
 		}
 	}
-	
-	static int lcIndex(double[] a) {
+	private static int lcIndex(double[] a) {
 		//Finds the leading coefficient's index in a row.
 		//A larger index means the leading coefficient is closer to the left
 		for(int i = 0; i < a.length - 1; i ++) {
@@ -283,5 +259,18 @@ public class MathUtils {
 		}
 		
 		return -1 / (3 * a) * (b + C + d0 / C);
+	}
+	
+	/**
+	 * Calculates the curvature, given the derivatives and the second derivatives at the desired point.
+	 * @param xDeriv The first derivative of x, with respect to t (dx/dt).
+	 * @param xSecondDeriv The second derivative of x, with respect to t (d^2x/dt^2).
+	 * @param yDeriv The first derivative of y, with respect to t (dy/dt).
+	 * @param ySecondDeriv The second derivative of y, with respect to t (d^2y/dt^2).
+	 * @return The curvature at the point
+	 */
+	public static double curvature(double xDeriv, double xSecondDeriv, double yDeriv, double ySecondDeriv) {
+		return (xDeriv * ySecondDeriv - yDeriv * xSecondDeriv) /
+				Math.pow(xDeriv * xDeriv + yDeriv * yDeriv, 3.0/2.0);
 	}
 }

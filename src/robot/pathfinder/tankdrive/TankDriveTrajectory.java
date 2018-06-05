@@ -170,8 +170,7 @@ public class TankDriveTrajectory {
 			Vec2D secondDeriv = path.secondDerivAt(mid);
 			double xSecondDeriv = secondDeriv.getX();
 			double ySecondDeriv = secondDeriv.getY();
-			double curvature = (xDeriv * ySecondDeriv - yDeriv * xSecondDeriv) /
-					Math.pow(xDeriv * xDeriv + yDeriv * yDeriv, 3.0/2.0);
+			double curvature = MathUtils.curvature(xDeriv, xSecondDeriv, yDeriv, ySecondDeriv);
 			
 			//R is always positive
 			double r = Math.abs(1 / curvature);

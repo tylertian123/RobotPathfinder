@@ -1,16 +1,16 @@
-package robot.pathfinder.test;
+
 
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
-import robot.pathfinder.Moment;
-import robot.pathfinder.TankDriveTrajectory;
-import robot.pathfinder.Waypoint;
+import robot.pathfinder.core.Moment;
+import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.math.MathUtils;
+import robot.pathfinder.tankdrive.TankDriveTrajectory;
 import robot.pathfinder.tools.Grapher;
 
-public class Testing {
+public class Test {
 	static double[] primitiveArr(ArrayList<Double> a) {
 		Double[] arr = new Double[a.size()];
 		a.toArray(arr);

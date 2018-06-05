@@ -1,4 +1,4 @@
-package robot.pathfinder;
+package robot.pathfinder.core;
 
 /**
  * A class representing the specifications for a robot. <br>

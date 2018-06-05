@@ -1,6 +1,6 @@
 package robot.pathfinder.math;
 
-import robot.pathfinder.Waypoint;
+import robot.pathfinder.core.Waypoint;
 
 /**
  * A class that represents a vector in 2D space.

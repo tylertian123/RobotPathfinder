@@ -2,8 +2,8 @@ package robot.pathfinder.examples;
 
 import javax.swing.JFrame;
 
-import robot.pathfinder.TankDriveTrajectory;
-import robot.pathfinder.Waypoint;
+import robot.pathfinder.core.Waypoint;
+import robot.pathfinder.tankdrive.TankDriveTrajectory;
 import robot.pathfinder.tools.Grapher;
 
 /**

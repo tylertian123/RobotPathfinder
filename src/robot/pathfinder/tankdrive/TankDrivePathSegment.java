@@ -1,4 +1,4 @@
-package robot.pathfinder;
+package robot.pathfinder.tankdrive;
 
 /**
  * Represents a segment of a path for a tank drive robot. This class is intended for use internally by trajectory

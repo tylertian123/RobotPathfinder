@@ -1,8 +1,11 @@
-package robot.pathfinder;
+package robot.pathfinder.tankdrive;
 
+import robot.pathfinder.core.Moment;
+import robot.pathfinder.core.RobotSpecs;
+import robot.pathfinder.core.TrajectoryGenerationException;
+import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.math.MathUtils;
 import robot.pathfinder.math.Vec2D;
-import robot.pathfinder.Moment;
 
 /**
  * A trajectory generator for a tank drive robot.<br>
@@ -42,7 +45,7 @@ public class TankDriveTrajectory {
 	 * Note this process can take up to half a second, depending on the number of segments.
 	 * 
 	 * @param waypoints The waypoints the path has to travel through
-	 * @param robotSpecs A {@link robot.pathfinder.RobotSpecs RobotSpecs} object containing the specifications of the robot
+	 * @param robotSpecs A {@link robot.pathfinder.core.RobotSpecs RobotSpecs} object containing the specifications of the robot
 	 * @param alpha Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
 	 * @param segmentCount How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
 	 */
@@ -58,7 +61,7 @@ public class TankDriveTrajectory {
 	 * Note this process can take up to half a second, depending on the number of segments.
 	 * 
 	 * @param waypoints The waypoints the path has to travel through
-	 * @param robotSpecs A {@link robot.pathfinder.RobotSpecs RobotSpecs} object containing the specifications of the robot	 
+	 * @param robotSpecs A {@link robot.pathfinder.core.RobotSpecs RobotSpecs} object containing the specifications of the robot	 
 	 * @param alpha Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
 	 * @param segmentCount How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
 	 * @param surpressExceptions If set to true, an exception will <b>not</b> be thrown if the path is impossible

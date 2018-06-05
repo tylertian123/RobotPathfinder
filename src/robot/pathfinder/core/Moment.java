@@ -1,4 +1,4 @@
-package robot.pathfinder;
+package robot.pathfinder.core;
 
 /**
  * Represents a moment in time of a trajectory; this class contains the time, as well as the desired distance,

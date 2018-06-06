@@ -7,6 +7,8 @@ package robot.pathfinder.math;
  */
 public class MathUtils {
 	
+	private MathUtils() {}
+	
 	private static void rowSwap(double[] a, double[] b) {
 		double[] temp = new double[a.length];
 		for(int i = 0; i < temp.length; i ++) {

@@ -77,10 +77,10 @@ public class Grapher {
 		plot.addLinePlot("Left Velocity", time, leftVel);
 		plot.addLinePlot("Left Acceleration", time, leftAccel);
 		plot.addLinePlot("Left Jerk", time, leftJerk);
-		plot.addLinePlot("Right Position", time, rightPos);
+		/*plot.addLinePlot("Right Position", time, rightPos);
 		plot.addLinePlot("Right Velocity", time, rightVel);
 		plot.addLinePlot("Right Acceleration", time, rightAccel);
-		plot.addLinePlot("Right Jerk", time, rightJerk);
+		plot.addLinePlot("Right Jerk", time, rightJerk);*/
 		
 		//Create window that holds the graph
 		JFrame frame = new JFrame("Trajectory Graph");

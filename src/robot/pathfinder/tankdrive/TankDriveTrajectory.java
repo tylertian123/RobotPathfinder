@@ -12,14 +12,7 @@ import robot.pathfinder.math.Vec2D;
  * <br>
  * The algorithm used in this class is largely based on a video by the Cheesy Poofs (Team 254),
  * with some small modifications here and there.<br>
- * You can find the video on YouTube <a href="https://youtu.be/8319J1BEHwM">here</a>.<br>
- * <br>
- * In addition to the Poofs' algorithm, this class divides the trajectory into "moments".
- * Each "moment" is a point in time, and has a desired displacement, velocity and acceleration.
- * Using these "moments", a system can be set up that follows the desired values, thus achieving 
- * motion control.<br>
- * This class also uses Beziers to generate its path, instead of 2D Hermite spline fitting like in
- * the video.
+ * You can find the video on YouTube <a href="https://youtu.be/8319J1BEHwM">here</a>.
  * 
  * @author Tyler Tian
  *
@@ -212,6 +205,7 @@ public class TankDriveTrajectory {
 			//Solve for the time, which is the (only) real root of this cubic polynomial
 			double lTime = MathUtils.realCubicRoot(la, lb, lc, ld);
 			double rTime = MathUtils.realCubicRoot(ra, rb, rc, rd);
+			
 			//Solve for the maximum reachable velocity
 			double leftMaxVel = leftMoments[i - 1].getVelocity() + leftMoments[i - 1].getAcceleration() * lTime + 0.5 * maxJerk * Math.pow(lTime, 2);
 			double rightMaxVel = rightMoments[i - 1].getVelocity() + rightMoments[i - 1].getAcceleration() * rTime + 0.5 * maxJerk * Math.pow(rTime, 2);
@@ -373,17 +367,17 @@ public class TankDriveTrajectory {
 			
 			//A result of NaN or Infinity indicates that our path is impossible with the current configuration.
 			if(Double.isNaN(dtLeft) || Double.isInfinite(dtLeft)) {
-				System.out.printf("*LEFT* Accel: %.10f, Velo: %.10f, Dist: %.10f, Jerk: %.10f, Iteration: %d\n", leftAccel, leftVel, distDiffLeft, leftJerk, i);
-				System.out.printf("*LEFT* Equation: %.7fx^3 + %.7fx^2 + %.7fx + %.7f\n", la, lb, lc, ld);
-				System.out.println("*LEFT* Discriminant: " + MathUtils.cubicDiscriminant(la, lb, lc, ld));
+				//System.out.printf("*LEFT* Accel: %.10f, Velo: %.10f, Dist: %.10f, Jerk: %.10f, Iteration: %d\n", leftAccel, leftVel, distDiffLeft, leftJerk, i);
+				//System.out.printf("*LEFT* Equation: %.7fx^3 + %.7fx^2 + %.7fx + %.7f\n", la, lb, lc, ld);
+				//System.out.println("*LEFT* Discriminant: " + MathUtils.cubicDiscriminant(la, lb, lc, ld));
 				if(!surpressExceptions)
 					throw new TrajectoryGenerationException("Path is impossible");
 				dtLeft = 0;
 			}
 			if(Double.isNaN(dtRight) || Double.isInfinite(dtRight)) {
-				System.out.printf("*RIGHT* Accel: %.10f, Velo: %.10f, Dist: %.10f, Jerk: %.10f, Iteration: %d\n", rightAccel, rightVel, distDiffRight, rightJerk, i);
-				System.out.printf("*RIGHT* Equation: %.7fx^3 + %.7fx^2 + %.7fx + %.7f\n", ra, rb, rc, rd);
-				System.out.println("*RIGHT* Discriminant: " + MathUtils.cubicDiscriminant(ra, rb, rc, rd));
+				//System.out.printf("*RIGHT* Accel: %.10f, Velo: %.10f, Dist: %.10f, Jerk: %.10f, Iteration: %d\n", rightAccel, rightVel, distDiffRight, rightJerk, i);
+				//System.out.printf("*RIGHT* Equation: %.7fx^3 + %.7fx^2 + %.7fx + %.7f\n", ra, rb, rc, rd);
+				//System.out.println("*RIGHT* Discriminant: " + MathUtils.cubicDiscriminant(ra, rb, rc, rd));
 				if(!surpressExceptions)
 					throw new TrajectoryGenerationException("Path is impossible");
 				dtRight = 0;

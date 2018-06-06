@@ -373,16 +373,20 @@ public class TankDriveTrajectory {
 			
 			//A result of NaN or Infinity indicates that our path is impossible with the current configuration.
 			if(Double.isNaN(dtLeft) || Double.isInfinite(dtLeft)) {
-				System.out.printf("*LEFT* Accel: %.10f, Velo: %.10f, Dist: %.10f, Iteration: %d\n", leftAccel, leftVel, distDiffLeft, i);
+				System.out.printf("*LEFT* Accel: %.10f, Velo: %.10f, Dist: %.10f, Jerk: %.10f, Iteration: %d\n", leftAccel, leftVel, distDiffLeft, leftJerk, i);
+				System.out.printf("*LEFT* Equation: %.7fx^3 + %.7fx^2 + %.7fx + %.7f\n", la, lb, lc, ld);
+				System.out.println("*LEFT* Discriminant: " + MathUtils.cubicDiscriminant(la, lb, lc, ld));
 				if(!surpressExceptions)
 					throw new TrajectoryGenerationException("Path is impossible");
-				dtLeft = 0.1;
+				dtLeft = 0;
 			}
 			if(Double.isNaN(dtRight) || Double.isInfinite(dtRight)) {
-				System.out.printf("*RIGHT* Accel: %.10f, Velo: %.10f, Dist: %.10f, Iteration: %d\n", rightAccel, rightVel, distDiffRight, i);
+				System.out.printf("*RIGHT* Accel: %.10f, Velo: %.10f, Dist: %.10f, Jerk: %.10f, Iteration: %d\n", rightAccel, rightVel, distDiffRight, rightJerk, i);
+				System.out.printf("*RIGHT* Equation: %.7fx^3 + %.7fx^2 + %.7fx + %.7f\n", ra, rb, rc, rd);
+				System.out.println("*RIGHT* Discriminant: " + MathUtils.cubicDiscriminant(ra, rb, rc, rd));
 				if(!surpressExceptions)
 					throw new TrajectoryGenerationException("Path is impossible");
-				dtRight = 0.1;
+				dtRight = 0;
 			}
 			
 			//Add the time differences to the accumulated time of the last moment to get the time of this moment

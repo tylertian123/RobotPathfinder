@@ -47,6 +47,8 @@ public class Grapher {
 		double[] rightVel = new double[elemCount];
 		double[] leftAccel = new double[elemCount];
 		double[] rightAccel = new double[elemCount];
+		double[] leftJerk = new double[elemCount];
+		double[] rightJerk = new double[elemCount];
 		
 		int i = 0;
 		for(double t = 0; t <= trajectory.totalTime(); t += dt) {
@@ -58,9 +60,11 @@ public class Grapher {
 			leftPos[i] = leftMoment.getDistance();
 			leftVel[i] = leftMoment.getVelocity();
 			leftAccel[i] = leftMoment.getAcceleration();
+			leftJerk[i] = leftMoment.getJerk();
 			rightPos[i] = rightMoment.getDistance();
 			rightVel[i] = rightMoment.getVelocity();
 			rightAccel[i] = rightMoment.getAcceleration();
+			rightJerk[i] = rightMoment.getJerk();
 			
 			i++;
 		}
@@ -70,11 +74,13 @@ public class Grapher {
 		plot.setLegendOrientation("EAST");
 		//Add graphs
 		plot.addLinePlot("Left Position", time, leftPos);
-		plot.addLinePlot("Right Position", time, rightPos);
 		plot.addLinePlot("Left Velocity", time, leftVel);
-		plot.addLinePlot("Right Velocity", time, rightVel);
 		plot.addLinePlot("Left Acceleration", time, leftAccel);
+		plot.addLinePlot("Left Jerk", time, leftJerk);
+		plot.addLinePlot("Right Position", time, rightPos);
+		plot.addLinePlot("Right Velocity", time, rightVel);
 		plot.addLinePlot("Right Acceleration", time, rightAccel);
+		plot.addLinePlot("Right Jerk", time, rightJerk);
 		
 		//Create window that holds the graph
 		JFrame frame = new JFrame("Trajectory Graph");

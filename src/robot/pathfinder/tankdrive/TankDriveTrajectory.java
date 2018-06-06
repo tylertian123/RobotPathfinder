@@ -609,11 +609,11 @@ public class TankDriveTrajectory {
 	 * <br>
 	 * During the last stage of trajectory generation, a time is assigned to every moment.
 	 * This is done by using the third kinematic equation and thus requires solving quadratic equations.
-	 * As with the quadratic formula, if the quantity {@code b^2-4ac < 0}, the equation will have no real solutions
+	 * As with the quadratic formula, if the discriminant is negative, the equation will have no real solutions
 	 * and will result in {@code NaN}. Sometimes this value dips just below 0, causing a seemingly possible
 	 * trajectory to fail. However, a robot in real life would never need such a high degree of precision,
 	 * and floating-point math can also introduce rounding errors that accumulate. To fix this issue, when solving
-	 * quadratic equations, if the absolute value of {@code b^2-4ac} is less than or equals to the rounding
+	 * quadratic equations, if the absolute value of the discriminant is less than or equals to the rounding
 	 * limit, it will be rounded to 0.<br>
 	 * <br>
 	 * The default value for the rounding limit is 1.0e-5.
@@ -694,6 +694,9 @@ public class TankDriveTrajectory {
 			//Time, of course, always stays positive.
 			lMoments[i] = new Moment(-leftMoments[i].getDistance(), -leftMoments[i].getVelocity(), -leftMoments[i].getAcceleration(), leftMoments[i].getTime());
 			rMoments[i] = new Moment(-rightMoments[i].getDistance(), -rightMoments[i].getVelocity(), -rightMoments[i].getAcceleration(), rightMoments[i].getTime());
+			
+			lMoments[i].lock();
+			rMoments[i].lock();
 		}
 		
 		//Create new path
@@ -742,6 +745,9 @@ public class TankDriveTrajectory {
 			//Accelerations are negated because if time is reversed, acceleration becomes deceleration
 			lMoments[i] = new Moment(lLast.getDistance() - lm.getDistance(), lm.getVelocity(), -lm.getAcceleration(), lLast.getTime() - lm.getTime());
 			rMoments[i] = new Moment(rLast.getDistance() - rm.getDistance(), rm.getVelocity(), -rm.getAcceleration(), rLast.getTime() - rm.getTime());
+			
+			lMoments[i].lock();
+			rMoments[i].lock();
 		}
 		
 		//Create new path
@@ -780,6 +786,9 @@ public class TankDriveTrajectory {
 			//A combination of reverse() and mirrorFrontBack()
 			lMoments[i] = new Moment(-(lLast.getDistance() - lm.getDistance()), -lm.getVelocity(), lm.getAcceleration(), lLast.getTime() - lm.getTime());
 			rMoments[i] = new Moment(-(rLast.getDistance() - rm.getDistance()), -rm.getVelocity(), rm.getAcceleration(), rLast.getTime() - rm.getTime());
+			
+			lMoments[i].lock();
+			rMoments[i].lock();
 		}
 		
 		//Create new path

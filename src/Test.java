@@ -107,7 +107,7 @@ public class Test {
 		//The dt of 0.005 takes 1.0 / 0.005 = 200 samples
 		//JFrame pathGraph = Grapher.graphPath(trajectory.getPath(), 0.005);
 		//Take samples at 1/100s intervals
-		JFrame trajectoryGraph = Grapher.graphTrajectory(trajectory, 0.001);
+		JFrame trajectoryGraph = Grapher.graphTrajectory(trajectory, 0.01);
 		//Set the default close operations so when we close one frame, the program exits
 		//pathGraph.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		trajectoryGraph.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

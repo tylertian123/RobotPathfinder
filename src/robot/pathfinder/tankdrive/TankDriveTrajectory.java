@@ -2,7 +2,6 @@ package robot.pathfinder.tankdrive;
 
 import robot.pathfinder.core.Moment;
 import robot.pathfinder.core.RobotSpecs;
-import robot.pathfinder.core.TrajectoryGenerationException;
 import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.math.MathUtils;
 import robot.pathfinder.math.Vec2D;
@@ -168,184 +167,30 @@ public class TankDriveTrajectory {
 			//Solve for the maximum reachable velocity
 			double leftMaxVel = leftMoments[i - 1].getVelocity() + leftMoments[i - 1].getAcceleration() * lTime + 0.5 * maxJerk * Math.pow(lTime, 2);
 			double rightMaxVel = rightMoments[i - 1].getVelocity() + rightMoments[i - 1].getAcceleration() * rTime + 0.5 * maxJerk * Math.pow(rTime, 2);
-			//Solve for the maximum reachable acceleration
-			double leftMaxAccel = leftMoments[i - 1].getAcceleration() + maxJerk * lTime;
-			double rightMaxAccel = rightMoments[i - 1].getAcceleration() + maxJerk * rTime;
-			
-			double leftVel, rightVel;
-			double leftAccel, rightAccel;
-			
-			//Check if our maximum reachable velocity or acceleration is greater than our limit
-			//Because the calculation of the max velocity from the segment already takes into account the physical max,
-			//we don't need to check for it
-			//If our maximum reachable velocity is greater than our limit, then do not accelerate or increase acceleration
-			if(leftMaxVel > segments[i - 1].getLeftMaxVelocity()) {
-				//Constrain velocity so we don't exceed the max
-				leftVel = segments[i - 1].getLeftMaxVelocity();
-				//Since acceleration does not increase, we can set the left acceleration to the acceleration from the last moment
-				leftAccel = leftMoments[i - 1].getAcceleration();
-				//Make the jerk from the last moment 0 so acceleration does not increase
-				leftMoments[i - 1].setJerk(0);
-				//Even though this will make us exceed the limit, the backwards pass will fix it
-			}
-			//If our maximum reachable acceleration is greater than our limit, but our maximum reachable velocity is not,
-			//Then don't increase acceleration but still accelerate
-			else if(leftMaxAccel > maxAccel) {
-				//Since acceleration does not increase, we can set the left acceleration to the acceleration from the last moment
-				leftAccel = leftMoments[i - 1].getAcceleration();
-				//Make the jerk from the last moment 0 so acceleration does not increase
-				leftMoments[i - 1].setJerk(0);
-				//Calculate the velocity we would reach with just our acceleration
-				//This value is guaranteed to be smaller than leftMaxVel
-				//Use the kinematic equation for constant acceleration
-				leftVel = Math.sqrt(Math.pow(leftMoments[i - 1].getVelocity(), 2) + 2 * maxAccel * distDiffLeft);
-			}
-			//Otherwise just accelerate fully and set jerk to maximum
-			else {
-				//Set the velocity to our maximum reachable velocity
-				leftVel = leftMaxVel;
-				//Set the acceleration to our maximum reachable acceleration
-				leftAccel = leftMaxAccel;
-				//Set the jerk of the last moment to the maximum jerk
-				leftMoments[i - 1].setJerk(maxJerk);
-			}
-			
-			
-			//Do the same thing for the right
-			if(rightMaxVel > segments[i - 1].getRightMaxVelocity()) {
-				//Constrain velocity so we don't exceed the max
-				rightVel = segments[i - 1].getRightMaxVelocity();
-				//Since acceleration does not increase, we can set the right acceleration to the acceleration from the last moment
-				rightAccel = rightMoments[i - 1].getAcceleration();
-				//Make the jerk from the last moment 0 so acceleration does not increase
-				rightMoments[i - 1].setJerk(0);
-				//Even though this will make us exceed the limit, the backwards pass will fix it
-			}
-			//If our maximum reachable acceleration is greater than our limit, but our maximum reachable velocity is not,
-			//Then don't increase acceleration but still accelerate
-			else if(rightMaxAccel > maxAccel) {
-				//Since acceleration does not increase, we can set the right acceleration to the acceleration from the last moment
-				rightAccel = rightMoments[i - 1].getAcceleration();
-				//Make the jerk from the last moment 0 so acceleration does not increase
-				rightMoments[i - 1].setJerk(0);
-				//Calculate the velocity we would reach with just our acceleration
-				//This value is guaranteed to be smaller than rightMaxVel
-				//Use the kinematic equation for constant acceleration
-				rightVel = Math.sqrt(Math.pow(rightMoments[i - 1].getVelocity(), 2) + 2 * maxAccel * distDiffRight);
-			}
-			//Otherwise just accelerate fully and set jerk to maximum
-			else {
-				//Set the velocity to our maximum reachable velocity
-				rightVel = rightMaxVel;
-				//Set the acceleration to our maximum reachable acceleration
-				rightAccel = rightMaxAccel;
-				//Set the jerk of the last moment to the maximum jerk
-				rightMoments[i - 1].setJerk(maxJerk);
-			}
-			
-			//Create our Moment objects with the desired distance, velocity, acceleration and a default jerk of 0
-			//which will be changed later if necessary.
-			leftMoments[i] = new Moment(currentDists[0], leftVel, leftAccel, 0);
-			rightMoments[i] = new Moment(currentDists[1], rightVel, rightAccel, 0);
+	
+			leftMoments[i] = new Moment(currentDists[0], Math.min(leftMaxVel, segments[i - 1].getLeftMaxVelocity()), 0, 0);
+			rightMoments[i] = new Moment(currentDists[1], Math.min(rightMaxVel, segments[i - 1].getRightMaxVelocity()), 0, 0);
 		}
 		
 		//Prepare for backwards pass
 		leftMoments[segments.length].setVelocity(0);
 		leftMoments[segments.length].setAcceleration(0);
-		leftMoments[segments.length].setJerk(0);
 		rightMoments[segments.length].setVelocity(0);
 		rightMoments[segments.length].setAcceleration(0);
-		rightMoments[segments.length].setJerk(0);
-		/*//Backwards pass
-		for(int i = segments.length - 1; i >= 0; i --) {
-			//Since we already have our desired distances generated, just retrieve them from the Moment objects
-			double distDiffLeft = leftMoments[i + 1].getDistance() - leftMoments[i].getDistance();
-			double distDiffRight = rightMoments[i + 1].getDistance() - rightMoments[i].getDistance();
+		for(int i = segmentCount - 1; i >= 0; i --) {
+			double distDiffLeft = leftMoments[i + 1].getPosition() - leftMoments[i].getPosition();
+			double distDiffRight = rightMoments[i + 1].getPosition() - rightMoments[i].getPosition();
 			
-			//Use the kinematic equation for constant jerk
-			//First calculate the coefficients
 			double la = maxJerk / 6, lb = leftMoments[i + 1].getAcceleration() / 2, lc = leftMoments[i + 1].getVelocity(), ld = -distDiffLeft;
 			double ra = maxJerk / 6, rb = rightMoments[i + 1].getAcceleration() / 2, rc = rightMoments[i + 1].getVelocity(), rd = -distDiffRight;
-			//Solve for the time, which is the (only) real root of this cubic polynomial
 			double lTime = MathUtils.realCubicRoot(la, lb, lc, ld);
 			double rTime = MathUtils.realCubicRoot(ra, rb, rc, rd);
-			//Solve for the maximum reachable velocity
+			
 			double leftMaxVel = leftMoments[i + 1].getVelocity() + leftMoments[i + 1].getAcceleration() * lTime + 0.5 * maxJerk * Math.pow(lTime, 2);
 			double rightMaxVel = rightMoments[i + 1].getVelocity() + rightMoments[i + 1].getAcceleration() * rTime + 0.5 * maxJerk * Math.pow(rTime, 2);
-			//Solve for the maximum reachable acceleration
-			double leftMaxAccel = leftMoments[i + 1].getAcceleration() + maxJerk * lTime;
-			double rightMaxAccel = rightMoments[i + 1].getAcceleration() + maxJerk * rTime;
 			
-			double leftVel, rightVel;
-			double leftAccel, rightAccel;
-			
-			//Compare our maximum reachable velocity to the velocity generated by the forwards pass
-			if(leftMaxVel > rightMoments[i].getVelocity() || leftMaxAccel > maxDecel) {
-				//If it's higher, don't do anything, as the forwards pass should have already settled things
-				leftVel = leftMoments[i].getVelocity();
-				leftAccel = leftMoments[i].getAcceleration();
-			}
-			else {
-				//If it's lower, then correct it, and set this moment to decelerate
-				leftVel = leftMaxVel;
-				leftAccel = leftMaxAccel;
-				leftMoments[i].setJerk(-maxJerk);
-			}
-			leftMoments[i].setVelocity(leftVel);
-			leftMoments[i].setAcceleration(leftAccel);
-			//Do the same for the right
-			if(rightMax > rightMoments[i].getVelocity()) {
-				rightVel = rightMoments[i].getVelocity();
-			}
-			else {
-				rightVel = rightMax;
-				rightMoments[i].setAcceleration(-maxDecel);
-			}
-			rightMoments[i].setVelocity(rightVel);
-		}*/
-		
-		//Now that we have the desired distances, velocities and accelerations, we need to assign each moment a time
-		for(int i = 1; i < leftMoments.length; i ++) {
-			double distDiffLeft = leftMoments[i].getPosition() - leftMoments[i - 1].getPosition();
-			double distDiffRight = rightMoments[i].getPosition() - rightMoments[i - 1].getPosition();
-			double leftVel = leftMoments[i - 1].getVelocity();
-			double rightVel = rightMoments[i - 1].getVelocity();
-			double leftAccel = leftMoments[i - 1].getAcceleration();
-			double rightAccel = rightMoments[i - 1].getAcceleration();
-			double leftJerk = leftMoments[i - 1].getJerk();
-			double rightJerk = rightMoments[i - 1].getJerk();
-			
-			//Calculate coefficients
-			double la = leftJerk / 6, lb = leftAccel / 2, lc = leftVel, ld = -distDiffLeft;
-			double ra = rightJerk / 6, rb = rightAccel / 2, rc = rightVel, rd = -distDiffRight;
-			//Solve the cubic polynomials to get the time
-			double dtLeft = MathUtils.realCubicRoot(la, lb, lc, ld);
-			double dtRight = MathUtils.realCubicRoot(ra, rb, rc, rd);
-			
-			//A result of NaN or Infinity indicates that our path is impossible with the current configuration.
-			if(Double.isNaN(dtLeft) || Double.isInfinite(dtLeft)) {
-				System.out.printf("*LEFT* Accel: %.10f, Velo: %.10f, Dist: %.10f, Jerk: %.10f, Iteration: %d\n", leftAccel, leftVel, distDiffLeft, leftJerk, i);
-				System.out.printf("*LEFT* Equation: %.7fx^3 + %.7fx^2 + %.7fx + %.7f\n", la, lb, lc, ld);
-				System.out.println("*LEFT* Discriminant: " + MathUtils.cubicDiscriminant(la, lb, lc, ld));
-				if(!surpressExceptions)
-					throw new TrajectoryGenerationException("Path is impossible");
-				dtLeft = 0;
-			}
-			if(Double.isNaN(dtRight) || Double.isInfinite(dtRight)) {
-				//System.out.printf("*RIGHT* Accel: %.10f, Velo: %.10f, Dist: %.10f, Jerk: %.10f, Iteration: %d\n", rightAccel, rightVel, distDiffRight, rightJerk, i);
-				//System.out.printf("*RIGHT* Equation: %.7fx^3 + %.7fx^2 + %.7fx + %.7f\n", ra, rb, rc, rd);
-				//System.out.println("*RIGHT* Discriminant: " + MathUtils.cubicDiscriminant(ra, rb, rc, rd));
-				if(!surpressExceptions)
-					throw new TrajectoryGenerationException("Path is impossible");
-				dtRight = 0;
-			}
-			
-			//Add the time differences to the accumulated time of the last moment to get the time of this moment
-			leftMoments[i].setTime(leftMoments[i - 1].getTime() + dtLeft);
-			rightMoments[i].setTime(rightMoments[i - 1].getTime() + dtRight);
-			
-			leftMoments[i].lock();
-			rightMoments[i].lock();
+			leftMoments[i].setVelocity(Math.min(leftMoments[i].getVelocity(), leftMaxVel));
+			rightMoments[i].setVelocity(Math.min(rightMoments[i].getVelocity(), rightMaxVel));
 		}
 	}
 	//Creates a trajectory with moments that are already generated

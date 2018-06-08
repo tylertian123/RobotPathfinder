@@ -95,8 +95,7 @@ public class Test {
 		};
 		//Used to determine how long the generation took
 		long time = System.currentTimeMillis();
-		//Generates a trajectory
-		//Parameters: Waypoints, max vel, max accel, base width, alpha (smoothness of turns), number of segments
+		//Generates a trajectorys
 		//Last parameter suppresses exceptions (allows impossible paths)
 		//Try changing these and see what happens!
 		TankDriveTrajectory trajectory = new TankDriveTrajectory(waypoints, 5, 3.5, 7, 2, 20, 5000, true);

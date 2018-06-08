@@ -1,7 +1,7 @@
 package robot.pathfinder.core;
 
 /**
- * Represents a moment in time of a trajectory; this class contains the time, as well as the desired distance,
+ * Represents a moment in time of a trajectory; this class contains the time, as well as the desired position,
  * velocity, and acceleration at that point in time.
  * @author Tyler Tian
  *
@@ -15,38 +15,38 @@ final public class Moment {
 	
 	/**
 	 * Creates a new moment with the specified values.
-	 * @param distance The desired distance
+	 * @param position The desired position
 	 * @param velocity The desired velocity
 	 * @param acceleration The desired acceleration
 	 */
-	public Moment(double distance, double velocity, double acceleration) {
-		d = distance;
+	public Moment(double position, double velocity, double acceleration) {
+		d = position;
 		v = velocity;
 		a = acceleration;
 	}
 	/**
 	 * Creates a new moment with the specified values
-	 * @param distance The desired distance
+	 * @param position The desired position
 	 * @param velocity The desired velocity
 	 * @param acceleration The desired acceleration
 	 * @param jerk The desired jerk (change in acceleration)
 	 */
-	public Moment(double distance, double velocity, double acceleration, double jerk) {
-		d = distance;
+	public Moment(double position, double velocity, double acceleration, double jerk) {
+		d = position;
 		v = velocity;
 		a = acceleration;
 		j = jerk;
 	}
 	/**
 	 * Creates a new moment with the specified values.
-	 * @param distance The desired distance
+	 * @param position The desired position
 	 * @param velocity The desired velocity
 	 * @param acceleration The desired acceleration
 	 * @param jerk The desired jerk (change in acceleration)
 	 * @param t The point in time this moment is located
 	 */
-	public Moment(double distance, double velocity, double acceleration, double jerk, double t) {
-		this(distance, velocity, acceleration, jerk);
+	public Moment(double position, double velocity, double acceleration, double jerk, double t) {
+		this(position, velocity, acceleration, jerk);
 		this.t = t;
 	}
 	
@@ -86,19 +86,19 @@ final public class Moment {
 		return t;
 	}
 	/**
-	 * Sets the distance of the moment.
-	 * @param distance The new distance
+	 * Sets the position of the moment.
+	 * @param position The new position
 	 */
-	public void setDistance(double distance) {
+	public void setPosition(double position) {
 		if(isLocked())
 			throw new LockedException("Attempt to modify a locked Moment");
-		d = distance;
+		d = position;
 	}
 	/**
-	 * Retrieves the desired distance of the moment.
-	 * @return The desired distance of the moment
+	 * Retrieves the desired position of the moment.
+	 * @return The desired position of the moment
 	 */
-	public double getDistance() {
+	public double getPosition() {
 		return d;
 	}
 	/**

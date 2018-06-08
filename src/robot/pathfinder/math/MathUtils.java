@@ -240,6 +240,10 @@ public class MathUtils {
 	 * @return The real root
 	 */
 	public static double realCubicRoot(double a, double b, double c, double d) {
+		if(a == 0.0) {
+			return findPositiveQuadraticRoot(b, c, d);
+		}
+		
 		//Formula can be found on Wikipedia: https://en.wikipedia.org/wiki/Cubic_function#General_formula
 		double d0 = b * b - 3 * a * c;
 		double d1 = 2 * Math.pow(b, 3) - 9 * a * b * c + 27 * Math.pow(a, 2) * d;

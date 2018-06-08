@@ -183,7 +183,7 @@ public class TankDriveTrajectory {
 				leftMoments[i] = new Moment(currentDists[0], leftMaxVel, accel, jerk);
 			}
 			else {
-				leftMoments[i] = new Moment(currentDists[0], segments[i - 1].getLeftMaxVelocity(), leftMoments[i - 1].getAcceleration(), 0);
+				leftMoments[i] = new Moment(currentDists[0], segments[i - 1].getLeftMaxVelocity(), 0, 0);
 			}
 			if(rightMaxVel <= segments[i - 1].getRightMaxVelocity()) {
 				double accel, jerk;
@@ -198,7 +198,7 @@ public class TankDriveTrajectory {
 				rightMoments[i] = new Moment(currentDists[1], rightMaxVel, accel, jerk);
 			}
 			else {
-				rightMoments[i] = new Moment(currentDists[1], segments[i - 1].getRightMaxVelocity(), rightMoments[i - 1].getAcceleration(), 0);
+				rightMoments[i] = new Moment(currentDists[1], segments[i - 1].getRightMaxVelocity(), 0, 0);
 			}
 		}
 		
@@ -221,26 +221,24 @@ public class TankDriveTrajectory {
 			double leftMaxAccel = leftMoments[i + 1].getAcceleration() + lTime * maxJerk;
 			double rightMaxAccel = rightMoments[i + 1].getAcceleration() + rTime * maxJerk;
 			
-			leftMoments[i].setVelocity(Math.min(leftMoments[i].getVelocity(), leftMaxVel));
-			rightMoments[i].setVelocity(Math.min(rightMoments[i].getVelocity(), rightMaxVel));
 			if(leftMaxVel <= leftMoments[i].getVelocity()) {
 				leftMoments[i].setVelocity(leftMaxVel);
-				if(leftMaxAccel <= maxAccel) {
-					leftMoments[i].setAcceleration(leftMaxAccel);
+				if(MathUtils.absLessThanEquals(leftMaxAccel, maxAccel)) {
+					leftMoments[i].setAcceleration(-leftMaxAccel);
 					leftMoments[i].setJerk(-maxJerk);
 				}
 				else {
-					leftMoments[i].setAcceleration(maxAccel);
+					leftMoments[i].setAcceleration(-maxAccel);
 				}
 			}
 			if(rightMaxVel <= rightMoments[i].getVelocity()) {
 				rightMoments[i].setVelocity(rightMaxVel);
-				if(rightMaxAccel <= maxAccel) {
-					rightMoments[i].setAcceleration(rightMaxAccel);
+				if(MathUtils.absLessThanEquals(rightMaxAccel, maxAccel)) {
+					rightMoments[i].setAcceleration(-rightMaxAccel);
 					rightMoments[i].setJerk(-maxJerk);
 				}
 				else {
-					rightMoments[i].setAcceleration(maxAccel);
+					rightMoments[i].setAcceleration(-maxAccel);
 				}
 			}
 		}

@@ -280,4 +280,50 @@ public class MathUtils {
 		return (xDeriv * ySecondDeriv - yDeriv * xSecondDeriv) /
 				Math.pow(xDeriv * xDeriv + yDeriv * yDeriv, 3.0/2.0);
 	}
+	
+	/**
+	 * Compares the absolute values of the two numbers for equality.
+	 * @param a The first number
+	 * @param b The second number
+	 * @return {@code true} if they're equal, {@code false} if not
+	 */
+	public static boolean absEqual(double a, double b) {
+		return Math.abs(a) == Math.abs(b);
+	}
+	/**
+	 * Returns true if the absolute value of the first number is less than the absolute value of the second number.
+	 * @param a The first number
+	 * @param b The second number
+	 * @return {@code true} if {@code Math.abs(a) < Math.abs(b)}, {@code false} if otherwise
+	 */
+	public static boolean absLessThan(double a, double b) {
+		return Math.abs(a) < Math.abs(b);
+	}
+	/**
+	 * Returns true if the absolute value of the first number is more than the absolute value of the second number.
+	 * @param a The first number
+	 * @param b The second number
+	 * @return {@code true} if {@code Math.abs(a) > Math.abs(b)}, {@code false} if otherwise
+	 */
+	public static boolean absMoreThan(double a, double b) {
+		return Math.abs(a) > Math.abs(b);
+	}
+	/**
+	 * Returns true if the absolute value of the first number is less than or equal to the absolute value of the second number.
+	 * @param a The first number
+	 * @param b The second number
+	 * @return {@code true} if {@code Math.abs(a) <= Math.abs(b)}, {@code false} if otherwise
+	 */
+	public static boolean absLessThanEquals(double a, double b) {
+		return Math.abs(a) <= Math.abs(b);
+	}
+	/**
+	 * Returns true if the absolute value of the first number is more than or equal to the absolute value of the second number.
+	 * @param a The first number
+	 * @param b The second number
+	 * @return {@code true} if {@code Math.abs(a) >= Math.abs(b)}, {@code false} if otherwise
+	 */
+	public static boolean absMoreThanEquals(double a, double b) {
+		return Math.abs(a) >= Math.abs(b);
+	}
 }

@@ -65,7 +65,7 @@ public class Vec2D {
 	 */
 	
 	public static double dist(Vec2D a, Vec2D b) {
-		return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
+		return Math.hypot(a.x - b.x, a.y - b.y);
 	}
 	/**
 	 * Multiplies this vector by a scalar and returns the result. Note that this vector is not modified in the process.

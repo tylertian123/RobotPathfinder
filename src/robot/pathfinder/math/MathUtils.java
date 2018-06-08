@@ -232,6 +232,7 @@ public class MathUtils {
 	 * Finds the real root of a cubic polynomial. This method assumes that the discriminant of the polynomial is negative, that is,
 	 * the polynomial has only one real root and 2 complex roots.<br>
 	 * <br>
+	 * If {@code a} is 0, this returns the same result as calling {@link #findPositiveQuadraticRoot(double, double, double) findPositiveQuadraticRoot(b, c, d)}.<br>
 	 * If the discriminant is greater than 0, this method will return {@code NaN}.
 	 * @param a The cubed term coefficient
 	 * @param b The squared term coefficient

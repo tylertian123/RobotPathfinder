@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 
 import org.math.plot.Plot2DPanel;
 
+import robot.pathfinder.core.BasicTrajectory;
 import robot.pathfinder.core.Moment;
 import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.math.Vec2D;
@@ -24,43 +25,25 @@ public class Grapher {
 	//Private constructor
 	private Grapher() {}
 	
-	/**
-	 * Graphs a {@link TankDriveTrajectory} in a {@link JFrame} with JMathPlot.<br>
-	 * <br>
-	 * In addition to graphing, this method also sets the {@code JFrame}'s default close operation to be
-	 * {@code JFrame.DISPOSE_ON_CLOSE} and maximizes it.<br>
-	 * Note that this method does not show the window; the user needs to call {@link JFrame#setVisible(boolean) setVisible()}
-	 * explicitly in order to show the window.
-	 * @param trajectory The {@link TankDriveTrajectory} to graph
-	 * @param dt The time increment between samples
-	 * @return A frame with the graphed trajectory inside
-	 */
-	public static JFrame graphTrajectory(TankDriveTrajectory trajectory, double dt) {
+	public static JFrame graphTrajectory(BasicTrajectory trajectory, double dt) {
 		//Divide and round up to get the number of samples
 		int elemCount = (int) Math.ceil(trajectory.totalTime() / dt);
 		
 		//Create arrays to store data
 		double[] time = new double[elemCount];
-		double[] leftPos = new double[elemCount];
-		double[] rightPos = new double[elemCount];
-		double[] leftVel = new double[elemCount];
-		double[] rightVel = new double[elemCount];
-		double[] leftAccel = new double[elemCount];
-		double[] rightAccel = new double[elemCount];
+		double[] pos = new double[elemCount];
+		double[] vel = new double[elemCount];
+		double[] acl = new double[elemCount];
 		
 		int i = 0;
 		for(double t = 0; t <= trajectory.totalTime(); t += dt) {
 			//Collect data
 			time[i] = t;
-			Moment leftMoment = trajectory.getLeft(t);
-			Moment rightMoment = trajectory.getRight(t);
+			Moment m = trajectory.get(t);
 			
-			leftPos[i] = leftMoment.getPosition();
-			leftVel[i] = leftMoment.getVelocity();
-			leftAccel[i] = leftMoment.getAcceleration();
-			rightPos[i] = rightMoment.getPosition();
-			rightVel[i] = rightMoment.getVelocity();
-			rightAccel[i] = rightMoment.getAcceleration();
+			pos[i] = m.getPosition();
+			vel[i] = m.getVelocity();
+			acl[i] = m.getAcceleration();
 			
 			i++;
 		}

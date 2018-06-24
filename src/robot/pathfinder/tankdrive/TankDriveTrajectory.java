@@ -154,34 +154,8 @@ public class TankDriveTrajectory {
 			double distDiffLeft = currentDists[0] - lastDists[0];
 			double distDiffRight = currentDists[1] - lastDists[1];
 			
-			//Use the kinematic equation for constant jerk
-			//First calculate the coefficients
-			double la = maxJerk / 6, lb = leftMoments[i - 1].getAcceleration() / 2, lc = leftMoments[i - 1].getVelocity(), ld = -distDiffLeft;
-			//double ra = maxJerk / 6, rb = rightMoments[i - 1].getAcceleration() / 2, rc = rightMoments[i - 1].getVelocity(), rd = -distDiffRight;
-			//Solve for the time, which is the (only) real root of this cubic polynomial
-			double lTime = MathUtils.realCubicRoot(la, lb, lc, ld);
-			//double rTime = MathUtils.realCubicRoot(ra, rb, rc, rd);
 			
-			//Solve for the maximum reachable velocity and acceleration
-			double leftMaxVel = leftMoments[i - 1].getVelocity() + leftMoments[i - 1].getAcceleration() * lTime + 0.5 * maxJerk * Math.pow(lTime, 2);
-			//double rightMaxVel = rightMoments[i - 1].getVelocity() + rightMoments[i - 1].getAcceleration() * rTime + 0.5 * maxJerk * Math.pow(rTime, 2);
-			double leftMaxVel2 = Math.sqrt(Math.pow(leftMoments[i - 1].getVelocity(), 2) + 2 * leftMoments[i - 1].getAcceleration() * distDiffLeft);
-			//double rightMaxVel2 = Math.sqrt(Math.pow(rightMoments[i - 1].getVelocity(), 2) + 2 * rightMoments[i - 1].getAcceleration() * distDiffRight);
-			double leftMaxAccel = leftMoments[i - 1].getAcceleration() + lTime * maxJerk;
-			//double rightMaxAccel = rightMoments[i - 1].getAcceleration() + rTime * maxJerk;
-	
-			if(leftMaxVel <= segments[i - 1].getLeftMaxVelocity() && leftMaxAccel <= maxAccel) {
-				leftMoments[i] = new Moment(currentDists[0], leftMaxVel, leftMaxAccel, 0);
-				leftMoments[i - 1].setJerk(maxJerk);
-			}
-			else if(leftMaxVel2 <= segments[i - 1].getLeftMaxVelocity()) {
-				leftMoments[i] = new Moment(currentDists[0], leftMaxVel2, leftMoments[i - 1].getAcceleration(), 0);
-				leftMoments[i - 1].setJerk(0);
-			}
-			else {
-				leftMoments[i] = new Moment(currentDists[0], segments[i - 1].getLeftMaxVelocity(), 0, 0);
-			}
-			//TODO: write right side
+			
 		}
 		
 		//Prepare for backwards pass

@@ -9,12 +9,11 @@ import javax.swing.JFrame;
 
 import org.math.plot.Plot2DPanel;
 
-import robot.pathfinder.core.BasicTrajectory;
 import robot.pathfinder.core.Moment;
 import robot.pathfinder.core.Waypoint;
+import robot.pathfinder.core.path.BezierPath;
+import robot.pathfinder.core.trajectory.BasicTrajectory;
 import robot.pathfinder.math.Vec2D;
-import robot.pathfinder.tankdrive.BezierPath;
-import robot.pathfinder.tankdrive.TankDriveTrajectory;
 
 /**
  * A class that provides convenient methods for graphing paths and trajectories.
@@ -25,7 +24,7 @@ public class Grapher {
 	//Private constructor
 	private Grapher() {}
 	
-	public static JFrame graphTrajectory(BasicTrajectory trajectory, double dt) {
+	public static JFrame graphBasicTrajectory(BasicTrajectory trajectory, double dt) {
 		//Divide and round up to get the number of samples
 		int elemCount = (int) Math.ceil(trajectory.totalTime() / dt);
 		
@@ -52,12 +51,9 @@ public class Grapher {
 		Plot2DPanel plot = new Plot2DPanel();
 		plot.setLegendOrientation("EAST");
 		//Add graphs
-		plot.addLinePlot("Left Position", time, leftPos);
-		plot.addLinePlot("Left Velocity", time, leftVel);
-		plot.addLinePlot("Left Acceleration", time, leftAccel);
-		plot.addLinePlot("Right Position", time, rightPos);
-		plot.addLinePlot("Right Velocity", time, rightVel);
-		plot.addLinePlot("Right Acceleration", time, rightAccel);
+		plot.addLinePlot("Position", time, pos);
+		plot.addLinePlot("Velocity", time, vel);
+		plot.addLinePlot("Acceleration", time, acl);
 		
 		//Create window that holds the graph
 		JFrame frame = new JFrame("Trajectory Graph");
@@ -166,50 +162,6 @@ public class Grapher {
 		//The window has to be square, so take the smaller one of the width and height
 		int size = Math.min(bounds.width, bounds.height);
 		frame.setSize(new Dimension(size, size));
-		
-		return frame;
-	}
-	
-	/**
-	 * Graphs the raw {@link Moment} objects of a trajectory. Instead of taking samples based on time,
-	 * this method graphs each {@code Moment}'s data.
-	 * @param trajectory The trajectory whose data will be graphed
-	 * @return A frame with the graphed trajectory inside
-	 */
-	public static JFrame graphMoments(TankDriveTrajectory trajectory) {
-		Moment[] left = trajectory.getMoments()[0];
-		Moment[] right = trajectory.getMoments()[1];
-		
-		double[] lPos = new double[left.length];
-		double[] lVel = new double[left.length];
-		double[] lAcl = new double[left.length];
-		double[] rPos = new double[right.length];
-		double[] rVel = new double[right.length];
-		double[] rAcl = new double[right.length];
-		
-		for(int i = 0; i < left.length; i ++) {
-			lPos[i] = left[i].getPosition();
-			lVel[i] = left[i].getVelocity();
-			lAcl[i] = left[i].getAcceleration();
-			
-			/*rPos[i] = right[i].getPosition();
-			rVel[i] = right[i].getVelocity();
-			rAcl[i] = right[i].getAcceleration();*/
-		}
-		
-		Plot2DPanel plot = new Plot2DPanel();
-		plot.setLegendOrientation("EAST");
-		plot.addLinePlot("Left Position", lPos);
-		plot.addLinePlot("Left Velocity", lVel);
-		plot.addLinePlot("Left Acceleration", lAcl);
-		/*plot.addLinePlot("Right Position", rPos);
-		plot.addLinePlot("Right Velocity", rVel);
-		plot.addLinePlot("Right Acceleration", rAcl);*/
-		
-		JFrame frame = new JFrame("Moment Graph");
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.setContentPane(plot);
-		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
 		return frame;
 	}

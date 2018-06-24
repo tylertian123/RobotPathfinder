@@ -1,21 +1,12 @@
 package robot.pathfinder.tankdrive;
 
 import robot.pathfinder.core.Moment;
-import robot.pathfinder.core.RobotSpecs;
 import robot.pathfinder.core.Waypoint;
-import robot.pathfinder.math.MathUtils;
+import robot.pathfinder.core.path.BezierPath;
+import robot.pathfinder.core.trajectory.BasicTrajectory;
+import robot.pathfinder.core.trajectory.TrajectoryGenerationException;
 import robot.pathfinder.math.Vec2D;
 
-/**
- * A trajectory generator for a tank drive robot.<br>
- * <br>
- * The algorithm used in this class is largely based on a video by the Cheesy Poofs (Team 254),
- * with some small modifications here and there.<br>
- * You can find the video on YouTube <a href="https://youtu.be/8319J1BEHwM">here</a>.
- * 
- * @author Tyler Tian
- *
- */
 public class TankDriveTrajectory {
 	
 	//The internal path that this trajectory is based on
@@ -23,189 +14,15 @@ public class TankDriveTrajectory {
 	//"Moments" are generated for left and right separately
 	Moment[] leftMoments, rightMoments;
 	
-	//Used in solving quadratic equations
-	//If |b^2-4ac| <= this number, it will be set to 0 to avoid having no real solutions
-	//due to rounding errors.
-	static double minUnit = 1.0e-5;
+	public TankDriveTrajectory(BasicTrajectory traj) {
+		if(!traj.isTank()) {
+			throw new IllegalArgumentException("Base trajectory is not generated with tank drive");
+		}
+		
+		Moment[] moments = traj.getMoments();
+		
+	}
 	
-	/**
-	 * Generates a trajectory based on a number of parameters.<br>
-	 * <br>
-	 * The units for the parameters must be consistent with each other. For example, if maximum velocity is in feet/second, 
-	 * then maximum acceleration must be in feet/second^2, base width must be in feet, and the units for waypoints also in feet.<br>
-	 * <br>
-	 * Note this process can take up to half a second, depending on the number of segments.
-	 * 
-	 * @param waypoints The waypoints the path has to travel through
-	 * @param robotSpecs A {@link robot.pathfinder.core.RobotSpecs RobotSpecs} object containing the specifications of the robot
-	 * @param alpha Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
-	 * @param segmentCount How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
-	 */
-	public TankDriveTrajectory(Waypoint[] waypoints, RobotSpecs robotSpecs, double alpha, int segmentCount) {
-		this(waypoints, robotSpecs, alpha, segmentCount, false);
-	}
-	/**
-	 * Generates a trajectory based on a number of parameters.<br>
-	 * <br>
-	 * The units for the parameters must be consistent with each other. For example, if maximum velocity is in feet/second, 
-	 * then maximum acceleration must be in feet/second^2, base width must be in feet, and the units for waypoints also in feet.<br>
-	 * <br>
-	 * Note this process can take up to half a second, depending on the number of segments.
-	 * 
-	 * @param waypoints The waypoints the path has to travel through
-	 * @param robotSpecs A {@link robot.pathfinder.core.RobotSpecs RobotSpecs} object containing the specifications of the robot	 
-	 * @param alpha Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
-	 * @param segmentCount How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
-	 * @param surpressExceptions If set to true, an exception will <b>not</b> be thrown if the path is impossible
-	 */
-	public TankDriveTrajectory(Waypoint[] waypoints, RobotSpecs robotSpecs, double alpha, int segmentCount, boolean surpressExceptions) {
-		this(waypoints, robotSpecs.getMaxVelocity(), robotSpecs.getMaxAcceleration(), robotSpecs.getBaseWidth(), alpha, segmentCount, surpressExceptions);
-	}
-	/**
-	 * Generates a trajectory based on a number of parameters.<br>
-	 * <br>
-	 * The units for the parameters must be consistent with each other. For example, if maximum velocity is in feet/second, 
-	 * then maximum acceleration must be in feet/second^2, base width must be in feet, and the units for waypoints also in feet.<br>
-	 * <br>
-	 * Note this process can take up to half a second, depending on the number of segments.
-	 * 
-	 * @param waypoints The waypoints the path has to travel through
-	 * @param maxVelocity The maximum velocity of the robot
-	 * @param maxAcceleration The maximum acceleration of the robot
-	 * @param baseWidth The width of the base plate of the robot (distance between left side wheels and right side wheels)
-	 * @param alpha Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
-	 * @param segmentCount How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
-	 */
-	public TankDriveTrajectory(Waypoint[] waypoints, double maxVelocity, double maxAcceleration, double baseWidth, double alpha, int segmentCount) {
-		this(waypoints, maxVelocity, maxAcceleration, baseWidth, alpha, segmentCount, false);
-	}
-	/**
-	 * Generates a trajectory based on a number of parameters.<br>
-	 * <br>
-	 * The units for the parameters must be consistent with each other. For example, if maximum velocity is in feet/second, 
-	 * then maximum acceleration must be in feet/second^2, base width must be in feet, and the units for waypoints also in feet.<br>
-	 * <br>
-	 * Note this process can take up to half a second, depending on the number of segments.
-	 * 
-	 * @param waypoints The waypoints the path has to travel through
-	 * @param maxVel The maximum velocity of the robot
-	 * @param maxAccel The maximum acceleration of the robot
-	 * @param baseWidth The width of the base plate of the robot (distance between left side wheels and right side wheels)
-	 * @param alpha Path smoothness constant. A higher alpha makes for smoother turns, but longer distance for the robot to travel
-	 * @param segmentCount How many segments the path is split into. A higher count makes the path more precise, but requires more time to generate
-	 * @param surpressExceptions If set to true, an exception will <b>not</b> be thrown if the path is impossible
-	 */
-	public TankDriveTrajectory(Waypoint[] waypoints, double maxVel, double maxAccel, double baseWidth, double alpha, int segmentCount, boolean surpressExceptions) {
-		
-		//Generate the path
-		path = new BezierPath(waypoints, alpha);
-		path.setBaseRadius(baseWidth / 2);
-		double t_delta = 1.0 / segmentCount;
-		double t_delta2 = t_delta / 2;
-		
-		TankDrivePathSegment[] segments = new TankDrivePathSegment[segmentCount];
-		//Split the path into segments
-		for(int i = 0; i < segmentCount; i ++) {
-			//For each segment, compute the starting time, ending time and middle time
-			double start = i * t_delta;
-			double mid = start + t_delta2;
-			double end = start + t_delta;
-			segments[i] = new TankDrivePathSegment(start, end);
-			
-			//Use the curvature formula to compute curvature for the midpoint, and take its inverse to find the radius
-			Vec2D deriv = path.derivAt(mid);
-			double xDeriv = deriv.getX();
-			double yDeriv = deriv.getY();
-			Vec2D secondDeriv = path.secondDerivAt(mid);
-			double xSecondDeriv = secondDeriv.getX();
-			double ySecondDeriv = secondDeriv.getY();
-			double curvature = MathUtils.curvature(xDeriv, xSecondDeriv, yDeriv, ySecondDeriv);
-			
-			//R is always positive
-			double r = Math.abs(1 / curvature);
-			//Compute max speed of entire robot with a positive R
-			double vMax = (2 * maxVel) / (2 + baseWidth / r);
-			//Compute omega with a signed R
-			//Since R is not signed, the sign has to be copied from the curvature
-			double omega = Math.copySign(vMax / r, curvature);
-			
-			//Compute left and right maximum velocities
-			double vMaxRight = (2 * vMax + omega * baseWidth) / 2;
-			double vMaxLeft = 2 * vMax - vMaxRight;
-			
-			segments[i].setMaxVelocities(vMaxLeft, vMaxRight);
-		}
-		
-		//Initialize "moments"
-		leftMoments = new Moment[segmentCount + 1];
-		rightMoments = new Moment[segmentCount + 1];
-		
-		leftMoments[0] = new Moment(0, 0, 0);
-		rightMoments[0] = new Moment(0, 0, 0);
-		
-		//Forwards pass
-		for(int i = 1; i < segmentCount + 1; i ++) {
-			//Get the difference in t so we can integrate the paths
-			double dt = segments[i - 1].getEnd() - segments[i - 1].getStart();
-			
-			//Integrate the path of both sides separately, since they will have different lengths
-			double[] lastDists = path.getIntegratedWheelLens();
-			double[] currentDists = path.integrateWheelLens(dt);
-			double distDiffLeft = currentDists[0] - lastDists[0];
-			double distDiffRight = currentDists[1] - lastDists[1];
-			
-			
-			
-		}
-		
-		//Prepare for backwards pass
-		/*leftMoments[segments.length].setVelocity(0);
-		leftMoments[segments.length].setAcceleration(0);
-		rightMoments[segments.length].setVelocity(0);
-		rightMoments[segments.length].setAcceleration(0);
-		for(int i = segments.length; i > 0; i --) {
-			double lPos = leftMoments[i].getPosition();
-			double lVel = leftMoments[i].getVelocity();
-			double lAcl = leftMoments[i].getAcceleration();
-			if(lAcl <= 0) {
-				double distDiffLeft = lPos - leftMoments[i - 1].getPosition();
-				
-	            double la = maxJerk / 6, lb = Math.abs(lAcl / 2), lc = Math.abs(lVel), ld = -distDiffLeft;
-	            double lTime = MathUtils.realCubicRoot(la, lb, lc, ld);
-	            
-	            double leftMaxVel2 = Math.abs(leftMoments[i - 1].getVelocity() + leftMoments[i - 1].getAcceleration() * lTime);
-	            double leftMaxVel = leftMaxVel2 + 0.5 * maxJerk * Math.pow(lTime, 2);
-				double leftMaxAccel = lAcl + lTime * maxJerk;
-				
-				//Take max vel 1 because we can increase acceleration
-				if(MathUtils.absLessThanEquals(leftMaxAccel, maxAccel)) {
-					if(MathUtils.absLessThanEquals(leftMaxVel, leftMoments[i - 1].getVelocity())) {
-						leftMoments[i].setVelocity(leftMaxVel);
-						leftMoments[i - 1].setAcceleration(-leftMaxAccel);
-						leftMoments[i - 1].setJerk(-maxJerk);
-						System.out.println(i);
-					}
-				}
-				else {
-					if(MathUtils.absLessThanEquals(leftMaxVel2, leftMoments[i - 1].getVelocity())) {
-						leftMoments[i].setVelocity(leftMaxVel2);
-						leftMoments[i - 1].setJerk(0);
-					}
-				}
-			}
-			double rPos = rightMoments[i].getPosition();
-			double rAcl = rightMoments[i].getAcceleration();
-			double rVel = rightMoments[i].getVelocity();
-			if(Math.signum(rAcl) != Math.signum(rVel) || rAcl == 0) {
-				
-			}
-		}*/
-	}
-	//Creates a trajectory with moments that are already generated
-	protected TankDriveTrajectory(Moment[] lMoments, Moment[] rMoments) {
-		leftMoments = lMoments;
-		rightMoments = rMoments;
-	}
 	protected TankDriveTrajectory(Moment[] lMoments, Moment[] rMoments, BezierPath path) {
 		leftMoments = lMoments;
 		rightMoments = rMoments;
@@ -417,48 +234,12 @@ public class TankDriveTrajectory {
 	}
 	
 	/**
-	 * Retrieves the rounding limit for the solving of quadratic equations.<br>
-	 * <br>
-	 * During the last stage of trajectory generation, a time is assigned to every moment.
-	 * This is done by using the third kinematic equation and thus requires solving quadratic equations.
-	 * As with the quadratic formula, if the quantity {@code b^2-4ac < 0}, the equation will have no real solutions
-	 * and will result in {@code NaN}. Sometimes this value dips just below 0, causing a seemingly possible
-	 * trajectory to fail. However, a robot in real life would never need such a high degree of precision,
-	 * and floating-point math can also introduce rounding errors that accumulate. To fix this issue, when solving
-	 * quadratic equations, if the absolute value of {@code b^2-4ac} is less than or equals to the rounding
-	 * limit, it will be rounded to 0.<br>
-	 * <br>
-	 * The default value for the rounding limit is 1.0e-5.
-	 * @return The rounding limit
-	 */
-	public static double getSolverRoundingLimit() {
-		return minUnit;
-	}
-	/**
-	 * Sets the rounding limit for the solving of quadratic equations.<br>
-	 * <br>
-	 * During the last stage of trajectory generation, a time is assigned to every moment.
-	 * This is done by using the third kinematic equation and thus requires solving quadratic equations.
-	 * As with the quadratic formula, if the discriminant is negative, the equation will have no real solutions
-	 * and will result in {@code NaN}. Sometimes this value dips just below 0, causing a seemingly possible
-	 * trajectory to fail. However, a robot in real life would never need such a high degree of precision,
-	 * and floating-point math can also introduce rounding errors that accumulate. To fix this issue, when solving
-	 * quadratic equations, if the absolute value of the discriminant is less than or equals to the rounding
-	 * limit, it will be rounded to 0.<br>
-	 * <br>
-	 * The default value for the rounding limit is 1.0e-5.
-	 * @param min The new rounding limit
-	 */
-	public static void setSolverRoundingLimit(double min) {
-		minUnit = min;
-	}
-	
-	/**
 	 * Retrieves the total time needed for the robot to complete this trajectory.
 	 * @return The total time required to complete this trajectory
 	 */
 	public double totalTime() {
 		//Return the length in time of the longer side
+		//In reality they should be the same
 		return Math.max(leftMoments[leftMoments.length - 1].getTime(), rightMoments[rightMoments.length - 1].getTime());
 	}
 	

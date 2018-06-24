@@ -1,4 +1,4 @@
-package robot.pathfinder.tankdrive;
+package robot.pathfinder.core.path;
 
 import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.math.Bezier;
@@ -17,11 +17,6 @@ public class BezierPath {
 	Vec2D iLastPos;
 	double iCurrentDist = 0;
 	double iCurrentTime = 0;
-	
-	//'iw' stands for integration (wheels)
-	Vec2D[] iwLastPos;
-	double iwCurrentDists[] = new double[2];
-	double iwCurrentTime = 0;
 	
 	double baseRadius;
 	
@@ -51,7 +46,6 @@ public class BezierPath {
 		this.alpha = alpha;
 		
 		resetIntegration();
-		resetWheelIntegration();
 	}
 	public BezierPath(Waypoint[] waypoints, double alpha, double baseRadius) {
 		this(waypoints, alpha);
@@ -65,9 +59,6 @@ public class BezierPath {
 	 */
 	public void setBaseRadius(double b) {
 		baseRadius = b;
-		//Since a changed base radius means the wheels will start at different locations, the integration must
-		//be reset to avoid bugs
-		resetWheelIntegration();
 	}
 	/**
 	 * Retrieves the base radius (distance from the center of the robot to the wheels) of the robot following
@@ -165,38 +156,6 @@ public class BezierPath {
 	 */
 	public double getIntegratedLen() {
 		return iCurrentDist;
-	}
-	
-	/**
-	 * Integrates length of the path of the wheels.
-	 * @param dt dt
-	 * @return The length of the path after a time increment of dt
-	 */
-	public double[] integrateWheelLens(double dt) {
-		iwCurrentTime += dt;
-		if(iwCurrentTime > 1)
-			return iwCurrentDists;
-		Vec2D[] iwCurrentPos = wheelsAt(iwCurrentTime);
-		iwCurrentDists[0] += iwLastPos[0].distTo(iwCurrentPos[0]);
-		iwCurrentDists[1] += iwLastPos[1].distTo(iwCurrentPos[1]);
-		iwLastPos = iwCurrentPos;
-		return iwCurrentDists;
-	}
-	/**
-	 * Resets the integration of the length of the path of the wheels.
-	 */
-	public void resetWheelIntegration() {
-		iwCurrentTime = 0;
-		iwLastPos = wheelsAt(0);
-		iwCurrentDists = new double[2];
-	}
-	/**
-	 * Retrieves the length of the path of the wheels integrated by {@link BezierPath#integrateWheelLens(double) integrateWheelLens()}.
-	 * @return The length of the path of the wheels integrated by {@link BezierPath#integrateWheelLens(double) integrateWheelLens()}
-	 */
-	public double[] getIntegratedWheelLens() {
-		//Return a clone so we can't accidentally modify it outside the class
-		return iwCurrentDists.clone();
 	}
 	
 	/**

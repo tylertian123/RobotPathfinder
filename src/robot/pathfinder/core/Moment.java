@@ -10,6 +10,7 @@ final public class Moment {
 	
 	double d, v, a;
 	double t;
+	double pathT;
 	
 	boolean locked = false;
 	

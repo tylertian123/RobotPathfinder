@@ -1,4 +1,4 @@
-package robot.pathfinder.core;
+package robot.pathfinder.core.path;
 
 public class PathPoint {
 	

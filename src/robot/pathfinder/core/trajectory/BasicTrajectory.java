@@ -1,8 +1,12 @@
-package robot.pathfinder.core;
+package robot.pathfinder.core.trajectory;
 
+import robot.pathfinder.core.Moment;
+import robot.pathfinder.core.RobotSpecs;
+import robot.pathfinder.core.Waypoint;
+import robot.pathfinder.core.path.BezierPath;
+import robot.pathfinder.core.path.PathPoint;
 import robot.pathfinder.math.MathUtils;
 import robot.pathfinder.math.Vec2D;
-import robot.pathfinder.tankdrive.BezierPath;
 
 public class BasicTrajectory {
 	
@@ -10,12 +14,35 @@ public class BasicTrajectory {
 	
 	Moment[] moments;
 	
+	boolean isTank;
+	
 	static double minUnit = 1.0e-6;
 	
-	public BasicTrajectory(Waypoint[] waypoints, double maxVelocity, double maxAcceleration, double baseWidth, double alpha, int segmentCount, boolean isTank) {
+	static void setSolverRoundingLimit(double limit) {
+		minUnit = limit;
+	}
+	static double getSolverRoundingLimit() {
+		return minUnit;
+	}
+	
+	public BasicTrajectory(RobotSpecs specs, TrajectoryParams params) {
+		boolean isTank = params.isTank;
+		Waypoint[] waypoints = params.waypoints;
+		int segmentCount = params.segmentCount;
+		double alpha = params.alpha;
+		double maxVelocity = specs.getMaxVelocity();
+		double maxAcceleration = specs.getMaxAcceleration();
+		double baseWidth = specs.getBaseWidth();
 		
+		if(waypoints == null) {
+			throw new IllegalArgumentException("Waypoints cannot be null!");
+		}
+		if(Double.isNaN(alpha)) {
+			throw new IllegalArgumentException("Alpha is not set, or is NaN");
+		}
+		
+		this.isTank = isTank;
 		path = new BezierPath(waypoints, alpha);
-		path.setBaseRadius(baseWidth / 2);
 		double t_delta = 1.0 / segmentCount;
 		
 		PathPoint[] points = new PathPoint[segmentCount];
@@ -94,7 +121,7 @@ public class BasicTrajectory {
 		for(int i = 1; i < moments.length; i ++) {
 			
 			double dt = MathUtils.findPositiveQuadraticRoot(moments[i - 1].getAcceleration() / 2, moments[i - 1].getVelocity(), 
-					moments[i].getPosition() - moments[i - 1].getPosition(), minUnit);
+					-(moments[i].getPosition() - moments[i - 1].getPosition()), minUnit);
 			moments[i].setTime(moments[i - 1].getTime() + dt);
 			moments[i].lock();
 		}
@@ -158,6 +185,10 @@ public class BasicTrajectory {
 				continue;
 			}
 		}
+	}
+	
+	public boolean isTank() {
+		return isTank;
 	}
 }
 

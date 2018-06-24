@@ -8,7 +8,7 @@ package robot.pathfinder.core;
  */
 final public class Moment {
 	
-	double d, v, a, j;
+	double d, v, a;
 	double t;
 	
 	boolean locked = false;
@@ -25,28 +25,14 @@ final public class Moment {
 		a = acceleration;
 	}
 	/**
-	 * Creates a new moment with the specified values
-	 * @param position The desired position
-	 * @param velocity The desired velocity
-	 * @param acceleration The desired acceleration
-	 * @param jerk The desired jerk (change in acceleration)
-	 */
-	public Moment(double position, double velocity, double acceleration, double jerk) {
-		d = position;
-		v = velocity;
-		a = acceleration;
-		j = jerk;
-	}
-	/**
 	 * Creates a new moment with the specified values.
 	 * @param position The desired position
 	 * @param velocity The desired velocity
 	 * @param acceleration The desired acceleration
-	 * @param jerk The desired jerk (change in acceleration)
 	 * @param t The point in time this moment is located
 	 */
-	public Moment(double position, double velocity, double acceleration, double jerk, double t) {
-		this(position, velocity, acceleration, jerk);
+	public Moment(double position, double velocity, double acceleration, double t) {
+		this(position, velocity, acceleration);
 		this.t = t;
 	}
 	
@@ -132,21 +118,5 @@ final public class Moment {
 	 */
 	public double getAcceleration() {
 		return a;
-	}
-	/**
-	 * Sets the jerk (change in acceleration) of the moment
-	 * @param jerk The desired jerk
-	 */
-	public void setJerk(double jerk) {
-		if(isLocked())
-			throw new LockedException("Attempt to modify a locked Moment");
-		j = jerk;
-	}
-	/**
-	 * Retrieves the desired jerk (change in acceleration) of the moment
-	 * @return The desired jerk of the moment
-	 */
-	public double getJerk() {
-		return j;
 	}
 }

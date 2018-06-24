@@ -12,19 +12,17 @@ package robot.pathfinder.core;
 public class RobotSpecs {
 	
 	double baseWidth;
-	double maxVelocity, maxAcceleration, maxJerk;
+	double maxVelocity, maxAcceleration;
 	
 	/**
 	 * Constructs a new robot specification object with the specified values.
 	 * @param maxVelocity The absolute value of the max velocity of the robot
 	 * @param maxAcceleration The absolute value of the max acceleration of the robot
-	 * @param maxJerk The max jerk (change in acceleration) of the robot
 	 * @param baseWidth The width of the base plate of the robot (distance between wheels on different sides)
 	 */
 	public RobotSpecs(double maxVelocity, double maxAcceleration, double maxJerk, double baseWidth) {
 		this.maxVelocity = maxVelocity;
 		this.maxAcceleration = maxAcceleration;
-		this.maxJerk = maxJerk;
 		this.baseWidth = baseWidth;
 	}
 	
@@ -70,19 +68,5 @@ public class RobotSpecs {
 	 */
 	public void setMaxAcceleration(double maxAcceleration) {
 		this.maxAcceleration = maxAcceleration;
-	}
-	/**
-	 * Retrieves the max jerk (change in acceleration) of the robot.
-	 * @return The max jerk
-	 */
-	public double getMaxJerk() {
-		return maxJerk;
-	}
-	/**
-	 * Sets the max jerk (change in acceleration) of the robot.
-	 * @param maxJerk The max jerk
-	 */
-	public void setMaxJerk(double maxJerk) {
-		this.maxJerk = maxJerk;
 	}
 }

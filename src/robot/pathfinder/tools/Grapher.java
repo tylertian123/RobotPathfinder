@@ -47,8 +47,6 @@ public class Grapher {
 		double[] rightVel = new double[elemCount];
 		double[] leftAccel = new double[elemCount];
 		double[] rightAccel = new double[elemCount];
-		double[] leftJerk = new double[elemCount];
-		double[] rightJerk = new double[elemCount];
 		
 		int i = 0;
 		for(double t = 0; t <= trajectory.totalTime(); t += dt) {
@@ -60,11 +58,9 @@ public class Grapher {
 			leftPos[i] = leftMoment.getPosition();
 			leftVel[i] = leftMoment.getVelocity();
 			leftAccel[i] = leftMoment.getAcceleration();
-			leftJerk[i] = leftMoment.getJerk();
 			rightPos[i] = rightMoment.getPosition();
 			rightVel[i] = rightMoment.getVelocity();
 			rightAccel[i] = rightMoment.getAcceleration();
-			rightJerk[i] = rightMoment.getJerk();
 			
 			i++;
 		}
@@ -76,11 +72,9 @@ public class Grapher {
 		plot.addLinePlot("Left Position", time, leftPos);
 		plot.addLinePlot("Left Velocity", time, leftVel);
 		plot.addLinePlot("Left Acceleration", time, leftAccel);
-		plot.addLinePlot("Left Jerk", time, leftJerk);
 		plot.addLinePlot("Right Position", time, rightPos);
 		plot.addLinePlot("Right Velocity", time, rightVel);
 		plot.addLinePlot("Right Acceleration", time, rightAccel);
-		plot.addLinePlot("Right Jerk", time, rightJerk);
 		
 		//Create window that holds the graph
 		JFrame frame = new JFrame("Trajectory Graph");
@@ -206,22 +200,18 @@ public class Grapher {
 		double[] lPos = new double[left.length];
 		double[] lVel = new double[left.length];
 		double[] lAcl = new double[left.length];
-		double[] lJrk = new double[right.length];
 		double[] rPos = new double[right.length];
 		double[] rVel = new double[right.length];
 		double[] rAcl = new double[right.length];
-		double[] rJrk = new double[right.length];
 		
 		for(int i = 0; i < left.length; i ++) {
 			lPos[i] = left[i].getPosition();
 			lVel[i] = left[i].getVelocity();
 			lAcl[i] = left[i].getAcceleration();
-			lJrk[i] = left[i].getJerk();
 			
 			/*rPos[i] = right[i].getPosition();
 			rVel[i] = right[i].getVelocity();
-			rAcl[i] = right[i].getAcceleration();
-			rJrk[i] = right[i].getJerk();*/
+			rAcl[i] = right[i].getAcceleration();*/
 		}
 		
 		Plot2DPanel plot = new Plot2DPanel();
@@ -229,11 +219,9 @@ public class Grapher {
 		plot.addLinePlot("Left Position", lPos);
 		plot.addLinePlot("Left Velocity", lVel);
 		plot.addLinePlot("Left Acceleration", lAcl);
-		plot.addLinePlot("Left Jerk", lJrk);
 		/*plot.addLinePlot("Right Position", rPos);
 		plot.addLinePlot("Right Velocity", rVel);
-		plot.addLinePlot("Right Acceleration", rAcl);
-		plot.addLinePlot("Right Jerk", rJrk);*/
+		plot.addLinePlot("Right Acceleration", rAcl);*/
 		
 		JFrame frame = new JFrame("Moment Graph");
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

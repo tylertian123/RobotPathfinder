@@ -2,8 +2,8 @@ package robot.pathfinder.examples;
 
 import javax.swing.JFrame;
 
-import robot.pathfinder.TankDriveTrajectory;
-import robot.pathfinder.Waypoint;
+import robot.pathfinder.core.Waypoint;
+import robot.pathfinder.tankdrive.TankDriveTrajectory;
 import robot.pathfinder.tools.Grapher;
 
 /**
@@ -11,6 +11,7 @@ import robot.pathfinder.tools.Grapher;
  * This was the program that generated the graphs in the project README.
  * @author Tyler Tian
  *
+ *@deprecated does not use jerk
  */
 public class TrajectoryGenerationDemo {
 	
@@ -29,7 +30,7 @@ public class TrajectoryGenerationDemo {
 		//Parameters: Waypoints, max vel, max accel, base width, alpha (smoothness of turns), number of segments
 		//Last parameter suppresses exceptions (allows impossible paths)
 		//Try changing these and see what happens!
-		TankDriveTrajectory trajectory = new TankDriveTrajectory(waypoints, 5, 3.5, 2, 20, 5000, true);
+		TankDriveTrajectory trajectory = new TankDriveTrajectory(waypoints, 5, 3.5, 7, 2, 20, 5000, true);
 		System.out.println("Trajectory generation took " + (System.currentTimeMillis() - time) + " milliseconds.");
 		
 		//Now we have the trajectory, let's graph it!

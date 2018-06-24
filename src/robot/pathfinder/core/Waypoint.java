@@ -1,4 +1,4 @@
-package robot.pathfinder;
+package robot.pathfinder.core;
 
 import robot.pathfinder.math.Vec2D;
 

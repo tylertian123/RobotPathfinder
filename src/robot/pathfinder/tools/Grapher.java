@@ -9,11 +9,11 @@ import javax.swing.JFrame;
 
 import org.math.plot.Plot2DPanel;
 
-import robot.pathfinder.BezierPath;
-import robot.pathfinder.Moment;
-import robot.pathfinder.TankDriveTrajectory;
-import robot.pathfinder.Waypoint;
+import robot.pathfinder.core.Moment;
+import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.math.Vec2D;
+import robot.pathfinder.tankdrive.BezierPath;
+import robot.pathfinder.tankdrive.TankDriveTrajectory;
 
 /**
  * A class that provides convenient methods for graphing paths and trajectories.
@@ -47,20 +47,24 @@ public class Grapher {
 		double[] rightVel = new double[elemCount];
 		double[] leftAccel = new double[elemCount];
 		double[] rightAccel = new double[elemCount];
+		double[] leftJerk = new double[elemCount];
+		double[] rightJerk = new double[elemCount];
 		
 		int i = 0;
 		for(double t = 0; t <= trajectory.totalTime(); t += dt) {
 			//Collect data
 			time[i] = t;
-			Moment leftMoment = trajectory.getLeftSmooth(t);
-			Moment rightMoment = trajectory.getRightSmooth(t);
+			Moment leftMoment = trajectory.getLeft(t);
+			Moment rightMoment = trajectory.getRight(t);
 			
-			leftPos[i] = leftMoment.getDistance();
+			leftPos[i] = leftMoment.getPosition();
 			leftVel[i] = leftMoment.getVelocity();
 			leftAccel[i] = leftMoment.getAcceleration();
-			rightPos[i] = rightMoment.getDistance();
+			leftJerk[i] = leftMoment.getJerk();
+			rightPos[i] = rightMoment.getPosition();
 			rightVel[i] = rightMoment.getVelocity();
 			rightAccel[i] = rightMoment.getAcceleration();
+			rightJerk[i] = rightMoment.getJerk();
 			
 			i++;
 		}
@@ -70,11 +74,13 @@ public class Grapher {
 		plot.setLegendOrientation("EAST");
 		//Add graphs
 		plot.addLinePlot("Left Position", time, leftPos);
-		plot.addLinePlot("Right Position", time, rightPos);
 		plot.addLinePlot("Left Velocity", time, leftVel);
-		plot.addLinePlot("Right Velocity", time, rightVel);
 		plot.addLinePlot("Left Acceleration", time, leftAccel);
+		plot.addLinePlot("Left Jerk", time, leftJerk);
+		plot.addLinePlot("Right Position", time, rightPos);
+		plot.addLinePlot("Right Velocity", time, rightVel);
 		plot.addLinePlot("Right Acceleration", time, rightAccel);
+		plot.addLinePlot("Right Jerk", time, rightJerk);
 		
 		//Create window that holds the graph
 		JFrame frame = new JFrame("Trajectory Graph");
@@ -183,6 +189,56 @@ public class Grapher {
 		//The window has to be square, so take the smaller one of the width and height
 		int size = Math.min(bounds.width, bounds.height);
 		frame.setSize(new Dimension(size, size));
+		
+		return frame;
+	}
+	
+	/**
+	 * Graphs the raw {@link Moment} objects of a trajectory. Instead of taking samples based on time,
+	 * this method graphs each {@code Moment}'s data.
+	 * @param trajectory The trajectory whose data will be graphed
+	 * @return A frame with the graphed trajectory inside
+	 */
+	public static JFrame graphMoments(TankDriveTrajectory trajectory) {
+		Moment[] left = trajectory.getMoments()[0];
+		Moment[] right = trajectory.getMoments()[1];
+		
+		double[] lPos = new double[left.length];
+		double[] lVel = new double[left.length];
+		double[] lAcl = new double[left.length];
+		double[] lJrk = new double[right.length];
+		double[] rPos = new double[right.length];
+		double[] rVel = new double[right.length];
+		double[] rAcl = new double[right.length];
+		double[] rJrk = new double[right.length];
+		
+		for(int i = 0; i < left.length; i ++) {
+			lPos[i] = left[i].getPosition();
+			lVel[i] = left[i].getVelocity();
+			lAcl[i] = left[i].getAcceleration();
+			lJrk[i] = left[i].getJerk();
+			
+			/*rPos[i] = right[i].getPosition();
+			rVel[i] = right[i].getVelocity();
+			rAcl[i] = right[i].getAcceleration();
+			rJrk[i] = right[i].getJerk();*/
+		}
+		
+		Plot2DPanel plot = new Plot2DPanel();
+		plot.setLegendOrientation("EAST");
+		plot.addLinePlot("Left Position", lPos);
+		plot.addLinePlot("Left Velocity", lVel);
+		plot.addLinePlot("Left Acceleration", lAcl);
+		plot.addLinePlot("Left Jerk", lJrk);
+		/*plot.addLinePlot("Right Position", rPos);
+		plot.addLinePlot("Right Velocity", rVel);
+		plot.addLinePlot("Right Acceleration", rAcl);
+		plot.addLinePlot("Right Jerk", rJrk);*/
+		
+		JFrame frame = new JFrame("Moment Graph");
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.setContentPane(plot);
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
 		return frame;
 	}

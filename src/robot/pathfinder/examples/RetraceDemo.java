@@ -2,15 +2,16 @@ package robot.pathfinder.examples;
 
 import javax.swing.JFrame;
 
-import robot.pathfinder.TankDriveTrajectory;
-import robot.pathfinder.Waypoint;
+import robot.pathfinder.core.Waypoint;
+import robot.pathfinder.tankdrive.TankDriveTrajectory;
 import robot.pathfinder.tools.Grapher;
 
 /**
- * This example program demonstrates the use of {@link robot.pathfinder.TankDriveTrajectory#retrace()}
+ * This example program demonstrates the use of {@link robot.pathfinder.tankdrive.TankDriveTrajectory#retrace()}
  * to create a backwards trajectory.
  * @author Tyler Tian
  *
+ *@deprecated does not use jerk
  */
 public class RetraceDemo {
 

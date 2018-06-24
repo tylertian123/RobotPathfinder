@@ -7,12 +7,9 @@ package robot.pathfinder.math;
  */
 public class MathUtils {
 	
-	/**
-	 * Swaps two rows of a matrix/two arrays.
-	 * @param a The first row
-	 * @param b The second row
-	 */
-	public static void rowSwap(double[] a, double[] b) {
+	private MathUtils() {}
+	
+	private static void rowSwap(double[] a, double[] b) {
 		double[] temp = new double[a.length];
 		for(int i = 0; i < temp.length; i ++) {
 			
@@ -21,43 +18,24 @@ public class MathUtils {
 			b[i] = temp[i];
 		}
 	}
-	/**
-	 * Multiplies a row of a matrix/an array by a scalar
-	 * @param a The row to work with
-	 * @param b A scalar to multiply by
-	 */
-	public static void rowMultiply(double[] a, double b) {
+	private static void rowMultiply(double[] a, double b) {
 		for(int i = 0; i < a.length; i ++) {
 			a[i] *= b;
 		}
 	}
-	/**
-	 * Multiplies a row of a matrix/an array by a scalar, and return the result. <br>
-	 * <br>
-	 * Unlike in {@link MathUtils#rowMultiply(double[], double) rowMutiply()}, the original row/array is not modified.
-	 * @param a The row to work with
-	 * @param b A scalar to multiply by
-	 * @return The row with each term multiplied by the scalar
-	 */
-	public static double[] rowMultiply2(double[] a, double b) {
+	private static double[] rowMultiply2(double[] a, double b) {
 		double[] c = new double[a.length];
 		for(int i = 0; i < c.length; i ++) {
 			c[i] = a[i] * b;
 		}
 		return c;
 	}
-	/**
-	 * Adds each term of a row of a matrix/an array to another row/array.
-	 * @param a The row to add to
-	 * @param b The row to add
-	 */
-	public static void rowAdd(double[] a, double[] b) {
+	private static void rowAdd(double[] a, double[] b) {
 		for(int i = 0; i < a.length; i ++) {
 			a[i] += b[i];
 		}
 	}
-	
-	static int lcIndex(double[] a) {
+	private static int lcIndex(double[] a) {
 		//Finds the leading coefficient's index in a row.
 		//A larger index means the leading coefficient is closer to the left
 		for(int i = 0; i < a.length - 1; i ++) {
@@ -232,5 +210,120 @@ public class MathUtils {
 			return roots[1];
 		else
 			return Double.NaN;
+	}
+	
+	/**
+	 * Finds the discriminant of a cubic polynomial.<br>
+	 * <br>
+	 * If this value is positive, then the polynomial has 3 distinct real roots.<br>
+	 * If this value is zero, then the polynomial has a multiple root and all 3 roots are real.<br>
+	 * If this value is negative, then the polynomial has one real root, and 2 complex roots.
+	 * @param a The cubed term coefficient
+	 * @param b The squared term coefficient
+	 * @param c The linear term coefficient
+	 * @param d The constant term
+	 * @return The discriminant of the polynomial
+	 */
+	public static double cubicDiscriminant(double a, double b, double c, double d) {
+		//Formula can be found on Wikipedia: https://en.wikipedia.org/wiki/Cubic_function#General_formula
+		return 18 * a * b * c * d - 4 * Math.pow(b, 3) * d + Math.pow(b, 2) * Math.pow(c, 2) - 4 * a * Math.pow(c, 3) - 27 * Math.pow(a, 2) * Math.pow(d, 2);
+	}
+	/**
+	 * Finds the real root of a cubic polynomial. This method assumes that the discriminant of the polynomial is negative, that is,
+	 * the polynomial has only one real root and 2 complex roots.<br>
+	 * <br>
+	 * If {@code a} is 0, this returns the same result as calling {@link #findPositiveQuadraticRoot(double, double, double) findPositiveQuadraticRoot(b, c, d)}.<br>
+	 * If the discriminant is greater than 0, this method will return {@code NaN}.
+	 * @param a The cubed term coefficient
+	 * @param b The squared term coefficient
+	 * @param c The linear term coefficient
+	 * @param d The constant term
+	 * @return The real root
+	 */
+	public static double realCubicRoot(double a, double b, double c, double d) {
+		if(a == 0.0) {
+			return findPositiveQuadraticRoot(b, c, d);
+		}
+		
+		//Formula can be found on Wikipedia: https://en.wikipedia.org/wiki/Cubic_function#General_formula
+		double d0 = b * b - 3 * a * c;
+		double d1 = 2 * Math.pow(b, 3) - 9 * a * b * c + 27 * Math.pow(a, 2) * d;
+		double C;
+		//"In addition either sign in front of the square root may be chosen unless d0 = 0
+		//in which case the sign must be chosen so that the two terms inside the cube root do not cancel."
+		if(d0 != 0) {
+			C = Math.cbrt((d1 - Math.sqrt(Math.pow(d1, 2) - 4 * Math.pow(d0, 3))) / 2);
+		}
+		else {
+			if(d1 >= 0) {
+				//If d1 is greater than 0, then we must add, because the result of the square root is always going to be positive
+				C = Math.cbrt((d1 + Math.sqrt(Math.pow(d1, 2) - 4 * Math.pow(d0, 3))) / 2);
+			}
+			else {
+				//If d1 is less than 0, we must subtract
+				C = Math.cbrt((d1 - Math.sqrt(Math.pow(d1, 2) - 4 * Math.pow(d0, 3))) / 2);
+			}
+		}
+		
+		return -1 / (3 * a) * (b + C + d0 / C);
+	}
+	
+	/**
+	 * Calculates the curvature, given the derivatives and the second derivatives at the desired point.
+	 * @param xDeriv The first derivative of x, with respect to t (dx/dt).
+	 * @param xSecondDeriv The second derivative of x, with respect to t (d^2x/dt^2).
+	 * @param yDeriv The first derivative of y, with respect to t (dy/dt).
+	 * @param ySecondDeriv The second derivative of y, with respect to t (d^2y/dt^2).
+	 * @return The curvature at the point
+	 */
+	public static double curvature(double xDeriv, double xSecondDeriv, double yDeriv, double ySecondDeriv) {
+		return (xDeriv * ySecondDeriv - yDeriv * xSecondDeriv) /
+				Math.pow(xDeriv * xDeriv + yDeriv * yDeriv, 3.0/2.0);
+	}
+	
+	/**
+	 * Compares the absolute values of the two numbers for equality.
+	 * @param a The first number
+	 * @param b The second number
+	 * @return {@code true} if they're equal, {@code false} if not
+	 */
+	public static boolean absEqual(double a, double b) {
+		return Math.abs(a) == Math.abs(b);
+	}
+	/**
+	 * Returns true if the absolute value of the first number is less than the absolute value of the second number.
+	 * @param a The first number
+	 * @param b The second number
+	 * @return {@code true} if {@code Math.abs(a) < Math.abs(b)}, {@code false} if otherwise
+	 */
+	public static boolean absLessThan(double a, double b) {
+		return Math.abs(a) < Math.abs(b);
+	}
+	/**
+	 * Returns true if the absolute value of the first number is more than the absolute value of the second number.
+	 * @param a The first number
+	 * @param b The second number
+	 * @return {@code true} if {@code Math.abs(a) > Math.abs(b)}, {@code false} if otherwise
+	 */
+	public static boolean absMoreThan(double a, double b) {
+		return Math.abs(a) > Math.abs(b);
+	}
+	/**
+	 * Returns true if the absolute value of the first number is less than or equal to the absolute value of the second number.
+	 * @param a The first number
+	 * @param b The second number
+	 * @return {@code true} if {@code Math.abs(a) <= Math.abs(b)}, {@code false} if otherwise
+	 */
+	public static boolean absLessThanEquals(double a, double b) {
+		return Math.abs(a) <= Math.abs(b);
+	}
+	/**
+	 * Returns true if the absolute value of the first number is more than or equal to the absolute value of the second number.
+	 * @param a The first number
+	 * @param b The second number
+	 * @return {@code true} if {@code Math.abs(a) >= Math.abs(b)}, {@code false} if otherwise
+	 */
+	public static boolean absMoreThanEquals(double a, double b) {
+		return Math.abs(a) >= Math.abs(b);
 	}
 }

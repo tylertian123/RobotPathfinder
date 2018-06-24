@@ -159,89 +159,75 @@ public class TankDriveTrajectory {
 			//Use the kinematic equation for constant jerk
 			//First calculate the coefficients
 			double la = maxJerk / 6, lb = leftMoments[i - 1].getAcceleration() / 2, lc = leftMoments[i - 1].getVelocity(), ld = -distDiffLeft;
-			double ra = maxJerk / 6, rb = rightMoments[i - 1].getAcceleration() / 2, rc = rightMoments[i - 1].getVelocity(), rd = -distDiffRight;
+			//double ra = maxJerk / 6, rb = rightMoments[i - 1].getAcceleration() / 2, rc = rightMoments[i - 1].getVelocity(), rd = -distDiffRight;
 			//Solve for the time, which is the (only) real root of this cubic polynomial
 			double lTime = MathUtils.realCubicRoot(la, lb, lc, ld);
-			double rTime = MathUtils.realCubicRoot(ra, rb, rc, rd);
+			//double rTime = MathUtils.realCubicRoot(ra, rb, rc, rd);
 			
 			//Solve for the maximum reachable velocity and acceleration
 			double leftMaxVel = leftMoments[i - 1].getVelocity() + leftMoments[i - 1].getAcceleration() * lTime + 0.5 * maxJerk * Math.pow(lTime, 2);
-			double rightMaxVel = rightMoments[i - 1].getVelocity() + rightMoments[i - 1].getAcceleration() * rTime + 0.5 * maxJerk * Math.pow(rTime, 2);
+			//double rightMaxVel = rightMoments[i - 1].getVelocity() + rightMoments[i - 1].getAcceleration() * rTime + 0.5 * maxJerk * Math.pow(rTime, 2);
+			double leftMaxVel2 = Math.sqrt(Math.pow(leftMoments[i - 1].getVelocity(), 2) + 2 * leftMoments[i - 1].getAcceleration() * distDiffLeft);
+			//double rightMaxVel2 = Math.sqrt(Math.pow(rightMoments[i - 1].getVelocity(), 2) + 2 * rightMoments[i - 1].getAcceleration() * distDiffRight);
 			double leftMaxAccel = leftMoments[i - 1].getAcceleration() + lTime * maxJerk;
-			double rightMaxAccel = rightMoments[i - 1].getAcceleration() + rTime * maxJerk;
+			//double rightMaxAccel = rightMoments[i - 1].getAcceleration() + rTime * maxJerk;
 	
-			if(leftMaxVel <= segments[i - 1].getLeftMaxVelocity()) {
-				double accel, jerk;
-				if(leftMaxAccel <= maxAccel) {
-					accel = leftMaxAccel;
-					jerk = maxJerk;
-				}
-				else {
-					accel = maxAccel;
-					jerk = 0;
-				}
-				leftMoments[i] = new Moment(currentDists[0], leftMaxVel, accel, jerk);
+			if(leftMaxVel <= segments[i - 1].getLeftMaxVelocity() && leftMaxAccel <= maxAccel) {
+				leftMoments[i] = new Moment(currentDists[0], leftMaxVel, leftMaxAccel, 0);
+				leftMoments[i - 1].setJerk(maxJerk);
+			}
+			else if(leftMaxVel2 <= segments[i - 1].getLeftMaxVelocity()) {
+				leftMoments[i] = new Moment(currentDists[0], leftMaxVel2, leftMoments[i - 1].getAcceleration(), 0);
+				leftMoments[i - 1].setJerk(0);
 			}
 			else {
 				leftMoments[i] = new Moment(currentDists[0], segments[i - 1].getLeftMaxVelocity(), 0, 0);
 			}
-			if(rightMaxVel <= segments[i - 1].getRightMaxVelocity()) {
-				double accel, jerk;
-				if(rightMaxAccel <= maxAccel) {
-					accel = rightMaxAccel;
-					jerk = maxJerk;
-				}
-				else {
-					accel = maxAccel;
-					jerk = 0;
-				}
-				rightMoments[i] = new Moment(currentDists[1], rightMaxVel, accel, jerk);
-			}
-			else {
-				rightMoments[i] = new Moment(currentDists[1], segments[i - 1].getRightMaxVelocity(), 0, 0);
-			}
+			//TODO: write right side
 		}
 		
 		//Prepare for backwards pass
-		leftMoments[segments.length].setVelocity(0);
+		/*leftMoments[segments.length].setVelocity(0);
 		leftMoments[segments.length].setAcceleration(0);
 		rightMoments[segments.length].setVelocity(0);
 		rightMoments[segments.length].setAcceleration(0);
-		for(int i = segmentCount - 1; i >= 0; i --) {
-			double distDiffLeft = leftMoments[i + 1].getPosition() - leftMoments[i].getPosition();
-			double distDiffRight = rightMoments[i + 1].getPosition() - rightMoments[i].getPosition();
-			
-			double la = maxJerk / 6, lb = leftMoments[i + 1].getAcceleration() / 2, lc = leftMoments[i + 1].getVelocity(), ld = -distDiffLeft;
-			double ra = maxJerk / 6, rb = rightMoments[i + 1].getAcceleration() / 2, rc = rightMoments[i + 1].getVelocity(), rd = -distDiffRight;
-			double lTime = MathUtils.realCubicRoot(la, lb, lc, ld);
-			double rTime = MathUtils.realCubicRoot(ra, rb, rc, rd);
-			
-			double leftMaxVel = leftMoments[i + 1].getVelocity() + leftMoments[i + 1].getAcceleration() * lTime + 0.5 * maxJerk * Math.pow(lTime, 2);
-			double rightMaxVel = rightMoments[i + 1].getVelocity() + rightMoments[i + 1].getAcceleration() * rTime + 0.5 * maxJerk * Math.pow(rTime, 2);
-			double leftMaxAccel = leftMoments[i + 1].getAcceleration() + lTime * maxJerk;
-			double rightMaxAccel = rightMoments[i + 1].getAcceleration() + rTime * maxJerk;
-			
-			if(leftMaxVel <= leftMoments[i].getVelocity()) {
-				leftMoments[i].setVelocity(leftMaxVel);
+		for(int i = segments.length; i > 0; i --) {
+			double lPos = leftMoments[i].getPosition();
+			double lVel = leftMoments[i].getVelocity();
+			double lAcl = leftMoments[i].getAcceleration();
+			if(lAcl <= 0) {
+				double distDiffLeft = lPos - leftMoments[i - 1].getPosition();
+				
+	            double la = maxJerk / 6, lb = Math.abs(lAcl / 2), lc = Math.abs(lVel), ld = -distDiffLeft;
+	            double lTime = MathUtils.realCubicRoot(la, lb, lc, ld);
+	            
+	            double leftMaxVel2 = Math.abs(leftMoments[i - 1].getVelocity() + leftMoments[i - 1].getAcceleration() * lTime);
+	            double leftMaxVel = leftMaxVel2 + 0.5 * maxJerk * Math.pow(lTime, 2);
+				double leftMaxAccel = lAcl + lTime * maxJerk;
+				
+				//Take max vel 1 because we can increase acceleration
 				if(MathUtils.absLessThanEquals(leftMaxAccel, maxAccel)) {
-					leftMoments[i].setAcceleration(-leftMaxAccel);
-					leftMoments[i].setJerk(-maxJerk);
+					if(MathUtils.absLessThanEquals(leftMaxVel, leftMoments[i - 1].getVelocity())) {
+						leftMoments[i].setVelocity(leftMaxVel);
+						leftMoments[i - 1].setAcceleration(-leftMaxAccel);
+						leftMoments[i - 1].setJerk(-maxJerk);
+						System.out.println(i);
+					}
 				}
 				else {
-					leftMoments[i].setAcceleration(-maxAccel);
+					if(MathUtils.absLessThanEquals(leftMaxVel2, leftMoments[i - 1].getVelocity())) {
+						leftMoments[i].setVelocity(leftMaxVel2);
+						leftMoments[i - 1].setJerk(0);
+					}
 				}
 			}
-			if(rightMaxVel <= rightMoments[i].getVelocity()) {
-				rightMoments[i].setVelocity(rightMaxVel);
-				if(MathUtils.absLessThanEquals(rightMaxAccel, maxAccel)) {
-					rightMoments[i].setAcceleration(-rightMaxAccel);
-					rightMoments[i].setJerk(-maxJerk);
-				}
-				else {
-					rightMoments[i].setAcceleration(-maxAccel);
-				}
+			double rPos = rightMoments[i].getPosition();
+			double rAcl = rightMoments[i].getAcceleration();
+			double rVel = rightMoments[i].getVelocity();
+			if(Math.signum(rAcl) != Math.signum(rVel) || rAcl == 0) {
+				
 			}
-		}
+		}*/
 	}
 	//Creates a trajectory with moments that are already generated
 	protected TankDriveTrajectory(Moment[] lMoments, Moment[] rMoments) {

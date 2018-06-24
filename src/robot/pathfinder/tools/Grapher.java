@@ -218,10 +218,10 @@ public class Grapher {
 			lAcl[i] = left[i].getAcceleration();
 			lJrk[i] = left[i].getJerk();
 			
-			rPos[i] = right[i].getPosition();
+			/*rPos[i] = right[i].getPosition();
 			rVel[i] = right[i].getVelocity();
 			rAcl[i] = right[i].getAcceleration();
-			rJrk[i] = right[i].getJerk();
+			rJrk[i] = right[i].getJerk();*/
 		}
 		
 		Plot2DPanel plot = new Plot2DPanel();
@@ -230,10 +230,10 @@ public class Grapher {
 		plot.addLinePlot("Left Velocity", lVel);
 		plot.addLinePlot("Left Acceleration", lAcl);
 		plot.addLinePlot("Left Jerk", lJrk);
-		plot.addLinePlot("Right Position", rPos);
+		/*plot.addLinePlot("Right Position", rPos);
 		plot.addLinePlot("Right Velocity", rVel);
 		plot.addLinePlot("Right Acceleration", rAcl);
-		plot.addLinePlot("Right Jerk", rJrk);
+		plot.addLinePlot("Right Jerk", rJrk);*/
 		
 		JFrame frame = new JFrame("Moment Graph");
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

@@ -4,10 +4,14 @@ import robot.pathfinder.core.Moment;
 import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.core.path.BezierPath;
 import robot.pathfinder.core.trajectory.BasicTrajectory;
-import robot.pathfinder.core.trajectory.TrajectoryGenerationException;
 import robot.pathfinder.math.Vec2D;
 
 public class TankDriveTrajectory {
+	
+	public static final class MomentKey {
+		private MomentKey() {}
+	}
+	private static MomentKey momentKey = new MomentKey();
 	
 	//The internal path that this trajectory is based on
 	BezierPath path;
@@ -20,106 +24,43 @@ public class TankDriveTrajectory {
 		}
 		
 		Moment[] moments = traj.getMoments();
+		leftMoments = new Moment[moments.length];
+		rightMoments = new Moment[moments.length];
+		leftMoments[0] = new Moment(0, 0, 0, 0);
+		rightMoments[0] = new Moment(0, 0, 0, 0);
 		
+		path = traj.getPath();
+		path.setBaseRadius(traj.getRobotSpecs().getBaseWidth() / 2);
+		
+		Vec2D[] initPos = path.wheelsAt(0);
+		Vec2D prevLeft = initPos[0], prevRight = initPos[1];
+		
+		for(int i = 1; i < moments.length; i ++) {
+			Vec2D[] wheelPos = path.wheelsAt(moments[i].getPathT(momentKey));
+			double dxLeft = prevLeft.distTo(wheelPos[0]);
+			double dxRight = prevRight.distTo(wheelPos[1]);
+			double dt = moments[i].getTime() - moments[i - 1].getTime();
+			
+			prevLeft = wheelPos[0];
+			prevRight = wheelPos[1];
+			
+			leftMoments[i] = new Moment();
+			rightMoments[i] = new Moment();
+			leftMoments[i].setPosition(leftMoments[i - 1].getPosition() + dxLeft);
+			rightMoments[i].setPosition(rightMoments[i - 1].getPosition() + dxRight);
+			leftMoments[i].setVelocity(dxLeft / dt);
+			rightMoments[i].setVelocity(dxRight / dt);
+			leftMoments[i].setAcceleration((leftMoments[i].getVelocity() - leftMoments[i - 1].getVelocity()) / dt);
+			rightMoments[i].setAcceleration((rightMoments[i].getVelocity() - rightMoments[i - 1].getVelocity()) / dt);
+			leftMoments[i].setTime(moments[i].getTime());
+			rightMoments[i].setTime(moments[i].getTime());
+		}
 	}
 	
 	protected TankDriveTrajectory(Moment[] lMoments, Moment[] rMoments, BezierPath path) {
 		leftMoments = lMoments;
 		rightMoments = rMoments;
 		this.path = path;
-	}
-	
-	/**
-	 * Retrieves the {@code Moment} object associated with the left side at the specified time.<br>
-	 * <br>
-	 * This method does not interpolate between two {@code Moment}s and thus gives rough results.
-	 * Only use if necessary.
-	 * @param t A positive real number that ranges from 0 to the return value of {@link #totalTime()}
-	 * @return The {@code Moment} object associated with the left side at time t
-	 */
-	public Moment getLeftRaw(double t) {
-		//Do binary search to find the closest approximation
-		int start = 0;
-		int end = leftMoments.length - 1;
-		int mid;
-		
-		//If t is greater than the entire length in time of the left side, return the last Moment
-		if(t >= leftMoments[leftMoments.length - 1].getTime())
-			return leftMoments[leftMoments.length - 1];
-		
-		while(true) {
-			mid = (start + end) / 2;
-			
-			if(leftMoments[mid].getTime() == t)
-				return leftMoments[mid];
-			//If we reached the end, return the end
-			if(mid == leftMoments.length - 1)
-				return leftMoments[mid];
-			//If t is sandwiched between 2 existing times, the return the closest one
-			if(leftMoments[mid].getTime() <= t && leftMoments[mid + 1].getTime() >= t) {
-				//Use absolute differences to find out the closer Moment
-				if(Math.abs(t - leftMoments[mid].getTime()) > Math.abs(t - leftMoments[mid + 1].getTime())) {
-					return leftMoments[mid + 1];
-				}
-				else {
-					return leftMoments[mid];
-				}
-			}
-			//Continue the binary search if not found
-			if(leftMoments[mid].getTime() < t) {
-				start = mid;
-				continue;
-			}
-			else if(leftMoments[mid].getTime() > t) {
-				end = mid;
-				continue;
-			}
-		}
-	}
-	/**
-	 * Retrieves the {@code Moment} object associated with the right side at the specified time.<br>
-	 * <br>
-	 * This method does not interpolate between two {@code Moment}s and thus gives rough results.
-	 * Only use if necessary.
-	 * @param t A positive real number that ranges from 0 to the return value of {@link #totalTime()}
-	 * @return The {@code Moment} object associated with the right side at time t
-	 */
-	public Moment getRightRaw(double t) {
-		//For an explanation of the code, refer to getLeft()
-		int start = 0;
-		int end = rightMoments.length - 1;
-		int mid;
-		
-		if(t >= rightMoments[rightMoments.length - 1].getTime())
-			return rightMoments[rightMoments.length - 1];
-		
-		while(true) {
-			mid = (start + end) / 2;
-			
-			if(rightMoments[mid].getTime() == t)
-				return rightMoments[mid];
-			
-			if(mid == rightMoments.length - 1)
-				return rightMoments[mid];
-			
-			if(rightMoments[mid].getTime() <= t && rightMoments[mid + 1].getTime() >= t) {
-				if(Math.abs(t - rightMoments[mid].getTime()) > Math.abs(t - rightMoments[mid + 1].getTime())) {
-					return rightMoments[mid + 1];
-				}
-				else {
-					return rightMoments[mid];
-				}
-			}
-			
-			if(rightMoments[mid].getTime() < t) {
-				start = mid;
-				continue;
-			}
-			else if(rightMoments[mid].getTime() > t) {
-				end = mid;
-				continue;
-			}
-		}
 	}
 	
 	/**

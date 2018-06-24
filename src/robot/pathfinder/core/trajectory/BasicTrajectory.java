@@ -10,9 +10,17 @@ import robot.pathfinder.math.Vec2D;
 
 public class BasicTrajectory {
 	
+	public static final class MomentKey {
+		private MomentKey() {}
+	}
+	private static MomentKey momentKey = new MomentKey();
+	
 	BezierPath path;
 	
 	Moment[] moments;
+	
+	RobotSpecs robotSpecs;
+	TrajectoryParams params;
 	
 	boolean isTank;
 	
@@ -26,6 +34,9 @@ public class BasicTrajectory {
 	}
 	
 	public BasicTrajectory(RobotSpecs specs, TrajectoryParams params) {
+		this.params = params;
+		this.robotSpecs = specs;
+		
 		boolean isTank = params.isTank;
 		Waypoint[] waypoints = params.waypoints;
 		int segmentCount = params.segmentCount;
@@ -77,6 +88,10 @@ public class BasicTrajectory {
 		moments[0] = new Moment(0, 0, 0, 0);
 		path.resetIntegration();
 		
+		double prevT = 0;
+		if(isTank) {
+			moments[0].setPathT(0, momentKey);
+		}
 		for(int i = 1; i < moments.length; i ++) {
 			double dt = points[i].getLocation() - points[i - 1].getLocation();
 			
@@ -96,6 +111,10 @@ public class BasicTrajectory {
 			}
 			
 			moments[i] = new Moment(accumulatedDist, vel, 0);
+
+			if(isTank) {
+				moments[i].setPathT(prevT += dt, momentKey);
+			}
 		}
 		
 		moments[moments.length - 1].setVelocity(0);
@@ -189,6 +208,13 @@ public class BasicTrajectory {
 	
 	public boolean isTank() {
 		return isTank;
+	}
+	
+	public RobotSpecs getRobotSpecs() {
+		return robotSpecs;
+	}
+	public TrajectoryParams getGenerationParams() {
+		return params;
 	}
 }
 

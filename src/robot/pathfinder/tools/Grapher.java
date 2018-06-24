@@ -14,6 +14,7 @@ import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.core.path.BezierPath;
 import robot.pathfinder.core.trajectory.BasicTrajectory;
 import robot.pathfinder.math.Vec2D;
+import robot.pathfinder.tankdrive.TankDriveTrajectory;
 
 /**
  * A class that provides convenient methods for graphing paths and trajectories.
@@ -24,7 +25,7 @@ public class Grapher {
 	//Private constructor
 	private Grapher() {}
 	
-	public static JFrame graphBasicTrajectory(BasicTrajectory trajectory, double dt) {
+	public static JFrame graphTrajectory(BasicTrajectory trajectory, double dt) {
 		//Divide and round up to get the number of samples
 		int elemCount = (int) Math.ceil(trajectory.totalTime() / dt);
 		
@@ -54,6 +55,56 @@ public class Grapher {
 		plot.addLinePlot("Position", time, pos);
 		plot.addLinePlot("Velocity", time, vel);
 		plot.addLinePlot("Acceleration", time, acl);
+		
+		//Create window that holds the graph
+		JFrame frame = new JFrame("Trajectory Graph");
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.setContentPane(plot);
+		//Maximize
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		return frame;
+	}
+	
+	public static JFrame graphTrajectory(TankDriveTrajectory trajectory, double dt) {
+		//Divide and round up to get the number of samples
+		int elemCount = (int) Math.ceil(trajectory.totalTime() / dt);
+		
+		//Create arrays to store data
+		double[] time = new double[elemCount];
+		double[] lPos = new double[elemCount];
+		double[] lVel = new double[elemCount];
+		double[] lAcl = new double[elemCount];
+		double[] rPos = new double[elemCount];
+		double[] rVel = new double[elemCount];
+		double[] rAcl = new double[elemCount];
+		
+		int i = 0;
+		for(double t = 0; t <= trajectory.totalTime(); t += dt) {
+			//Collect data
+			time[i] = t;
+			Moment lMoment = trajectory.getLeft(t);
+			Moment rMoment = trajectory.getRight(t);
+			
+			lPos[i] = lMoment.getPosition();
+			lVel[i] = lMoment.getVelocity();
+			lAcl[i] = lMoment.getAcceleration();
+			rPos[i] = rMoment.getPosition();
+			rVel[i] = rMoment.getVelocity();
+			rAcl[i] = rMoment.getAcceleration();
+			
+			i++;
+		}
+		
+		//Create plot
+		Plot2DPanel plot = new Plot2DPanel();
+		plot.setLegendOrientation("EAST");
+		//Add graphs
+		plot.addLinePlot("Left Position", time, lPos);
+		plot.addLinePlot("Left Velocity", time, lVel);
+		plot.addLinePlot("Left Acceleration", time, lAcl);
+		plot.addLinePlot("Right Position", time, rPos);
+		plot.addLinePlot("Right Velocity", time, rVel);
+		plot.addLinePlot("Right Acceleration", time, rAcl);
 		
 		//Create window that holds the graph
 		JFrame frame = new JFrame("Trajectory Graph");

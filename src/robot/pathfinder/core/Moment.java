@@ -1,5 +1,8 @@
 package robot.pathfinder.core;
 
+import robot.pathfinder.core.trajectory.BasicTrajectory;
+import robot.pathfinder.tankdrive.TankDriveTrajectory;
+
 /**
  * Represents a moment in time of a trajectory; this class contains the time, as well as the desired position,
  * velocity, and acceleration at that point in time.
@@ -10,9 +13,14 @@ final public class Moment {
 	
 	double d, v, a;
 	double t;
+	
 	double pathT;
 	
 	boolean locked = false;
+	
+	public Moment() {
+		d = v = a = t = pathT = 0;
+	}
 	
 	/**
 	 * Creates a new moment with the specified values.
@@ -119,5 +127,18 @@ final public class Moment {
 	 */
 	public double getAcceleration() {
 		return a;
+	}
+	
+	public void setPathT(double pathT, BasicTrajectory.MomentKey key) {
+		if(key == null) {
+			throw new RuntimeException("Access denied");
+		}
+		this.pathT = pathT;
+	}
+	public double getPathT(TankDriveTrajectory.MomentKey key) {
+		if(key == null) {
+			throw new RuntimeException("Access denied");
+		}
+		return pathT;
 	}
 }

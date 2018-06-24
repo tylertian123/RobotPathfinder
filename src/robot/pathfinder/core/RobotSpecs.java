@@ -18,11 +18,13 @@ public class RobotSpecs {
 	 * Constructs a new robot specification object with the specified values.
 	 * @param maxVelocity The absolute value of the max velocity of the robot
 	 * @param maxAcceleration The absolute value of the max acceleration of the robot
-	 * @param baseWidth The width of the base plate of the robot (distance between wheels on different sides)
 	 */
-	public RobotSpecs(double maxVelocity, double maxAcceleration, double maxJerk, double baseWidth) {
+	public RobotSpecs(double maxVelocity, double maxAcceleration) {
 		this.maxVelocity = maxVelocity;
 		this.maxAcceleration = maxAcceleration;
+	}
+	public RobotSpecs(double maxVelocity, double maxAcceleration, double baseWidth) {
+		this(maxVelocity, maxAcceleration);
 		this.baseWidth = baseWidth;
 	}
 	

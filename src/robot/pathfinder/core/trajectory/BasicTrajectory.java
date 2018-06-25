@@ -90,7 +90,7 @@ public class BasicTrajectory {
 		
 		double prevT = 0;
 		if(isTank) {
-			moments[0].setPathT(0, momentKey);
+			moments[0].zz_setPathT(0, momentKey);
 		}
 		for(int i = 1; i < moments.length; i ++) {
 			double dt = points[i].getLocation() - points[i - 1].getLocation();
@@ -121,7 +121,7 @@ public class BasicTrajectory {
 			}
 
 			if(isTank) {
-				moments[i].setPathT(prevT += dt, momentKey);
+				moments[i].zz_setPathT(prevT += dt, momentKey);
 			}
 		}
 		

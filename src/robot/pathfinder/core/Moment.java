@@ -129,13 +129,13 @@ final public class Moment {
 		return a;
 	}
 	
-	public void setPathT(double pathT, BasicTrajectory.MomentKey key) {
+	public void zz_setPathT(double pathT, BasicTrajectory.MomentKey key) {
 		if(key == null) {
 			throw new RuntimeException("Access denied");
 		}
 		this.pathT = pathT;
 	}
-	public double getPathT(TankDriveTrajectory.MomentKey key) {
+	public double zz_getPathT(TankDriveTrajectory.MomentKey key) {
 		if(key == null) {
 			throw new RuntimeException("Access denied");
 		}

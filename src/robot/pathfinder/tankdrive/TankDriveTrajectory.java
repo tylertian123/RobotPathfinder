@@ -29,6 +29,7 @@ public class TankDriveTrajectory {
 		leftMoments[0] = new Moment(0, 0, 0, 0);
 		rightMoments[0] = new Moment(0, 0, 0, 0);
 		
+		
 		path = traj.getPath();
 		path.setBaseRadius(traj.getRobotSpecs().getBaseWidth() / 2);
 		
@@ -36,7 +37,7 @@ public class TankDriveTrajectory {
 		Vec2D prevLeft = initPos[0], prevRight = initPos[1];
 		
 		for(int i = 1; i < moments.length; i ++) {
-			Vec2D[] wheelPos = path.wheelsAt(moments[i].getPathT(momentKey));
+			Vec2D[] wheelPos = path.wheelsAt(moments[i].zz_getPathT(momentKey));
 			double dxLeft = prevLeft.distTo(wheelPos[0]);
 			double dxRight = prevRight.distTo(wheelPos[1]);
 			double dt = moments[i].getTime() - moments[i - 1].getTime();
@@ -48,10 +49,10 @@ public class TankDriveTrajectory {
 			rightMoments[i] = new Moment();
 			leftMoments[i].setPosition(leftMoments[i - 1].getPosition() + dxLeft);
 			rightMoments[i].setPosition(rightMoments[i - 1].getPosition() + dxRight);
-			leftMoments[i].setVelocity(dxLeft / dt);
-			rightMoments[i].setVelocity(dxRight / dt);
-			leftMoments[i].setAcceleration((leftMoments[i].getVelocity() - leftMoments[i - 1].getVelocity()) / dt);
-			rightMoments[i].setAcceleration((rightMoments[i].getVelocity() - rightMoments[i - 1].getVelocity()) / dt);
+			leftMoments[i].setVelocity(2 * dxLeft / dt - leftMoments[i - 1].getVelocity());
+			rightMoments[i].setVelocity(2 * dxRight / dt - rightMoments[i - 1].getVelocity());
+			leftMoments[i - 1].setAcceleration((leftMoments[i].getVelocity() - leftMoments[i - 1].getVelocity()) / dt);
+			rightMoments[i - 1].setAcceleration((rightMoments[i].getVelocity() - rightMoments[i - 1].getVelocity()) / dt);
 			leftMoments[i].setTime(moments[i].getTime());
 			rightMoments[i].setTime(moments[i].getTime());
 		}

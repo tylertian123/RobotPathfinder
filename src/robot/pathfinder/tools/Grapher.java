@@ -126,7 +126,8 @@ public class Grapher {
 	 * @return A frame with the graphed path inside
 	 */
 	public static JFrame graphPath(BezierPath path, double dt) {
-		int elemCount = (int) (1.0 / dt) + 1;
+		//Divide and round up to get the number of samples
+		int elemCount = (int) Math.ceil(1.0 / dt);
 		
 		//Create arrays to hold samples
 		double[] x = new double[elemCount];
@@ -211,6 +212,30 @@ public class Grapher {
 		int size = Math.min(bounds.width, bounds.height);
 		frame.setSize(new Dimension(size, size));
 		
+		return frame;
+	}
+	
+	public static JFrame graphMoments(Moment[] moments) {
+		double[] pos = new double[moments.length];
+		double[] vel = new double[moments.length];
+		double[] acl = new double[moments.length];
+		
+		for(int i = 0; i < moments.length; i ++) {
+			pos[i] = moments[i].getPosition();
+			vel[i] = moments[i].getVelocity();
+			acl[i] = moments[i].getAcceleration();
+		}
+		
+		Plot2DPanel plot = new Plot2DPanel();
+		plot.setLegendOrientation("EAST");
+		plot.addLinePlot("Position", pos);
+		plot.addLinePlot("Velocity", vel);
+		plot.addLinePlot("Acceleration", acl);
+		
+		JFrame frame = new JFrame("Moment Graph");
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.setContentPane(plot);
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		return frame;
 	}
 }

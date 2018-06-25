@@ -1,12 +1,14 @@
 package robot.pathfinder.core.trajectory;
 
+import java.util.ArrayList;
+
 import robot.pathfinder.core.Moment;
 import robot.pathfinder.core.RobotSpecs;
 import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.core.path.BezierPath;
-import robot.pathfinder.core.path.PathPoint;
 import robot.pathfinder.math.MathUtils;
 import robot.pathfinder.math.Vec2D;
+import robot.pathfinder.util.Pair;
 
 public class BasicTrajectory {
 	
@@ -56,7 +58,7 @@ public class BasicTrajectory {
 		path = new BezierPath(waypoints, alpha);
 		double t_delta = 1.0 / segmentCount;
 		
-		PathPoint[] points = new PathPoint[segmentCount];
+		ArrayList<Pair<Double, Double>> points = new ArrayList<>(segmentCount);
 		
 		if(isTank) {
 			for(int i = 0; i < segmentCount; i ++) {
@@ -75,37 +77,39 @@ public class BasicTrajectory {
 				//Compute max speed of entire robot with a positive R
 				double vMax = (2 * maxVelocity) / (2 + baseWidth / r);
 				
-				points[i] = new PathPoint(t, vMax);
+				points.add(new Pair<>(t, vMax));
 			}
 		}
 		else {
 			for(int i = 0; i < segmentCount; i ++) {
-				points[i] = new PathPoint(t_delta * i, maxVelocity);
+				points.add(new Pair<>(t_delta * i, maxVelocity));
 			}
 		}
 		
 		moments = new Moment[segmentCount];
 		moments[0] = new Moment(0, 0, 0, 0);
-		path.resetIntegration();
+		
+		double totalDist = path.computePathLength(segmentCount);
+		double distPerIteration = totalDist / (segmentCount - 1);
 		
 		double prevT = 0;
 		if(isTank) {
 			moments[0].zz_setPathT(0, momentKey);
 		}
 		for(int i = 1; i < moments.length; i ++) {
-			double dt = points[i].getLocation() - points[i - 1].getLocation();
+			double accumulatedDist = i * distPerIteration;
 			
-			double accumulatedDist = path.integrateLen(dt);
+			double theoreticalMax = points.get(i).getElem2();
 			
-			if(moments[i - 1].getVelocity() < points[i].getMaxVel()) {
-				double distDiff = accumulatedDist - moments[i - 1].getPosition();
+			if(moments[i - 1].getVelocity() < theoreticalMax) {
+				double distDiff = distPerIteration;
 				
 				double maxVel = Math.sqrt(Math.pow(moments[i - 1].getVelocity(), 2) + 2 * maxAcceleration * distDiff);
 				
 				double vel;
-				if(maxVel > points[i].getMaxVel()) {
-					double accel = (Math.pow(points[i].getMaxVel(), 2) - Math.pow(moments[i - 1].getVelocity(), 2)) / (2 * distDiff);
-					vel = points[i].getMaxVel();
+				if(maxVel > theoreticalMax) {
+					double accel = (Math.pow(theoreticalMax, 2) - Math.pow(moments[i - 1].getVelocity(), 2)) / (2 * distDiff);
+					vel = theoreticalMax;
 					moments[i - 1].setAcceleration(accel);
 				}
 				else {
@@ -116,12 +120,12 @@ public class BasicTrajectory {
 				moments[i] = new Moment(accumulatedDist, vel, 0);
 			}
 			else {
-				moments[i] = new Moment(accumulatedDist, points[i].getMaxVel(), 0);
+				moments[i] = new Moment(accumulatedDist, theoreticalMax, 0);
 				moments[i - 1].setAcceleration(0);
 			}
 
 			if(isTank) {
-				moments[i].zz_setPathT(prevT += dt, momentKey);
+				moments[i].zz_setPathT(path.s2T(points.get(i).getElem1()), momentKey);
 			}
 		}
 		
@@ -195,18 +199,12 @@ public class BasicTrajectory {
 			
 			double nextTime = moments[mid + 1].getTime();
 			
-			//If t is sandwiched between 2 existing times, the return the closest one
 			if(midTime <= t && nextTime >= t) {
-				//Get the slopes
-				double dt = nextTime - midTime;
-				double mAccel = (moments[mid + 1].getAcceleration() - moments[mid].getAcceleration()) / dt;
-				double mVel = (moments[mid + 1].getVelocity() - moments[mid].getVelocity()) / dt;
-				double mDist = (moments[mid + 1].getPosition() - moments[mid].getPosition()) / dt;
-				//Linear approximation
-				double t2 = t - midTime;
-				return new Moment(mDist * t2 + moments[mid].getPosition(), 
-						mVel * t2 + moments[mid].getVelocity(),
-						mAccel * t2 + moments[mid].getAcceleration(), t);
+				
+				double f = (t - midTime) / (nextTime - midTime);
+				return new Moment(MathUtils.lerp(moments[mid].getPosition(), moments[mid + 1].getPosition(), f),
+						MathUtils.lerp(moments[mid].getVelocity(), moments[mid + 1].getVelocity(), f),
+						MathUtils.lerp(moments[mid].getAcceleration(), moments[mid + 1].getAcceleration(), f));
 			}
 			//Continue the binary search if not found
 			if(midTime < t) {

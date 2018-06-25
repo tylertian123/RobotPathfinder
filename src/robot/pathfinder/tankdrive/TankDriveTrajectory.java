@@ -4,6 +4,7 @@ import robot.pathfinder.core.Moment;
 import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.core.path.BezierPath;
 import robot.pathfinder.core.trajectory.BasicTrajectory;
+import robot.pathfinder.math.MathUtils;
 import robot.pathfinder.math.Vec2D;
 
 public class TankDriveTrajectory {
@@ -50,11 +51,11 @@ public class TankDriveTrajectory {
 			leftMoments[i].setPosition(leftMoments[i - 1].getPosition() + dxLeft);
 			rightMoments[i].setPosition(rightMoments[i - 1].getPosition() + dxRight);
 			leftMoments[i].setVelocity(2 * dxLeft / dt - leftMoments[i - 1].getVelocity());
-			rightMoments[i].setVelocity(2 * dxRight / dt - rightMoments[i - 1].getVelocity());
-			leftMoments[i - 1].setAcceleration((leftMoments[i].getVelocity() - leftMoments[i - 1].getVelocity()) / dt);
-			rightMoments[i - 1].setAcceleration((rightMoments[i].getVelocity() - rightMoments[i - 1].getVelocity()) / dt);
+			//rightMoments[i].setVelocity(2 * dxRight / dt - rightMoments[i - 1].getVelocity());
+			//leftMoments[i - 1].setAcceleration((leftMoments[i].getVelocity() - leftMoments[i - 1].getVelocity()) / dt);
+			//rightMoments[i - 1].setAcceleration((rightMoments[i].getVelocity() - rightMoments[i - 1].getVelocity()) / dt);
 			leftMoments[i].setTime(moments[i].getTime());
-			rightMoments[i].setTime(moments[i].getTime());
+			//rightMoments[i].setTime(moments[i].getTime());
 		}
 	}
 	
@@ -97,16 +98,10 @@ public class TankDriveTrajectory {
 			
 			//If t is sandwiched between 2 existing times, the return the closest one
 			if(midTime <= t && nextTime >= t) {
-				//Get the slopes
-				double dt = nextTime - midTime;
-				double mAccel = (leftMoments[mid + 1].getAcceleration() - leftMoments[mid].getAcceleration()) / dt;
-				double mVel = (leftMoments[mid + 1].getVelocity() - leftMoments[mid].getVelocity()) / dt;
-				double mDist = (leftMoments[mid + 1].getPosition() - leftMoments[mid].getPosition()) / dt;
-				//Linear approximation
-				double t2 = t - midTime;
-				return new Moment(mDist * t2 + leftMoments[mid].getPosition(), 
-						mVel * t2 + leftMoments[mid].getVelocity(),
-						mAccel * t2 + leftMoments[mid].getAcceleration(), t);
+				double f = (t - midTime) / (nextTime - midTime);
+				return new Moment(MathUtils.lerp(leftMoments[mid].getPosition(), leftMoments[mid + 1].getPosition(), f),
+						MathUtils.lerp(leftMoments[mid].getVelocity(), leftMoments[mid + 1].getVelocity(), f),
+						MathUtils.lerp(leftMoments[mid].getAcceleration(), leftMoments[mid + 1].getAcceleration(), f));
 			}
 			//Continue the binary search if not found
 			if(midTime < t) {
@@ -152,16 +147,10 @@ public class TankDriveTrajectory {
 			
 			//If t is sandwiched between 2 existing times, the return the closest one
 			if(midTime <= t && nextTime >= t) {
-				//Get the slopes
-				double dt = nextTime - midTime;
-				double mAccel = (rightMoments[mid + 1].getAcceleration() - rightMoments[mid].getAcceleration()) / dt;
-				double mVel = (rightMoments[mid + 1].getVelocity() - rightMoments[mid].getVelocity()) / dt;
-				double mDist = (rightMoments[mid + 1].getPosition() - rightMoments[mid].getPosition()) / dt;
-				//Linear approximation
-				double t2 = t - midTime;
-				return new Moment(mDist * t2 + rightMoments[mid].getPosition(), 
-						mVel * t2 + rightMoments[mid].getVelocity(),
-						mAccel * t2 + rightMoments[mid].getAcceleration(), t);
+				double f = (t - midTime) / (nextTime - midTime);
+				return new Moment(MathUtils.lerp(rightMoments[mid].getPosition(), rightMoments[mid + 1].getPosition(), f),
+						MathUtils.lerp(rightMoments[mid].getVelocity(), rightMoments[mid + 1].getVelocity(), f),
+						MathUtils.lerp(rightMoments[mid].getAcceleration(), rightMoments[mid + 1].getAcceleration(), f));
 			}
 			//Continue the binary search if not found
 			if(midTime < t) {

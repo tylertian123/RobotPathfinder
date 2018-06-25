@@ -29,6 +29,7 @@ public class Test {
 				new Waypoint(0, 0, Math.PI / 2),
 				//new Waypoint(-10, 25, Math.PI / 2),
 				//new Waypoint(0, 50, 0),
+				new Waypoint(0, 25, Math.PI / 2),
 				new Waypoint(0, 50, Math.PI / 2),
 		};
 		RobotSpecs specs = new RobotSpecs(5, 3.5, 2);
@@ -37,9 +38,11 @@ public class Test {
 		params.alpha = 60;
 		params.segmentCount = 5000;
 		params.isTank = true;
-		
+		long time = System.currentTimeMillis();
 		BasicTrajectory bt = new BasicTrajectory(specs, params);
 		TankDriveTrajectory t = new TankDriveTrajectory(bt);
+		long timeTaken = System.currentTimeMillis() - time;
+		System.out.println("Time taken: " + timeTaken);
 
 		JFrame f = Grapher.graphTrajectory(t, 0.01);
 /*		

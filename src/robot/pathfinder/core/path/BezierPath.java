@@ -1,8 +1,12 @@
 package robot.pathfinder.core.path;
 
+import java.util.ArrayList;
+
 import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.math.Bezier;
+import robot.pathfinder.math.MathUtils;
 import robot.pathfinder.math.Vec2D;
+import robot.pathfinder.util.Pair;
 
 /**
  * A robot path composed of multiple Beziers.
@@ -12,16 +16,14 @@ import robot.pathfinder.math.Vec2D;
 public class BezierPath {
 	
 	Bezier[] beziers;
-	
-	//'i' stands for integration
-	Vec2D iLastPos;
-	double iCurrentDist = 0;
-	double iCurrentTime = 0;
-	
 	double baseRadius;
 	
 	Waypoint[] waypoints;
 	double alpha;
+	
+	double totalLen = Double.NaN;
+	double totalLenLeft = Double.NaN, totalLenRight = Double.NaN;
+	ArrayList<Pair<Double, Double>> s2tLookupTable = null;
 	
 	//If set to true, the locations of left and right wheels are reversed
 	boolean drivingBackwards = false;
@@ -44,8 +46,6 @@ public class BezierPath {
 		
 		this.waypoints = waypoints;
 		this.alpha = alpha;
-		
-		resetIntegration();
 	}
 	public BezierPath(Waypoint[] waypoints, double alpha, double baseRadius) {
 		this(waypoints, alpha);
@@ -128,35 +128,66 @@ public class BezierPath {
 		return beziers[(int) Math.floor(t)].secondDerivAt(t % 1.0);
 	}
 	
-	/**
-	 * Integrates length of the path.
-	 * @param dt dt
-	 * @return The length of the path after a time increment of dt
-	 */
-	public double integrateLen(double dt) {
-		iCurrentTime += dt;
-		if(iCurrentTime > 1) {
-			return iCurrentDist;
+	public void prepareS2T(int points) {
+		computePathLength(points);
+	}
+	public double computePathLength(int points) {
+		double dt = 1.0 / (points - 1);
+		
+		Vec2D last = at(0);
+		totalLen = 0;
+		s2tLookupTable = new ArrayList<>(points);
+		s2tLookupTable.add(new Pair<>(0.0, 0.0));
+		for(int i = 1; i < points; i ++) {
+			Vec2D current = at(i * dt);
+			totalLen += last.distTo(current);
+			s2tLookupTable.add(new Pair<>(totalLen, i * dt));
+			last = current;
 		}
-		Vec2D currentPoint = at(iCurrentTime);
-		iCurrentDist += iLastPos.distTo(currentPoint);
-		iLastPos = currentPoint;
-		return iCurrentDist;
+		return totalLen;
 	}
-	/**
-	 * Resets the integration of the length of the path.
-	 */
-	public void resetIntegration() {
-		iCurrentTime = 0;
-		iLastPos = at(0);
-		iCurrentDist = 0;
+	public double getPathLength() {
+		return totalLen;
 	}
-	/**
-	 * Retrieves the length of the path integrated by {@link BezierPath#integrateLen(double) integrateLen()}.
-	 * @return The length of the path integrated by {@link BezierPath#integrateLen(double) integrateLen()}
-	 */
-	public double getIntegratedLen() {
-		return iCurrentDist;
+	public double s2T(double s) {
+		double dist = s * totalLen;
+		
+		int start = 0;
+		int end = s2tLookupTable.size() - 1;
+		int mid;
+		
+		if(dist > s2tLookupTable.get(s2tLookupTable.size() - 1).getElem1()) {
+			return 1;
+		}
+		while(true) {
+			mid = (start + end) / 2;
+			double midDist = s2tLookupTable.get(mid).getElem1();
+			
+			if(midDist == dist) {
+				return s2tLookupTable.get(mid).getElem2();
+			}
+			if(mid == 0) {
+				return 0;
+			}
+			if(mid == s2tLookupTable.size() - 1) {
+				return 1;
+			}
+			
+			double nextDist = s2tLookupTable.get(mid + 1).getElem1();
+			if(midDist <= dist && dist <= nextDist) {
+				
+				double f = (dist - midDist) / (nextDist - midDist);
+				return MathUtils.lerp(s2tLookupTable.get(mid).getElem2(), 
+						s2tLookupTable.get(mid + 1).getElem2(), f);
+			}
+			
+			if(midDist < dist) {
+				start = mid;
+			}
+			else if(midDist > dist) {
+				end = mid;
+			}
+		}
 	}
 	
 	/**

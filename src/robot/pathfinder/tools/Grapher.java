@@ -26,8 +26,7 @@ public class Grapher {
 	private Grapher() {}
 	
 	public static JFrame graphTrajectory(BasicTrajectory trajectory, double dt) {
-		//Divide and round up to get the number of samples
-		int elemCount = (int) Math.ceil(trajectory.totalTime() / dt);
+		int elemCount = (int) (trajectory.totalTime() / dt) + 1;
 		
 		//Create arrays to store data
 		double[] time = new double[elemCount];
@@ -66,8 +65,7 @@ public class Grapher {
 	}
 	
 	public static JFrame graphTrajectory(TankDriveTrajectory trajectory, double dt) {
-		//Divide and round up to get the number of samples
-		int elemCount = (int) Math.ceil(trajectory.totalTime() / dt);
+		int elemCount = (int) (trajectory.totalTime() / dt) + 1;
 		
 		//Create arrays to store data
 		double[] time = new double[elemCount];
@@ -128,8 +126,7 @@ public class Grapher {
 	 * @return A frame with the graphed path inside
 	 */
 	public static JFrame graphPath(BezierPath path, double dt) {
-		//Divide and round up to get the number of samples
-		int elemCount = (int) Math.ceil(1.0 / dt);
+		int elemCount = (int) (1.0 / dt) + 1;
 		
 		//Create arrays to hold samples
 		double[] x = new double[elemCount];

@@ -92,13 +92,14 @@ public class BezierPath {
 		Vec2D derivative = derivAt(t);
 		
 		double heading = Math.atan2(derivative.getY(), derivative.getX());
-		double leftHeading = drivingBackwards ? heading - Math.PI / 2 : heading + Math.PI / 2;
-		double rightHeading = drivingBackwards ? heading + Math.PI / 2 : heading - Math.PI / 2;
+		double sinHeading = Math.sin(heading);
+		double cosHeading = Math.cos(heading);
+		Vec2D left = new Vec2D(position.getX() - (!drivingBackwards ? baseRadius * sinHeading : -baseRadius * sinHeading),
+				position.getY() + (!drivingBackwards ? baseRadius * cosHeading : -baseRadius * cosHeading));
+		Vec2D right = new Vec2D(position.getX() + (!drivingBackwards ? baseRadius * sinHeading : -baseRadius * sinHeading),
+				position.getY() - (!drivingBackwards ? baseRadius * cosHeading : -baseRadius * cosHeading));
 		
-		return new Vec2D[] {
-				new Vec2D(position.getX() + Math.cos(leftHeading) * baseRadius, position.getY() + Math.sin(leftHeading) * baseRadius),
-				new Vec2D(position.getX() + Math.cos(rightHeading) * baseRadius, position.getY() + Math.sin(rightHeading) * baseRadius)
-		};
+		return new Vec2D[] { left, right };
 	}
 	/**
 	 * Returns the derivative at a specified time in the path.

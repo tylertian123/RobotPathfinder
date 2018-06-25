@@ -11,6 +11,11 @@ public class Vec2D {
 	
 	double x, y;
 	
+	@Override
+	public String toString() {
+		return "[" + x + ", " + y + "]";
+	}
+	
 	/**
 	 * Constructs a new vector with the specified x and y values.
 	 * @param x The X value of the vector

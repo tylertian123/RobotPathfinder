@@ -1,8 +1,7 @@
-package robot.pathfinder.core.path;
+package robot.pathfinder.core;
 
 import java.util.ArrayList;
 
-import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.math.Bezier;
 import robot.pathfinder.math.MathUtils;
 import robot.pathfinder.math.Vec2D;

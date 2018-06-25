@@ -1,4 +1,4 @@
-package robot.pathfinder.core.trajectory;
+package robot.pathfinder.core;
 
 /**
  * Signals that an error with trajectory generation has occurred.

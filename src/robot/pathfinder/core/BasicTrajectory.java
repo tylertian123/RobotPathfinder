@@ -1,11 +1,7 @@
-package robot.pathfinder.core.trajectory;
+package robot.pathfinder.core;
 
 import java.util.ArrayList;
 
-import robot.pathfinder.core.Moment;
-import robot.pathfinder.core.RobotSpecs;
-import robot.pathfinder.core.Waypoint;
-import robot.pathfinder.core.path.BezierPath;
 import robot.pathfinder.math.MathUtils;
 import robot.pathfinder.math.Vec2D;
 import robot.pathfinder.util.Pair;
@@ -159,7 +155,6 @@ public class BasicTrajectory {
 			double dt = MathUtils.findPositiveQuadraticRoot(moments[i - 1].getAcceleration() / 2, moments[i - 1].getVelocity(), 
 					-(moments[i].getPosition() - moments[i - 1].getPosition()), minUnit);
 			moments[i].setTime(moments[i - 1].getTime() + dt);
-			moments[i].lock();
 		}
 	}
 	

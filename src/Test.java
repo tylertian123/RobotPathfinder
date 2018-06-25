@@ -6,11 +6,11 @@ import javax.swing.JFrame;
 
 import org.math.plot.Plot2DPanel;
 
+import robot.pathfinder.core.BasicTrajectory;
 import robot.pathfinder.core.Moment;
 import robot.pathfinder.core.RobotSpecs;
+import robot.pathfinder.core.TrajectoryParams;
 import robot.pathfinder.core.Waypoint;
-import robot.pathfinder.core.trajectory.BasicTrajectory;
-import robot.pathfinder.core.trajectory.TrajectoryParams;
 import robot.pathfinder.tankdrive.TankDriveTrajectory;
 import robot.pathfinder.tools.Grapher;
 

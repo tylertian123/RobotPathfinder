@@ -1,9 +1,9 @@
 package robot.pathfinder.tankdrive;
 
+import robot.pathfinder.core.BasicTrajectory;
+import robot.pathfinder.core.BezierPath;
 import robot.pathfinder.core.Moment;
 import robot.pathfinder.core.Waypoint;
-import robot.pathfinder.core.path.BezierPath;
-import robot.pathfinder.core.trajectory.BasicTrajectory;
 import robot.pathfinder.math.MathUtils;
 import robot.pathfinder.math.Vec2D;
 
@@ -244,9 +244,6 @@ public class TankDriveTrajectory {
 			//Time, of course, always stays positive.
 			lMoments[i] = new Moment(-leftMoments[i].getPosition(), -leftMoments[i].getVelocity(), -leftMoments[i].getAcceleration(), leftMoments[i].getTime());
 			rMoments[i] = new Moment(-rightMoments[i].getPosition(), -rightMoments[i].getVelocity(), -rightMoments[i].getAcceleration(), rightMoments[i].getTime());
-			
-			lMoments[i].lock();
-			rMoments[i].lock();
 		}
 		
 		//Create new path
@@ -295,9 +292,6 @@ public class TankDriveTrajectory {
 			//Accelerations are negated because if time is reversed, acceleration becomes deceleration
 			lMoments[i] = new Moment(lLast.getPosition() - lm.getPosition(), lm.getVelocity(), -lm.getAcceleration(), lLast.getTime() - lm.getTime());
 			rMoments[i] = new Moment(rLast.getPosition() - rm.getPosition(), rm.getVelocity(), -rm.getAcceleration(), rLast.getTime() - rm.getTime());
-			
-			lMoments[i].lock();
-			rMoments[i].lock();
 		}
 		
 		//Create new path
@@ -336,9 +330,6 @@ public class TankDriveTrajectory {
 			//A combination of reverse() and mirrorFrontBack()
 			lMoments[i] = new Moment(-(lLast.getPosition() - lm.getPosition()), -lm.getVelocity(), lm.getAcceleration(), lLast.getTime() - lm.getTime());
 			rMoments[i] = new Moment(-(rLast.getPosition() - rm.getPosition()), -rm.getVelocity(), rm.getAcceleration(), rLast.getTime() - rm.getTime());
-			
-			lMoments[i].lock();
-			rMoments[i].lock();
 		}
 		
 		//Create new path

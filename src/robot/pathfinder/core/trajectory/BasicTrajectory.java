@@ -96,21 +96,29 @@ public class BasicTrajectory {
 			double dt = points[i].getLocation() - points[i - 1].getLocation();
 			
 			double accumulatedDist = path.integrateLen(dt);
-			double distDiff = accumulatedDist - moments[i - 1].getPosition();
 			
-			double maxVel = Math.sqrt(Math.pow(moments[i - 1].getVelocity(), 2) + 2 * maxAcceleration * distDiff);
-			
-			double vel;
-			if(maxVel > points[i].getMaxVel()) {
-				vel = points[i].getMaxVel();
-				moments[i - 1].setAcceleration(0);
+			if(moments[i - 1].getVelocity() < points[i].getMaxVel()) {
+				double distDiff = accumulatedDist - moments[i - 1].getPosition();
+				
+				double maxVel = Math.sqrt(Math.pow(moments[i - 1].getVelocity(), 2) + 2 * maxAcceleration * distDiff);
+				
+				double vel;
+				if(maxVel > points[i].getMaxVel()) {
+					double accel = (Math.pow(points[i].getMaxVel(), 2) - Math.pow(moments[i - 1].getVelocity(), 2)) / (2 * distDiff);
+					vel = points[i].getMaxVel();
+					moments[i - 1].setAcceleration(accel);
+				}
+				else {
+					vel = maxVel;
+					moments[i - 1].setAcceleration(maxAcceleration);
+				}
+				
+				moments[i] = new Moment(accumulatedDist, vel, 0);
 			}
 			else {
-				vel = maxVel;
-				moments[i - 1].setAcceleration(maxAcceleration);
+				moments[i] = new Moment(accumulatedDist, points[i].getMaxVel(), 0);
+				moments[i - 1].setAcceleration(0);
 			}
-			
-			moments[i] = new Moment(accumulatedDist, vel, 0);
 
 			if(isTank) {
 				moments[i].setPathT(prevT += dt, momentKey);
@@ -121,20 +129,26 @@ public class BasicTrajectory {
 		moments[moments.length - 1].setAcceleration(0);
 		
 		for(int i = moments.length - 2; i >= 0; i --) {
-			double distDiff = moments[i + 1].getPosition() - moments[i].getPosition();
 			
-			double maxVel = Math.sqrt(Math.pow(moments[i + 1].getVelocity(), 2) + 2 * maxAcceleration * distDiff);
+			if(moments[i].getVelocity() > moments[i + 1].getVelocity()) {
 			
-			double vel;
-			if(maxVel > moments[i].getVelocity()) {
-				vel = moments[i].getVelocity();
+				double distDiff = moments[i + 1].getPosition() - moments[i].getPosition();
+				
+				double maxVel = Math.sqrt(Math.pow(moments[i + 1].getVelocity(), 2) + 2 * maxAcceleration * distDiff);
+				
+				double vel;
+				if(maxVel > moments[i].getVelocity()) {
+					double accel = (Math.pow(moments[i].getVelocity(), 2) - Math.pow(moments[i + 1].getVelocity(), 2)) / (2 * distDiff);
+					moments[i].setAcceleration(-accel);
+					vel = moments[i].getVelocity();
+				}
+				else {
+					vel = maxVel;
+					moments[i].setAcceleration(-maxAcceleration);
+				}
+				
+				moments[i].setVelocity(vel);
 			}
-			else {
-				vel = maxVel;
-				moments[i + 1].setAcceleration(-maxAcceleration);
-			}
-			
-			moments[i].setVelocity(vel);
 		}
 		
 		for(int i = 1; i < moments.length; i ++) {

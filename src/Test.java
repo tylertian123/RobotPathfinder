@@ -29,7 +29,7 @@ public class Test {
 				new Waypoint(0, 0, Math.PI / 2),
 				//new Waypoint(-10, 25, Math.PI / 2),
 				//new Waypoint(0, 50, 0),
-				new Waypoint(0, 25, Math.PI / 2),
+				//new Waypoint(0, 25, Math.PI / 2),
 				new Waypoint(0, 50, Math.PI / 2),
 		};
 		RobotSpecs specs = new RobotSpecs(5, 3.5, 2);

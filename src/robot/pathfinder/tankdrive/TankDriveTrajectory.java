@@ -51,11 +51,11 @@ public class TankDriveTrajectory {
 			leftMoments[i].setPosition(leftMoments[i - 1].getPosition() + dxLeft);
 			rightMoments[i].setPosition(rightMoments[i - 1].getPosition() + dxRight);
 			leftMoments[i].setVelocity(2 * dxLeft / dt - leftMoments[i - 1].getVelocity());
-			//rightMoments[i].setVelocity(2 * dxRight / dt - rightMoments[i - 1].getVelocity());
-			//leftMoments[i - 1].setAcceleration((leftMoments[i].getVelocity() - leftMoments[i - 1].getVelocity()) / dt);
-			//rightMoments[i - 1].setAcceleration((rightMoments[i].getVelocity() - rightMoments[i - 1].getVelocity()) / dt);
+			rightMoments[i].setVelocity(2 * dxRight / dt - rightMoments[i - 1].getVelocity());
+			leftMoments[i - 1].setAcceleration((leftMoments[i].getVelocity() - leftMoments[i - 1].getVelocity()) / dt);
+			rightMoments[i - 1].setAcceleration((rightMoments[i].getVelocity() - rightMoments[i - 1].getVelocity()) / dt);
 			leftMoments[i].setTime(moments[i].getTime());
-			//rightMoments[i].setTime(moments[i].getTime());
+			rightMoments[i].setTime(moments[i].getTime());
 		}
 	}
 	

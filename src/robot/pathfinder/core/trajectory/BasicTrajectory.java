@@ -89,10 +89,9 @@ public class BasicTrajectory {
 		moments = new Moment[segmentCount];
 		moments[0] = new Moment(0, 0, 0, 0);
 		
-		double totalDist = path.computePathLength(segmentCount);
+		double totalDist = path.computePathLength(segmentCount * 50);
 		double distPerIteration = totalDist / (segmentCount - 1);
 		
-		double prevT = 0;
 		if(isTank) {
 			moments[0].zz_setPathT(0, momentKey);
 		}

@@ -111,4 +111,11 @@ final public class Moment {
 		}
 		return pathT;
 	}
+	double R;
+	public void setR(double R) {
+		this.R = R;
+	}
+	public double getR() {
+		return R;
+	}
 }

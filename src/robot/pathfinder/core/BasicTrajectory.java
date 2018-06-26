@@ -73,7 +73,7 @@ public class BasicTrajectory {
 				//Compute max speed of entire robot with a positive R
 				double vMax = (2 * maxVelocity) / (2 + baseWidth / r);
 				
-				points.add(new Pair<>(t, vMax));
+				points.add(new Pair<>(1.0 / curvature, vMax));
 			}
 		}
 		else {
@@ -120,7 +120,8 @@ public class BasicTrajectory {
 			}
 
 			if(isTank) {
-				moments[i].zz_setPathT(path.s2T(points.get(i).getElem1()), momentKey);
+				moments[i].zz_setPathT(path.s2T(i * t_delta), momentKey);
+				moments[i].setR(points.get(i).getElem1());
 			}
 		}
 		

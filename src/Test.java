@@ -6,8 +6,6 @@ import javax.swing.JFrame;
 
 import robot.pathfinder.core.RobotSpecs;
 import robot.pathfinder.core.Waypoint;
-import robot.pathfinder.core.path.Path;
-import robot.pathfinder.core.path.QuinticHermitePath;
 import robot.pathfinder.core.trajectory.BasicTrajectory;
 import robot.pathfinder.core.trajectory.TankDriveTrajectory;
 import robot.pathfinder.core.trajectory.TrajectoryParams;
@@ -91,11 +89,25 @@ public class Test {
 				//new Waypoint(0, 50, Math.PI / 2),
 		};
 		
-		Path p = new QuinticHermitePath(waypoints, 40);
-		p.setBaseRadius(1);
-		JFrame f = Grapher.graphPath(p, 0.01);
+		RobotSpecs specs = new RobotSpecs(5, 3.5, 2);
+		TrajectoryParams params = new TrajectoryParams();
+		params.waypoints = waypoints;
+		params.alpha = 40;
+		params.segmentCount = 5000;
+		params.isTank = true;
+		params.pathType = TrajectoryParams.PathType.QUINTIC_HERMITE;
+		
+		BasicTrajectory bt = new BasicTrajectory(specs, params);
+		TankDriveTrajectory tt = new TankDriveTrajectory(bt);
+		
+		bt.getPath().setBaseRadius(1);
+		JFrame f = Grapher.graphPath(bt.getPath(), 0.01);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setVisible(true);
+		
+		JFrame f2 = Grapher.graphTrajectory(tt, 0.01);
+		f2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		f2.setVisible(true);
 	}
 	
 	public static void main(String[] args) {

@@ -24,7 +24,21 @@ public class QuinticHermiteSpline implements Spline {
 	protected static double basisDeriv0(double t) {
 		return -30 * Math.pow(t, 2) + 60 * Math.pow(t, 3) - 30 * Math.pow(t, 4);
 	}
-	
+	protected static double basisDeriv1(double t) {
+		return 1 - 18 * Math.pow(t, 2) + 32 * Math.pow(t, 3) - 15 * Math.pow(t, 4);
+	}
+	protected static double basisDeriv2(double t) {
+		return t - 9 * Math.pow(t, 2) / 2 + 6 * Math.pow(t, 3) - 5 * Math.pow(t, 4) / 2;
+	}
+	protected static double basisDeriv3(double t) {
+		return 3 * Math.pow(t, 2) / 2 - 4 * Math.pow(t, 3) + 5 * Math.pow(t,  4) / 2;
+	}
+	protected static double basisDeriv4(double t) {
+		return -12 * Math.pow(t, 2) + 28 * Math.pow(t, 3) - 15 * Math.pow(t, 4);
+	}
+	protected static double basisDeriv5(double t) {
+		return 30 * Math.pow(t, 2) - 60 * Math.pow(t, 3) + 30 * Math.pow(t, 4);
+	}
 
 	Vec2D p0, p1;
 	Vec2D v0, v1;
@@ -46,8 +60,8 @@ public class QuinticHermiteSpline implements Spline {
 	}
 	@Override
 	public Vec2D derivAt(double t) {
-		// TODO Auto-generated method stub
-		return null;
+		return Vec2D.addVecs(p0.multiply(basisDeriv0(t)), v0.multiply(basisDeriv1(t)), a0.multiply(basisDeriv2(t)),
+				a1.multiply(basisDeriv3(t)), v1.multiply(basisDeriv4(t)), p1.multiply(basisDeriv5(t)));
 	}
 	@Override
 	public Vec2D secondDerivAt(double t) {

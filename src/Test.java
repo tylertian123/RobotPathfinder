@@ -91,13 +91,14 @@ public class Test {
 				//new Waypoint(0, 50, Math.PI / 2),
 		};
 		
-		Path p = new QuinticHermitePath(waypoints, 60);
+		Path p = new QuinticHermitePath(waypoints, 40);
+		p.setBaseRadius(1);
 		JFrame f = Grapher.graphPath(p, 0.01);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setVisible(true);
 	}
 	
 	public static void main(String[] args) {
-		test9();
+		test10();
 	}
 }

@@ -4,11 +4,10 @@ import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
-import org.math.plot.Plot2DPanel;
-
-import robot.pathfinder.core.Moment;
 import robot.pathfinder.core.RobotSpecs;
 import robot.pathfinder.core.Waypoint;
+import robot.pathfinder.core.path.Path;
+import robot.pathfinder.core.path.QuinticHermitePath;
 import robot.pathfinder.core.trajectory.BasicTrajectory;
 import robot.pathfinder.core.trajectory.TankDriveTrajectory;
 import robot.pathfinder.core.trajectory.TrajectoryParams;
@@ -79,10 +78,23 @@ public class Test {
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setVisible(true);
 		JFrame f2 = Grapher.graphPath(bt.getPath(), 0.001);
-		System.out.println(bt.getPath().secondDerivAt(0.499999));
-		System.out.println(bt.getPath().secondDerivAt(0.500001));
 		f2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f2.setVisible(true);
+	}
+	
+	public static void test10() {
+		Waypoint[] waypoints = new Waypoint[] {
+				new Waypoint(0, 0, Math.PI / 2),
+				new Waypoint(-10, 25, Math.PI / 2),
+				new Waypoint(0, 75, 0),
+				//new Waypoint(0, 25, Math.PI / 2),
+				//new Waypoint(0, 50, Math.PI / 2),
+		};
+		
+		Path p = new QuinticHermitePath(waypoints, 60);
+		JFrame f = Grapher.graphPath(p, 0.01);
+		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		f.setVisible(true);
 	}
 	
 	public static void main(String[] args) {

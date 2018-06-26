@@ -11,6 +11,8 @@ public class Vec2D {
 	
 	double x, y;
 	
+	public static final Vec2D zero = new Vec2D(0, 0);
+	
 	@Override
 	public String toString() {
 		return "[" + x + ", " + y + "]";

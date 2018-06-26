@@ -27,10 +27,6 @@ public class BezierPath extends Path {
 			segments[i] = Bezier.getFromHermite(waypoints[i].asVector(), waypoints[i + 1].asVector(),
 					new Vec2D(Math.cos(waypoints[i].getHeading()) * alpha, Math.sin(waypoints[i].getHeading()) * alpha),
 					new Vec2D(Math.cos(waypoints[i + 1].getHeading()) * alpha, Math.sin(waypoints[i + 1].getHeading()) * alpha));
-			/*beziers[i] = new Bezier(waypoints[i].asVector(), 
-					waypoints[i].asVector().add(new Vec2D(Math.cos(waypoints[i].getHeading()) * alpha, Math.sin(waypoints[i].getHeading()) * alpha)), 
-					waypoints[i + 1].asVector().subtract(new Vec2D(Math.cos(waypoints[i + 1].getHeading()) * alpha, Math.sin(waypoints[i + 1].getHeading()) * alpha)),
-					waypoints[i + 1].asVector());*/
 		}
 		
 		this.waypoints = waypoints;

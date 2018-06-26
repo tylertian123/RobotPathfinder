@@ -15,6 +15,7 @@ public class TankDriveTrajectory {
 	Path path;
 	//"Moments" are generated for left and right separately
 	Moment[] leftMoments, rightMoments;
+	Vec2D[] headingVectors;
 	
 	RobotSpecs specs;
 	TrajectoryParams params;
@@ -32,6 +33,7 @@ public class TankDriveTrajectory {
 		
 		specs = traj.getRobotSpecs();
 		params = traj.getGenerationParams();
+		headingVectors = traj.headingVectors;
 		
 		path = traj.getPath();
 		RobotSpecs specs = traj.getRobotSpecs();
@@ -66,6 +68,8 @@ public class TankDriveTrajectory {
 			rightMoments[i - 1].setAcceleration(MathUtils.clampAbs((rightMoments[i].getVelocity() - rightMoments[i - 1].getVelocity()) / dt, maxAccel));
 			leftMoments[i].setTime(moments[i].getTime());
 			rightMoments[i].setTime(moments[i].getTime());
+			leftMoments[i].setHeading(moments[i].getHeading());
+			rightMoments[i].setHeading(moments[i].getHeading());
 		}
 	}
 	
@@ -111,7 +115,8 @@ public class TankDriveTrajectory {
 				double f = (t - midTime) / (nextTime - midTime);
 				return new Moment(MathUtils.lerp(leftMoments[mid].getPosition(), leftMoments[mid + 1].getPosition(), f),
 						MathUtils.lerp(leftMoments[mid].getVelocity(), leftMoments[mid + 1].getVelocity(), f),
-						MathUtils.lerp(leftMoments[mid].getAcceleration(), leftMoments[mid + 1].getAcceleration(), f));
+						MathUtils.lerp(leftMoments[mid].getAcceleration(), leftMoments[mid + 1].getAcceleration(), f),
+						MathUtils.lerpAngle(headingVectors[mid], headingVectors[mid + 1], f));
 			}
 			//Continue the binary search if not found
 			if(midTime < t) {
@@ -160,7 +165,8 @@ public class TankDriveTrajectory {
 				double f = (t - midTime) / (nextTime - midTime);
 				return new Moment(MathUtils.lerp(rightMoments[mid].getPosition(), rightMoments[mid + 1].getPosition(), f),
 						MathUtils.lerp(rightMoments[mid].getVelocity(), rightMoments[mid + 1].getVelocity(), f),
-						MathUtils.lerp(rightMoments[mid].getAcceleration(), rightMoments[mid + 1].getAcceleration(), f));
+						MathUtils.lerp(rightMoments[mid].getAcceleration(), rightMoments[mid + 1].getAcceleration(), f),
+						MathUtils.lerpAngle(headingVectors[mid], headingVectors[mid + 1], f));
 			}
 			//Continue the binary search if not found
 			if(midTime < t) {
@@ -198,15 +204,6 @@ public class TankDriveTrajectory {
 	 */
 	public Moment[][] getMoments() {
 		return new Moment[][] { leftMoments, rightMoments };
-	}
-	/**
-	 * Accesses the internal {@code BezierPath} object and returns the path value at the specified time.<br>
-	 * This value should <b>not</b> be used directly for motion planning. It is a path, not a trajectory.
-	 * @param t A positive real number ranging from 0 to 1
-	 * @return The X and Y values at the specified time on the path
-	 */
-	public Vec2D pathAt(double t) {
-		return path.at(t);
 	}
 	
 	/**
@@ -356,5 +353,12 @@ public class TankDriveTrajectory {
 		//Note that even though the final path looks exactly the same, the order of the waypoints is actually
 		//the opposite.
 		return new TankDriveTrajectory(lMoments, rMoments, newPath);
+	}
+	
+	public RobotSpecs getRobotSpecs() {
+		return specs;
+	}
+	public TrajectoryParams getGenerationParams() {
+		return params;
 	}
 }

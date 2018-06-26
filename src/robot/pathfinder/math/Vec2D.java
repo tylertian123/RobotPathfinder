@@ -70,9 +70,16 @@ public class Vec2D {
 	 * @param b The second vector
 	 * @return The distance between the 2 vectors
 	 */
-	
 	public static double dist(Vec2D a, Vec2D b) {
 		return Math.hypot(a.x - b.x, a.y - b.y);
+	}
+	public static Vec2D lerp(Vec2D a, Vec2D b, double f) {
+		return new Vec2D(MathUtils.lerp(a.x, b.x, f), MathUtils.lerp(a.y, b.y, f));
+	}
+	public static Vec2D normalized(Vec2D vec) {
+		double mag = vec.magnitude();
+		
+		return new Vec2D(vec.x / mag, vec.y / mag);
 	}
 	/**
 	 * Multiplies this vector by a scalar and returns the result. Note that this vector is not modified in the process.
@@ -114,5 +121,15 @@ public class Vec2D {
 	 */
 	public Vec2D relative(Vec2D vec) {
 		return new Vec2D(vec.x - this.x, vec.y - this.y);
+	}
+	
+	public double magnitude() {
+		return Math.hypot(x, y);
+	}
+	
+	public void normalize() {
+		double mag = magnitude();
+		x /= mag;
+		y /= mag;
 	}
 }

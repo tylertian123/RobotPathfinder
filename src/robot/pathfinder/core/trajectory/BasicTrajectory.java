@@ -40,6 +40,7 @@ public class BasicTrajectory {
 	 * the position, velocity and acceleration the robot is supposed to be at.
 	 */
 	Moment[] moments;
+	Vec2D[] headingVectors;
 	
 	//Keep a copy of the robot's specs and the generation parameters
 	RobotSpecs robotSpecs;
@@ -119,11 +120,16 @@ public class BasicTrajectory {
 		//For regular basic trajectories every element of this array is set to the max velocity
 		double[] maxVelocities = new double[segmentCount];
 		
+		double[] headings = new double[segmentCount];
+		headingVectors = new Vec2D[segmentCount];
+		
 		if(isTank) {
 			//Tank drive trajectories require extra processing as described above
 			pathRadius = new double[segmentCount];
+			pathT = new double[segmentCount];
 			for(int i = 0; i < segmentCount; i ++) {
 				double t = path.s2T(s_delta * i);
+				pathT[i] = t;
 				
 				//Use the curvature formula in multivariable calculus to figure out the curvature at this point
 				//of the path
@@ -134,6 +140,9 @@ public class BasicTrajectory {
 				double xSecondDeriv = secondDeriv.getX();
 				double ySecondDeriv = secondDeriv.getY();
 				double curvature = MathUtils.curvature(xDeriv, xSecondDeriv, yDeriv, ySecondDeriv);
+				headings[i] = Math.atan2(yDeriv, xDeriv);
+				headingVectors[i] = new Vec2D(xDeriv, yDeriv);
+				headingVectors[i].normalize();
 				
 				//Since curvature is 1 / radius, we take its reciprocal to get the radius of the path at this point
 				//And since the robot's speed is always positive no matter which direction we turn in,
@@ -168,6 +177,14 @@ public class BasicTrajectory {
 			//max velocity is the specified max velocity.
 			for(int i = 0; i < segmentCount; i ++) {
 				maxVelocities[i] = maxVelocity;
+				
+				double t = path.s2T(s_delta * i);
+				Vec2D deriv = path.derivAt(t);
+				double xDeriv = deriv.getX();
+				double yDeriv = deriv.getY();
+				headings[i] = Math.atan2(yDeriv, xDeriv);
+				headingVectors[i] = new Vec2D(xDeriv, yDeriv);
+				headingVectors[i].normalize();
 			}
 		}
 		
@@ -200,15 +217,11 @@ public class BasicTrajectory {
 					moments[i - 1].setAcceleration(maxAcceleration);
 				}
 				
-				moments[i] = new Moment(accumulatedDist, vel, 0);
+				moments[i] = new Moment(accumulatedDist, vel, 0, headings[i]);
 			}
 			else {
-				moments[i] = new Moment(accumulatedDist, theoreticalMax, 0);
+				moments[i] = new Moment(accumulatedDist, theoreticalMax, 0, headings[i]);
 				moments[i - 1].setAcceleration(0);
-			}
-
-			if(isTank) {
-				pathT[i] = path.s2T(i * s_delta);
 			}
 		}
 		
@@ -286,7 +299,8 @@ public class BasicTrajectory {
 				double f = (t - midTime) / (nextTime - midTime);
 				return new Moment(MathUtils.lerp(moments[mid].getPosition(), moments[mid + 1].getPosition(), f),
 						MathUtils.lerp(moments[mid].getVelocity(), moments[mid + 1].getVelocity(), f),
-						MathUtils.lerp(moments[mid].getAcceleration(), moments[mid + 1].getAcceleration(), f));
+						MathUtils.lerp(moments[mid].getAcceleration(), moments[mid + 1].getAcceleration(), f),
+						MathUtils.lerpAngle(headingVectors[mid], headingVectors[mid + 1], f));
 			}
 			//Continue the binary search if not found
 			if(midTime < t) {

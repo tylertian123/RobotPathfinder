@@ -1,20 +1,23 @@
 package robot.pathfinder.core;
 
+import robot.pathfinder.math.Vec2D;
+
 /**
  * Represents a moment in time of a trajectory; this class contains the time, as well as the desired position,
  * velocity, and acceleration at that point in time.
  * @author Tyler Tian
  *
  */
-final public class Moment {
+public class Moment {
 	
 	double d, v, a;
 	double t;
+	double heading;
 	
-	double pathT;
+	Vec2D headingVec;
 	
 	public Moment() {
-		d = v = a = t = pathT = 0;
+		d = v = a = t = heading = 0;
 	}
 	
 	/**
@@ -23,10 +26,11 @@ final public class Moment {
 	 * @param velocity The desired velocity
 	 * @param acceleration The desired acceleration
 	 */
-	public Moment(double position, double velocity, double acceleration) {
+	public Moment(double position, double velocity, double acceleration, double heading) {
 		d = position;
 		v = velocity;
 		a = acceleration;
+		this.heading = heading;
 	}
 	/**
 	 * Creates a new moment with the specified values.
@@ -35,8 +39,8 @@ final public class Moment {
 	 * @param acceleration The desired acceleration
 	 * @param t The point in time this moment is located
 	 */
-	public Moment(double position, double velocity, double acceleration, double t) {
-		this(position, velocity, acceleration);
+	public Moment(double position, double velocity, double acceleration, double heading, double t) {
+		this(position, velocity, acceleration, heading);
 		this.t = t;
 	}
 	
@@ -96,4 +100,11 @@ final public class Moment {
 	public double getAcceleration() {
 		return a;
 	}
-}
+	
+	public void setHeading(double heading) {
+		this.heading = heading;
+	}
+	public double getHeading() {
+		return heading;
+	}
+ }

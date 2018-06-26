@@ -163,6 +163,14 @@ public class MathUtils {
 		return (a * (1.0 - f)) + (b * f);
 	}
 	
+	public static double lerpAngle(double a, double b, double f) {
+		return lerpAngle(new Vec2D(Math.cos(a), Math.sin(a)), new Vec2D(Math.cos(b), Math.sin(b)), f);
+	}
+	public static double lerpAngle(Vec2D a, Vec2D b, double f) {
+		Vec2D angle = Vec2D.lerp(a, b, f);
+		return Math.atan2(angle.y, angle.x);
+	}
+	
 	public static double clampAbs(double val, double absMax) {
 		return Math.abs(val) <= absMax ? val : Math.copySign(Math.min(absMax, Math.abs(val)), val);
 	}

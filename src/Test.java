@@ -9,6 +9,7 @@ import robot.pathfinder.core.TrajectoryParams;
 import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.core.trajectory.BasicTrajectory;
 import robot.pathfinder.core.trajectory.TankDriveTrajectory;
+import robot.pathfinder.math.MathUtils;
 import robot.pathfinder.tools.Grapher;
 
 public class Test {
@@ -109,8 +110,11 @@ public class Test {
 		f2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f2.setVisible(true);
 	}
+	public static void test11() {
+		System.out.println(MathUtils.lerpAngle(3 * Math.PI / 4, -3 * Math.PI / 4, 0.5));
+	}
 	
 	public static void main(String[] args) {
-		test10();
+		test11();
 	}
 }

@@ -5,6 +5,7 @@ import robot.pathfinder.core.RobotSpecs;
 import robot.pathfinder.core.TrajectoryParams;
 import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.core.path.BezierPath;
+import robot.pathfinder.core.path.CubicHermitePath;
 import robot.pathfinder.core.path.Path;
 import robot.pathfinder.core.path.QuinticHermitePath;
 import robot.pathfinder.math.MathUtils;
@@ -92,6 +93,9 @@ public class BasicTrajectory {
 			break;
 		case QUINTIC_HERMITE:
 			path = new QuinticHermitePath(waypoints, alpha);
+			break;
+		case CUBIC_HERMITE:
+			path = new CubicHermitePath(waypoints, alpha);
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown path type");

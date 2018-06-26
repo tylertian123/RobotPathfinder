@@ -5,6 +5,7 @@ public class TrajectoryParams {
 	public enum PathType {
 		BEZIER,
 		QUINTIC_HERMITE,
+		CUBIC_HERMITE,
 	}
 	
 	public Waypoint[] waypoints = null;

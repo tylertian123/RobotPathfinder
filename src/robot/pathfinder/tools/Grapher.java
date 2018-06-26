@@ -11,11 +11,11 @@ import org.math.plot.Plot2DPanel;
 
 import robot.pathfinder.core.Moment;
 import robot.pathfinder.core.Waypoint;
+import robot.pathfinder.core.path.BezierPath;
+import robot.pathfinder.core.path.Path;
 import robot.pathfinder.core.trajectory.BasicTrajectory;
 import robot.pathfinder.core.trajectory.TankDriveTrajectory;
 import robot.pathfinder.math.Vec2D;
-import robot.pathfinder.path.BezierPath;
-import robot.pathfinder.path.Path;
 
 /**
  * A class that provides convenient methods for graphing paths and trajectories.

@@ -9,128 +9,6 @@ public class MathUtils {
 	
 	private MathUtils() {}
 	
-	private static void rowSwap(double[] a, double[] b) {
-		double[] temp = new double[a.length];
-		for(int i = 0; i < temp.length; i ++) {
-			
-			temp[i] = a[i];
-			a[i] = b[i];
-			b[i] = temp[i];
-		}
-	}
-	private static void rowMultiply(double[] a, double b) {
-		for(int i = 0; i < a.length; i ++) {
-			a[i] *= b;
-		}
-	}
-	private static double[] rowMultiply2(double[] a, double b) {
-		double[] c = new double[a.length];
-		for(int i = 0; i < c.length; i ++) {
-			c[i] = a[i] * b;
-		}
-		return c;
-	}
-	private static void rowAdd(double[] a, double[] b) {
-		for(int i = 0; i < a.length; i ++) {
-			a[i] += b[i];
-		}
-	}
-	private static int lcIndex(double[] a) {
-		//Finds the leading coefficient's index in a row.
-		//A larger index means the leading coefficient is closer to the left
-		for(int i = 0; i < a.length - 1; i ++) {
-			if(a[i] != 0)
-				return a.length - 1 - i;
-		}
-		return 0;
-	}
-	
-	/**
-	 * Solves a system of linear equations represented in a matrix, using the Gauss-Jordan elimination method.<br>
-	 * <br>
-	 * For more information see <a href="https://en.wikipedia.org/wiki/Gaussian_elimination">this Wikipedia article</a>.
-	 * @param mat The matrix representing the system of equations
-	 * @return The value of each unknown in order
-	 */
-	public static double[] solve(double[][] mat) {
-		if(mat.length + 1 != mat[0].length)
-			throw new IllegalArgumentException();
-		//Make sure the rows with the leftmost leading coefficients are placed first
-		int[] lcIndexes = new int[mat.length];
-		for(int i = 0; i < lcIndexes.length; i ++) {
-			lcIndexes[i] = lcIndex(mat[i]);
-		}
-		//Bubble sort
-		boolean sorted;
-		do {
-			sorted = true;
-			for(int i = 0; i < mat.length - 1; i ++) {
-				if(lcIndexes[i] < lcIndexes[i + 1]) {
-					sorted = false;
-					rowSwap(mat[i], mat[i + 1]);
-					int buf = lcIndexes[i];
-					lcIndexes[i] = lcIndexes[i + 1];
-					lcIndexes[i + 1] = buf;
-				}
-			}
-		} while(!sorted);
-		//Make sure pivots are always non-zero
-		boolean pass;
-		do {
-			pass = true;
-			for(int i = 0; i < mat.length; i ++) {
-				if(mat[i][i] == 0) {
-					pass = false;
-					boolean found = false;
-					for(int j = 0; j < mat.length; j ++) {
-						if(mat[j][i] != 0 && lcIndexes[j] == lcIndexes[i]) {
-							rowSwap(mat[i], mat[j]);
-							int buf = lcIndexes[i];
-							lcIndexes[i] = lcIndexes[j];
-							lcIndexes[j] = buf;
-							found = true;
-						}
-					}
-					if(!found)
-						throw new IllegalArgumentException("Infinitely many solutions to this equation");
-				}
-			}
-		} while(!pass);
-		//Transform to row echelon form
-		int pivot = 0;
-		while(pivot < mat.length - 1) {
-			for(int i = pivot + 1; i < mat.length; i ++) {
-				if(mat[i][pivot] != 0) {
-					double ratio = -mat[i][pivot] / mat[pivot][pivot];
-					rowAdd(mat[i], rowMultiply2(mat[pivot], ratio));
-				}
-			}
-			pivot ++;
-		}
-		//Transform to reduced row echelon form
-		for(int i = 0; i < mat.length; i ++) {
-			if(mat[i][i] != 1) {
-				rowMultiply(mat[i], 1.0 / mat[i][i]);
-			}
-		}
-		//Reduce
-		pivot = mat.length - 1;
-		while(pivot > 0) {
-			for(int i = 0; i < pivot; i ++) {
-				if(mat[i][pivot] != 0) {
-					rowAdd(mat[i], rowMultiply2(mat[pivot], -mat[i][pivot]));
-				}
-			}
-			pivot --;
-		}
-		//Return the solution
-		double[] solution = new double[mat.length];
-		for(int i = 0; i < solution.length; i ++) {
-			solution[i] = mat[i][mat.length];
-		}
-		return solution;
-	}
-	
 	/**
 	 * Finds the roots of a quadratic equation in standard form.<br>
 	 * <br>
@@ -283,5 +161,9 @@ public class MathUtils {
 	
 	public static double lerp(double a, double b, double f) {
 		return (a * (1.0 - f)) + (b * f);
+	}
+	
+	public static double clampAbs(double val, double absMax) {
+		return Math.abs(val) <= absMax ? val : Math.copySign(Math.min(absMax, Math.abs(val)), val);
 	}
 }

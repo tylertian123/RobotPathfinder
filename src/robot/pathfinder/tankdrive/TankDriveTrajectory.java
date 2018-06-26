@@ -52,8 +52,9 @@ public class TankDriveTrajectory {
 			rightMoments[i].setPosition(rightMoments[i - 1].getPosition() + dxRight);
 			leftMoments[i].setVelocity(moments[i].getVelocity() - moments[i].getVelocity() / moments[i].getR() * traj.getRobotSpecs().getBaseWidth() / 2);
 			rightMoments[i].setVelocity(moments[i].getVelocity() + moments[i].getVelocity() / moments[i].getR() * traj.getRobotSpecs().getBaseWidth() / 2);
-			leftMoments[i - 1].setAcceleration((leftMoments[i].getVelocity() - leftMoments[i - 1].getVelocity()) / dt);
-			rightMoments[i - 1].setAcceleration((rightMoments[i].getVelocity() - rightMoments[i - 1].getVelocity()) / dt);
+			//Sanity check
+			leftMoments[i - 1].setAcceleration(MathUtils.clampAbs((leftMoments[i].getVelocity() - leftMoments[i - 1].getVelocity()) / dt, traj.getRobotSpecs().getMaxAcceleration()));
+			rightMoments[i - 1].setAcceleration(MathUtils.clampAbs((rightMoments[i].getVelocity() - rightMoments[i - 1].getVelocity()) / dt, traj.getRobotSpecs().getMaxAcceleration()));
 			leftMoments[i].setTime(moments[i].getTime());
 			rightMoments[i].setTime(moments[i].getTime());
 		}

@@ -53,7 +53,7 @@ import robot.pathfinder.tankdrive.TankDriveTrajectory;
  * A GUI tool build with Swing to help visualize trajectories. 
  * @author Tyler Tian
  *
- * @deprecated does not use jerk
+ * @deprecated To be fixed later
  */
 public class TrajectoryVisualizationTool {
 

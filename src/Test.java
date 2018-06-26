@@ -28,14 +28,14 @@ public class Test {
 		Waypoint[] waypoints = new Waypoint[] {
 				new Waypoint(0, 0, Math.PI / 2),
 				new Waypoint(-10, 25, Math.PI / 2),
-				new Waypoint(0, 50, 0),
+				new Waypoint(0, 25, 0),
 				//new Waypoint(0, 25, Math.PI / 2),
 				//new Waypoint(0, 50, Math.PI / 2),
 		};
 		RobotSpecs specs = new RobotSpecs(5, 3.5, 2);
 		TrajectoryParams params = new TrajectoryParams();
 		params.waypoints = waypoints;
-		params.alpha = 40;
+		params.alpha = 50;
 		params.segmentCount = 5000;
 		params.isTank = true;
 		long time = System.currentTimeMillis();

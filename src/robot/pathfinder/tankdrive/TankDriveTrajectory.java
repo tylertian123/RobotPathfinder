@@ -3,6 +3,8 @@ package robot.pathfinder.tankdrive;
 import robot.pathfinder.core.BasicTrajectory;
 import robot.pathfinder.core.BezierPath;
 import robot.pathfinder.core.Moment;
+import robot.pathfinder.core.RobotSpecs;
+import robot.pathfinder.core.TrajectoryGenerationException;
 import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.math.MathUtils;
 import robot.pathfinder.math.Vec2D;
@@ -32,6 +34,10 @@ public class TankDriveTrajectory {
 		
 		
 		path = traj.getPath();
+		RobotSpecs specs = traj.getRobotSpecs();
+		double baseRadius = specs.getBaseWidth() / 2;
+		double maxVel = specs.getMaxVelocity();
+		double maxAccel = specs.getMaxAcceleration();
 		path.setBaseRadius(traj.getRobotSpecs().getBaseWidth() / 2);
 		
 		Vec2D[] initPos = path.wheelsAt(0);
@@ -50,11 +56,14 @@ public class TankDriveTrajectory {
 			rightMoments[i] = new Moment();
 			leftMoments[i].setPosition(leftMoments[i - 1].getPosition() + dxLeft);
 			rightMoments[i].setPosition(rightMoments[i - 1].getPosition() + dxRight);
-			leftMoments[i].setVelocity(moments[i].getVelocity() - moments[i].getVelocity() / moments[i].getR() * traj.getRobotSpecs().getBaseWidth() / 2);
-			rightMoments[i].setVelocity(moments[i].getVelocity() + moments[i].getVelocity() / moments[i].getR() * traj.getRobotSpecs().getBaseWidth() / 2);
-			//Sanity check
-			leftMoments[i - 1].setAcceleration(MathUtils.clampAbs((leftMoments[i].getVelocity() - leftMoments[i - 1].getVelocity()) / dt, traj.getRobotSpecs().getMaxAcceleration()));
-			rightMoments[i - 1].setAcceleration(MathUtils.clampAbs((rightMoments[i].getVelocity() - rightMoments[i - 1].getVelocity()) / dt, traj.getRobotSpecs().getMaxAcceleration()));
+			double vel = moments[i].getVelocity();
+			leftMoments[i].setVelocity(MathUtils.clampAbs(vel - vel / moments[i].getR() * baseRadius, maxVel));
+			rightMoments[i].setVelocity(MathUtils.clampAbs(vel + vel / moments[i].getR() * baseRadius, maxVel));
+			if(leftMoments[i].getVelocity() < 0 || rightMoments[i].getVelocity() < 0) {
+				throw new TrajectoryGenerationException("Error: Negative distance functionality is not implemented so the trajectory is impossible");
+			}
+			leftMoments[i - 1].setAcceleration(MathUtils.clampAbs((leftMoments[i].getVelocity() - leftMoments[i - 1].getVelocity()) / dt, maxAccel));
+			rightMoments[i - 1].setAcceleration(MathUtils.clampAbs((rightMoments[i].getVelocity() - rightMoments[i - 1].getVelocity()) / dt, maxAccel));
 			leftMoments[i].setTime(moments[i].getTime());
 			rightMoments[i].setTime(moments[i].getTime());
 		}

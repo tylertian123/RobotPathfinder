@@ -9,11 +9,6 @@ import robot.pathfinder.math.Vec2D;
 
 public class TankDriveTrajectory {
 	
-	public static final class MomentKey {
-		private MomentKey() {}
-	}
-	private static MomentKey momentKey = new MomentKey();
-	
 	//The internal path that this trajectory is based on
 	BezierPath path;
 	//"Moments" are generated for left and right separately
@@ -42,7 +37,7 @@ public class TankDriveTrajectory {
 		Vec2D prevLeft = initPos[0], prevRight = initPos[1];
 		
 		for(int i = 1; i < moments.length; i ++) {
-			Vec2D[] wheelPos = path.wheelsAt(moments[i].zz_getPathT(momentKey));
+			Vec2D[] wheelPos = path.wheelsAt(traj.pathT[i]);
 			double dxLeft = prevLeft.distTo(wheelPos[0]);
 			double dxRight = prevRight.distTo(wheelPos[1]);
 			double dt = moments[i].getTime() - moments[i - 1].getTime();
@@ -55,8 +50,8 @@ public class TankDriveTrajectory {
 			leftMoments[i].setPosition(leftMoments[i - 1].getPosition() + dxLeft);
 			rightMoments[i].setPosition(rightMoments[i - 1].getPosition() + dxRight);
 			double vel = moments[i].getVelocity();
-			leftMoments[i].setVelocity(MathUtils.clampAbs(vel - vel / moments[i].getR() * baseRadius, maxVel));
-			rightMoments[i].setVelocity(MathUtils.clampAbs(vel + vel / moments[i].getR() * baseRadius, maxVel));
+			leftMoments[i].setVelocity(MathUtils.clampAbs(vel - vel / traj.pathRadius[i] * baseRadius, maxVel));
+			rightMoments[i].setVelocity(MathUtils.clampAbs(vel + vel / traj.pathRadius[i] * baseRadius, maxVel));
 			if(leftMoments[i].getVelocity() < 0 || rightMoments[i].getVelocity() < 0) {
 				throw new TrajectoryGenerationException("Error: Negative distance functionality is not implemented so the trajectory is impossible");
 			}

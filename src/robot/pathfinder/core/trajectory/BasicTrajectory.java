@@ -8,14 +8,8 @@ import robot.pathfinder.core.RobotSpecs;
 import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.math.MathUtils;
 import robot.pathfinder.math.Vec2D;
-import robot.pathfinder.util.Pair;
 
 public class BasicTrajectory {
-	
-	public static final class MomentKey {
-		private MomentKey() {}
-	}
-	private static MomentKey momentKey = new MomentKey();
 	
 	BezierPath path;
 	
@@ -25,15 +19,8 @@ public class BasicTrajectory {
 	TrajectoryParams params;
 	
 	boolean isTank;
-	
-	static double minUnit = 1.0e-6;
-	
-	static void setSolverRoundingLimit(double limit) {
-		minUnit = limit;
-	}
-	static double getSolverRoundingLimit() {
-		return minUnit;
-	}
+	double[] pathT = null;
+	double[] pathRadius = null;
 	
 	public BasicTrajectory(RobotSpecs specs, TrajectoryParams params) {
 		this.params = params;
@@ -58,9 +45,10 @@ public class BasicTrajectory {
 		path = new BezierPath(waypoints, alpha);
 		double t_delta = 1.0 / segmentCount;
 		
-		ArrayList<Pair<Double, Double>> points = new ArrayList<>(segmentCount);
+		ArrayList<Double> maxVelocities = new ArrayList<>(segmentCount);
 		
 		if(isTank) {
+			pathRadius = new double[segmentCount];
 			for(int i = 0; i < segmentCount; i ++) {
 				double t = t_delta * i;
 				
@@ -77,12 +65,13 @@ public class BasicTrajectory {
 				//Compute max speed of entire robot with a positive R
 				double vMax = (2 * maxVelocity) / (2 + baseWidth / r);
 				
-				points.add(new Pair<>(1.0 / curvature, vMax));
+				pathRadius[i] = 1.0 / curvature;
+				maxVelocities.add(vMax);
 			}
 		}
 		else {
 			for(int i = 0; i < segmentCount; i ++) {
-				points.add(new Pair<>(t_delta * i, maxVelocity));
+				maxVelocities.add(maxVelocity);
 			}
 		}
 		
@@ -93,12 +82,13 @@ public class BasicTrajectory {
 		double distPerIteration = totalDist / (segmentCount - 1);
 		
 		if(isTank) {
-			moments[0].zz_setPathT(0, momentKey);
+			pathT = new double[segmentCount];
+			pathT[0] = 0;
 		}
 		for(int i = 1; i < moments.length; i ++) {
 			double accumulatedDist = i * distPerIteration;
 			
-			double theoreticalMax = points.get(i).getElem2();
+			double theoreticalMax = maxVelocities.get(i);
 			
 			if(moments[i - 1].getVelocity() < theoreticalMax) {
 				double distDiff = distPerIteration;
@@ -124,8 +114,7 @@ public class BasicTrajectory {
 			}
 
 			if(isTank) {
-				moments[i].zz_setPathT(path.s2T(i * t_delta), momentKey);
-				moments[i].setR(points.get(i).getElem1());
+				pathT[i] = path.s2T(i * t_delta);
 			}
 		}
 		
@@ -158,7 +147,7 @@ public class BasicTrajectory {
 		for(int i = 1; i < moments.length; i ++) {
 			
 			double dt = MathUtils.findPositiveQuadraticRoot(moments[i - 1].getAcceleration() / 2, moments[i - 1].getVelocity(), 
-					-(moments[i].getPosition() - moments[i - 1].getPosition()), minUnit);
+					-(moments[i].getPosition() - moments[i - 1].getPosition()), params.roundingLimit);
 			moments[i].setTime(moments[i - 1].getTime() + dt);
 		}
 	}

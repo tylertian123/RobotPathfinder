@@ -11,7 +11,7 @@ package robot.pathfinder.core;
  */
 public class RobotSpecs {
 	
-	double baseWidth;
+	double baseWidth = Double.NaN;
 	double maxVelocity, maxAcceleration;
 	
 	/**

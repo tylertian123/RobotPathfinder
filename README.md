@@ -4,6 +4,8 @@ Inspired by <a href="https://github.com/JacisNonsense/Pathfinder">Pathfinder by 
 Thank you to FRC Team 254 (The Cheesy Poofs) for <a href="https://youtu.be/8319J1BEHwM">their amazing video on motion control</a>!<br><br>
 Currently, RobotPathfinder can only generate trajectories for tank/skid-steer drive bots.
 
+***Although version 1 is released, there are many issues with it. Version 2 is currently WIP but will be coming soon!***
+
 ## Purpose
 Given an array of waypoints, each with coordinates and a heading, RobotPathfinder generates a smooth path that follows all the waypoints. Then, using that path, it generates left and right wheel trajectories for a robot to follow in order to achieve the desired path.
 

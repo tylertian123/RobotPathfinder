@@ -88,7 +88,11 @@ public class BasicTrajectory {
 		//This variable stores the change in t for each iteration
 		//For a BezierPath, t is in the range [0, 1], and there are segmentCount iterations
 		//Since our counter never reaches segmentCount, divide by segmentCount - 1 instead
-		double t_delta = 1.0 / (segmentCount - 1);
+		double s_delta = 1.0 / (segmentCount - 1);
+		
+		//To make it so that points stay the same distance apart, 
+		double totalDist = path.computePathLength(segmentCount);
+		double distPerIteration = totalDist / (segmentCount - 1);
 		
 		//This array stores the theoretical max velocity at each point in this trajectory
 		//This is needed for tank drive, since the robot has to slow down when turning
@@ -99,8 +103,7 @@ public class BasicTrajectory {
 			//Tank drive trajectories require extra processing as described above
 			pathRadius = new double[segmentCount];
 			for(int i = 0; i < segmentCount; i ++) {
-				//Calculate the t for this iteration
-				double t = t_delta * i;
+				double t = path.s2T(s_delta * i);
 				
 				//Use the curvature formula in multivariable calculus to figure out the curvature at this point
 				//of the path
@@ -152,10 +155,6 @@ public class BasicTrajectory {
 		moments = new Moment[segmentCount];
 		moments[0] = new Moment(0, 0, 0, 0);
 		
-		//To make it so that points stay the same distance apart, 
-		double totalDist = path.computePathLength(segmentCount);
-		double distPerIteration = totalDist / (segmentCount - 1);
-		
 		if(isTank) {
 			pathT = new double[segmentCount];
 			pathT[0] = 0;
@@ -189,7 +188,7 @@ public class BasicTrajectory {
 			}
 
 			if(isTank) {
-				pathT[i] = path.s2T(i * t_delta);
+				pathT[i] = path.s2T(i * s_delta);
 			}
 		}
 		

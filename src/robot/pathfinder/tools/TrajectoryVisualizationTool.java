@@ -45,9 +45,9 @@ import javax.swing.table.DefaultTableModel;
 import com.sun.glass.events.KeyEvent;
 
 import robot.pathfinder.core.BezierPath;
-import robot.pathfinder.core.TrajectoryGenerationException;
 import robot.pathfinder.core.Waypoint;
-import robot.pathfinder.tankdrive.TankDriveTrajectory;
+import robot.pathfinder.core.trajectory.TankDriveTrajectory;
+import robot.pathfinder.core.trajectory.TrajectoryGenerationException;
 
 /**
  * A GUI tool build with Swing to help visualize trajectories. 

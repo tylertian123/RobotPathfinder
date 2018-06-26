@@ -6,12 +6,12 @@ import javax.swing.JFrame;
 
 import org.math.plot.Plot2DPanel;
 
-import robot.pathfinder.core.BasicTrajectory;
 import robot.pathfinder.core.Moment;
 import robot.pathfinder.core.RobotSpecs;
-import robot.pathfinder.core.TrajectoryParams;
 import robot.pathfinder.core.Waypoint;
-import robot.pathfinder.tankdrive.TankDriveTrajectory;
+import robot.pathfinder.core.trajectory.BasicTrajectory;
+import robot.pathfinder.core.trajectory.TankDriveTrajectory;
+import robot.pathfinder.core.trajectory.TrajectoryParams;
 import robot.pathfinder.tools.Grapher;
 
 public class Test {
@@ -28,7 +28,7 @@ public class Test {
 		Waypoint[] waypoints = new Waypoint[] {
 				new Waypoint(0, 0, Math.PI / 2),
 				new Waypoint(-10, 25, Math.PI / 2),
-				new Waypoint(0, 25, 0),
+				new Waypoint(0, 50, 0),
 				//new Waypoint(0, 25, Math.PI / 2),
 				//new Waypoint(0, 50, Math.PI / 2),
 		};

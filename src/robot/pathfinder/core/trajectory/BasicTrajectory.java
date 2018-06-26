@@ -1,7 +1,11 @@
-package robot.pathfinder.core;
+package robot.pathfinder.core.trajectory;
 
 import java.util.ArrayList;
 
+import robot.pathfinder.core.BezierPath;
+import robot.pathfinder.core.Moment;
+import robot.pathfinder.core.RobotSpecs;
+import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.math.MathUtils;
 import robot.pathfinder.math.Vec2D;
 import robot.pathfinder.util.Pair;

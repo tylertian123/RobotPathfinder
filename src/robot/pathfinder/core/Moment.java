@@ -1,6 +1,7 @@
 package robot.pathfinder.core;
 
-import robot.pathfinder.tankdrive.TankDriveTrajectory;
+import robot.pathfinder.core.trajectory.BasicTrajectory;
+import robot.pathfinder.core.trajectory.TankDriveTrajectory;
 
 /**
  * Represents a moment in time of a trajectory; this class contains the time, as well as the desired position,

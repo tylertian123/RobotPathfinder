@@ -9,12 +9,12 @@ import javax.swing.JFrame;
 
 import org.math.plot.Plot2DPanel;
 
-import robot.pathfinder.core.BasicTrajectory;
 import robot.pathfinder.core.BezierPath;
 import robot.pathfinder.core.Moment;
 import robot.pathfinder.core.Waypoint;
+import robot.pathfinder.core.trajectory.BasicTrajectory;
+import robot.pathfinder.core.trajectory.TankDriveTrajectory;
 import robot.pathfinder.math.Vec2D;
-import robot.pathfinder.tankdrive.TankDriveTrajectory;
 
 /**
  * A class that provides convenient methods for graphing paths and trajectories.

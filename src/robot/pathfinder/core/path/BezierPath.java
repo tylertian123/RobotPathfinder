@@ -1,5 +1,6 @@
-package robot.pathfinder.core;
+package robot.pathfinder.core.path;
 
+import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.math.Bezier;
 import robot.pathfinder.math.Vec2D;
 

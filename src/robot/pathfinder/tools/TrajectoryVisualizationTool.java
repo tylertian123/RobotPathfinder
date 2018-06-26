@@ -44,8 +44,8 @@ import javax.swing.table.DefaultTableModel;
 
 import com.sun.glass.events.KeyEvent;
 
-import robot.pathfinder.core.BezierPath;
 import robot.pathfinder.core.Waypoint;
+import robot.pathfinder.core.path.BezierPath;
 import robot.pathfinder.core.trajectory.TankDriveTrajectory;
 import robot.pathfinder.core.trajectory.TrajectoryGenerationException;
 

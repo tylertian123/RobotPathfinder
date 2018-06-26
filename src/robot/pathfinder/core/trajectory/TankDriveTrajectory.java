@@ -1,16 +1,17 @@
 package robot.pathfinder.core.trajectory;
 
-import robot.pathfinder.core.BezierPath;
 import robot.pathfinder.core.Moment;
 import robot.pathfinder.core.RobotSpecs;
 import robot.pathfinder.core.Waypoint;
+import robot.pathfinder.core.path.BezierPath;
+import robot.pathfinder.core.path.Path;
 import robot.pathfinder.math.MathUtils;
 import robot.pathfinder.math.Vec2D;
 
 public class TankDriveTrajectory {
 	
 	//The internal path that this trajectory is based on
-	BezierPath path;
+	Path path;
 	//"Moments" are generated for left and right separately
 	Moment[] leftMoments, rightMoments;
 	
@@ -186,7 +187,7 @@ public class TankDriveTrajectory {
 	 * Retrieves the underlying {@code BezierPath} used to generate this trajectory.
 	 * @return The internal {@code BezierPath}
 	 */
-	public BezierPath getPath() {
+	public Path getPath() {
 		return path;
 	}
 	/**

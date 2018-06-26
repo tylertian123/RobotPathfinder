@@ -9,9 +9,10 @@ import javax.swing.JFrame;
 
 import org.math.plot.Plot2DPanel;
 
-import robot.pathfinder.core.BezierPath;
 import robot.pathfinder.core.Moment;
 import robot.pathfinder.core.Waypoint;
+import robot.pathfinder.core.path.BezierPath;
+import robot.pathfinder.core.path.Path;
 import robot.pathfinder.core.trajectory.BasicTrajectory;
 import robot.pathfinder.core.trajectory.TankDriveTrajectory;
 import robot.pathfinder.math.Vec2D;
@@ -125,7 +126,7 @@ public class Grapher {
 	 * @param dt The time increment between samples (0 to 1)
 	 * @return A frame with the graphed path inside
 	 */
-	public static JFrame graphPath(BezierPath path, double dt) {
+	public static JFrame graphPath(Path path, double dt) {
 		//Divide and round up to get the number of samples
 		int elemCount = (int) Math.ceil(1.0 / dt);
 		

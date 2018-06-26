@@ -1,9 +1,10 @@
 package robot.pathfinder.core.trajectory;
 
-import robot.pathfinder.core.BezierPath;
 import robot.pathfinder.core.Moment;
 import robot.pathfinder.core.RobotSpecs;
 import robot.pathfinder.core.Waypoint;
+import robot.pathfinder.core.path.BezierPath;
+import robot.pathfinder.core.path.Path;
 import robot.pathfinder.math.MathUtils;
 import robot.pathfinder.math.Vec2D;
 
@@ -27,7 +28,7 @@ public class BasicTrajectory {
 	 */
 	
 	//The path followed by this trajectory
-	BezierPath path;
+	Path path;
 	
 	/*
 	 * "Moments" represent a moment in time.
@@ -230,7 +231,7 @@ public class BasicTrajectory {
 		}
 	}
 	
-	public BezierPath getPath() {
+	public Path getPath() {
 		return path;
 	}
 	

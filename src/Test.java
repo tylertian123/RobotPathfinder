@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 
 import robot.pathfinder.core.RobotSpecs;
+import robot.pathfinder.core.TrajectoryParams;
 import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.core.trajectory.BasicTrajectory;
 import robot.pathfinder.core.trajectory.TankDriveTrajectory;
-import robot.pathfinder.core.trajectory.TrajectoryParams;
 import robot.pathfinder.tools.Grapher;
 
 public class Test {

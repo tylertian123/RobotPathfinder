@@ -1,7 +1,7 @@
 package robot.pathfinder.core.path;
 
 import robot.pathfinder.core.Waypoint;
-import robot.pathfinder.math.QuinticHermiteSpline;
+import robot.pathfinder.core.spline.QuinticHermiteSpline;
 import robot.pathfinder.math.Vec2D;
 
 public class QuinticHermitePath extends Path {

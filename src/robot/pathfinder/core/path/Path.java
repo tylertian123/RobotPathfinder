@@ -3,8 +3,8 @@ package robot.pathfinder.core.path;
 import java.util.ArrayList;
 
 import robot.pathfinder.core.Waypoint;
+import robot.pathfinder.core.spline.Spline;
 import robot.pathfinder.math.MathUtils;
-import robot.pathfinder.math.Spline;
 import robot.pathfinder.math.Vec2D;
 import robot.pathfinder.util.Pair;
 

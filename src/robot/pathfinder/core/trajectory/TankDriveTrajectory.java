@@ -2,6 +2,7 @@ package robot.pathfinder.core.trajectory;
 
 import robot.pathfinder.core.Moment;
 import robot.pathfinder.core.RobotSpecs;
+import robot.pathfinder.core.TrajectoryParams;
 import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.core.path.BezierPath;
 import robot.pathfinder.core.path.Path;

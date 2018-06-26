@@ -1,6 +1,4 @@
-package robot.pathfinder.core.trajectory;
-
-import robot.pathfinder.core.Waypoint;
+package robot.pathfinder.core;
 
 public class TrajectoryParams {
 	

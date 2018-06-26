@@ -1,4 +1,6 @@
-package robot.pathfinder.math;
+package robot.pathfinder.core.spline;
+
+import robot.pathfinder.math.Vec2D;
 
 public class QuinticHermiteSpline implements Spline {
 	

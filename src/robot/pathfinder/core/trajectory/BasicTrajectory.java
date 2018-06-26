@@ -84,10 +84,14 @@ public class BasicTrajectory {
 		this.isTank = isTank;
 		//Generate the path
 		path = new BezierPath(waypoints, alpha);
+		if(isTank) {
+			path.setBaseRadius(baseWidth / 2);
+		}
 		
-		//This variable stores the change in t for each iteration
-		//For a BezierPath, t is in the range [0, 1], and there are segmentCount iterations
-		//Since our counter never reaches segmentCount, divide by segmentCount - 1 instead
+		/*
+		 * Special processing is required to make the points stay the same physical distance apart.
+		 * Beziers do not have 
+		 */
 		double s_delta = 1.0 / (segmentCount - 1);
 		
 		//To make it so that points stay the same distance apart, 

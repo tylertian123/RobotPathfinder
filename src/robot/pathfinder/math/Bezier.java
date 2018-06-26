@@ -5,7 +5,7 @@ package robot.pathfinder.math;
  * @author Tyler Tian
  *
  */
-public class Bezier {
+public class Bezier implements Spline {
 	Vec2D[] controlPoints;
 	
 	/**
@@ -42,6 +42,7 @@ public class Bezier {
 	 * @param t A positive real number in the range 0 to 1
 	 * @return The value of the curve at the specified time
 	 */
+	@Override
 	public Vec2D at(double t) {
 		double u = 1 - t;
 		double uu = u * u;
@@ -56,6 +57,7 @@ public class Bezier {
 	 * @param t A positive real number in the range 0 to 1
 	 * @return The derivative of the curve at the specified time
 	 */
+	@Override
 	public Vec2D derivAt(double t) {
 		double u = 1 - t;
 		double uu = u * u;
@@ -69,6 +71,7 @@ public class Bezier {
 	 * @param t A positive real number in the range 0 to 1
 	 * @return The second derivative of the curve at the specified time
 	 */
+	@Override
 	public Vec2D secondDerivAt(double t) {
 		double u = 1 - t;
 		return Vec2D.addVecs(Vec2D.addVecs(controlPoints[2], controlPoints[1].multiply(-2), controlPoints[0]).multiply(6 * u),

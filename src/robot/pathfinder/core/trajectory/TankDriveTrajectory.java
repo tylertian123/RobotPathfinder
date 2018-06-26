@@ -14,6 +14,9 @@ public class TankDriveTrajectory {
 	//"Moments" are generated for left and right separately
 	Moment[] leftMoments, rightMoments;
 	
+	RobotSpecs specs;
+	TrajectoryParams params;
+	
 	public TankDriveTrajectory(BasicTrajectory traj) {
 		if(!traj.isTank()) {
 			throw new IllegalArgumentException("Base trajectory is not generated with tank drive");
@@ -25,6 +28,8 @@ public class TankDriveTrajectory {
 		leftMoments[0] = new Moment(0, 0, 0, 0);
 		rightMoments[0] = new Moment(0, 0, 0, 0);
 		
+		specs = traj.getRobotSpecs();
+		params = traj.getGenerationParams();
 		
 		path = traj.getPath();
 		RobotSpecs specs = traj.getRobotSpecs();
@@ -222,7 +227,7 @@ public class TankDriveTrajectory {
 		}
 		
 		//Just create a new one with the sides swapped
-		return new TankDriveTrajectory(rightMoments, leftMoments, new BezierPath(waypoints, path.getAlpha(), path.getBaseRaidus()));
+		return new TankDriveTrajectory(rightMoments, leftMoments, new BezierPath(waypoints, params.alpha, path.getBaseRaidus()));
 	}
 	/**
 	 * Returns the front-back mirror image of this trajectory. Every forwards movement will now become
@@ -259,7 +264,7 @@ public class TankDriveTrajectory {
 			waypoints[i] = new Waypoint(old[i].getX(), -refPoint.relative(old[i].asVector()).getY(), -old[i].getHeading());
 		}
 		
-		BezierPath newPath = new BezierPath(waypoints, path.getAlpha(), path.getBaseRaidus());
+		BezierPath newPath = new BezierPath(waypoints, params.alpha, path.getBaseRaidus());
 		newPath.setDrivingBackwards(true);
 		
 		return new TankDriveTrajectory(lMoments, rMoments, newPath);
@@ -305,7 +310,7 @@ public class TankDriveTrajectory {
 			//and headings flipped
 			waypoints[old.length - 1 - i] = new Waypoint(old[i].getX(), old[i].getY(), (old[i].getHeading() + Math.PI) % (2 * Math.PI));
 		}
-		return new TankDriveTrajectory(lMoments, rMoments, new BezierPath(waypoints, path.getAlpha(), path.getBaseRaidus()));
+		return new TankDriveTrajectory(lMoments, rMoments, new BezierPath(waypoints, params.alpha, path.getBaseRaidus()));
 	}
 	/**
 	 * Returns the trajectory that, when driven, would retrace this trajectory and return the robot to its
@@ -343,7 +348,7 @@ public class TankDriveTrajectory {
 			//and headings flipped
 			waypoints[old.length - 1 - i] = new Waypoint(old[i].getX(), old[i].getY(), (old[i].getHeading() + Math.PI) % (2 * Math.PI));
 		}
-		BezierPath newPath = new BezierPath(waypoints, path.getAlpha(), path.getBaseRaidus());
+		BezierPath newPath = new BezierPath(waypoints, params.alpha, path.getBaseRaidus());
 		newPath.setDrivingBackwards(true);
 	
 		//Note that even though the final path looks exactly the same, the order of the waypoints is actually

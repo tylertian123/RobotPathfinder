@@ -106,7 +106,7 @@ public class Test {
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setVisible(true);
 		
-		JFrame f2 = Grapher.graphTrajectory(tt, 0.01);
+		JFrame f2 = Grapher.graphTrajectory(bt, 0.01);
 		f2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f2.setVisible(true);
 	}
@@ -115,6 +115,6 @@ public class Test {
 	}
 	
 	public static void main(String[] args) {
-		test11();
+		test10();
 	}
 }

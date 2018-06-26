@@ -190,7 +190,7 @@ public class BasicTrajectory {
 		
 		//Create the Moment array and initialize first element to 0 position, velocity, acceleration and time
 		moments = new Moment[segmentCount];
-		moments[0] = new Moment(0, 0, 0, 0);
+		moments[0] = new Moment(0, 0, 0, headings[0], 0);
 		
 		if(isTank) {
 			pathT = new double[segmentCount];

@@ -34,6 +34,7 @@ public class Grapher {
 		double[] pos = new double[elemCount];
 		double[] vel = new double[elemCount];
 		double[] acl = new double[elemCount];
+		double[] heading = new double[elemCount];
 		
 		int i = 0;
 		for(double t = 0; t <= trajectory.totalTime(); t += dt) {
@@ -44,6 +45,7 @@ public class Grapher {
 			pos[i] = m.getPosition();
 			vel[i] = m.getVelocity();
 			acl[i] = m.getAcceleration();
+			heading[i] = m.getHeading();
 			
 			i++;
 		}
@@ -55,6 +57,7 @@ public class Grapher {
 		plot.addLinePlot("Position", time, pos);
 		plot.addLinePlot("Velocity", time, vel);
 		plot.addLinePlot("Acceleration", time, acl);
+		plot.addLinePlot("Heading", time, heading);
 		
 		//Create window that holds the graph
 		JFrame frame = new JFrame("Trajectory Graph");

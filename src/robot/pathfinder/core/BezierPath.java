@@ -163,10 +163,10 @@ public class BezierPath {
 			double midDist = s2tLookupTable.get(mid).getElem1();
 			
 			if(midDist == dist) {
+				if(s == 2.0e-4) {
+					System.out.println(mid);
+				}
 				return s2tLookupTable.get(mid).getElem2();
-			}
-			if(mid == 0) {
-				return 0;
 			}
 			if(mid == s2tLookupTable.size() - 1) {
 				return 1;
@@ -178,6 +178,11 @@ public class BezierPath {
 				double f = (dist - midDist) / (nextDist - midDist);
 				return MathUtils.lerp(s2tLookupTable.get(mid).getElem2(), 
 						s2tLookupTable.get(mid + 1).getElem2(), f);
+			}
+			//Check if we are at the first element after checking if we are between two elements
+			//Otherwise, in the case of a value between the first and second, the lerp will not happen
+			if(mid == 0) {
+				return 0;
 			}
 			
 			if(midDist < dist) {

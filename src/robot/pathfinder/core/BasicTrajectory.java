@@ -85,7 +85,7 @@ public class BasicTrajectory {
 		moments = new Moment[segmentCount];
 		moments[0] = new Moment(0, 0, 0, 0);
 		
-		double totalDist = path.computePathLength(segmentCount * 50);
+		double totalDist = path.computePathLength(segmentCount);
 		double distPerIteration = totalDist / (segmentCount - 1);
 		
 		if(isTank) {

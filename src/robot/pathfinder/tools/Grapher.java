@@ -12,7 +12,6 @@ import javax.swing.SwingUtilities;
 import org.math.plot.Plot2DPanel;
 
 import robot.pathfinder.core.Waypoint;
-import robot.pathfinder.core.path.BezierPath;
 import robot.pathfinder.core.path.Path;
 import robot.pathfinder.core.trajectory.BasicMoment;
 import robot.pathfinder.core.trajectory.BasicTrajectory;
@@ -25,13 +24,25 @@ import robot.pathfinder.math.Vec2D;
  * @author Tyler Tian
  *
  */
-public class Grapher {
+public final class Grapher {
 	//Private constructor
 	private Grapher() {}
 	
+	//These fields are static instead of local because lambdas using them are used
 	private static JFrame frame;
 	private static double maxX, maxY, minX, minY;
 	
+	/**
+	 * Graphs a {@link BasicTrajectory} in a {@link JFrame}. The heading will not be graphed.
+	 * <p>
+	 * In addition to graphing, this method also sets the {@link JFrame}'s default close operation to be
+	 * {@link JFrame#DISPOSE_ON_CLOSE}. Note that this method does not show the window; 
+	 * {@link JFrame#setVisible(boolean) setVisible()} needs to be called explicitly in order to show the window.
+	 * </p>
+	 * @param trajectory The trajectory to graph
+	 * @param dt The time increment between samples
+	 * @return The graphed trajectory in a {@link JFrame}
+	 */
 	public static JFrame graphTrajectory(BasicTrajectory trajectory, double dt) {
 		int elemCount = (int) Math.ceil(trajectory.totalTime() / dt);
 		
@@ -74,10 +85,12 @@ public class Grapher {
 			//Maximize
 			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		};
+		//Since everything has to be done on the EDT, check if we are on it already
 		if(SwingUtilities.isEventDispatchThread()) {
 			r.run();
 		}
 		else {
+			//If not then invoke on EDT
 			try {
 				SwingUtilities.invokeAndWait(r);
 			} 
@@ -88,6 +101,17 @@ public class Grapher {
 		return frame;
 	}
 	
+	/**
+	 * Graphs a {@link TankDriveTrajectory} in a {@link JFrame}. The heading will not be graphed.
+	 * <p>
+	 * In addition to graphing, this method also sets the {@link JFrame}'s default close operation to be
+	 * {@link JFrame#DISPOSE_ON_CLOSE}. Note that this method does not show the window; 
+	 * {@link JFrame#setVisible(boolean) setVisible()} needs to be called explicitly in order to show the window.
+	 * </p>
+	 * @param trajectory The trajectory to graph
+	 * @param dt The time increment between samples
+	 * @return The graphed trajectory in a {@link JFrame}
+	 */
 	public static JFrame graphTrajectory(TankDriveTrajectory trajectory, double dt) {
 		int elemCount = (int) Math.ceil(trajectory.totalTime() / dt);
 		
@@ -150,20 +174,21 @@ public class Grapher {
 	}
 	
 	/**
-	 * Graphs a {@link BezierPath} in a {@link JFrame} with JMathPlot<br>
-	 * <br>
-	 * In addition to graphing, this method also sets the {@code JFrame}'s default close operation to be
-	 * {@code JFrame.DISPOSE_ON_CLOSE}, disables resizing and resizes it to show the entire path. It is
-	 * not recommended to change the size of the frame, as this might mess up the axis scales.<br>
+	 * Graphs a {@link Path} in a {@link JFrame}.
+	 * <p>
+	 * In addition to graphing, this method also sets the {@link JFrame}'s default close operation to be
+	 * {@link JFrame#DISPOSE_ON_CLOSE}, disables resizing and resizes it to show the entire path. It is
+	 * not recommended to change the size of the frame, as this might mess up the axis scales.
 	 * Note that this method does not show the window; the user needs to call {@link JFrame#setVisible(boolean) setVisible()}
 	 * explicitly in order to show the window.
-	 * @param path The {@link BezierPath} to show
-	 * @param dt The time increment between samples (0 to 1)
-	 * @return A frame with the graphed path inside
+	 * </p>
+	 * @param path The path to graph
+	 * @param dt The time increment between samples
+	 * @return The graphed path in a {@link JFrame}
 	 */
 	public static JFrame graphPath(Path path, double dt) {
 		//Divide and round up to get the number of samples
-		//Add 1 for the last sample
+		//Add 1 for the last sample (see below)
 		int elemCount = (int) Math.ceil(1.0 / dt) + 1;
 		
 		boolean graphWheels = path.getBaseRadius() != 0;
@@ -204,6 +229,8 @@ public class Grapher {
 			i ++;
 		}
 		
+		//Collect another sample at t = 1
+		//This makes sure the graphed path connects all the waypoints
 		Vec2D v = path.at(1);
 		x[x.length - 1] = v.getX();
 		y[y.length - 1] = v.getY();

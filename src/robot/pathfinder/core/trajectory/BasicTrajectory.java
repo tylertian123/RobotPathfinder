@@ -238,9 +238,19 @@ public class BasicTrajectory {
 			moments[i].setTime(moments[i - 1].getTime() + dt);
 		}
 	}
-	protected BasicTrajectory(BasicMoment[] moments, Path path) {
+	protected BasicTrajectory(BasicMoment[] moments, Path path, RobotSpecs specs, TrajectoryParams params, double[] pathT, double[] pathRadius) {
 		this.moments = moments;
 		this.path = path;
+		this.isTank = params.isTank;
+		this.pathT = pathT;
+		this.pathRadius = pathRadius;
+		this.robotSpecs = specs;
+		this.params = params;
+		
+		headingVectors = new Vec2D[moments.length];
+		for(int i = 0; i < moments.length; i ++) {
+			headingVectors[i] = new Vec2D(Math.cos(moments[i].getHeading()), Math.sin(moments[i].getHeading()));
+		}
 	}
 	
 	public Path getPath() {
@@ -308,6 +318,35 @@ public class BasicTrajectory {
 	public TrajectoryParams getGenerationParams() {
 		return params;
 	}
+	
+	public BasicTrajectory mirrorLeftRight() {
+		Path newPath = path.mirrorLeftRight();
+		
+		BasicMoment[] newMoments = new BasicMoment[moments.length];
+		for(int i = 0; i < newMoments.length; i ++) {
+			newMoments[i] = moments[i].clone();
+			newMoments[i].setHeading(-moments[i].getHeading() + Math.PI);
+		}
+		
+		TrajectoryParams newParams = params.clone();
+		newParams.waypoints = newPath.getWaypoints();
+		
+		double[] newPathRadius = null;
+		if(pathRadius != null) {
+			newPathRadius = new double[pathRadius.length];
+			
+			//Since every left turn becomes a right turn, the radius will also be negative at every point
+			for(int i = 0; i < newPathRadius.length; i ++) {
+				newPathRadius[i] = -pathRadius[i];
+			}
+		}
+		
+		return new BasicTrajectory(newMoments, newPath, robotSpecs, newParams, pathT, newPathRadius);
+	}
+	
+	/*public BasicTrajectory mirrorFrontBack() {
+		
+	}*/
 }
 
 

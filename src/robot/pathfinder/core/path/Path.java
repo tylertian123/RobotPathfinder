@@ -2,6 +2,7 @@ package robot.pathfinder.core.path;
 
 import java.util.ArrayList;
 
+import robot.pathfinder.core.TrajectoryParams;
 import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.core.spline.Spline;
 import robot.pathfinder.math.MathUtils;
@@ -9,6 +10,19 @@ import robot.pathfinder.math.Vec2D;
 import robot.pathfinder.util.Pair;
 
 abstract public class Path {
+	
+	public static Path constructPath(TrajectoryParams.PathType type, Waypoint[] waypoints, double alpha) {
+		switch(type) {
+		case BEZIER:
+			return new BezierPath(waypoints, alpha);
+		case QUINTIC_HERMITE:
+			return new QuinticHermitePath(waypoints, alpha);
+		case CUBIC_HERMITE:
+			return new CubicHermitePath(waypoints, alpha);
+		default:
+			throw new IllegalArgumentException("Unknown path type");
+		}
+	}
 	
 	Waypoint[] waypoints;
 	Spline[] segments;

@@ -3,10 +3,7 @@ package robot.pathfinder.core.trajectory;
 import robot.pathfinder.core.RobotSpecs;
 import robot.pathfinder.core.TrajectoryParams;
 import robot.pathfinder.core.Waypoint;
-import robot.pathfinder.core.path.BezierPath;
-import robot.pathfinder.core.path.CubicHermitePath;
 import robot.pathfinder.core.path.Path;
-import robot.pathfinder.core.path.QuinticHermitePath;
 import robot.pathfinder.math.MathUtils;
 import robot.pathfinder.math.Vec2D;
 
@@ -87,19 +84,7 @@ public class BasicTrajectory {
 		
 		this.isTank = isTank;
 		//Generate the path
-		switch(params.pathType) {
-		case BEZIER:
-			path = new BezierPath(waypoints, alpha);
-			break;
-		case QUINTIC_HERMITE:
-			path = new QuinticHermitePath(waypoints, alpha);
-			break;
-		case CUBIC_HERMITE:
-			path = new CubicHermitePath(waypoints, alpha);
-			break;
-		default:
-			throw new IllegalArgumentException("Unknown path type");
-		}
+		path = Path.constructPath(params.pathType, waypoints, alpha);
 		if(isTank) {
 			path.setBaseRadius(baseWidth / 2);
 		}

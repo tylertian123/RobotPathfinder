@@ -3,10 +3,7 @@ package robot.pathfinder.core.trajectory;
 import robot.pathfinder.core.RobotSpecs;
 import robot.pathfinder.core.TrajectoryParams;
 import robot.pathfinder.core.Waypoint;
-import robot.pathfinder.core.path.BezierPath;
-import robot.pathfinder.core.path.CubicHermitePath;
 import robot.pathfinder.core.path.Path;
-import robot.pathfinder.core.path.QuinticHermitePath;
 import robot.pathfinder.math.MathUtils;
 import robot.pathfinder.math.Vec2D;
 
@@ -161,21 +158,7 @@ public class TankDriveTrajectory {
 			//Negate the relative x coordinates and flip the angles
 			waypoints[i] = new Waypoint(-refPoint.relative(old[i].asVector()).getX(), old[i].getY(), -old[i].getHeading() + Math.PI);
 		}
-		Path path;
-		double alpha = params.alpha;
-		switch(params.pathType) {
-		case BEZIER:
-			path = new BezierPath(waypoints, alpha);
-			break;
-		case QUINTIC_HERMITE:
-			path = new QuinticHermitePath(waypoints, alpha);
-			break;
-		case CUBIC_HERMITE:
-			path = new CubicHermitePath(waypoints, alpha);
-			break;
-		default:
-			throw new IllegalArgumentException("Unknown path type");
-		}
+		Path path = Path.constructPath(params.pathType, waypoints, params.alpha);
 		path.setBaseRadius(specs.getBaseWidth() / 2);
 		
 		TankDriveMoment[] newMoments = new TankDriveMoment[moments.length];

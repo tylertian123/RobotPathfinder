@@ -69,6 +69,11 @@ public class TankDriveTrajectory {
 	protected TankDriveTrajectory(TankDriveMoment[] moments, Path path) {
 		this.moments = moments;
 		this.path = path;
+		
+		headingVectors = new Vec2D[moments.length];
+		for(int i = 0; i < moments.length; i ++) {
+			headingVectors[i] = new Vec2D(Math.cos(moments[i].getHeading()), Math.sin(moments[i].getHeading()));
+		}
 	}
 	
 	public TankDriveMoment get(double t) {
@@ -164,6 +169,7 @@ public class TankDriveTrajectory {
 		TankDriveMoment[] newMoments = new TankDriveMoment[moments.length];
 		for(int i = 0; i < newMoments.length; i ++) {
 			newMoments[i] = TankDriveMoment.fromComponents(moments[i].rightComponent(), moments[i].leftComponent());
+			newMoments[i].setHeading(-moments[i].getHeading() + Math.PI);
 		}
 		
 		//Just create a new one with the sides swapped

@@ -175,11 +175,7 @@ public class BasicTrajectory {
 		//Create the BasicMoment array and initialize first element to 0 position, velocity, acceleration and time
 		moments = new BasicMoment[segmentCount];
 		moments[0] = new BasicMoment(0, 0, 0, headings[0], 0);
-		
-		if(isTank) {
-			pathT = new double[segmentCount];
-			pathT[0] = 0;
-		}
+
 		for(int i = 1; i < moments.length; i ++) {
 			double accumulatedDist = i * distPerIteration;
 			

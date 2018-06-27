@@ -101,14 +101,22 @@ public class Test {
 		BasicTrajectory bt = new BasicTrajectory(specs, params);
 		TankDriveTrajectory tt = new TankDriveTrajectory(bt);
 		
-		bt.getPath().setBaseRadius(1);
 		JFrame f = Grapher.graphPath(bt.getPath(), 0.01);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setVisible(true);
 		
-		JFrame f2 = Grapher.graphTrajectory(bt, 0.01);
+		JFrame f2 = Grapher.graphTrajectory(tt, 0.01);
 		f2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f2.setVisible(true);
+		
+		TankDriveTrajectory mirrored = tt.mirrorLeftRight();
+		JFrame f3 = Grapher.graphPath(mirrored.getPath(), 0.01);
+		f3.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		f3.setVisible(true);
+		
+		JFrame f4 = Grapher.graphTrajectory(mirrored, 0.01);
+		f4.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		f4.setVisible(true);
 	}
 	public static void test11() {
 		System.out.println(MathUtils.lerpAngle(3 * Math.PI / 4, -3 * Math.PI / 4, 0.5));

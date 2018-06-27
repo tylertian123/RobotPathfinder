@@ -546,7 +546,7 @@ public class TrajectoryVisualizationTool {
 			try {
 				maxVel = Double.parseDouble(maxVelocity.getText());
 				maxAccel = Double.parseDouble(maxAcceleration.getText());
-				base = Double.parseDouble(baseWidth.getText());
+				base = isTank.isSelected() ? Double.parseDouble(baseWidth.getText()) : 0;
 				a = Double.parseDouble(alpha.getText());
 				segmentCount = Integer.parseInt(segments.getText());
 				minUnit = Double.parseDouble(roundingLimit.getText());
@@ -566,17 +566,33 @@ public class TrajectoryVisualizationTool {
 					return;
 			}
 			
-			StringBuilder generatedCode = new StringBuilder("TankDriveTrajectory.setSolverRoundingLimit(" + minUnit + ");\n");
-			generatedCode.append("TankDriveTrajectory trajectory = new TankDriveTrajectory(new Waypoint[] {\n");
+			StringBuilder generatedCode = new StringBuilder("RobotSpecs robotSpecs = new RobotSpecs(" + maxVel + ", " + maxAccel);
+			if(isTank.isSelected()) {
+				generatedCode.append(", " + base + ");\n");
+			}
+			else {
+				generatedCode.append(");\n");
+			}
+			generatedCode.append("TrajectoryParams params = new TrajectoryParams();\n");
+			generatedCode.append("params.waypoints = new Waypoint[] {\n");
 			for(Waypoint w : waypoints) {
 				double heading = w.getHeading();
 				String angle = specialAngles.containsKey(heading) ? specialAngles.get(heading) : String.valueOf(heading);
 				String waypointCode = "\t\tnew Waypoint(" + String.valueOf(w.getX()) + ", " + String.valueOf(w.getY()) + ", " + angle + "),\n";
 				generatedCode.append(waypointCode);
 			}
-			generatedCode.append("}, " + maxVel + ", " + maxAccel + ", ");
-			generatedCode.append(base + ", " + a + ", " + segmentCount + ");");
-			
+			generatedCode.append("};\n");
+			generatedCode.append("params.alpha = " + a + ";\n");
+			generatedCode.append("params.segmentCount = " + segmentCount + ";\n");
+			generatedCode.append("params.roundingLimit = " + minUnit + ";\n");
+			generatedCode.append("params.isTank = " + isTank.isSelected() + ";\n");
+			generatedCode.append("params.pathType = PathType." + selectedType.name() + ";\n");
+			if(isTank.isSelected()) {
+				generatedCode.append("TankDriveTrajectory trajectory = new TankDriveTrajectory(new BasicTrajectory(robotSpecs, params));");
+			}
+			else {
+				generatedCode.append("BasicTrajectory trajectory = new BasicTrajectory(robotSpecs, params);");
+			}
 			
 			String[] options = {
 					"Copy to Clipboard",
@@ -648,6 +664,13 @@ public class TrajectoryVisualizationTool {
 						out.write(BEZIER);
 						break;
 					}
+					out.write(",");
+					if(isTank.isSelected()) {
+						out.write("TankDriveTrajectory");
+					}
+					else {
+						out.write("BasicTrajectory");
+					}
 					out.write("\n");
 					
 					WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
@@ -680,7 +703,7 @@ public class TrajectoryVisualizationTool {
 			if(ret == JFileChooser.APPROVE_OPTION) {
 				try(BufferedReader in = new BufferedReader(new FileReader(fc.getSelectedFile()))) {
 					String[] parameters = in.readLine().split(",");
-					if(parameters.length < 7) {
+					if(parameters.length < 8) {
 						JOptionPane.showMessageDialog(mainFrame, "Error: The file format is invalid.", "Error", JOptionPane.ERROR_MESSAGE);
 						return;
 					}
@@ -691,7 +714,7 @@ public class TrajectoryVisualizationTool {
 					segments.setText(parameters[4]);
 					roundingLimit.setText(parameters[5]);
 					
-					switch(parameters[6]) {
+					switch(parameters[6].trim()) {
 					case QHERMITE:
 						selectedType = PathType.QUINTIC_HERMITE;
 						quinticHermiteButton.setSelected(true);
@@ -713,6 +736,12 @@ public class TrajectoryVisualizationTool {
 					default:
 						JOptionPane.showMessageDialog(mainFrame, "Error: The file format is invalid.", "Error", JOptionPane.ERROR_MESSAGE);
 						return;
+					}
+					if(parameters[7].trim().equals("TankDriveTrajectory")) {
+						isTank.setSelected(true);
+					}
+					else {
+						isTank.setSelected(false);
 					}
 					
 					in.mark(512);

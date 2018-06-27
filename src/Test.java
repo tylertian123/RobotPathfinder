@@ -152,7 +152,27 @@ public class Test {
 		f2.setVisible(true);
 	}
 	
+	public static void test13() {
+		RobotSpecs robotSpecs = new RobotSpecs(5.0, 3.5);
+		TrajectoryParams params = new TrajectoryParams();
+		params.waypoints = new Waypoint[] {
+				new Waypoint(0.0, 0.0, Math.PI / 2),
+				new Waypoint(-10.0, 25.0, Math.PI / 2),
+				new Waypoint(0.0, 75.0, 0.0),
+		};
+		params.alpha = 60.0;
+		params.segmentCount = 1000;
+		params.roundingLimit = 1.0E-6;
+		params.isTank = false;
+		params.pathType = PathType.BEZIER;
+		BasicTrajectory trajectory = new BasicTrajectory(robotSpecs, params);
+		
+		JFrame f = Grapher.graphTrajectory(trajectory, 0.01);
+		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		f.setVisible(true);
+	}
+	
 	public static void main(String[] args) {
-		test12();
+		test13();
 	}
 }

@@ -28,7 +28,7 @@ public class Grapher {
 	private Grapher() {}
 	
 	public static JFrame graphTrajectory(BasicTrajectory trajectory, double dt) {
-		int elemCount = (int) (trajectory.totalTime() / dt) + 1;
+		int elemCount = (int) Math.ceil(trajectory.totalTime() / dt);
 		
 		//Create arrays to store data
 		double[] time = new double[elemCount];
@@ -70,7 +70,7 @@ public class Grapher {
 	}
 	
 	public static JFrame graphTrajectory(TankDriveTrajectory trajectory, double dt) {
-		int elemCount = (int) (trajectory.totalTime() / dt) + 1;
+		int elemCount = (int) Math.ceil(trajectory.totalTime() / dt);
 		
 		//Create arrays to store data
 		double[] time = new double[elemCount];
@@ -82,7 +82,7 @@ public class Grapher {
 		double[] rAcl = new double[elemCount];
 		
 		int i = 0;
-		for(double t = 0; t <= trajectory.totalTime(); t += dt) {
+		for(double t = 0; t <= trajectory.totalTime() && i < elemCount; t += dt) {
 			//Collect data
 			time[i] = t;
 			TankDriveMoment m = trajectory.get(t);
@@ -148,7 +148,7 @@ public class Grapher {
 		double maxX = -Double.MAX_VALUE, maxY = -Double.MAX_VALUE;
 		
 		int i = 0;
-		for(double t = 0; t <= 1; t += dt) {
+		for(double t = 0; t <= 1 && i < elemCount; t += dt) {
 			//Collect data
 			Vec2D v = path.at(t);
 			x[i] = v.getX();

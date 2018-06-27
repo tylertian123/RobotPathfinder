@@ -35,7 +35,7 @@ public class Test {
 		TrajectoryParams params = new TrajectoryParams();
 		params.waypoints = waypoints;
 		params.alpha = 60;
-		params.segmentCount = 5000;
+		params.segmentCount = 1000;
 		params.isTank = true;
 		long time = System.currentTimeMillis();
 		BasicTrajectory bt = new BasicTrajectory(specs, params);

@@ -133,6 +133,8 @@ public class Grapher {
 		//Divide and round up to get the number of samples
 		int elemCount = (int) Math.ceil(1.0 / dt);
 		
+		boolean graphWheels = path.getBaseRaidus() == 0;
+		
 		//Create arrays to hold samples
 		double[] x = new double[elemCount];
 		double[] y = new double[elemCount];
@@ -149,14 +151,16 @@ public class Grapher {
 		for(double t = 0; t <= 1; t += dt) {
 			//Collect data
 			Vec2D v = path.at(t);
-			Vec2D[] v2 = path.wheelsAt(t);
-			
 			x[i] = v.getX();
 			y[i] = v.getY();
-			leftX[i] = v2[0].getX();
-			leftY[i] = v2[0].getY();
-			rightX[i] = v2[1].getX();
-			rightY[i] = v2[1].getY();
+			
+			if(graphWheels) {
+				Vec2D[] v2 = path.wheelsAt(t);
+				leftX[i] = v2[0].getX();
+				leftY[i] = v2[0].getY();
+				rightX[i] = v2[1].getX();
+				rightY[i] = v2[1].getY();
+			}
 			
 			//Update min and max x and y values
 			minX = Math.min(minX, v.getX());
@@ -171,8 +175,11 @@ public class Grapher {
 		Plot2DPanel plot = new Plot2DPanel();
 		plot.setLegendOrientation("EAST");
 		plot.addLinePlot("Robot Center", x, y);
-		plot.addLinePlot("Left Wheel", leftX, leftY);
-		plot.addLinePlot("Right Wheel", rightX, rightY);
+		
+		if(graphWheels) {
+			plot.addLinePlot("Left Wheel", leftX, leftY);
+			plot.addLinePlot("Right Wheel", rightX, rightY);
+		}
 		
 		Waypoint[] waypoints = path.getWaypoints();
 		//Fixes a bug with JMathPlot
@@ -183,11 +190,11 @@ public class Grapher {
 		}
 		if(waypoints.length < 3) {
 			if(waypoints.length < 2) {
-				xy[0][1] = Double.MIN_VALUE;
-				xy[1][1] = Double.MIN_VALUE;
+				xy[0][1] = -Double.MAX_VALUE;
+				xy[1][1] = -Double.MAX_VALUE;
 			}
-			xy[0][2] = Double.MIN_VALUE;
-			xy[1][2] = Double.MIN_VALUE;
+			xy[0][2] = -Double.MAX_VALUE;
+			xy[1][2] = -Double.MAX_VALUE;
 		}
 		plot.addScatterPlot("Waypoints", Color.BLACK, xy);
 		

@@ -55,7 +55,11 @@ public class TankDriveTrajectory {
 			double vel = trajMoments[i].getVelocity();
 			moments[i].setLeftVelocity(MathUtils.clampAbs(vel - vel / traj.pathRadius[i] * baseRadius, maxVel));
 			moments[i].setRightVelocity(MathUtils.clampAbs(vel + vel / traj.pathRadius[i] * baseRadius, maxVel));
-			if(moments[i].getLeftVelocity() < 0 || moments[i].getRightVelocity() < 0) {
+			
+			//TODO
+			if((moments[i].getLeftVelocity() < 0 || moments[i].getRightVelocity() < 0) && trajMoments[i].getPosition() > 0) {
+				System.out.println(dxLeft);
+				System.out.println(dxRight);
 				throw new TrajectoryGenerationException("Error: Negative distance functionality is not implemented so the trajectory is impossible");
 			}
 			moments[i - 1].setLeftAcceleration(MathUtils.clampAbs((moments[i].getLeftVelocity() - moments[i - 1].getLeftVelocity()) / dt, maxAccel));

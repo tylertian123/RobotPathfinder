@@ -240,8 +240,9 @@ abstract public class Path {
 			//and headings changed. The headings are always 180 degrees apart
 			newWaypoints[waypoints.length - 1 - i] = new Waypoint(waypoints[i].getX(), waypoints[i].getY(), (waypoints[i].getHeading() + Math.PI) % (2 * Math.PI));
 		}
-		Path newPath = constructPath(type, newWaypoints, alpha);
-		newPath.setDrivingBackwards(true);
-		return newPath;
+		Path path = constructPath(type, newWaypoints, alpha);
+		path.setBaseRadius(baseRadius);
+		path.setDrivingBackwards(true);
+		return path;
 	}
 }

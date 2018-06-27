@@ -344,9 +344,53 @@ public class BasicTrajectory {
 		return new BasicTrajectory(newMoments, newPath, robotSpecs, newParams, pathT, newPathRadius);
 	}
 	
-	/*public BasicTrajectory mirrorFrontBack() {
+	public BasicTrajectory mirrorFrontBack() {
+		Path newPath = path.mirrorFrontBack();
 		
-	}*/
+		BasicMoment[] newMoments = new BasicMoment[moments.length];
+		for(int i = 0; i < newMoments.length; i ++) {
+			newMoments[i] = new BasicMoment(-moments[i].getPosition(), -moments[i].getVelocity(), 
+					-moments[i].getAcceleration(), -moments[i].getHeading(), moments[i].getTime());
+		}
+		
+		TrajectoryParams newParams = params.clone();
+		newParams.waypoints = newPath.getWaypoints();
+		
+		return new BasicTrajectory(newMoments, newPath, robotSpecs, newParams, pathT, pathRadius.clone());
+	}
+	
+	public BasicTrajectory retrace() {
+		Path newPath = path.retrace();
+		
+		BasicMoment[] newMoments = new BasicMoment[moments.length];
+		BasicMoment lastMoment = moments[moments.length - 1];
+		for(int i = 0; i < newMoments.length; i ++) {
+			BasicMoment currentMoment = moments[moments.length - 1 - i];
+			
+			newMoments[i] = new BasicMoment(-(lastMoment.getPosition() - currentMoment.getPosition()), 
+					-currentMoment.getVelocity(), currentMoment.getAcceleration(), 
+					(currentMoment.getHeading() + Math.PI) / (2 * Math.PI), 
+					lastMoment.getTime() - currentMoment.getTime());
+		}
+		
+		TrajectoryParams newParams = params.clone();
+		newParams.waypoints = newPath.getWaypoints();
+		
+		double[] newPathRadius = null;
+		double[] newPathT = null;
+		if(pathRadius != null) {
+			newPathRadius = new double[pathRadius.length];
+			newPathT = new double[pathT.length];
+			
+			//Since now we start from the end, the order of these are reversed
+			for(int i = 0; i < newPathRadius.length; i ++) {
+				newPathRadius[i] = pathRadius[pathRadius.length - 1 - i];
+				newPathT[i] = pathT[pathT.length - 1 - i];
+			}
+		}
+		
+		return new BasicTrajectory(newMoments, newPath, robotSpecs, newParams, newPathT, newPathRadius);
+	}
 }
 
 

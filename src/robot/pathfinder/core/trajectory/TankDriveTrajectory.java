@@ -49,19 +49,21 @@ public class TankDriveTrajectory {
 			prevLeft = wheelPos[0];
 			prevRight = wheelPos[1];
 			
+			double vel = trajMoments[i].getVelocity();
+			double leftVelocity = MathUtils.clampAbs(vel - vel / traj.pathRadius[i] * baseRadius, maxVel);
+			double rightVelocity = MathUtils.clampAbs(vel + vel / traj.pathRadius[i] * baseRadius, maxVel);
+			if(leftVelocity < 0) {
+				dxLeft = -dxLeft;
+			}
+			if(rightVelocity < 0) {
+				dxRight = -dxRight;
+			}
+			
 			moments[i] = new TankDriveMoment();
 			moments[i].setLeftPosition(moments[i - 1].getLeftPosition() + dxLeft);
 			moments[i].setRightPosition(moments[i - 1].getRightPosition() + dxRight);
-			double vel = trajMoments[i].getVelocity();
-			moments[i].setLeftVelocity(MathUtils.clampAbs(vel - vel / traj.pathRadius[i] * baseRadius, maxVel));
-			moments[i].setRightVelocity(MathUtils.clampAbs(vel + vel / traj.pathRadius[i] * baseRadius, maxVel));
-			
-			//TODO
-			if((moments[i].getLeftVelocity() < 0 || moments[i].getRightVelocity() < 0) && trajMoments[i].getPosition() > 0) {
-				System.out.println(dxLeft);
-				System.out.println(dxRight);
-				throw new TrajectoryGenerationException("Error: Negative distance functionality is not implemented so the trajectory is impossible");
-			}
+			moments[i].setLeftVelocity(leftVelocity);
+			moments[i].setRightVelocity(rightVelocity);
 			moments[i - 1].setLeftAcceleration(MathUtils.clampAbs((moments[i].getLeftVelocity() - moments[i - 1].getLeftVelocity()) / dt, maxAccel));
 			moments[i - 1].setRightAcceleration(MathUtils.clampAbs((moments[i].getRightVelocity() - moments[i - 1].getRightVelocity()) / dt, maxAccel));
 			moments[i].setTime(trajMoments[i].getTime());

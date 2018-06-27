@@ -123,8 +123,36 @@ public class Test {
 	public static void test11() {
 		System.out.println(MathUtils.lerpAngle(3 * Math.PI / 4, -3 * Math.PI / 4, 0.5));
 	}
+	public static void test12() {
+		Waypoint[] waypoints = new Waypoint[] {
+				new Waypoint(0, 0, Math.PI / 2),
+				new Waypoint(-10, 25, Math.PI / 2),
+				new Waypoint(20, 0, 0),
+				//new Waypoint(0, 25, Math.PI / 2),
+				//new Waypoint(0, 50, Math.PI / 2),
+		};
+		
+		RobotSpecs specs = new RobotSpecs(5, 3.5, 2);
+		TrajectoryParams params = new TrajectoryParams();
+		params.waypoints = waypoints;
+		params.alpha = 60;
+		params.segmentCount = 5000;
+		params.isTank = true;
+		params.pathType = PathType.QUINTIC_HERMITE;
+		
+		BasicTrajectory bt = new BasicTrajectory(specs, params);
+		TankDriveTrajectory tt = new TankDriveTrajectory(bt);
+		
+		JFrame f = Grapher.graphPath(tt.getPath(), 0.01);
+		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		f.setVisible(true);
+		
+		JFrame f2 = Grapher.graphTrajectory(tt, 0.01);
+		f2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		f2.setVisible(true);
+	}
 	
 	public static void main(String[] args) {
-		test10();
+		test12();
 	}
 }

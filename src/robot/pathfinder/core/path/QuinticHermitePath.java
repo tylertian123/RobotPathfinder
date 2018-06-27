@@ -10,14 +10,14 @@ public class QuinticHermitePath extends Path {
 		type = PathType.QUINTIC_HERMITE;
 		this.waypoints = waypoints;
 		this.alpha = alpha;
-		
+
 		if(waypoints.length < 2) {
 			throw new IllegalArgumentException("Not enough waypoints");
 		}
 		
 		segments = new QuinticHermiteSpline[waypoints.length - 1];
 		for(int i = 0; i < segments.length; i ++) {
-			segments[i] = new QuinticHermiteSpline(waypoints[i].asVector(), waypoints[i + 1].asVector(),
+ 			segments[i] = new QuinticHermiteSpline(waypoints[i].asVector(), waypoints[i + 1].asVector(),
 					new Vec2D(Math.cos(waypoints[i].getHeading()) * alpha, Math.sin(waypoints[i].getHeading()) * alpha),
 					new Vec2D(Math.cos(waypoints[i + 1].getHeading()) * alpha, Math.sin(waypoints[i + 1].getHeading()) * alpha),
 					Vec2D.zero, Vec2D.zero);

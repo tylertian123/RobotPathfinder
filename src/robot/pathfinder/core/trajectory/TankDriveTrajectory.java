@@ -193,50 +193,7 @@ public class TankDriveTrajectory {
 		
 		return new TankDriveTrajectory(newMoments, newPath);
 	}
-	/*/**
-	 * Returns the reverse of this trajectory. Not to be confused with {@link #retrace()}.
-	 * The new trajectory starts at the end of this trajectory and ends at the beginning of it. 
-	 * However because the direction is not reversed, the new trajectory does not retrace this trajectory.
-	 * Use {@link #retrace()} instead.<br>
-	 * <b>Warning: The new trajectory created does not respect maximum deceleration constraints. If you wish
-	 * for the new trajectory to respect maximum deceleration constrains, construct a new trajectory with
-	 * maximum acceleration and deceleration swapped, and then call this method.</b><br>
-	 * <br>
-	 * Internally, this is done by creating a new trajectory in which the movements are reversed, that is, the
-	 * last {@code BasicMoment}s become the first {@code BasicMoment}s, with the distances adjusted. This means new arrays are being created and copied and thus this method
-	 * could be slow for trajectories with many segments.
-	 * @see #retrace()
-	 * @return The reverse of this trajectory
-	 *//*
-	public TankDriveTrajectory reverse() {
-		BasicMoment[] lMoments = new BasicMoment[leftMoments.length];
-		BasicMoment[] rMoments = new BasicMoment[rightMoments.length];
-		
-		BasicMoment lLast = leftMoments[leftMoments.length - 1];
-		BasicMoment rLast = rightMoments[rightMoments.length - 1];
-		
-		for(int i = 0; i < lMoments.length; i ++) {
-			BasicMoment lm = leftMoments[leftMoments.length - 1 - i];
-			BasicMoment rm = rightMoments[rightMoments.length - 1 - i];
-			
-			//The velocities stay the same
-			//Distance and time have to be adjusted since the last BasicMoment has to have distance 0 and time 0
-			//Accelerations are negated because if time is reversed, acceleration becomes deceleration
-			lMoments[i] = new BasicMoment(lLast.getPosition() - lm.getPosition(), lm.getVelocity(), -lm.getAcceleration(), lLast.getTime() - lm.getTime());
-			rMoments[i] = new BasicMoment(rLast.getPosition() - rm.getPosition(), rm.getVelocity(), -rm.getAcceleration(), rLast.getTime() - rm.getTime());
-		}
-		
-		//Create new path
-		Waypoint[] old = path.getWaypoints();
-		Waypoint[] waypoints = new Waypoint[old.length];
-		for(int i = 0; i < old.length; i ++) {
-			//New path is just the same as the old path, but with the order of the waypoints reversed,
-			//and headings flipped
-			waypoints[old.length - 1 - i] = new Waypoint(old[i].getX(), old[i].getY(), (old[i].getHeading() + Math.PI) % (2 * Math.PI));
-		}
-		return new TankDriveTrajectory(lMoments, rMoments, new BezierPath(waypoints, params.alpha, path.getBaseRaidus()));
-	}
-	*//**
+	/**
 	 * Returns the trajectory that, when driven, would retrace this trajectory and return the robot to its
 	 * original position. Not to be confused with {@link #reverse()}.<br>
 	 * <b>Warning: The new trajectory created does not respect maximum deceleration constraints. If you wish
@@ -247,38 +204,38 @@ public class TankDriveTrajectory {
 	 * in order, but with optimization. 
 	 * @see #reverse()
 	 * @return The trajectory that retraces this one
-	 *//*
+	 */
 	public TankDriveTrajectory retrace() {
-		BasicMoment[] lMoments = new BasicMoment[leftMoments.length];
-		BasicMoment[] rMoments = new BasicMoment[rightMoments.length];
+		TankDriveMoment[] newMoments = new TankDriveMoment[moments.length];
 		
-		BasicMoment lLast = leftMoments[leftMoments.length - 1];
-		BasicMoment rLast = rightMoments[rightMoments.length - 1];
+		TankDriveMoment lastMoment = moments[moments.length - 1];
 		
-		for(int i = 0; i < lMoments.length; i ++) {
-			BasicMoment lm = leftMoments[leftMoments.length - 1 - i];
-			BasicMoment rm = rightMoments[rightMoments.length - 1 - i];
-
-			//A combination of reverse() and mirrorFrontBack()
-			lMoments[i] = new BasicMoment(-(lLast.getPosition() - lm.getPosition()), -lm.getVelocity(), lm.getAcceleration(), lLast.getTime() - lm.getTime());
-			rMoments[i] = new BasicMoment(-(rLast.getPosition() - rm.getPosition()), -rm.getVelocity(), rm.getAcceleration(), rLast.getTime() - rm.getTime());
+		for(int i = 0; i < newMoments.length; i ++) {
+			TankDriveMoment current = moments[moments.length - 1 - i];
+			
+			/*
+			 * To generate the new moments, first the order of the moments has to be reversed, since we
+			 * are now starting from the end. The first moments should have less distance than the later moments,
+			 * so when iterating backwards, the position of the moment is subtracted from the total distance,
+			 * then negated since we're driving backwards. Velocity is also negated, but since it's not accumulative,
+			 * it does not need to be subtracted from the total. Finally, acceleration is negated once for driving
+			 * backwards, and negated again because the direction of time is reversed, and together they cancel
+			 * out, resulting in no change. The heading is flipped 180 degrees, and the time is subtracted
+			 * from the total.
+			 */
+			newMoments[i] = new TankDriveMoment(-(lastMoment.getLeftPosition() - current.getLeftPosition()),
+					-(lastMoment.getRightPosition() - current.getRightPosition()), -current.getLeftVelocity(),
+					-current.getRightVelocity(), current.getLeftAcceleration(), current.getRightAcceleration(),
+					(current.getHeading() + Math.PI) % (2 * Math.PI), lastMoment.getTime() - current.getTime());
 		}
 		
 		//Create new path
-		Waypoint[] old = path.getWaypoints();
-		Waypoint[] waypoints = new Waypoint[old.length];
-		for(int i = 0; i < old.length; i ++) {
-			//New path is just the same as the old path, but with the order of the waypoints reversed,
-			//and headings flipped
-			waypoints[old.length - 1 - i] = new Waypoint(old[i].getX(), old[i].getY(), (old[i].getHeading() + Math.PI) % (2 * Math.PI));
-		}
-		BezierPath newPath = new BezierPath(waypoints, params.alpha, path.getBaseRaidus());
-		newPath.setDrivingBackwards(true);
+		Path newPath = path.retrace();
 	
 		//Note that even though the final path looks exactly the same, the order of the waypoints is actually
 		//the opposite.
-		return new TankDriveTrajectory(lMoments, rMoments, newPath);
-	}*/
+		return new TankDriveTrajectory(newMoments, newPath);
+	}
 	
 	public RobotSpecs getRobotSpecs() {
 		return specs;

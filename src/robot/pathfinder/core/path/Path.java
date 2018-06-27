@@ -233,4 +233,15 @@ abstract public class Path {
 		
 		return path;
 	}
+	public Path retrace() {
+		Waypoint[] newWaypoints = new Waypoint[waypoints.length];
+		for(int i = 0; i < waypoints.length; i ++) {
+			//New path is just the same as the old path, but with the order of the waypoints reversed,
+			//and headings changed. The headings are always 180 degrees apart
+			newWaypoints[waypoints.length - 1 - i] = new Waypoint(waypoints[i].getX(), waypoints[i].getY(), (waypoints[i].getHeading() + Math.PI) % (2 * Math.PI));
+		}
+		Path newPath = constructPath(type, newWaypoints, alpha);
+		newPath.setDrivingBackwards(true);
+		return newPath;
+	}
 }

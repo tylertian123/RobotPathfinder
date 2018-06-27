@@ -110,7 +110,7 @@ public class Test {
 		f2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f2.setVisible(true);
 		
-		TankDriveTrajectory mirrored = tt.mirrorLeftRight();
+		TankDriveTrajectory mirrored = tt.mirrorFrontBack();
 		JFrame f3 = Grapher.graphPath(mirrored.getPath(), 0.01);
 		f3.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f3.setVisible(true);

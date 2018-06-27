@@ -162,7 +162,6 @@ public class TankDriveTrajectory {
 			newMoments[i].setHeading(-moments[i].getHeading() + Math.PI);
 		}
 		
-		//Just create a new one with the sides swapped
 		return new TankDriveTrajectory(newMoments, newPath);
 	}
 	/**
@@ -178,34 +177,23 @@ public class TankDriveTrajectory {
 	 * 
 	 * @see TankDriveTrajectory#mirrorLeftRight() mirrorLeftRight()
 	 * @return The mirrored trajectory
-	 *//*
+	 */
 	public TankDriveTrajectory mirrorFrontBack() {
-		BasicMoment[] lMoments = new BasicMoment[leftMoments.length];
-		BasicMoment[] rMoments = new BasicMoment[rightMoments.length];
+		TankDriveMoment[] newMoments = new TankDriveMoment[moments.length];
 		
-		for(int i = 0; i < lMoments.length; i ++) {
+		for(int i = 0; i < newMoments.length; i ++) {
 			//Negate the distances, velocities and accelerations to drive backwards
 			//Time, of course, always stays positive.
-			lMoments[i] = new BasicMoment(-leftMoments[i].getPosition(), -leftMoments[i].getVelocity(), -leftMoments[i].getAcceleration(), leftMoments[i].getTime());
-			rMoments[i] = new BasicMoment(-rightMoments[i].getPosition(), -rightMoments[i].getVelocity(), -rightMoments[i].getAcceleration(), rightMoments[i].getTime());
+			newMoments[i] = new TankDriveMoment(-moments[i].getLeftPosition(), -moments[i].getRightPosition(),
+					-moments[i].getLeftVelocity(), -moments[i].getRightVelocity(), -moments[i].getLeftAcceleration(),
+					-moments[i].getRightAcceleration(), -moments[i].getHeading(), moments[i].getTime());
 		}
 		
-		//Create new path
-		Waypoint[] old = path.getWaypoints();
-		Vec2D refPoint = new Vec2D(old[0]);
-		Waypoint[] waypoints = new Waypoint[old.length];
+		Path newPath = path.mirrorFrontBack();
 		
-		for(int i = 0; i < waypoints.length; i ++) {
-			//Negate the relative y coordinates and the headings and keep the x coordinates
-			waypoints[i] = new Waypoint(old[i].getX(), -refPoint.relative(old[i].asVector()).getY(), -old[i].getHeading());
-		}
-		
-		BezierPath newPath = new BezierPath(waypoints, params.alpha, path.getBaseRaidus());
-		newPath.setDrivingBackwards(true);
-		
-		return new TankDriveTrajectory(lMoments, rMoments, newPath);
+		return new TankDriveTrajectory(newMoments, newPath);
 	}
-	*//**
+	/*/**
 	 * Returns the reverse of this trajectory. Not to be confused with {@link #retrace()}.
 	 * The new trajectory starts at the end of this trajectory and ends at the beginning of it. 
 	 * However because the direction is not reversed, the new trajectory does not retrace this trajectory.

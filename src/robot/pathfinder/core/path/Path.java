@@ -219,4 +219,18 @@ abstract public class Path {
 		
 		return path;
 	}
+	public Path mirrorFrontBack() {
+		Vec2D refPoint = new Vec2D(waypoints[0]);
+		Waypoint[] newWaypoints = new Waypoint[waypoints.length];
+		
+		for(int i = 0; i < waypoints.length; i ++) {
+			//Negate the relative x coordinates and flip the angles
+			newWaypoints[i] = new Waypoint(waypoints[i].getX(), -refPoint.relative(waypoints[i].asVector()).getY(), -waypoints[i].getHeading());
+		}
+		Path path = constructPath(type, newWaypoints, alpha);
+		path.setBaseRadius(baseRadius);
+		path.setDrivingBackwards(true);
+		
+		return path;
+	}
 }

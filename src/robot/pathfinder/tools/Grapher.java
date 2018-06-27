@@ -131,7 +131,8 @@ public class Grapher {
 	 */
 	public static JFrame graphPath(Path path, double dt) {
 		//Divide and round up to get the number of samples
-		int elemCount = (int) Math.ceil(1.0 / dt);
+		//Add 1 for the last sample
+		int elemCount = (int) Math.ceil(1.0 / dt) + 1;
 		
 		boolean graphWheels = path.getBaseRadius() != 0;
 		
@@ -170,6 +171,21 @@ public class Grapher {
 			
 			i ++;
 		}
+		
+		Vec2D v = path.at(1);
+		x[x.length - 1] = v.getX();
+		y[y.length - 1] = v.getY();
+		if(graphWheels) {
+			Vec2D[] v2 = path.wheelsAt(1);
+			leftX[leftX.length - 1] = v2[0].getX();
+			leftY[leftY.length - 1] = v2[0].getY();
+			rightX[rightY.length - 1] = v2[1].getX();
+			rightY[rightY.length - 1] = v2[1].getY();
+		}
+		minX = Math.min(minX, v.getX());
+		minY = Math.min(minY, v.getY());
+		maxX = Math.max(maxX, v.getX());
+		maxY = Math.max(maxY, v.getY());
 		
 		//Graph path
 		Plot2DPanel plot = new Plot2DPanel();

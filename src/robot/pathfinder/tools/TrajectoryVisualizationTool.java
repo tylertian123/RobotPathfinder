@@ -68,6 +68,12 @@ public class TrajectoryVisualizationTool {
 	static JTextField waypointY = new JTextField();
 	static JTextField waypointHeading = new JTextField();
 	static JPanel waypointPanel;
+
+	static int pathSamples = 200;
+	static int trajSamples = 500;
+	static JTextField pathSamplesField = new JTextField(String.valueOf(pathSamples));
+	static JTextField trajSamplesField = new JTextField(String.valueOf(trajSamples));
+	static JPanel sampleCountPanel;
 	
 	static JTextField baseWidth = new JTextField("0");
 	static JTextField alpha = new JTextField();
@@ -81,9 +87,6 @@ public class TrajectoryVisualizationTool {
 	static JMenu fileMenu;
 	
 	static ArrayList<Waypoint> waypoints = new ArrayList<Waypoint>();
-	
-	static int pathSamples = 200;
-	static int trajSamples = 500;
 	
 	static final String QHERMITE = "Q";
 	static final String CHERMITE = "C";
@@ -796,6 +799,44 @@ public class TrajectoryVisualizationTool {
 		});
 		waypointMenu.add(clearWaypointsMenuItem);
 		menuBar.add(waypointMenu);
+		
+		JMenu settingsMenu = new JMenu("Settings");
+		sampleCountPanel = new JPanel();
+		sampleCountPanel.setLayout(new BoxLayout(sampleCountPanel, BoxLayout.Y_AXIS));
+		sampleCountPanel.add(new JLabel("# of Samples for Paths"));
+		sampleCountPanel.add(pathSamplesField);
+		sampleCountPanel.add(new JLabel("# of Samples for Trajectories"));
+		sampleCountPanel.add(trajSamplesField);
+		JMenuItem sampleCountChange = new JMenuItem("Change Sample Count...");
+		sampleCountChange.addActionListener(e -> {
+			boolean pass = false;
+			
+			while(!pass) {
+				pathSamplesField.setText(String.valueOf(pathSamples));
+				trajSamplesField.setText(String.valueOf(trajSamples));
+				int ret = JOptionPane.showConfirmDialog(mainFrame, sampleCountPanel, "Change Sample Count", JOptionPane.OK_CANCEL_OPTION);
+				if(ret == JOptionPane.OK_OPTION) {
+					try {
+						int newPathSamples = Integer.parseInt(pathSamplesField.getText());
+						int newTrajSamples = Integer.parseInt(trajSamplesField.getText());
+						
+						pathSamples = newPathSamples;
+						trajSamples = newTrajSamples;
+						pass = true;
+					}
+					catch(NumberFormatException nfe) {
+						JOptionPane.showMessageDialog(mainFrame, "Error: An invalid token was entered\nin one or more fields.", "Error", JOptionPane.ERROR_MESSAGE);
+						pass = false;
+					}
+				}
+				else {
+					pass = true;
+				}
+			}
+		});
+		settingsMenu.add(sampleCountChange);
+		
+		menuBar.add(settingsMenu);
 		
 		mainPanel.add(buttonsPanel, BorderLayout.PAGE_END);
 		

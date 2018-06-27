@@ -5,10 +5,9 @@ import robot.pathfinder.core.spline.CubicHermiteSpline;
 import robot.pathfinder.math.Vec2D;
 
 public class CubicHermitePath extends Path {
-
-	double alpha;
 	
 	public CubicHermitePath(Waypoint[] waypoints, double alpha) {
+		type = PathType.CUBIC_HERMITE;
 		this.waypoints = waypoints;
 		this.alpha = alpha;
 		

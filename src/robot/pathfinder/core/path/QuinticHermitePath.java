@@ -6,9 +6,8 @@ import robot.pathfinder.math.Vec2D;
 
 public class QuinticHermitePath extends Path {
 	
-	double alpha;
-	
 	public QuinticHermitePath(Waypoint[] waypoints, double alpha) {
+		type = PathType.QUINTIC_HERMITE;
 		this.waypoints = waypoints;
 		this.alpha = alpha;
 		

@@ -2,7 +2,6 @@ package robot.pathfinder.core.trajectory;
 
 import robot.pathfinder.core.RobotSpecs;
 import robot.pathfinder.core.TrajectoryParams;
-import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.core.path.Path;
 import robot.pathfinder.math.MathUtils;
 import robot.pathfinder.math.Vec2D;
@@ -155,16 +154,7 @@ public class TankDriveTrajectory {
 	 */
 	public TankDriveTrajectory mirrorLeftRight() {
 		//Create new path
-		Waypoint[] old = path.getWaypoints();
-		Vec2D refPoint = new Vec2D(old[0]);
-		Waypoint[] waypoints = new Waypoint[old.length];
-		
-		for(int i = 0; i < waypoints.length; i ++) {
-			//Negate the relative x coordinates and flip the angles
-			waypoints[i] = new Waypoint(-refPoint.relative(old[i].asVector()).getX(), old[i].getY(), -old[i].getHeading() + Math.PI);
-		}
-		Path path = Path.constructPath(params.pathType, waypoints, params.alpha);
-		path.setBaseRadius(specs.getBaseWidth() / 2);
+		Path newPath = path.mirrorLeftRight();
 		
 		TankDriveMoment[] newMoments = new TankDriveMoment[moments.length];
 		for(int i = 0; i < newMoments.length; i ++) {
@@ -173,7 +163,7 @@ public class TankDriveTrajectory {
 		}
 		
 		//Just create a new one with the sides swapped
-		return new TankDriveTrajectory(newMoments, path);
+		return new TankDriveTrajectory(newMoments, newPath);
 	}
 	/**
 	 * Returns the front-back mirror image of this trajectory. Every forwards movement will now become

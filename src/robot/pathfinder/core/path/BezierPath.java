@@ -11,14 +11,14 @@ import robot.pathfinder.math.Vec2D;
  */
 public class BezierPath extends Path {
 	
-	double alpha;
-	
 	/**
 	 * Constructs a Bezier path using the specified waypoints.
 	 * @param waypoints The waypoints to pass through
 	 * @param alpha The smoothness of the turns; a greater value will result in smoother turns and a small value will result in tight turns.
 	 */
 	public BezierPath(Waypoint[] waypoints, double alpha) {
+		type = PathType.BEZIER;
+		
 		if(waypoints.length < 2) {
 			throw new IllegalArgumentException("Not enough waypoints");
 		}

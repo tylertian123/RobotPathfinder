@@ -2,7 +2,6 @@ package robot.pathfinder.core.path;
 
 import java.util.ArrayList;
 
-import robot.pathfinder.core.TrajectoryParams;
 import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.core.spline.Spline;
 import robot.pathfinder.math.MathUtils;
@@ -11,7 +10,7 @@ import robot.pathfinder.util.Pair;
 
 abstract public class Path {
 	
-	public static Path constructPath(TrajectoryParams.PathType type, Waypoint[] waypoints, double alpha) {
+	public static Path constructPath(PathType type, Waypoint[] waypoints, double alpha) {
 		switch(type) {
 		case BEZIER:
 			return new BezierPath(waypoints, alpha);
@@ -25,7 +24,10 @@ abstract public class Path {
 	}
 	
 	Waypoint[] waypoints;
+	double alpha;
 	Spline[] segments;
+	
+	PathType type;
 
 	double totalLen = Double.NaN;
 	double totalLenLeft = Double.NaN, totalLenRight = Double.NaN;
@@ -48,7 +50,7 @@ abstract public class Path {
 	 * this path. This value is used to compute the result from {@link BezierPath#wheelsAt(double) wheelsAt()}.
 	 * @return The base radius
 	 */
-	public double getBaseRaidus() {
+	public double getBaseRadius() {
 		return baseRadius;
 	}
 	
@@ -187,6 +189,14 @@ abstract public class Path {
 		return waypoints;
 	}
 	
+	public double getAlpha() {
+		return alpha;
+	}
+	
+	public PathType getType() {
+		return type;
+	}
+	
 	/**
 	 * Sets whether the robot that drives this path is driving backwards or not.
 	 * If this is set to true, the locations of the left and right wheels will be reversed.
@@ -194,5 +204,19 @@ abstract public class Path {
 	 */
 	public void setDrivingBackwards(boolean drivingBackwards) {
 		this.drivingBackwards = drivingBackwards;
+	}
+	
+	public Path mirrorLeftRight() {
+		Vec2D refPoint = new Vec2D(waypoints[0]);
+		Waypoint[] newWaypoints = new Waypoint[waypoints.length];
+		
+		for(int i = 0; i < waypoints.length; i ++) {
+			//Negate the relative x coordinates and flip the angles
+			newWaypoints[i] = new Waypoint(-refPoint.relative(waypoints[i].asVector()).getX(), waypoints[i].getY(), -waypoints[i].getHeading() + Math.PI);
+		}
+		Path path = constructPath(type, newWaypoints, alpha);
+		path.setBaseRadius(baseRadius);
+		
+		return path;
 	}
 }

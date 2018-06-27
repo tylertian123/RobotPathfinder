@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import robot.pathfinder.core.RobotSpecs;
 import robot.pathfinder.core.TrajectoryParams;
 import robot.pathfinder.core.Waypoint;
+import robot.pathfinder.core.path.PathType;
 import robot.pathfinder.core.trajectory.BasicTrajectory;
 import robot.pathfinder.core.trajectory.TankDriveTrajectory;
 import robot.pathfinder.math.MathUtils;
@@ -96,7 +97,7 @@ public class Test {
 		params.alpha = 40;
 		params.segmentCount = 5000;
 		params.isTank = true;
-		params.pathType = TrajectoryParams.PathType.QUINTIC_HERMITE;
+		params.pathType = PathType.QUINTIC_HERMITE;
 		
 		BasicTrajectory bt = new BasicTrajectory(specs, params);
 		TankDriveTrajectory tt = new TankDriveTrajectory(bt);

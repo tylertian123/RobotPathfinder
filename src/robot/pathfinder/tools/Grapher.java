@@ -133,7 +133,7 @@ public class Grapher {
 		//Divide and round up to get the number of samples
 		int elemCount = (int) Math.ceil(1.0 / dt);
 		
-		boolean graphWheels = path.getBaseRaidus() == 0;
+		boolean graphWheels = path.getBaseRadius() != 0;
 		
 		//Create arrays to hold samples
 		double[] x = new double[elemCount];
@@ -209,8 +209,8 @@ public class Grapher {
 		
 		//Set bounds to make the x and y scales the same
 		//Make the square a bit bigger than the graph to leave a margin
-		plot.setFixedBounds(0, minX - 2 * path.getBaseRaidus() - xOffset, minX + len + 2 * path.getBaseRaidus() - xOffset);
-		plot.setFixedBounds(1, minY - 2 * path.getBaseRaidus() - yOffset, minY + len + 2 * path.getBaseRaidus() - yOffset);
+		plot.setFixedBounds(0, minX - 2 * path.getBaseRadius() - xOffset, minX + len + 2 * path.getBaseRadius() - xOffset);
+		plot.setFixedBounds(1, minY - 2 * path.getBaseRadius() - yOffset, minY + len + 2 * path.getBaseRadius() - yOffset);
 		
 		//Create the window that will hold the graph
 		JFrame frame = new JFrame("Path Graph");

@@ -1,12 +1,8 @@
 package robot.pathfinder.core;
 
+import robot.pathfinder.core.path.PathType;
+
 public class TrajectoryParams {
-	
-	public enum PathType {
-		BEZIER,
-		QUINTIC_HERMITE,
-		CUBIC_HERMITE,
-	}
 	
 	public Waypoint[] waypoints = null;
 	public double alpha = Double.NaN;

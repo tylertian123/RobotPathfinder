@@ -1,8 +1,8 @@
-package robot.pathfinder.core.spline;
+package robot.pathfinder.core.splinesegment;
 
 import robot.pathfinder.math.Vec2D;
 
-public class CubicHermiteSpline implements Spline {
+public class CubicHermiteSegment implements SplineSegment {
 	
 	protected static double basis0(double t) {
 		return 2 * Math.pow(t, 3) - 3 * Math.pow(t, 2) + 1;
@@ -46,7 +46,7 @@ public class CubicHermiteSpline implements Spline {
 	Vec2D p0, p1;
 	Vec2D m0, m1;
 	
-	public CubicHermiteSpline(Vec2D p0, Vec2D p1, Vec2D m0, Vec2D m1) {
+	public CubicHermiteSegment(Vec2D p0, Vec2D p1, Vec2D m0, Vec2D m1) {
 		this.p0 = p0;
 		this.p1 = p1;
 		this.m0 = m0;

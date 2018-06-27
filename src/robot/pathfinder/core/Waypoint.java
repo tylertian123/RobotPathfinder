@@ -3,8 +3,8 @@ package robot.pathfinder.core;
 import robot.pathfinder.math.Vec2D;
 
 /**
- * Represents a waypoint in a path or trajectory. A waypoint consists of an X and Y value, along with an 
- * optional direction.
+ * Represents a "waypoint" in a path or trajectory. A waypoint consists of an X value, Y value, and heading
+ * (direction the robot is facing). All angles are in <em>radians</em>. Used to construct paths and trajectories.
  * @author Tyler Tian
  *
  */
@@ -12,19 +12,10 @@ public class Waypoint {
 	double x, y, heading;
 	
 	/**
-	 * Constructs a new waypoint with the specified X and Y value and no heading.
-	 * @param x The X value of this waypoint
-	 * @param y The Y value of this waypoint
-	 */
-	public Waypoint(double x, double y) {
-		this.x = x;
-		this.y = y;
-	}
-	/**
 	 * Constructs a new waypoint with the specified X and Y value and heading.
 	 * @param x The X value of this waypoint
 	 * @param y The Y value of this waypoint
-	 * @param heading The heading of the robot, in radians.
+	 * @param heading The heading at this waypoint
 	 */
 	public Waypoint(double x, double y, double heading) {
 		this.x = x;
@@ -32,16 +23,8 @@ public class Waypoint {
 		this.heading = heading;
 	}
 	/**
-	 * Constructs a new waypoint at the specified location without heading.
-	 * @param location The location of the waypoint
-	 */
-	public Waypoint(Vec2D location) {
-		this.x = location.getX();
-		this.y = location.getY();
-	}
-	/**
 	 * Constructs a new waypoint at the specified location with the specified heading.
-	 * @param location The location of the waypoint
+	 * @param location The location of the waypoint, represented as a 2D vector
 	 * @param heading The direction the robot is heading at this waypoint
 	 */
 	public Waypoint(Vec2D location, double heading) {
@@ -65,14 +48,14 @@ public class Waypoint {
 		return y;
 	}
 	/**
-	 * Retrieves the heading of the robot, in radians.
+	 * Retrieves the heading of the robot at this waypoint, in radians.
 	 * @return The heading in radians
 	 */
 	public double getHeading() {
 		return heading;
 	}
 	/**
-	 * Retrieves the position of this waypoint represented as a {@code Vec2D}
+	 * Retrieves the position of this waypoint represented as a {@link Vec2D}.
 	 * @return The position of this waypoint
 	 */
 	public Vec2D asVector() {

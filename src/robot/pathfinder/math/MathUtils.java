@@ -195,6 +195,7 @@ public class MathUtils {
 	 * @see #lerpAngle(double, double, double)
 	 */
 	public static double lerpAngle(Vec2D a, Vec2D b, double f) {
+		//Done by lerping the normalized direction vector
 		Vec2D angle = Vec2D.lerp(a, b, f);
 		return Math.atan2(angle.getY(), angle.getX());
 	}

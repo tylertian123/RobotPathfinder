@@ -1,11 +1,9 @@
 package robot.pathfinder.core;
 
 /**
- * A class representing the specifications for a robot. <br>
- * <br>
- * This class stores information about the robot's max velocity, acceleration and base width,
- * and can be used in the construction of trajectory objects as an alternative to typing up 
- * the specifications each time.
+ * A class representing the specifications for a robot. Robot specifications consist of a maximum velocity and
+ * acceleration, and in the case of tank drive robots, the width of the base plate. Used in the construction of
+ * {@link BasicTrajectory}.
  * @author Tyler Tian
  *
  */
@@ -16,6 +14,7 @@ public class RobotSpecs {
 	
 	/**
 	 * Constructs a new robot specification object with the specified values.
+	 * The value for base plate width is set to {@code NaN}.
 	 * @param maxVelocity The absolute value of the max velocity of the robot
 	 * @param maxAcceleration The absolute value of the max acceleration of the robot
 	 */
@@ -23,6 +22,13 @@ public class RobotSpecs {
 		this.maxVelocity = maxVelocity;
 		this.maxAcceleration = maxAcceleration;
 	}
+	/**
+	 * Constructs a new robot specification object with the specified values.
+	 * @param maxVelocity The absolute value of the max velocity of the robot
+	 * @param maxAcceleration The absolute value of the max acceleration of the robot
+	 * @param baseWidth The width of the base plate of the robot (distance from wheels on one side to wheels on
+	 * the other side)
+	 */
 	public RobotSpecs(double maxVelocity, double maxAcceleration, double baseWidth) {
 		this(maxVelocity, maxAcceleration);
 		this.baseWidth = baseWidth;

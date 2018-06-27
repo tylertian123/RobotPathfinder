@@ -7,8 +7,6 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -45,15 +43,11 @@ import javax.swing.table.DefaultTableModel;
 import com.sun.glass.events.KeyEvent;
 
 import robot.pathfinder.core.Waypoint;
-import robot.pathfinder.core.trajectory.TankDriveTrajectory;
-import robot.pathfinder.core.trajectory.TrajectoryGenerationException;
-import robot.pathfinder.path.BezierPath;
 
 /**
- * A GUI tool build with Swing to help visualize trajectories. 
+ * A GUI tool built with Swing to help visualize trajectories. 
  * @author Tyler Tian
  *
- * @deprecated To be fixed later
  */
 public class TrajectoryVisualizationTool {
 
@@ -71,7 +65,6 @@ public class TrajectoryVisualizationTool {
 	static JTextField segments = new JTextField();
 	static JTextField maxVelocity = new JTextField();
 	static JTextField maxAcceleration = new JTextField();
-	static JTextField maxDeceleration = new JTextField();
 	static JTextField roundingLimit = new JTextField("1.0e-5");
 	static JCheckBox fastGraphing = new JCheckBox("Fast Graphing");
 	static JPanel argumentsPanel;
@@ -210,7 +203,6 @@ public class TrajectoryVisualizationTool {
 		Dimension textFieldSize = new Dimension(75, 20);
 		maxVelocity.setPreferredSize(textFieldSize);
 		maxAcceleration.setPreferredSize(textFieldSize);
-		maxDeceleration.setPreferredSize(textFieldSize);
 		baseWidth.setPreferredSize(textFieldSize);
 		alpha.setPreferredSize(textFieldSize);
 		segments.setPreferredSize(textFieldSize);
@@ -236,8 +228,6 @@ public class TrajectoryVisualizationTool {
 		subPanel3.add(roundingLimit);
 		JPanel subPanel4 = new JPanel();
 		subPanel4.setLayout(new BoxLayout(subPanel4, BoxLayout.PAGE_AXIS));
-		subPanel4.add(new JLabel("(Optional) Max Deceleration"));
-		subPanel4.add(maxDeceleration);
 		subPanel4.add(Box.createRigidArea(new Dimension(0, 12)));
 		fastGraphing.setFont(new JLabel().getFont());
 		subPanel4.add(fastGraphing);
@@ -360,7 +350,7 @@ public class TrajectoryVisualizationTool {
 
 		JButton previewButton = new JButton("Preview");
 		previewButton.addActionListener(e -> {
-			double base, a;
+			/*double base, a;
 			
 			try {
 				base = Double.parseDouble(baseWidth.getText());
@@ -398,25 +388,19 @@ public class TrajectoryVisualizationTool {
 				}
 			});
 			mainFrame.setVisible(false);
-			pathFrame.setVisible(true);
+			pathFrame.setVisible(true);*/
 		});
 		previewButton.setPreferredSize(buttonSize);
 		buttonsPanel.add(previewButton);
 		
 		JButton generateButton = new JButton("Generate");
 		generateButton.addActionListener(e -> {
-			double maxVel, maxAccel, maxDecel, base, a, minUnit;
+			/*double maxVel, maxAccel, base, a, minUnit;
 			int segmentCount;
 			
 			try {
 				maxVel = Double.parseDouble(maxVelocity.getText());
 				maxAccel = Double.parseDouble(maxAcceleration.getText());
-				if(maxDeceleration.getText().equals("")) {
-					maxDecel = maxAccel;
-				}
-				else {
-					maxDecel = Double.parseDouble(maxDeceleration.getText());
-				}
 				base = Double.parseDouble(baseWidth.getText());
 				a = Double.parseDouble(alpha.getText());
 				segmentCount = Integer.parseInt(segments.getText());
@@ -507,7 +491,7 @@ public class TrajectoryVisualizationTool {
 			JOptionPane.showMessageDialog(mainFrame, "Trajectory Total Time: " + trajectory.totalTime() + " seconds");
 			mainFrame.setVisible(false);
 			movementFrame.setVisible(true);
-			pathFrame.setVisible(true);
+			pathFrame.setVisible(true);*/
 		});
 		generateButton.setPreferredSize(buttonSize);
 		buttonsPanel.add(generateButton);
@@ -524,18 +508,12 @@ public class TrajectoryVisualizationTool {
 		JButton generateCodeButton = new JButton("Get Code");
 		generateCodeButton.addActionListener(e -> {
 			
-			double maxVel, maxAccel, maxDecel, base, a, minUnit;
+			double maxVel, maxAccel, base, a, minUnit;
 			int segmentCount;
 			
 			try {
 				maxVel = Double.parseDouble(maxVelocity.getText());
 				maxAccel = Double.parseDouble(maxAcceleration.getText());
-				if(maxDeceleration.getText().equals("")) {
-					maxDecel = Double.NaN;
-				}
-				else {
-					maxDecel = Double.parseDouble(maxDeceleration.getText());
-				}
 				base = Double.parseDouble(baseWidth.getText());
 				a = Double.parseDouble(alpha.getText());
 				segmentCount = Integer.parseInt(segments.getText());
@@ -565,9 +543,6 @@ public class TrajectoryVisualizationTool {
 				generatedCode.append(waypointCode);
 			}
 			generatedCode.append("}, " + maxVel + ", " + maxAccel + ", ");
-			if(!Double.isNaN(maxDecel)) {
-				generatedCode.append(maxDecel + ", ");
-			}
 			generatedCode.append(base + ", " + a + ", " + segmentCount + ");");
 			
 			
@@ -600,18 +575,12 @@ public class TrajectoryVisualizationTool {
 				return;
 			}
 			
-			double maxVel, maxAccel, maxDecel, base, a, minUnit;
+			double maxVel, maxAccel, base, a, minUnit;
 			int segmentCount;
 			
 			try {
 				maxVel = Double.parseDouble(maxVelocity.getText());
 				maxAccel = Double.parseDouble(maxAcceleration.getText());
-				if(maxDeceleration.getText().equals("")) {
-					maxDecel = Double.NaN;
-				}
-				else {
-					maxDecel = Double.parseDouble(maxDeceleration.getText());
-				}
 				base = Double.parseDouble(baseWidth.getText());
 				a = Double.parseDouble(alpha.getText());
 				segmentCount = Integer.parseInt(segments.getText());
@@ -635,7 +604,7 @@ public class TrajectoryVisualizationTool {
 					path += ".csv";
 				
 				try(BufferedWriter out = new BufferedWriter(new FileWriter(path))) {
-					out.write(maxVel + "," + maxAccel + "," + base + "," + a + "," + segmentCount + "," + minUnit + (Double.isNaN(maxDecel) ? "" : ("," + maxDecel)) + "\n");
+					out.write(maxVel + "," + maxAccel + "," + base + "," + a + "," + segmentCount + "," + minUnit + "\n");
 					
 					WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
 					for(int row = 0; row < tableModel.getRowCount(); row ++) {
@@ -677,12 +646,6 @@ public class TrajectoryVisualizationTool {
 					alpha.setText(parameters[3]);
 					segments.setText(parameters[4]);
 					roundingLimit.setText(parameters[5]);
-					if(parameters.length >= 7) {
-						maxDeceleration.setText(parameters[6]);
-					}
-					else {
-						maxDeceleration.setText("");
-					}
 					
 					in.mark(512);
 					String nextLine;

@@ -11,7 +11,7 @@ public class TrajectoryParams implements Cloneable {
 	
 	public boolean isTank = false;
 	
-	public PathType pathType = PathType.BEZIER;
+	public PathType pathType = PathType.QUINTIC_HERMITE;
 	
 	@Override
 	public TrajectoryParams clone() {

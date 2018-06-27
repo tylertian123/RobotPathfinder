@@ -158,19 +158,52 @@ public class MathUtils {
 		return (xDeriv * ySecondDeriv - yDeriv * xSecondDeriv) /
 				Math.pow(xDeriv * xDeriv + yDeriv * yDeriv, 3.0/2.0);
 	}
-	
+	/**
+	 * Linearly interpolates between two scalars. Note that this method should not be used if interpolating 
+	 * between angles; use {@link #lerpAngle(double, double, double)} or {@link #lerpAngle(Vec2D, Vec2D, double)} instead.
+	 * @param a The first number
+	 * @param b The second number
+	 * @param f The fraction of the way from the first number to the second number
+	 * @return The result of the lerp
+	 */
 	public static double lerp(double a, double b, double f) {
 		return (a * (1.0 - f)) + (b * f);
 	}
-	
+	/**
+	 * Linearly interpolates between two angles in radians. This method will choose the shortest path around
+	 * the unit circle, and therefore can interpolate between positive and negative angles.
+	 * <p>
+	 * If the normalized direction vectors for the angles are already known, the faster {@link #lerpAngle(Vec2D, Vec2D, double)}
+	 * can be used.
+	 * </p>
+	 * @param a The first angle
+	 * @param b The second angle
+	 * @param f The fraction of the way from the first angle to the second angle
+	 * @return The result of the lerp
+	 * @see #lerpAngle(Vec2D, Vec2D, double)
+	 */
 	public static double lerpAngle(double a, double b, double f) {
 		return lerpAngle(new Vec2D(Math.cos(a), Math.sin(a)), new Vec2D(Math.cos(b), Math.sin(b)), f);
 	}
+	/**
+	 * Linearly interpolates between two normalized vectors, each representing an angle. This method will choose
+	 * the shortest path around the unit circle, and therefore can interpolate between positive and negative angles.
+	 * @param a The normalized direction vector for the first angle
+	 * @param b The normalized direction vector for the second angle
+	 * @param f The fraction of the way from the first angle to the second angle
+	 * @return The result of the lerp
+	 * @see #lerpAngle(double, double, double)
+	 */
 	public static double lerpAngle(Vec2D a, Vec2D b, double f) {
 		Vec2D angle = Vec2D.lerp(a, b, f);
-		return Math.atan2(angle.y, angle.x);
+		return Math.atan2(angle.getY(), angle.getX());
 	}
-	
+	/**
+	 * Restricts the absolute value of the input to the range [0, absMax]. The sign of the number will be kept.
+	 * @param val The value to restrict
+	 * @param absMax The maximum allowed absolute value
+	 * @return {@code val} if {@code Math.abs(val) <= absMax}, or {@code Math.copySign(Math.min(absMax, Math.abs(val)), val)} if not
+	 */
 	public static double clampAbs(double val, double absMax) {
 		return Math.abs(val) <= absMax ? val : Math.copySign(Math.min(absMax, Math.abs(val)), val);
 	}

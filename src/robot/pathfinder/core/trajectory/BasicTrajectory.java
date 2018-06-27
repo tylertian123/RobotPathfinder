@@ -1,6 +1,5 @@
 package robot.pathfinder.core.trajectory;
 
-import robot.pathfinder.core.Moment;
 import robot.pathfinder.core.RobotSpecs;
 import robot.pathfinder.core.TrajectoryParams;
 import robot.pathfinder.core.Waypoint;
@@ -39,7 +38,7 @@ public class BasicTrajectory {
 	 * these generated Moments. Using them, at any given time we can (roughly, but closely enough) determine
 	 * the position, velocity and acceleration the robot is supposed to be at.
 	 */
-	Moment[] moments;
+	BasicMoment[] moments;
 	Vec2D[] headingVectors;
 	
 	//Keep a copy of the robot's specs and the generation parameters
@@ -188,9 +187,9 @@ public class BasicTrajectory {
 			}
 		}
 		
-		//Create the Moment array and initialize first element to 0 position, velocity, acceleration and time
-		moments = new Moment[segmentCount];
-		moments[0] = new Moment(0, 0, 0, headings[0], 0);
+		//Create the BasicMoment array and initialize first element to 0 position, velocity, acceleration and time
+		moments = new BasicMoment[segmentCount];
+		moments[0] = new BasicMoment(0, 0, 0, headings[0], 0);
 		
 		if(isTank) {
 			pathT = new double[segmentCount];
@@ -217,10 +216,10 @@ public class BasicTrajectory {
 					moments[i - 1].setAcceleration(maxAcceleration);
 				}
 				
-				moments[i] = new Moment(accumulatedDist, vel, 0, headings[i]);
+				moments[i] = new BasicMoment(accumulatedDist, vel, 0, headings[i]);
 			}
 			else {
-				moments[i] = new Moment(accumulatedDist, theoreticalMax, 0, headings[i]);
+				moments[i] = new BasicMoment(accumulatedDist, theoreticalMax, 0, headings[i]);
 				moments[i - 1].setAcceleration(0);
 			}
 		}
@@ -263,7 +262,7 @@ public class BasicTrajectory {
 		return path;
 	}
 	
-	public Moment[] getMoments() {
+	public BasicMoment[] getMoments() {
 		return moments;
 	}
 	
@@ -271,13 +270,13 @@ public class BasicTrajectory {
 		return moments[moments.length - 1].getTime();
 	}
 	
-	public Moment get(double t) {
+	public BasicMoment get(double t) {
 		//Do binary search to find the closest approximation
 		int start = 0;
 		int end = moments.length - 1;
 		int mid;
 		
-		//If t is greater than the entire length in time of the left side, return the last Moment
+		//If t is greater than the entire length in time of the left side, return the last BasicMoment
 		if(t >= moments[moments.length - 1].getTime())
 			return moments[moments.length - 1];
 		
@@ -297,7 +296,7 @@ public class BasicTrajectory {
 			if(midTime <= t && nextTime >= t) {
 				
 				double f = (t - midTime) / (nextTime - midTime);
-				return new Moment(MathUtils.lerp(moments[mid].getPosition(), moments[mid + 1].getPosition(), f),
+				return new BasicMoment(MathUtils.lerp(moments[mid].getPosition(), moments[mid + 1].getPosition(), f),
 						MathUtils.lerp(moments[mid].getVelocity(), moments[mid + 1].getVelocity(), f),
 						MathUtils.lerp(moments[mid].getAcceleration(), moments[mid + 1].getAcceleration(), f),
 						MathUtils.lerpAngle(headingVectors[mid], headingVectors[mid + 1], f));

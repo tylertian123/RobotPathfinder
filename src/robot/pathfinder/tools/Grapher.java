@@ -9,11 +9,12 @@ import javax.swing.JFrame;
 
 import org.math.plot.Plot2DPanel;
 
-import robot.pathfinder.core.Moment;
 import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.core.path.BezierPath;
 import robot.pathfinder.core.path.Path;
+import robot.pathfinder.core.trajectory.BasicMoment;
 import robot.pathfinder.core.trajectory.BasicTrajectory;
+import robot.pathfinder.core.trajectory.TankDriveMoment;
 import robot.pathfinder.core.trajectory.TankDriveTrajectory;
 import robot.pathfinder.math.Vec2D;
 
@@ -40,7 +41,7 @@ public class Grapher {
 		for(double t = 0; t <= trajectory.totalTime(); t += dt) {
 			//Collect data
 			time[i] = t;
-			Moment m = trajectory.get(t);
+			BasicMoment m = trajectory.get(t);
 			
 			pos[i] = m.getPosition();
 			vel[i] = m.getVelocity();
@@ -57,7 +58,7 @@ public class Grapher {
 		plot.addLinePlot("Position", time, pos);
 		plot.addLinePlot("Velocity", time, vel);
 		plot.addLinePlot("Acceleration", time, acl);
-		plot.addLinePlot("Heading", time, heading);
+		//plot.addLinePlot("Heading", time, heading);
 		
 		//Create window that holds the graph
 		JFrame frame = new JFrame("Trajectory Graph");
@@ -84,15 +85,14 @@ public class Grapher {
 		for(double t = 0; t <= trajectory.totalTime(); t += dt) {
 			//Collect data
 			time[i] = t;
-			Moment lMoment = trajectory.getLeft(t);
-			Moment rMoment = trajectory.getRight(t);
+			TankDriveMoment m = trajectory.get(t);
 			
-			lPos[i] = lMoment.getPosition();
-			lVel[i] = lMoment.getVelocity();
-			lAcl[i] = lMoment.getAcceleration();
-			rPos[i] = rMoment.getPosition();
-			rVel[i] = rMoment.getVelocity();
-			rAcl[i] = rMoment.getAcceleration();
+			lPos[i] = m.getLeftPosition();
+			lVel[i] = m.getLeftVelocity();
+			lAcl[i] = m.getLeftAcceleration();
+			rPos[i] = m.getRightPosition();
+			rVel[i] = m.getRightVelocity();
+			rAcl[i] = m.getRightAcceleration();
 			
 			i++;
 		}
@@ -219,7 +219,7 @@ public class Grapher {
 		return frame;
 	}
 	
-	public static JFrame graphMoments(Moment[] moments) {
+	public static JFrame graphMoments(BasicMoment[] moments) {
 		double[] pos = new double[moments.length];
 		double[] vel = new double[moments.length];
 		double[] acl = new double[moments.length];
@@ -236,7 +236,7 @@ public class Grapher {
 		plot.addLinePlot("Velocity", vel);
 		plot.addLinePlot("Acceleration", acl);
 		
-		JFrame frame = new JFrame("Moment Graph");
+		JFrame frame = new JFrame("BasicMoment Graph");
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setContentPane(plot);
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);

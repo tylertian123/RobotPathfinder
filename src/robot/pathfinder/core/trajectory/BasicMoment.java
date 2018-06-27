@@ -1,6 +1,4 @@
-package robot.pathfinder.core;
-
-import robot.pathfinder.math.Vec2D;
+package robot.pathfinder.core.trajectory;
 
 /**
  * Represents a moment in time of a trajectory; this class contains the time, as well as the desired position,
@@ -8,16 +6,19 @@ import robot.pathfinder.math.Vec2D;
  * @author Tyler Tian
  *
  */
-public class Moment {
+public class BasicMoment implements Cloneable {
 	
 	double d, v, a;
 	double t;
 	double heading;
 	
-	Vec2D headingVec;
-	
-	public Moment() {
+	public BasicMoment() {
 		d = v = a = t = heading = 0;
+	}
+	
+	@Override
+	public BasicMoment clone() {
+		return new BasicMoment(d, v, a, heading, t);
 	}
 	
 	/**
@@ -26,7 +27,7 @@ public class Moment {
 	 * @param velocity The desired velocity
 	 * @param acceleration The desired acceleration
 	 */
-	public Moment(double position, double velocity, double acceleration, double heading) {
+	public BasicMoment(double position, double velocity, double acceleration, double heading) {
 		d = position;
 		v = velocity;
 		a = acceleration;
@@ -39,7 +40,7 @@ public class Moment {
 	 * @param acceleration The desired acceleration
 	 * @param t The point in time this moment is located
 	 */
-	public Moment(double position, double velocity, double acceleration, double heading, double t) {
+	public BasicMoment(double position, double velocity, double acceleration, double heading, double t) {
 		this(position, velocity, acceleration, heading);
 		this.t = t;
 	}

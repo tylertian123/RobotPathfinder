@@ -57,7 +57,7 @@ public class Test {
 		for(double t2 = 0; t2 <= bt.totalTime(); t2 += 0.01) {
 			//Collect data
 			time[i] = t2;
-			Moment m = bt.get(t2);
+			BasicMoment m = bt.get(t2);
 			
 			pos[i] = m.getPosition();
 			vel[i] = m.getVelocity();

@@ -238,6 +238,10 @@ public class BasicTrajectory {
 			moments[i].setTime(moments[i - 1].getTime() + dt);
 		}
 	}
+	protected BasicTrajectory(BasicMoment[] moments, Path path) {
+		this.moments = moments;
+		this.path = path;
+	}
 	
 	public Path getPath() {
 		return path;

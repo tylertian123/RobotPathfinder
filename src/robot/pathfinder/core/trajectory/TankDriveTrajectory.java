@@ -65,9 +65,11 @@ public class TankDriveTrajectory {
 		}
 	}
 	
-	protected TankDriveTrajectory(TankDriveMoment[] moments, Path path) {
+	protected TankDriveTrajectory(TankDriveMoment[] moments, Path path, RobotSpecs specs, TrajectoryParams params) {
 		this.moments = moments;
 		this.path = path;
+		this.specs = specs;
+		this.params = params;
 		
 		headingVectors = new Vec2D[moments.length];
 		for(int i = 0; i < moments.length; i ++) {
@@ -162,7 +164,9 @@ public class TankDriveTrajectory {
 			newMoments[i].setHeading(-moments[i].getHeading() + Math.PI);
 		}
 		
-		return new TankDriveTrajectory(newMoments, newPath);
+		TrajectoryParams newParams = params.clone();
+		newParams.waypoints = newPath.getWaypoints();
+		return new TankDriveTrajectory(newMoments, newPath, specs, newParams);
 	}
 	/**
 	 * Returns the front-back mirror image of this trajectory. Every forwards movement will now become
@@ -191,7 +195,9 @@ public class TankDriveTrajectory {
 		
 		Path newPath = path.mirrorFrontBack();
 		
-		return new TankDriveTrajectory(newMoments, newPath);
+		TrajectoryParams newParams = params.clone();
+		newParams.waypoints = newPath.getWaypoints();
+		return new TankDriveTrajectory(newMoments, newPath, specs, newParams);
 	}
 	/**
 	 * Returns the trajectory that, when driven, would retrace this trajectory and return the robot to its
@@ -231,10 +237,10 @@ public class TankDriveTrajectory {
 		
 		//Create new path
 		Path newPath = path.retrace();
-	
-		//Note that even though the final path looks exactly the same, the order of the waypoints is actually
-		//the opposite.
-		return new TankDriveTrajectory(newMoments, newPath);
+
+		TrajectoryParams newParams = params.clone();
+		newParams.waypoints = newPath.getWaypoints();
+		return new TankDriveTrajectory(newMoments, newPath, specs, newParams);
 	}
 	
 	public RobotSpecs getRobotSpecs() {

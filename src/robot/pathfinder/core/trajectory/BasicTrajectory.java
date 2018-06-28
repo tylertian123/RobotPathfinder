@@ -294,7 +294,7 @@ public class BasicTrajectory {
 				return new BasicMoment(MathUtils.lerp(moments[mid].getPosition(), moments[mid + 1].getPosition(), f),
 						MathUtils.lerp(moments[mid].getVelocity(), moments[mid + 1].getVelocity(), f),
 						MathUtils.lerp(moments[mid].getAcceleration(), moments[mid + 1].getAcceleration(), f),
-						MathUtils.lerpAngle(headingVectors[mid], headingVectors[mid + 1], f));
+						MathUtils.lerpAngle(headingVectors[mid], headingVectors[mid + 1], f), t);
 			}
 			//Continue the binary search if not found
 			if(midTime < t) {

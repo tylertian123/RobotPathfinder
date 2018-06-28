@@ -115,8 +115,7 @@ public class TankDriveTrajectory {
 						MathUtils.lerp(moments[mid].getRightVelocity(), moments[mid + 1].getRightVelocity(), f),
 						MathUtils.lerp(moments[mid].getLeftAcceleration(), moments[mid + 1].getLeftAcceleration(), f), 
 						MathUtils.lerp(moments[mid].getRightAcceleration(), moments[mid + 1].getRightAcceleration(), f),
-						MathUtils.lerpAngle(headingVectors[mid], headingVectors[mid + 1], f),
-						MathUtils.lerp(moments[mid].getTime(), moments[mid + 1].getTime(), f));
+						MathUtils.lerpAngle(headingVectors[mid], headingVectors[mid + 1], f), t);
 			}
 			//Continue the binary search if not found
 			if(midTime < t) {

@@ -1,8 +1,11 @@
 package robot.pathfinder.core.trajectory;
 
 /**
- * Represents a moment in time of a trajectory; this class contains the time, as well as the desired position,
- * velocity, and acceleration at that point in time.
+ * A class that holds information about a robot at a moment in time. 
+ * <p>
+ * Moment objects contain information about the position, velocity, acceleration and direction of a robot
+ * at a certain time. They're returned by trajectories when querying a specific time.
+ * </p>
  * @author Tyler Tian
  *
  */
@@ -12,6 +15,9 @@ public class BasicMoment implements Cloneable {
 	double t;
 	double heading;
 	
+	/**
+	 * Constructs a new moment with all fields set to 0.s
+	 */
 	public BasicMoment() {
 		d = v = a = t = heading = 0;
 	}

@@ -208,4 +208,30 @@ public class MathUtils {
 	public static double clampAbs(double val, double absMax) {
 		return Math.abs(val) <= absMax ? val : Math.copySign(Math.min(absMax, Math.abs(val)), val);
 	}
+	/**
+	 * Converts an angle in radians to be in the range (-pi, pi].
+	 * @param theta An angle in radians
+	 * @return The same angle, converted to be in the range (-pi, pi]
+	 */
+	public static double restrictAngle(double theta) {
+		if(theta <= Math.PI && theta > -Math.PI) {
+			return theta;
+		}
+		while(theta > Math.PI) {
+			theta -= Math.PI * 2;
+		}
+		while(theta <= -Math.PI) {
+			theta += Math.PI * 2;
+		}
+		return theta;
+	}
+	/**
+	 * Reflects an angle in radians across the line represented by another angle in radians.
+	 * @param theta The angle to reflect
+	 * @param ref The angle representing the line to reflect across
+	 * @return The reflected angle
+	 */
+	public static double mirrorAngle(double theta, double ref) {
+		return restrictAngle(theta - 2 * (theta - ref));
+	}
 }

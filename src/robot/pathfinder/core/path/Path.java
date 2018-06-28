@@ -299,19 +299,19 @@ abstract public class Path {
 	}
 	
 	/**
-	 * Returns the path mirrored around the Y axis. Every left turn in the path will now become a right turn,
-	 * and vice versa.
+	 * Returns a modified path, in which every left turn becomes a right turn. Note that is operation is not the
+	 * same as reflecting across the Y axis, unless the first waypoint has a heading of pi/2.
 	 * @return The mirrored path
 	 */
 	public Path mirrorLeftRight() {
-		//Set the reference point as the first waypoint
-		Vec2D refPoint = new Vec2D(waypoints[0]);
+		//To make it so that left and right turns switch, we have to reflect every waypoint across a line
+		//This line has the angle of the first waypoint, so calculate its vector using trig functions
+		Vec2D refLine = new Vec2D(Math.cos(waypoints[0].getHeading()), Math.sin(waypoints[0].getHeading()));
 		Waypoint[] newWaypoints = new Waypoint[waypoints.length];
 		
 		for(int i = 0; i < waypoints.length; i ++) {
-			//Negate the relative x coordinates and flip the angles
-			//Negating and adding 180 degrees essentially mirrors the angle across the Y axis
-			newWaypoints[i] = new Waypoint(-refPoint.relative(waypoints[i].asVector()).getX(), waypoints[i].getY(), -waypoints[i].getHeading() + Math.PI);
+			//Mirror every waypoint and angle across the reference line
+			newWaypoints[i] = new Waypoint(waypoints[i].asVector().reflect(refLine), MathUtils.mirrorAngle(waypoints[i].getHeading(), waypoints[0].getHeading()));
 		}
 		//Make and return new path
 		Path path = constructPath(type, newWaypoints, alpha);
@@ -320,19 +320,22 @@ abstract public class Path {
 		return path;
 	}
 	/**
-	 * Returns the path mirrored around the X axis. Forward movements will now become backward movements and 
-	 * vice versa.
+	 * Returns a modified path, in which every forward movement becomes a backward movement. Note that this 
+	 * operation is not the same as reflecting across the X axis, unless the first waypoint has a heading of
+	 * pi/2.
 	 * @return The mirrored path
 	 */
 	public Path mirrorFrontBack() {
-		//Set the reference point for mirroring to be the first waypoint
-		Vec2D refPoint = new Vec2D(waypoints[0]);
+
+		//Like in mirrorLeftRight, we have to first find our reference line
+		//That line has angle exactly 90 degrees from the heading of the first waypoint
+		//Utilize the property that cos(a + pi/2) = -sin(a) and sin(a + pi/2) = cos(a)
+		Vec2D refLine = new Vec2D(-Math.sin(waypoints[0].getHeading()), Math.cos(waypoints[0].getHeading()));
 		Waypoint[] newWaypoints = new Waypoint[waypoints.length];
 		
 		for(int i = 0; i < waypoints.length; i ++) {
-			//Negate the relative y coordinates and angles
-			//Negating the angles essentially mirrors it across the X axis
-			newWaypoints[i] = new Waypoint(waypoints[i].getX(), -refPoint.relative(waypoints[i].asVector()).getY(), -waypoints[i].getHeading());
+			//Reflect everything across the line that has angle 90 degrees more than the first waypoint's heading
+			newWaypoints[i] = new Waypoint(waypoints[i].asVector().reflect(refLine), MathUtils.mirrorAngle(waypoints[i].getHeading(), waypoints[0].getHeading() + Math.PI / 2));
 		}
 		//Construct new path
 		Path path = constructPath(type, newWaypoints, alpha);

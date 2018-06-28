@@ -130,14 +130,6 @@ public class Vec2D {
 		return Vec2D.dist(this, vec);
 	}
 	/**
-	 * Calculates the coordinates of the vector given, relative to this vector.
-	 * @param vec The vector whose coordinates will be taken
-	 * @return The relative coordinates of the vector to this vector
-	 */
-	public Vec2D relative(Vec2D vec) {
-		return new Vec2D(vec.x - this.x, vec.y - this.y);
-	}
-	/**
 	 * Calculates the magnitude of this vector.
 	 * @return The magnitude of this vector
 	 */
@@ -151,5 +143,32 @@ public class Vec2D {
 		double mag = magnitude();
 		x /= mag;
 		y /= mag;
+	}
+	/**
+	 * Calculates the dot product of this vector and the specified vector.
+	 * @param vec The vector to take the dot product with
+	 * @return The dot product
+	 */
+	public double dot(Vec2D vec) {
+		return x * vec.x + y * vec.y;
+	}
+	/**
+	 * Projects this vector onto another. Equivalent to <code>proj</code><i><sub>v&#8407</sub>u&#8407</i>, where
+	 * <i>u&#8407</i> is this vector and <i>v&#8407</i> is the vector provided.
+	 * @param vec The vector to project onto
+	 * @return The projection of this vector onto the provided vector
+	 */
+	public Vec2D proj(Vec2D vec) {
+		double mag = dot(vec) / vec.magnitude();
+		return Vec2D.normalized(vec).multiply(mag);
+	}
+	/**
+	 * Reflects this vector across the line defined by another. 
+	 * @param vec The vector representing the line to reflect across
+	 * @return The result of the reflection
+	 */
+	public Vec2D reflect(Vec2D vec) {
+		//Nice geometrical property
+		return proj(vec).multiply(2).subtract(this);
 	}
 }

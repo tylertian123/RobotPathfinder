@@ -352,11 +352,12 @@ public class BasicTrajectory {
 	
 	public BasicTrajectory mirrorLeftRight() {
 		Path newPath = path.mirrorLeftRight();
+		double refAngle = params.waypoints[0].getHeading();
 		
 		BasicMoment[] newMoments = new BasicMoment[moments.length];
 		for(int i = 0; i < newMoments.length; i ++) {
 			newMoments[i] = moments[i].clone();
-			newMoments[i].setHeading(-moments[i].getHeading() + Math.PI);
+			newMoments[i].setHeading(MathUtils.mirrorAngle(moments[i].getHeading(), refAngle));
 		}
 		
 		TrajectoryParams newParams = params.clone();
@@ -377,11 +378,13 @@ public class BasicTrajectory {
 	
 	public BasicTrajectory mirrorFrontBack() {
 		Path newPath = path.mirrorFrontBack();
+		double refAngle = params.waypoints[0].getHeading() + Math.PI / 2;
 		
 		BasicMoment[] newMoments = new BasicMoment[moments.length];
 		for(int i = 0; i < newMoments.length; i ++) {
 			newMoments[i] = new BasicMoment(-moments[i].getPosition(), -moments[i].getVelocity(), 
-					-moments[i].getAcceleration(), -moments[i].getHeading(), moments[i].getTime());
+					-moments[i].getAcceleration(), MathUtils.mirrorAngle(moments[i].getHeading(), refAngle),
+					moments[i].getTime());
 		}
 		
 		TrajectoryParams newParams = params.clone();

@@ -11,7 +11,7 @@ import robot.pathfinder.util.Pair;
 /**
  * An abstract class that represents a path for the robot to follow. Paths are different from trajectories;
  * they only contain information about the locations the robot will pass through. To follow a path, use a
- * trajectory.
+ * trajectory. This class is the superclass of all path classes.
  * @author Tyler Tian
  *
  */

@@ -8,8 +8,8 @@ package robot.pathfinder.core.path;
  */
 public enum PathType {
 	/**
-	 * The path spline consists of segments of B&#xE9zier curves. Like {@link CUBIC_HERMITE}, this kind of path
-	 * is faster to generate because of their simplicity. However, as B&#xE9zier spline segments cannot have their
+	 * The path spline consists of segments of B&#xE9;zier curves. Like {@link CUBIC_HERMITE}, this kind of path
+	 * is faster to generate because of their simplicity. However, as B&#xE9;zier spline segments cannot have their
 	 * second derivatives constrained, these paths may have small jumps in acceleration where two segments meet.
 	 */
 	BEZIER,
@@ -17,7 +17,7 @@ public enum PathType {
 	 * The path spline consists of segments of quintic (fifth order) hermite polynomials. Trajectories using these
 	 * paths are relatively slower to generate because of their complexity, but realistically this will make a
 	 * very small difference. These paths are smoother than other types, and thus it is the recommended type for
-	 * trajectory generation (as well as the default for {@link TrajectoryParams}.
+	 * trajectory generation (as well as the default for {@link robot.pathfinder.core.TrajectoryParams TrajectoryParams}.
 	 */
 	QUINTIC_HERMITE,
 	/**
@@ -34,7 +34,7 @@ public enum PathType {
 	 * <li>For {@link #QUINTIC_HERMITE}, it is {@link QuinticHermitePath}{@code .class};</li>
 	 * <li>For {@link #CUBIC_HERMITE}, it is {@link CubicHermitePath}{@code .class};</li>
 	 * </ul>
-	 * @return
+	 * @return The specific class of a path generated with this type
 	 */
 	public Class<?> getPathClass() {
 		switch(this) {

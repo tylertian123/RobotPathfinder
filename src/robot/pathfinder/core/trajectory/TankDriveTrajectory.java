@@ -189,7 +189,7 @@ public class TankDriveTrajectory {
 	 * <p>
 	 * Note that all moment objects are cloned before being returned, therefore it is safe to modify a moment.
 	 * </p>
-	 * @param t
+	 * @param t The time
 	 * @return The moment object associated with the specified time
 	 */
 	public TankDriveMoment get(double t) {

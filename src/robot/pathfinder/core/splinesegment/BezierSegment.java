@@ -3,7 +3,7 @@ package robot.pathfinder.core.splinesegment;
 import robot.pathfinder.math.Vec2D;
 
 /**
- * A class representing a cubic B&#xE9zier curve. Can be used as a {@link SplineSegment}.
+ * A class representing a cubic B&#xE9;zier curve. Can be used as a {@link SplineSegment}.
  * @author Tyler Tian
  *
  */
@@ -11,7 +11,7 @@ public class BezierSegment implements SplineSegment {
 	Vec2D[] controlPoints;
 	
 	/**
-	 * Constructs a new cubic B&#xE9zier with the specified control points.
+	 * Constructs a new cubic B&#xE9;zier with the specified control points.
 	 * @param a The first control point
 	 * @param b The second control point
 	 * @param c The third control point
@@ -26,7 +26,7 @@ public class BezierSegment implements SplineSegment {
 	}
 	
 	/**
-	 * Returns a new cubic B&#xE9zier with the specified start and end points, and derivatives at those points.
+	 * Returns a new cubic B&#xE9;zier with the specified start and end points, and derivatives at those points.
 	 * @param at0 The starting control point
 	 * @param at1 The ending control point
 	 * @param derivAt0 The derivative at the starting control point

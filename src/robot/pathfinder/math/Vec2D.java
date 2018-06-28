@@ -153,8 +153,8 @@ public class Vec2D {
 		return x * vec.x + y * vec.y;
 	}
 	/**
-	 * Projects this vector onto another. Equivalent to <code>proj</code><i><sub>v&#8407</sub>u&#8407</i>, where
-	 * <i>u&#8407</i> is this vector and <i>v&#8407</i> is the vector provided.
+	 * Projects this vector onto another. Equivalent to <code>proj</code><i><sub>v</sub>u</i>, where
+	 * <i>u</i> is this vector and <i>v</i> is the vector provided.
 	 * @param vec The vector to project onto
 	 * @return The projection of this vector onto the provided vector
 	 */

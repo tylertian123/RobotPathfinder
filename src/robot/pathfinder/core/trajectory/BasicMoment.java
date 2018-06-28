@@ -8,7 +8,7 @@ package robot.pathfinder.core.trajectory;
  * </p>
  * <p>
  * Note that the units used for these moment objects are completely decided by which units are used in a trajectory's
- * {@link RobotSpecs} during generation. For example, if the unit for max velocity was in m/s, then the unit used
+ * {@link robot.pathfinder.core.RobotSpecs RobotSpecs} during generation. For example, if the unit for max velocity was in m/s, then the unit used
  * here for velocity would also be m/s.
  * </p>
  * @author Tyler Tian
@@ -165,7 +165,7 @@ public class BasicMoment implements Cloneable {
 	 * returning the heading when the velocity is positive, and returning the negative of the heading when the 
 	 * velocity is negative.
 	 * </p>
-	 * @return
+	 * @return The direction the robot is facing
 	 */
 	public double getFacing() {
 		return v >= 0 ? heading : -heading;

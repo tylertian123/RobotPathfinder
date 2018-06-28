@@ -9,7 +9,7 @@ package robot.pathfinder.core.trajectory;
  * </p>
  * <p>
  * Note that the units used for these moment objects are completely decided by which units are used in a trajectory's
- * {@link RobotSpecs} during generation. For example, if the unit for max velocity was in m/s, then the unit used
+ * {@link robot.pathfinder.core.RobotSpecs RobotSpecs} during generation. For example, if the unit for max velocity was in m/s, then the unit used
  * here for velocity would also be m/s.
  * </p>
  * @author Tyler Tian
@@ -232,7 +232,7 @@ public class TankDriveMoment implements Cloneable {
 	 * returning the heading when at least one wheel's velocity is positive, returning the negative of the heading
 	 * when both wheels have negative velocities.
 	 * </p>
-	 * @return
+	 * @return The direction the robot is facing
 	 */
 	public double getFacing() {
 		return lv >= 0 || rv >= 0 ? heading : -heading;

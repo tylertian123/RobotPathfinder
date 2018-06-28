@@ -312,7 +312,7 @@ public class BasicTrajectory {
 	 * Returns whether this trajectory was generated as the base trajectory for a {@link TankDriveTrajectory}.
 	 * If this method returns {@code false}, attempting to use this trajectory to construct a {@link TankDriveTrajectory}
 	 * will result in an {@link IllegalArgumentException} being thrown.
-	 * @return
+	 * @return Whether this trajectory was generated as the base trajectory for a {@link TankDriveTrajectory}.
 	 */
 	public boolean isTank() {
 		return isTank;
@@ -345,7 +345,7 @@ public class BasicTrajectory {
 	 * <p>
 	 * Note that all moment objects are cloned before being returned, therefore it is safe to modify a moment.
 	 * </p>
-	 * @param t
+	 * @param t The time
 	 * @return The moment object associated with the specified time
 	 */
 	public BasicMoment get(double t) {

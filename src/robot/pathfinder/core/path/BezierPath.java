@@ -5,7 +5,7 @@ import robot.pathfinder.core.splinesegment.BezierSegment;
 import robot.pathfinder.math.Vec2D;
 
 /**
- * A robot path composed of multiple B&#xE9ziers. For more information, see {@link PathType}.
+ * A robot path composed of multiple B&#xE9;ziers. For more information, see {@link PathType}.
  * @author Tyler Tian
  *
  */

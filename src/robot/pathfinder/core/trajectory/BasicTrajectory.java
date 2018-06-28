@@ -309,12 +309,21 @@ public class BasicTrajectory {
 	}
 	
 	/**
-	 * Retrieves the moment object associated with the specified time. 
+	 * Retrieves the moment object associated with the specified time. If there is no moment object with the 
+	 * same time as the time specified, the result will be approximated with linear interpolation.
+	 * <p>
+	 * Moment objects contain information about the position, velocity, acceleration and direction of a robot
+	 * at a certain time. They're returned by trajectories when querying a specific time. For more information,
+	 * see the {@link BasicMoment} class.
+	 * </p>
+	 * <p>
+	 * Note that all moment objects are cloned before being returned, therefore it is safe to modify a moment.
+	 * </p>
 	 * @param t
 	 * @return
 	 */
 	public BasicMoment get(double t) {
-		//Do binary search to find the closest approximation
+		//This method retrieves the moment via binary search
 		int start = 0;
 		int end = moments.length - 1;
 		int mid;
@@ -328,6 +337,7 @@ public class BasicTrajectory {
 			
 			double midTime = moments[mid].getTime();
 			
+			//Check for a match
 			if(midTime == t)
 				return moments[mid].clone();
 			//If we reached the end, return the end
@@ -335,13 +345,14 @@ public class BasicTrajectory {
 				return moments[mid].clone();
 			
 			double nextTime = moments[mid + 1].getTime();
-			
+			//If there wasn't a match, check if the time specified is in between two existing times
 			if(midTime <= t && nextTime >= t) {
-				
+				//If yes then interpolate to get approximation
 				double f = (t - midTime) / (nextTime - midTime);
 				return new BasicMoment(MathUtils.lerp(moments[mid].getPosition(), moments[mid + 1].getPosition(), f),
 						MathUtils.lerp(moments[mid].getVelocity(), moments[mid + 1].getVelocity(), f),
 						MathUtils.lerp(moments[mid].getAcceleration(), moments[mid + 1].getAcceleration(), f),
+						//Use lerpAngle to avoid buggy behavior around 180 degrees
 						MathUtils.lerpAngle(headingVectors[mid], headingVectors[mid + 1], f), t);
 			}
 			//Continue the binary search if not found
@@ -356,27 +367,51 @@ public class BasicTrajectory {
 		}
 	}
 	
+	/**
+	 * Returns whether this trajectory was generated as the base trajectory for a {@link TankDriveTrajectory}.
+	 * If this method returns {@code false}, attempting to use this trajectory to construct a {@link TankDriveTrajectory}
+	 * will result in an {@link IllegalArgumentException} being thrown.
+	 * @return
+	 */
 	public boolean isTank() {
 		return isTank;
 	}
-	
+	/**
+	 * Returns the {@link RobotSpecs} object used to generate this trajectory.
+	 * @return The {@link RobotSpecs} object used to generate this trajectory
+	 */
 	public RobotSpecs getRobotSpecs() {
 		return robotSpecs;
 	}
+	/**
+	 * Returns the {@link TrajectoryParams} object used to generate this trajectory.
+	 * @return The {@link TrajectoryParams} object used to generate this trajectory
+	 */
 	public TrajectoryParams getGenerationParams() {
 		return params;
 	}
 	
+	/**
+	 * Returns a modified trajectory in which every left turn becomes a right turn. Note that is operation is not 
+	 * the same as reflecting across the Y axis, unless the first waypoint has a heading of pi/2.
+	 * @return The mirrored trajectory
+	 */
 	public BasicTrajectory mirrorLeftRight() {
+		//Construct new path
 		Path newPath = path.mirrorLeftRight();
+		//This is the angle to reflect all angles across
 		double refAngle = params.waypoints[0].getHeading();
 		
 		BasicMoment[] newMoments = new BasicMoment[moments.length];
+		//Basic trajectories don't change much when left and right turns are reversed
+		//Everything stays the same besides the headings, which are reflected across the line that has the same
+		//angle as the first waypoint's heading.
 		for(int i = 0; i < newMoments.length; i ++) {
 			newMoments[i] = moments[i].clone();
 			newMoments[i].setHeading(MathUtils.mirrorAngle(moments[i].getHeading(), refAngle));
 		}
 		
+		//The params have to be updated since the waypoints are changed
 		TrajectoryParams newParams = params.clone();
 		newParams.waypoints = newPath.getWaypoints();
 		
@@ -384,7 +419,8 @@ public class BasicTrajectory {
 		if(pathRadius != null) {
 			newPathRadius = new double[pathRadius.length];
 			
-			//Since every left turn becomes a right turn, the radius will also be negative at every point
+			//Since every left turn becomes a right turn, the curvature and thus the radius will also be negative 
+			//at every point
 			for(int i = 0; i < newPathRadius.length; i ++) {
 				newPathRadius[i] = -pathRadius[i];
 			}
@@ -392,13 +428,21 @@ public class BasicTrajectory {
 		
 		return new BasicTrajectory(newMoments, newPath, robotSpecs, newParams, pathT, newPathRadius);
 	}
-	
+	/**
+	 * Returns a modified trajectory, in which every forward movement becomes a backward movement. Note that this 
+	 * operation is not the same as reflecting across the X axis, unless the first waypoint has a heading of
+	 * pi/2.
+	 * @return The mirrored trajectory
+	 */
 	public BasicTrajectory mirrorFrontBack() {
 		Path newPath = path.mirrorFrontBack();
+		//This time, mirror all angles across the line perpendicular to the one at the first waypoint
 		double refAngle = params.waypoints[0].getHeading() + Math.PI / 2;
 		
 		BasicMoment[] newMoments = new BasicMoment[moments.length];
 		for(int i = 0; i < newMoments.length; i ++) {
+			//Since we're now driving backwards, every position, velocity and acceleration is now negative
+			//The angle is reflected across the line perpendicular to the one at the first waypoint
 			newMoments[i] = new BasicMoment(-moments[i].getPosition(), -moments[i].getVelocity(), 
 					-moments[i].getAcceleration(), MathUtils.mirrorAngle(moments[i].getHeading(), refAngle),
 					moments[i].getTime());
@@ -409,15 +453,30 @@ public class BasicTrajectory {
 		
 		return new BasicTrajectory(newMoments, newPath, robotSpecs, newParams, pathT, pathRadius.clone());
 	}
-	
+	/**
+	 * Returns a trajectory that, when driven, will retrace the steps of this trajectory exactly.
+	 * @return The retraced trajectory
+	 */
 	public BasicTrajectory retrace() {
 		Path newPath = path.retrace();
 		
 		BasicMoment[] newMoments = new BasicMoment[moments.length];
+		//keep a reference to the last moment for convenience
 		BasicMoment lastMoment = moments[moments.length - 1];
 		for(int i = 0; i < newMoments.length; i ++) {
+			//Because now the trajectory starts from the end, every moment is reversed
 			BasicMoment currentMoment = moments[moments.length - 1 - i];
-			
+
+			/*
+			 * To generate the new moments, first the order of the moments has to be reversed, since we
+			 * are now starting from the end. The first moments should have less distance than the later moments,
+			 * so when iterating backwards, the position of the moment is subtracted from the total distance,
+			 * then negated since we're driving backwards. Velocity is also negated, but since it's not accumulative,
+			 * it does not need to be subtracted from the total. Finally, acceleration is negated once for driving
+			 * backwards, and negated again because the direction of time is reversed, and together they cancel
+			 * out, resulting in no change. The heading is flipped 180 degrees, and the time is subtracted
+			 * from the total.
+			 */
 			newMoments[i] = new BasicMoment(-(lastMoment.getPosition() - currentMoment.getPosition()), 
 					-currentMoment.getVelocity(), currentMoment.getAcceleration(), 
 					(currentMoment.getHeading() + Math.PI) / (2 * Math.PI), 
@@ -433,7 +492,8 @@ public class BasicTrajectory {
 			newPathRadius = new double[pathRadius.length];
 			newPathT = new double[pathT.length];
 			
-			//Since now we start from the end, the order of these are reversed
+			//Since now we start from the end, the order of path radiuses and t values are reversed
+			//But since left turns remain left turns, curvature and thus the radius stays the same
 			for(int i = 0; i < newPathRadius.length; i ++) {
 				newPathRadius[i] = pathRadius[pathRadius.length - 1 - i];
 				newPathT[i] = pathT[pathT.length - 1 - i];

@@ -159,8 +159,9 @@ public class MathUtils {
 				Math.pow(xDeriv * xDeriv + yDeriv * yDeriv, 3.0/2.0);
 	}
 	/**
-	 * Linearly interpolates between two scalars. Note that this method should not be used if interpolating 
-	 * between angles; use {@link #lerpAngle(double, double, double)} or {@link #lerpAngle(Vec2D, Vec2D, double)} instead.
+	 * Linearly interpolates between two scalars. Note due to possible discontinuities in angles, this method 
+	 * should not be used if interpolating between angles; use {@link #lerpAngle(double, double, double)} or 
+	 * {@link #lerpAngle(Vec2D, Vec2D, double)} instead.
 	 * @param a The first number
 	 * @param b The second number
 	 * @param f The fraction of the way from the first number to the second number

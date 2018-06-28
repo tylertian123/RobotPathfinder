@@ -18,8 +18,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
@@ -30,6 +30,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -44,13 +45,16 @@ import javax.swing.table.DefaultTableModel;
 
 import com.sun.glass.events.KeyEvent;
 
-import robot.pathfinder.BezierPath;
-import robot.pathfinder.TankDriveTrajectory;
-import robot.pathfinder.TrajectoryGenerationException;
-import robot.pathfinder.Waypoint;
+import robot.pathfinder.core.RobotSpecs;
+import robot.pathfinder.core.TrajectoryParams;
+import robot.pathfinder.core.Waypoint;
+import robot.pathfinder.core.path.Path;
+import robot.pathfinder.core.path.PathType;
+import robot.pathfinder.core.trajectory.BasicTrajectory;
+import robot.pathfinder.core.trajectory.TankDriveTrajectory;
 
 /**
- * A GUI tool build with Swing to help visualize trajectories. 
+ * A GUI tool built with Swing to help visualize trajectories. 
  * @author Tyler Tian
  *
  */
@@ -64,15 +68,19 @@ public class TrajectoryVisualizationTool {
 	static JTextField waypointY = new JTextField();
 	static JTextField waypointHeading = new JTextField();
 	static JPanel waypointPanel;
+
+	static int pathSamples = 200;
+	static int trajSamples = 500;
+	static JTextField pathSamplesField = new JTextField(String.valueOf(pathSamples));
+	static JTextField trajSamplesField = new JTextField(String.valueOf(trajSamples));
+	static JPanel sampleCountPanel;
 	
-	static JTextField baseWidth = new JTextField();
+	static JTextField baseWidth = new JTextField("0");
 	static JTextField alpha = new JTextField();
-	static JTextField segments = new JTextField();
+	static JTextField segments = new JTextField("1000");
 	static JTextField maxVelocity = new JTextField();
 	static JTextField maxAcceleration = new JTextField();
-	static JTextField maxDeceleration = new JTextField();
-	static JTextField roundingLimit = new JTextField("1.0e-5");
-	static JCheckBox fastGraphing = new JCheckBox("Fast Graphing");
+	static JTextField roundingLimit = new JTextField("1.0e-6");
 	static JPanel argumentsPanel;
 	
 	static JMenuBar menuBar;
@@ -80,10 +88,13 @@ public class TrajectoryVisualizationTool {
 	
 	static ArrayList<Waypoint> waypoints = new ArrayList<Waypoint>();
 	
-	static final double PATH_DT_DEFAULT = 0.001;
-	static final double TRAJ_DT_DEFAULT = 0.001;
-	static final double PATH_DT_FAST = 0.02;
-	static final double TRAJ_DT_FAST = 0.05;
+	static final String QHERMITE = "Q";
+	static final String CHERMITE = "C";
+	static final String BEZIER = "B";
+	JRadioButton quinticHermiteButton, cubicHermiteButton, bezierButton;
+	static PathType selectedType = PathType.QUINTIC_HERMITE;
+	
+	JCheckBox isTank;
 	
 	static final String[] COLUMN_NAMES = new String[] {
 			"X Position",
@@ -186,7 +197,7 @@ public class TrajectoryVisualizationTool {
 		waypointY.setPreferredSize(new Dimension(100, 20));
 		waypointHeading.setPreferredSize(new Dimension(100, 20));
 		waypointPanel = new JPanel();
-		waypointPanel.setLayout(new BoxLayout(waypointPanel, BoxLayout.PAGE_AXIS));
+		waypointPanel.setLayout(new BoxLayout(waypointPanel, BoxLayout.Y_AXIS));
 		waypointPanel.add(new JLabel("Waypoint X"));
 		waypointPanel.add(waypointX);
 		waypointPanel.add(new JLabel("Waypoint Y"));
@@ -209,42 +220,73 @@ public class TrajectoryVisualizationTool {
 		Dimension textFieldSize = new Dimension(75, 20);
 		maxVelocity.setPreferredSize(textFieldSize);
 		maxAcceleration.setPreferredSize(textFieldSize);
-		maxDeceleration.setPreferredSize(textFieldSize);
 		baseWidth.setPreferredSize(textFieldSize);
 		alpha.setPreferredSize(textFieldSize);
 		segments.setPreferredSize(textFieldSize);
 		roundingLimit.setPreferredSize(textFieldSize);
 		
 		JPanel subPanel1 = new JPanel();
-		subPanel1.setLayout(new BoxLayout(subPanel1, BoxLayout.PAGE_AXIS));
+		subPanel1.setLayout(new BoxLayout(subPanel1, BoxLayout.Y_AXIS));
 		subPanel1.add(new JLabel("Maximum Velocity"));
 		subPanel1.add(maxVelocity);
 		subPanel1.add(new JLabel("Maximum Acceleration"));
 		subPanel1.add(maxAcceleration);
 		JPanel subPanel2 = new JPanel();
-		subPanel2.setLayout(new BoxLayout(subPanel2, BoxLayout.PAGE_AXIS));
+		subPanel2.setLayout(new BoxLayout(subPanel2, BoxLayout.Y_AXIS));
 		subPanel2.add(new JLabel("Base Plate Width"));
 		subPanel2.add(baseWidth);
 		subPanel2.add(new JLabel("Alpha"));
 		subPanel2.add(alpha);
 		JPanel subPanel3 = new JPanel();
-		subPanel3.setLayout(new BoxLayout(subPanel3, BoxLayout.PAGE_AXIS));
+		subPanel3.setLayout(new BoxLayout(subPanel3, BoxLayout.Y_AXIS));
 		subPanel3.add(new JLabel("Number of Segments"));
 		subPanel3.add(segments);
 		subPanel3.add(new JLabel("Rounding Limit"));
 		subPanel3.add(roundingLimit);
 		JPanel subPanel4 = new JPanel();
-		subPanel4.setLayout(new BoxLayout(subPanel4, BoxLayout.PAGE_AXIS));
-		subPanel4.add(new JLabel("(Optional) Max Deceleration"));
-		subPanel4.add(maxDeceleration);
-		subPanel4.add(Box.createRigidArea(new Dimension(0, 12)));
-		fastGraphing.setFont(new JLabel().getFont());
-		subPanel4.add(fastGraphing);
+		subPanel4.setLayout(new BoxLayout(subPanel4, BoxLayout.Y_AXIS));
+		ActionListener changePathType = e -> {
+			switch(e.getActionCommand()) {
+			case QHERMITE:
+				selectedType = PathType.QUINTIC_HERMITE;
+				break;
+			case CHERMITE:
+				selectedType = PathType.CUBIC_HERMITE;
+				break;
+			case BEZIER:
+				selectedType = PathType.BEZIER;
+				break;
+			default: System.err.println("Error: Unrecognized path type"); break;
+			}
+		};
+		quinticHermiteButton = new JRadioButton("Quintic Hermite");
+		quinticHermiteButton.setActionCommand(QHERMITE);
+		quinticHermiteButton.setSelected(true);
+		quinticHermiteButton.addActionListener(changePathType);
+		cubicHermiteButton = new JRadioButton("Cubic Hermite");
+		cubicHermiteButton.setActionCommand(CHERMITE);
+		cubicHermiteButton.addActionListener(changePathType);
+		bezierButton = new JRadioButton("<html>B&#xe9;zier</html>");
+		bezierButton.setActionCommand(BEZIER);
+		bezierButton.addActionListener(changePathType);
+		ButtonGroup pathTypeSelector = new ButtonGroup();
+		pathTypeSelector.add(quinticHermiteButton);
+		pathTypeSelector.add(cubicHermiteButton);
+		pathTypeSelector.add(bezierButton);
+		subPanel4.add(quinticHermiteButton);
+		subPanel4.add(cubicHermiteButton);
+		subPanel4.add(bezierButton);
+		JPanel subPanel5 = new JPanel();
+		subPanel5.setLayout(new BoxLayout(subPanel5, BoxLayout.Y_AXIS));
+		isTank = new JCheckBox("Tank Drive");
+		isTank.setSelected(true);
+		subPanel5.add(isTank);
 		
 		argumentsPanel.add(subPanel1);
 		argumentsPanel.add(subPanel2);
 		argumentsPanel.add(subPanel3);
 		argumentsPanel.add(subPanel4);
+		argumentsPanel.add(subPanel5);
 		
 		mainPanel.add(argumentsPanel, BorderLayout.CENTER);
 		
@@ -362,11 +404,11 @@ public class TrajectoryVisualizationTool {
 			double base, a;
 			
 			try {
-				base = Double.parseDouble(baseWidth.getText());
+				base = isTank.isSelected() ? Double.parseDouble(baseWidth.getText()) : 0;
 				a = Double.parseDouble(alpha.getText());
 			}
 			catch(NumberFormatException e1) {
-				JOptionPane.showMessageDialog(mainFrame, "Error: Please enter a valid base plate width and alpha value.", "Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(mainFrame, isTank.isSelected() ? "Error: Please enter a valid alpha value and base plate width." : "Error: Please enter a valid alpha value.", "Error", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			
@@ -380,10 +422,10 @@ public class TrajectoryVisualizationTool {
 				waypointArray[i] = waypoints.get(i);
 			}
 			
-			BezierPath path = new BezierPath(waypointArray, a);
+			Path path = Path.constructPath(selectedType, waypointArray, a);
 			path.setBaseRadius(base / 2);
 			
-			JFrame pathFrame = Grapher.graphPath(path, fastGraphing.isSelected() ? PATH_DT_FAST : PATH_DT_DEFAULT);
+			JFrame pathFrame = Grapher.graphPath(path, 1.0 / pathSamples);
 			pathFrame.addWindowListener(new WindowAdapter() {
 				@Override
 				public void windowClosing(WindowEvent e) {
@@ -404,19 +446,13 @@ public class TrajectoryVisualizationTool {
 		
 		JButton generateButton = new JButton("Generate");
 		generateButton.addActionListener(e -> {
-			double maxVel, maxAccel, maxDecel, base, a, minUnit;
+			double maxVel, maxAccel, base, a, minUnit;
 			int segmentCount;
 			
 			try {
 				maxVel = Double.parseDouble(maxVelocity.getText());
 				maxAccel = Double.parseDouble(maxAcceleration.getText());
-				if(maxDeceleration.getText().equals("")) {
-					maxDecel = maxAccel;
-				}
-				else {
-					maxDecel = Double.parseDouble(maxDeceleration.getText());
-				}
-				base = Double.parseDouble(baseWidth.getText());
+				base = isTank.isSelected() ? Double.parseDouble(baseWidth.getText()) : 0;
 				a = Double.parseDouble(alpha.getText());
 				segmentCount = Integer.parseInt(segments.getText());
 				minUnit = Double.parseDouble(roundingLimit.getText());
@@ -436,47 +472,31 @@ public class TrajectoryVisualizationTool {
 				waypointArray[i] = waypoints.get(i);
 			}
 			
-			TankDriveTrajectory trajectory = null;
-			try {
-				TankDriveTrajectory.setSolverRoundingLimit(minUnit);
-				trajectory = new TankDriveTrajectory(waypointArray, maxVel, maxAccel, maxDecel, base, a, segmentCount);
-			}
-			catch(TrajectoryGenerationException pge) {
-				int ret = JOptionPane.showConfirmDialog(mainFrame, "Error: Trajectory generation is impossible with current constraints.\nProceed anyways with only the path?", "Error", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-				if(ret == JOptionPane.NO_OPTION)
-					return;
-				
-				BezierPath path = new BezierPath(waypointArray, a);
-				path.setBaseRadius(base / 2);
-				
-				JFrame pathFrame = Grapher.graphPath(path, fastGraphing.isSelected() ? PATH_DT_FAST : PATH_DT_DEFAULT);
-				pathFrame.addWindowListener(new WindowAdapter() {
-					@Override
-					public void windowClosing(WindowEvent e) {
-						try {
-							UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-						} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-								| UnsupportedLookAndFeelException e1) {
-							e1.printStackTrace();
-						}
-						mainFrame.setVisible(true);
-					}
-				});
-				
-				try {
-					UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-						| UnsupportedLookAndFeelException e1) {
-					e1.printStackTrace();
-				}
-				mainFrame.setVisible(false);
-				pathFrame.setVisible(true);
-				return;
-			}
+			RobotSpecs specs = new RobotSpecs(maxVel, maxAccel, base);
+			TrajectoryParams params = new TrajectoryParams();
+			params.alpha = a;
+			params.isTank = isTank.isSelected();
+			params.pathType = selectedType;
+			params.roundingLimit = minUnit;
+			params.segmentCount = segmentCount;
+			params.waypoints = waypointArray;
 			
+			JFrame pathFrame;
+			JFrame movementFrame;
+			double totalTime;
 			
-			JFrame pathFrame = Grapher.graphPath(trajectory.getPath(), fastGraphing.isSelected() ? PATH_DT_FAST : PATH_DT_DEFAULT);
-			JFrame movementFrame = Grapher.graphTrajectory(trajectory, fastGraphing.isSelected() ? TRAJ_DT_FAST : TRAJ_DT_DEFAULT);
+			if(isTank.isSelected()) {
+				TankDriveTrajectory traj = new TankDriveTrajectory(new BasicTrajectory(specs, params));
+				pathFrame = Grapher.graphPath(traj.getPath(), 1.0 / pathSamples);
+				movementFrame = Grapher.graphTrajectory(traj, traj.totalTime() / trajSamples);
+				totalTime = traj.totalTime();
+			}
+			else {
+				BasicTrajectory traj = new BasicTrajectory(specs, params);
+				pathFrame = Grapher.graphPath(traj.getPath(), 1.0 / pathSamples);
+				movementFrame = Grapher.graphTrajectory(traj, traj.totalTime() / trajSamples);
+				totalTime = traj.totalTime();
+			}
 			
 			WindowAdapter closeHook = new WindowAdapter() {
 				@Override
@@ -503,7 +523,7 @@ public class TrajectoryVisualizationTool {
 					| UnsupportedLookAndFeelException e1) {
 				e1.printStackTrace();
 			}
-			JOptionPane.showMessageDialog(mainFrame, "Trajectory Total Time: " + trajectory.totalTime() + " seconds");
+			JOptionPane.showMessageDialog(mainFrame, "Trajectory Total Time: " + totalTime + " seconds");
 			mainFrame.setVisible(false);
 			movementFrame.setVisible(true);
 			pathFrame.setVisible(true);
@@ -523,19 +543,13 @@ public class TrajectoryVisualizationTool {
 		JButton generateCodeButton = new JButton("Get Code");
 		generateCodeButton.addActionListener(e -> {
 			
-			double maxVel, maxAccel, maxDecel, base, a, minUnit;
+			double maxVel, maxAccel, base, a, minUnit;
 			int segmentCount;
 			
 			try {
 				maxVel = Double.parseDouble(maxVelocity.getText());
 				maxAccel = Double.parseDouble(maxAcceleration.getText());
-				if(maxDeceleration.getText().equals("")) {
-					maxDecel = Double.NaN;
-				}
-				else {
-					maxDecel = Double.parseDouble(maxDeceleration.getText());
-				}
-				base = Double.parseDouble(baseWidth.getText());
+				base = isTank.isSelected() ? Double.parseDouble(baseWidth.getText()) : 0;
 				a = Double.parseDouble(alpha.getText());
 				segmentCount = Integer.parseInt(segments.getText());
 				minUnit = Double.parseDouble(roundingLimit.getText());
@@ -555,20 +569,33 @@ public class TrajectoryVisualizationTool {
 					return;
 			}
 			
-			StringBuilder generatedCode = new StringBuilder("TankDriveTrajectory.setSolverRoundingLimit(" + minUnit + ");\n");
-			generatedCode.append("TankDriveTrajectory trajectory = new TankDriveTrajectory(new Waypoint[] {\n");
+			StringBuilder generatedCode = new StringBuilder("RobotSpecs robotSpecs = new RobotSpecs(" + maxVel + ", " + maxAccel);
+			if(isTank.isSelected()) {
+				generatedCode.append(", " + base + ");\n");
+			}
+			else {
+				generatedCode.append(");\n");
+			}
+			generatedCode.append("TrajectoryParams params = new TrajectoryParams();\n");
+			generatedCode.append("params.waypoints = new Waypoint[] {\n");
 			for(Waypoint w : waypoints) {
 				double heading = w.getHeading();
 				String angle = specialAngles.containsKey(heading) ? specialAngles.get(heading) : String.valueOf(heading);
 				String waypointCode = "\t\tnew Waypoint(" + String.valueOf(w.getX()) + ", " + String.valueOf(w.getY()) + ", " + angle + "),\n";
 				generatedCode.append(waypointCode);
 			}
-			generatedCode.append("}, " + maxVel + ", " + maxAccel + ", ");
-			if(!Double.isNaN(maxDecel)) {
-				generatedCode.append(maxDecel + ", ");
+			generatedCode.append("};\n");
+			generatedCode.append("params.alpha = " + a + ";\n");
+			generatedCode.append("params.segmentCount = " + segmentCount + ";\n");
+			generatedCode.append("params.roundingLimit = " + minUnit + ";\n");
+			generatedCode.append("params.isTank = " + isTank.isSelected() + ";\n");
+			generatedCode.append("params.pathType = PathType." + selectedType.name() + ";\n");
+			if(isTank.isSelected()) {
+				generatedCode.append("TankDriveTrajectory trajectory = new TankDriveTrajectory(new BasicTrajectory(robotSpecs, params));");
 			}
-			generatedCode.append(base + ", " + a + ", " + segmentCount + ");");
-			
+			else {
+				generatedCode.append("BasicTrajectory trajectory = new BasicTrajectory(robotSpecs, params);");
+			}
 			
 			String[] options = {
 					"Copy to Clipboard",
@@ -599,18 +626,12 @@ public class TrajectoryVisualizationTool {
 				return;
 			}
 			
-			double maxVel, maxAccel, maxDecel, base, a, minUnit;
+			double maxVel, maxAccel, base, a, minUnit;
 			int segmentCount;
 			
 			try {
 				maxVel = Double.parseDouble(maxVelocity.getText());
 				maxAccel = Double.parseDouble(maxAcceleration.getText());
-				if(maxDeceleration.getText().equals("")) {
-					maxDecel = Double.NaN;
-				}
-				else {
-					maxDecel = Double.parseDouble(maxDeceleration.getText());
-				}
 				base = Double.parseDouble(baseWidth.getText());
 				a = Double.parseDouble(alpha.getText());
 				segmentCount = Integer.parseInt(segments.getText());
@@ -634,7 +655,26 @@ public class TrajectoryVisualizationTool {
 					path += ".csv";
 				
 				try(BufferedWriter out = new BufferedWriter(new FileWriter(path))) {
-					out.write(maxVel + "," + maxAccel + "," + base + "," + a + "," + segmentCount + "," + minUnit + (Double.isNaN(maxDecel) ? "" : ("," + maxDecel)) + "\n");
+					out.write(maxVel + "," + maxAccel + "," + base + "," + a + "," + segmentCount + "," + minUnit + ",");
+					switch(selectedType) {
+					case QUINTIC_HERMITE:
+						out.write(QHERMITE);
+						break;
+					case CUBIC_HERMITE:
+						out.write(CHERMITE);
+						break;
+					case BEZIER:
+						out.write(BEZIER);
+						break;
+					}
+					out.write(",");
+					if(isTank.isSelected()) {
+						out.write("TankDriveTrajectory");
+					}
+					else {
+						out.write("BasicTrajectory");
+					}
+					out.write("\n");
 					
 					WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
 					for(int row = 0; row < tableModel.getRowCount(); row ++) {
@@ -666,7 +706,7 @@ public class TrajectoryVisualizationTool {
 			if(ret == JFileChooser.APPROVE_OPTION) {
 				try(BufferedReader in = new BufferedReader(new FileReader(fc.getSelectedFile()))) {
 					String[] parameters = in.readLine().split(",");
-					if(parameters.length < 6) {
+					if(parameters.length < 8) {
 						JOptionPane.showMessageDialog(mainFrame, "Error: The file format is invalid.", "Error", JOptionPane.ERROR_MESSAGE);
 						return;
 					}
@@ -676,11 +716,35 @@ public class TrajectoryVisualizationTool {
 					alpha.setText(parameters[3]);
 					segments.setText(parameters[4]);
 					roundingLimit.setText(parameters[5]);
-					if(parameters.length >= 7) {
-						maxDeceleration.setText(parameters[6]);
+					
+					switch(parameters[6].trim()) {
+					case QHERMITE:
+						selectedType = PathType.QUINTIC_HERMITE;
+						quinticHermiteButton.setSelected(true);
+						cubicHermiteButton.setSelected(false);
+						bezierButton.setSelected(false);
+						break;
+					case CHERMITE:
+						selectedType = PathType.CUBIC_HERMITE;
+						quinticHermiteButton.setSelected(false);
+						cubicHermiteButton.setSelected(true);
+						bezierButton.setSelected(false);
+						break;
+					case BEZIER:
+						selectedType = PathType.BEZIER;
+						quinticHermiteButton.setSelected(false);
+						cubicHermiteButton.setSelected(false);
+						bezierButton.setSelected(true);
+						break;
+					default:
+						JOptionPane.showMessageDialog(mainFrame, "Error: The file format is invalid.", "Error", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					if(parameters[7].trim().equals("TankDriveTrajectory")) {
+						isTank.setSelected(true);
 					}
 					else {
-						maxDeceleration.setText("");
+						isTank.setSelected(false);
 					}
 					
 					in.mark(512);
@@ -735,6 +799,44 @@ public class TrajectoryVisualizationTool {
 		});
 		waypointMenu.add(clearWaypointsMenuItem);
 		menuBar.add(waypointMenu);
+		
+		JMenu settingsMenu = new JMenu("Settings");
+		sampleCountPanel = new JPanel();
+		sampleCountPanel.setLayout(new BoxLayout(sampleCountPanel, BoxLayout.Y_AXIS));
+		sampleCountPanel.add(new JLabel("# of Samples for Paths"));
+		sampleCountPanel.add(pathSamplesField);
+		sampleCountPanel.add(new JLabel("# of Samples for Trajectories"));
+		sampleCountPanel.add(trajSamplesField);
+		JMenuItem sampleCountChange = new JMenuItem("Change Sample Count...");
+		sampleCountChange.addActionListener(e -> {
+			boolean pass = false;
+			
+			while(!pass) {
+				pathSamplesField.setText(String.valueOf(pathSamples));
+				trajSamplesField.setText(String.valueOf(trajSamples));
+				int ret = JOptionPane.showConfirmDialog(mainFrame, sampleCountPanel, "Change Sample Count", JOptionPane.OK_CANCEL_OPTION);
+				if(ret == JOptionPane.OK_OPTION) {
+					try {
+						int newPathSamples = Integer.parseInt(pathSamplesField.getText());
+						int newTrajSamples = Integer.parseInt(trajSamplesField.getText());
+						
+						pathSamples = newPathSamples;
+						trajSamples = newTrajSamples;
+						pass = true;
+					}
+					catch(NumberFormatException nfe) {
+						JOptionPane.showMessageDialog(mainFrame, "Error: An invalid token was entered\nin one or more fields.", "Error", JOptionPane.ERROR_MESSAGE);
+						pass = false;
+					}
+				}
+				else {
+					pass = true;
+				}
+			}
+		});
+		settingsMenu.add(sampleCountChange);
+		
+		menuBar.add(settingsMenu);
 		
 		mainPanel.add(buttonsPanel, BorderLayout.PAGE_END);
 		

@@ -1,8 +1,7 @@
-package robot.pathfinder;
+package robot.pathfinder.core.trajectory;
 
 /**
- * Signals that an error with trajectory generation has occurred. Thrown by trajectory generation methods
- * when a trajectory is impossible.
+ * Signals that an error with trajectory generation has occurred.
  * @author Tyler Tian
  *
  */

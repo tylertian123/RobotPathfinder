@@ -7,6 +7,11 @@ package robot.pathfinder.core.trajectory;
  * Moment objects contain information about the position, velocity, acceleration and direction of a robot
  * at a certain time. They're returned by trajectories when querying a specific time.
  * </p>
+ * <p>
+ * Note that the units used for these moment objects are completely decided by which units are used in a trajectory's
+ * {@link RobotSpecs} during generation. For example, if the unit for max velocity was in m/s, then the unit used
+ * here for velocity would also be m/s.
+ * </p>
  * @author Tyler Tian
  *
  */

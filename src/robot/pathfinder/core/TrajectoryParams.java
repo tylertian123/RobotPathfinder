@@ -11,6 +11,11 @@ public class TrajectoryParams implements Cloneable {
 	
 	/**
 	 * The {@link Waypoint}s that this trajectory's path has to pass through. Default value is {@code null}.
+	 * <p>
+	 * Note that it does not matter what specific unit is used for distance; however, the unit must match with 
+	 * the units in the {@link RobotSpecs} object used to construct the trajectory. For example, if the unit
+	 * for max velocity in the {@link RobotSpecs} object was m/s, the unit used for distance must be m.
+	 * </p>
 	 */
 	public Waypoint[] waypoints = null;
 	/**

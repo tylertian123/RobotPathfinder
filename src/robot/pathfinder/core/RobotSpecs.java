@@ -4,6 +4,12 @@ package robot.pathfinder.core;
  * A class representing the specifications for a robot. Robot specifications consist of a maximum velocity and
  * acceleration, and in the case of tank drive robots, the width of the base plate. Used in the construction of
  * {@link BasicTrajectory}.
+ * <p>
+ * Note that it does not matter exactly what unit is used; however, they must match. For example, if the unit for
+ * velocity is in m/s, the unit for acceleration must be in m/s^2 and the unit for base plate width must be
+ * in m. The units used here also dictate which units are used by trajectories when they return data for a specific
+ * time.
+ * </p>
  * @author Tyler Tian
  *
  */
@@ -15,6 +21,12 @@ public class RobotSpecs {
 	/**
 	 * Constructs a new robot specification object with the specified values.
 	 * The value for base plate width is set to {@code NaN}.
+	 * <p>
+	 * Note that it does not matter exactly what unit is used; however, they must match. For example, if the unit for
+	 * velocity is in m/s, the unit for acceleration must be in m/s^2 and the unit for base plate width must be
+	 * in m. The units used here also dictate which units are used by trajectories when they return data for a specific
+	 * time.
+	 * </p>
 	 * @param maxVelocity The absolute value of the max velocity of the robot
 	 * @param maxAcceleration The absolute value of the max acceleration of the robot
 	 */
@@ -24,6 +36,12 @@ public class RobotSpecs {
 	}
 	/**
 	 * Constructs a new robot specification object with the specified values.
+	 * <p>
+	 * Note that it does not matter exactly what unit is used; however, they must match. For example, if the unit for
+	 * velocity is in m/s, the unit for acceleration must be in m/s^2 and the unit for base plate width must be
+	 * in m. The units used here also dictate which units are used by trajectories when they return data for a specific
+	 * time.
+	 * </p>
 	 * @param maxVelocity The absolute value of the max velocity of the robot
 	 * @param maxAcceleration The absolute value of the max acceleration of the robot
 	 * @param baseWidth The width of the base plate of the robot (distance from wheels on one side to wheels on

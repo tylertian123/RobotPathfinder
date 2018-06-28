@@ -36,6 +36,12 @@ public class BasicTrajectory {
 	 * the position, velocity and acceleration the robot is supposed to be at.
 	 */
 	BasicMoment[] moments;
+	
+	/*
+	 * Because directly lerping between angles can cause glitches when one angle is positive and the other is
+	 * negative, MathUtils.lerpAngle is used. Keep an array of the headings as normalized vectors to pass to
+	 * lerpAngle later speeds up the computation when retrieving moments.
+	 */
 	Vec2D[] headingVectors;
 	
 	//Keep a copy of the robot's specs and the generation parameters
@@ -45,7 +51,9 @@ public class BasicTrajectory {
 	//These are used by TankDriveTrajectory to generate different profiles for the left and right wheels
 	//They're made package-private so only TankDriveTrajectory can access them
 	boolean isTank;
+	//Stores the time on the path for each moment
 	double[] pathT = null;
+	//Stores the radius of the path for each moment
 	double[] pathRadius = null;
 	
 	/**
@@ -90,28 +98,33 @@ public class BasicTrajectory {
 		}
 		
 		/*
-		 * Special processing is required to make the points stay the same physical distance apart.
-		 * Beziers do not have 
+		 * Because most parametric polynomials don't have constant speed (i.e. the magnitude of the derivative
+		 * is non-constant), we use some special processing to make samples the same physical distance apart.
+		 * Instead of getting positions from the path and iterating the time, we calculate the whole length
+		 * of the path, and make each sample a constant length away. The time value can then be found by
+		 * calling the s2T method in Path, and any special processing can be done with that.
 		 */
+		//Instead of iterating over t, we iterate over s, which represents the fraction of the total distance
 		double s_delta = 1.0 / (segmentCount - 1);
-		
-		//To make it so that points stay the same distance apart, 
 		double totalDist = path.computePathLength(segmentCount);
 		double distPerIteration = totalDist / (segmentCount - 1);
+		
+		//This array stores the direction of the robot at each moment
+		//Directions are generated in a separate process as the velocities and accelerations
+		double[] headings = new double[segmentCount];
+		headingVectors = new Vec2D[segmentCount];
 		
 		//This array stores the theoretical max velocity at each point in this trajectory
 		//This is needed for tank drive, since the robot has to slow down when turning
 		//For regular basic trajectories every element of this array is set to the max velocity
 		double[] maxVelocities = new double[segmentCount];
 		
-		double[] headings = new double[segmentCount];
-		headingVectors = new Vec2D[segmentCount];
-		
 		if(isTank) {
 			//Tank drive trajectories require extra processing as described above
 			pathRadius = new double[segmentCount];
 			pathT = new double[segmentCount];
 			for(int i = 0; i < segmentCount; i ++) {
+				//Call s2T to translate between length and time
 				double t = path.s2T(s_delta * i);
 				pathT[i] = t;
 				
@@ -124,6 +137,7 @@ public class BasicTrajectory {
 				double xSecondDeriv = secondDeriv.getX();
 				double ySecondDeriv = secondDeriv.getY();
 				double curvature = MathUtils.curvature(xDeriv, xSecondDeriv, yDeriv, ySecondDeriv);
+				//The heading is generated as a by-product
 				headings[i] = Math.atan2(yDeriv, xDeriv);
 				headingVectors[i] = new Vec2D(xDeriv, yDeriv);
 				headingVectors[i].normalize();
@@ -162,6 +176,7 @@ public class BasicTrajectory {
 			for(int i = 0; i < segmentCount; i ++) {
 				maxVelocities[i] = maxVelocity;
 				
+				//Even if the trajectory is not for tank drive robots, the heading still needs to be calculated
 				double t = path.s2T(s_delta * i);
 				Vec2D deriv = path.derivAt(t);
 				double xDeriv = deriv.getX();
@@ -176,23 +191,30 @@ public class BasicTrajectory {
 		moments = new BasicMoment[segmentCount];
 		moments[0] = new BasicMoment(0, 0, 0, headings[0], 0);
 
+		//Forwards pass as described in the algorithm in the video
 		for(int i = 1; i < moments.length; i ++) {
 			double accumulatedDist = i * distPerIteration;
 			
 			double theoreticalMax = maxVelocities[i];
 			
+			//Check if we could accelerate
 			if(moments[i - 1].getVelocity() < theoreticalMax) {
 				double distDiff = distPerIteration;
 				
+				//First, check what velocity we would reach if we were to accelerate at maximum acceleration
+				//Use the kinematic equations to figure it out
 				double maxVel = Math.sqrt(Math.pow(moments[i - 1].getVelocity(), 2) + 2 * maxAcceleration * distDiff);
 				
 				double vel;
+				//Check if this velocity exceeds the max
 				if(maxVel > theoreticalMax) {
+					//If it's too fast, use the kinematic equations to figure out exactly how much we can accelerate
 					double accel = (Math.pow(theoreticalMax, 2) - Math.pow(moments[i - 1].getVelocity(), 2)) / (2 * distDiff);
 					vel = theoreticalMax;
 					moments[i - 1].setAcceleration(accel);
 				}
 				else {
+					//If it's within limits, then accelerate at max acceleration
 					vel = maxVel;
 					moments[i - 1].setAcceleration(maxAcceleration);
 				}
@@ -200,23 +222,27 @@ public class BasicTrajectory {
 				moments[i] = new BasicMoment(accumulatedDist, vel, 0, headings[i]);
 			}
 			else {
+				//If not, then do not accelerate, and set the velocity to the maximum
 				moments[i] = new BasicMoment(accumulatedDist, theoreticalMax, 0, headings[i]);
 				moments[i - 1].setAcceleration(0);
 			}
 		}
 		
+		//Prepare for backwards pass
 		moments[moments.length - 1].setVelocity(0);
 		moments[moments.length - 1].setAcceleration(0);
-		
+		//Backwards pass as described in the algorithm in the video
 		for(int i = moments.length - 2; i >= 0; i --) {
-			
+			//Only do processing if the velocity of this moment is greater than the next
+			//i.e. we need to decelerate
 			if(moments[i].getVelocity() > moments[i + 1].getVelocity()) {
 			
 				double distDiff = moments[i + 1].getPosition() - moments[i].getPosition();
-				
+				//Calculate max velocity like in the forwards pass
 				double maxVel = Math.sqrt(Math.pow(moments[i + 1].getVelocity(), 2) + 2 * maxAcceleration * distDiff);
 				
 				double vel;
+				//Compare with the velocity set by the forwards pass
 				if(maxVel > moments[i].getVelocity()) {
 					double accel = (Math.pow(moments[i].getVelocity(), 2) - Math.pow(moments[i + 1].getVelocity(), 2)) / (2 * distDiff);
 					moments[i].setAcceleration(-accel);
@@ -232,12 +258,17 @@ public class BasicTrajectory {
 		}
 		
 		for(int i = 1; i < moments.length; i ++) {
-			
+			//Now that we have the desired position, velocity and acceleration for each moment, we can solve
+			//for the time using the kinematic formulas
 			double dt = MathUtils.findPositiveQuadraticRoot(moments[i - 1].getAcceleration() / 2, moments[i - 1].getVelocity(), 
 					-(moments[i].getPosition() - moments[i - 1].getPosition()), params.roundingLimit);
 			moments[i].setTime(moments[i - 1].getTime() + dt);
 		}
 	}
+	/*
+	 * This constructor is used internally by the mirrorLeftRight, mirrorFrontBack and retrace methods.
+	 * It requires pre-generated moments so it's not visible to the world.
+	 */
 	protected BasicTrajectory(BasicMoment[] moments, Path path, RobotSpecs specs, TrajectoryParams params, double[] pathT, double[] pathRadius) {
 		this.moments = moments;
 		this.path = path;

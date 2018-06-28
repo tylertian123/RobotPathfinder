@@ -99,10 +99,10 @@ public class TankDriveTrajectory {
 			double midTime = moments[mid].getTime();
 			
 			if(midTime == t)
-				return moments[mid];
+				return moments[mid].clone();
 			//If we reached the end, return the end
 			if(mid == moments.length - 1)
-				return moments[mid];
+				return moments[mid].clone();
 			
 			double nextTime = moments[mid + 1].getTime();
 			

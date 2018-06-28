@@ -108,4 +108,7 @@ public class BasicMoment implements Cloneable {
 	public double getHeading() {
 		return heading;
 	}
+	public double getFacing() {
+		return v >= 0 ? heading : -heading;
+	}
  }

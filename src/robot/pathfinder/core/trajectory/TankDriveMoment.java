@@ -94,6 +94,10 @@ public class TankDriveMoment implements Cloneable {
 		this.heading = heading;
 	}
 	
+	public double getFacing() {
+		return lv >= 0 || rv >= 0 ? heading : -heading;
+	}
+	
 	public BasicMoment leftComponent() {
 		return new BasicMoment(ld, lv, la, heading, t);
 	}

@@ -66,8 +66,8 @@ public class BasicTrajectory {
 	 * Note: Tank drive trajectories require extra processing in this step. If the generated trajectory is to be
 	 * turned into a {@link TankDriveTrajectory}, {@link TrajectoryParams#isTank} must be set to true.
 	 * </p>
-	 * @param specs A {@link RobotSpecs} object with the robot's properties, such as max speed and acceleration.
-	 * @param params A {@link TrajectoryParams} object with the parameters for this trajectory.
+	 * @param specs A {@link RobotSpecs} object with the robot's properties, such as max speed and acceleration
+	 * @param params A {@link TrajectoryParams} object with the parameters for this trajectory
 	 */
 	public BasicTrajectory(RobotSpecs specs, TrajectoryParams params) {
 		this.params = params;

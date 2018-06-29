@@ -125,6 +125,14 @@ public class TankDriveTrajectory {
 			moments[i].setHeading(trajMoments[i].getHeading());
 		}
 	}
+	/**
+	 * Creates a tank drive trajectory with the specified robot specifications and trajectory parameters.
+	 * @param specs A {@link RobotSpecs} object with the robot's properties, such as max speed and acceleration
+	 * @param params A {@link TrajectoryParams} object with the parameters for this trajectory
+	 */
+	public TankDriveTrajectory(RobotSpecs specs, TrajectoryParams params) {
+		this(new BasicTrajectory(specs, params));
+	}
 	
 	/*
 	 * This constructor is used internally by the mirrorLeftRight, mirrorFrontBack and retrace methods.

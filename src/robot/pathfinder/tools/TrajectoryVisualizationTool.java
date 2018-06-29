@@ -591,7 +591,7 @@ public class TrajectoryVisualizationTool {
 			generatedCode.append("params.isTank = " + isTank.isSelected() + ";\n");
 			generatedCode.append("params.pathType = PathType." + selectedType.name() + ";\n");
 			if(isTank.isSelected()) {
-				generatedCode.append("TankDriveTrajectory trajectory = new TankDriveTrajectory(new BasicTrajectory(robotSpecs, params));");
+				generatedCode.append("TankDriveTrajectory trajectory = new TankDriveTrajectory(robotSpecs, params);");
 			}
 			else {
 				generatedCode.append("BasicTrajectory trajectory = new BasicTrajectory(robotSpecs, params);");

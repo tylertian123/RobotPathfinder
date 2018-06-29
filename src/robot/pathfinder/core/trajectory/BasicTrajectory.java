@@ -457,7 +457,7 @@ public class BasicTrajectory {
 		TrajectoryParams newParams = params.clone();
 		newParams.waypoints = newPath.getWaypoints();
 		
-		return new BasicTrajectory(newMoments, newPath, robotSpecs, newParams, pathT, pathRadius.clone());
+		return new BasicTrajectory(newMoments, newPath, robotSpecs, newParams, pathT, pathRadius != null ? pathRadius.clone() : null);
 	}
 	/**
 	 * Returns a trajectory that, when driven, will retrace the steps of this trajectory exactly.

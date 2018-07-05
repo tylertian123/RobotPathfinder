@@ -1,11 +1,15 @@
 package robot.pathfinder.core.trajectory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import robot.pathfinder.core.RobotSpecs;
 import robot.pathfinder.core.TrajectoryParams;
 import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.core.path.Path;
 import robot.pathfinder.math.MathUtils;
 import robot.pathfinder.math.Vec2D;
+import robot.pathfinder.util.Pair;
 
 /**
  * A class that represents a basic trajectory (motion profile). A trajectory not only defines the points that a 
@@ -121,7 +125,7 @@ public class BasicTrajectory {
 		//This array stores the theoretical max velocity at each point in this trajectory
 		//This is needed for tank drive, since the robot has to slow down when turning
 		//For regular basic trajectories every element of this array is set to the max velocity
-		double[] maxVelocities = new double[segmentCount];
+		List<Pair<Double, Double>> maxConstraints = new ArrayList<>(segmentCount);
 		
 		if(isTank) {
 			//Tank drive trajectories require extra processing as described above
@@ -160,25 +164,33 @@ public class BasicTrajectory {
 				 * the radius of the path.
 				 * 
 				 * 1. Rearrange equation 1: wb = r - l, l = r - wb
-				 * 2. Since we want the robot to go as fast as possible, the faster wheel has velocity Vmax
-				 * 3. Assuming the right side is faster, r = Vmax, and by 1, l = Vmax - wb
+				 * 2. Since we want the robot to go as fast as possible, the faster wheel has velocity equal
+				 * to the max velocity, denoted Vmax
+				 * 3. If the right wheel is faster: r = Vmax, and by 1, l = Vmax - wb
 				 * 4. Equation 2 becomes: (2Vmax - wb) / 2 = V
 				 * 5. Substitute in equation 3, (2Vmax - (V / R)b) / 2 = V
 				 * 6. Now solve for V: 2Vmax - (V / R)b = 2V, 2V + (V / R)b = 2Vmax, V(2 + b / R) = 2Vmax,
 				 * V = 2Vmax / (2 + b / R), V = Vmax / (1 + b / (2R))
+				 * 
+				 * Repeat steps 3-6 for when the left wheel is faster, and the result will be V = Vmax / (1 - b / (2R));
+				 * but since if the robot is turning right, the curvature and thus R are negative, the minus sign is
+				 * cancelled out. The generalized equation then becomes V = Vmax / (1 + b / (2 |R|)).
 				 */
-				double vMax = maxVelocity / (1 + baseWidth / (2 * r));
+				//Notice here base width is used instead of base radius
+				double vel = maxVelocity / (1 + baseWidth / (2 * r));
+				double accel = maxAcceleration / (1 + baseWidth / (2 * r));
 				
 				//Store the signed curvature in the array to be used by TankDriveTrajectory later
 				pathRadius[i] = 1.0 / curvature;
-				maxVelocities[i] = vMax;
+				
+				maxConstraints.add(i, new Pair<>(vel, accel));
 			}
 		}
 		else {
 			//If the trajectory is just a basic trajectory, there's no need to slow down, so every point's
 			//max velocity is the specified max velocity.
 			for(int i = 0; i < segmentCount; i ++) {
-				maxVelocities[i] = maxVelocity;
+				maxConstraints.add(i, new Pair<>(maxVelocity, maxAcceleration));
 				
 				//Even if the trajectory is not for tank drive robots, the heading still needs to be calculated
 				double t = path.s2T(s_delta * i);
@@ -199,35 +211,36 @@ public class BasicTrajectory {
 		for(int i = 1; i < moments.length; i ++) {
 			double accumulatedDist = i * distPerIteration;
 			
-			double theoreticalMax = maxVelocities[i];
+			double velConstraint = maxConstraints.get(i).getElem1();
+			double accelConstraint = maxConstraints.get(i).getElem2();
 			
 			//Check if we could accelerate
-			if(moments[i - 1].getVelocity() < theoreticalMax) {
+			if(moments[i - 1].getVelocity() < velConstraint) {
 				double distDiff = distPerIteration;
 				
 				//First, check what velocity we would reach if we were to accelerate at maximum acceleration
 				//Use the kinematic equations to figure it out
-				double maxVel = Math.sqrt(Math.pow(moments[i - 1].getVelocity(), 2) + 2 * maxAcceleration * distDiff);
+				double maxReachable = Math.sqrt(Math.pow(moments[i - 1].getVelocity(), 2) + 2 * accelConstraint * distDiff);
 				
 				double vel;
 				//Check if this velocity exceeds the max
-				if(maxVel > theoreticalMax) {
+				if(maxReachable > velConstraint) {
 					//If it's too fast, use the kinematic equations to figure out exactly how much we can accelerate
-					double accel = (Math.pow(theoreticalMax, 2) - Math.pow(moments[i - 1].getVelocity(), 2)) / (2 * distDiff);
-					vel = theoreticalMax;
+					double accel = (Math.pow(velConstraint, 2) - Math.pow(moments[i - 1].getVelocity(), 2)) / (2 * distDiff);
+					vel = velConstraint;
 					moments[i - 1].setAcceleration(accel);
 				}
 				else {
 					//If it's within limits, then accelerate at max acceleration
-					vel = maxVel;
-					moments[i - 1].setAcceleration(maxAcceleration);
+					vel = maxReachable;
+					moments[i - 1].setAcceleration(accelConstraint);
 				}
 				
 				moments[i] = new BasicMoment(accumulatedDist, vel, 0, headings[i]);
 			}
 			else {
 				//If not, then do not accelerate, and set the velocity to the maximum
-				moments[i] = new BasicMoment(accumulatedDist, theoreticalMax, 0, headings[i]);
+				moments[i] = new BasicMoment(accumulatedDist, velConstraint, 0, headings[i]);
 				moments[i - 1].setAcceleration(0);
 			}
 		}
@@ -242,19 +255,20 @@ public class BasicTrajectory {
 			if(moments[i].getVelocity() > moments[i + 1].getVelocity()) {
 			
 				double distDiff = moments[i + 1].getPosition() - moments[i].getPosition();
+				double accelConstraint = maxConstraints.get(i).getElem2();
 				//Calculate max velocity like in the forwards pass
-				double maxVel = Math.sqrt(Math.pow(moments[i + 1].getVelocity(), 2) + 2 * maxAcceleration * distDiff);
+				double maxReachable = Math.sqrt(Math.pow(moments[i + 1].getVelocity(), 2) + 2 * accelConstraint * distDiff);
 				
 				double vel;
 				//Compare with the velocity set by the forwards pass
-				if(maxVel > moments[i].getVelocity()) {
+				if(maxReachable > moments[i].getVelocity()) {
 					double accel = (Math.pow(moments[i].getVelocity(), 2) - Math.pow(moments[i + 1].getVelocity(), 2)) / (2 * distDiff);
 					moments[i].setAcceleration(-accel);
 					vel = moments[i].getVelocity();
 				}
 				else {
-					vel = maxVel;
-					moments[i].setAcceleration(-maxAcceleration);
+					vel = maxReachable;
+					moments[i].setAcceleration(-accelConstraint);
 				}
 				
 				moments[i].setVelocity(vel);

@@ -148,10 +148,10 @@ public class MathUtils {
 	
 	/**
 	 * Calculates the curvature, given the derivatives and the second derivatives at the desired point.
-	 * @param xDeriv The first derivative of x, with respect to t (dx/dt).
-	 * @param xSecondDeriv The second derivative of x, with respect to t (d^2x/dt^2).
-	 * @param yDeriv The first derivative of y, with respect to t (dy/dt).
-	 * @param ySecondDeriv The second derivative of y, with respect to t (d^2y/dt^2).
+	 * @param xDeriv The first derivative of x, with respect to t (<sup>dx</sup>&frasl;<sub>dt</sub>).
+	 * @param xSecondDeriv The second derivative of x, with respect to t (<sup>d<sup>2</sup>x</sup>&frasl;<sub>dt<sup>2</sup></sub>).
+	 * @param yDeriv The first derivative of y, with respect to t (<sup>dy</sup>&frasl;<sub>dt</sub>).
+	 * @param ySecondDeriv The second derivative of y, with respect to t (<sup>d<sup>2</sup>y</sup>&frasl;<sub>dt<sup>2</sup></sub>).
 	 * @return The curvature at the point
 	 */
 	public static double curvature(double xDeriv, double xSecondDeriv, double yDeriv, double ySecondDeriv) {

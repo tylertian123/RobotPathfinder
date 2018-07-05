@@ -84,6 +84,7 @@ public class TankDriveTrajectory {
 			
 			//Find out the velocity of the two wheels
 			double vel = trajMoments[i].getVelocity();
+			double accel = trajMoments[i].getAcceleration();
 			/*
 			 * The formula for velocity is derived as follows:
 			 * Start with the equation:
@@ -101,8 +102,10 @@ public class TankDriveTrajectory {
 			 * velocities when the turn is too tight and the wheel has to move backwards, unlike the distance
 			 * difference which is always positive.
 			 */
-			double leftVelocity = MathUtils.clampAbs(vel - vel / traj.pathRadius[i] * baseRadius, maxVel);
-			double rightVelocity = MathUtils.clampAbs(vel + vel / traj.pathRadius[i] * baseRadius, maxVel);
+			//double leftVelocity = MathUtils.clampAbs(vel - vel / traj.pathRadius[i] * baseRadius, maxVel);
+			//double rightVelocity = MathUtils.clampAbs(vel + vel / traj.pathRadius[i] * baseRadius, maxVel);
+			double leftVelocity = vel - vel / traj.pathRadius[i] * baseRadius;
+			double rightVelocity = vel + vel / traj.pathRadius[i] * baseRadius;
 			//As described, a negative velocity means the wheel has to move backwards
 			//So negate the distance difference
 			if(leftVelocity < 0) {
@@ -119,8 +122,12 @@ public class TankDriveTrajectory {
 			moments[i].setLeftVelocity(leftVelocity);
 			moments[i].setRightVelocity(rightVelocity);
 			//Derive velocity to get acceleration
-			moments[i - 1].setLeftAcceleration(MathUtils.clampAbs((moments[i].getLeftVelocity() - moments[i - 1].getLeftVelocity()) / dt, maxAccel));
-			moments[i - 1].setRightAcceleration(MathUtils.clampAbs((moments[i].getRightVelocity() - moments[i - 1].getRightVelocity()) / dt, maxAccel));
+			//moments[i - 1].setLeftAcceleration(MathUtils.clampAbs((moments[i].getLeftVelocity() - moments[i - 1].getLeftVelocity()) / dt, maxAccel));
+			//moments[i - 1].setRightAcceleration(MathUtils.clampAbs((moments[i].getRightVelocity() - moments[i - 1].getRightVelocity()) / dt, maxAccel));
+			moments[i - 1].setLeftAcceleration((moments[i].getLeftVelocity() - moments[i - 1].getLeftVelocity()) / dt);
+			moments[i - 1].setRightAcceleration((moments[i].getRightVelocity() - moments[i - 1].getRightVelocity()) / dt);
+			//moments[i - 1].setLeftAcceleration(accel * (1 - baseRadius / traj.pathRadius[i]) + accel * baseRadius / Math.pow(traj.pathRadius[i], 2));
+			//moments[i - 1].setRightAcceleration(accel * (1 + baseRadius / traj.pathRadius[i]) - accel * baseRadius / Math.pow(traj.pathRadius[i], 2));
 			moments[i].setTime(trajMoments[i].getTime());
 			moments[i].setHeading(trajMoments[i].getHeading());
 		}

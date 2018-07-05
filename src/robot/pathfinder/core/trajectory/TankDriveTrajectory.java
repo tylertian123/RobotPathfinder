@@ -64,7 +64,6 @@ public class TankDriveTrajectory {
 		RobotSpecs specs = traj.getRobotSpecs();
 		double baseRadius = specs.getBaseWidth() / 2;
 		double maxVel = specs.getMaxVelocity();
-		double maxAccel = specs.getMaxAcceleration();
 		path.setBaseRadius(traj.getRobotSpecs().getBaseWidth() / 2);
 		
 		//Numerical integration is used
@@ -101,6 +100,9 @@ public class TankDriveTrajectory {
 			 * velocities when the turn is too tight and the wheel has to move backwards, unlike the distance
 			 * difference which is always positive.
 			 */
+			//Use MathUtils.clampAbs() to do a sanity check
+			//The calculated velocity should never be greater than the maximum (this can be proven algebraically)
+			//But add a check just in case
 			double leftVelocity = MathUtils.clampAbs(vel - vel / traj.pathRadius[i] * baseRadius, maxVel);
 			double rightVelocity = MathUtils.clampAbs(vel + vel / traj.pathRadius[i] * baseRadius, maxVel);
 			//As described, a negative velocity means the wheel has to move backwards
@@ -119,8 +121,8 @@ public class TankDriveTrajectory {
 			moments[i].setLeftVelocity(leftVelocity);
 			moments[i].setRightVelocity(rightVelocity);
 			//Derive velocity to get acceleration
-			moments[i - 1].setLeftAcceleration(MathUtils.clampAbs((moments[i].getLeftVelocity() - moments[i - 1].getLeftVelocity()) / dt, maxAccel));
-			moments[i - 1].setRightAcceleration(MathUtils.clampAbs((moments[i].getRightVelocity() - moments[i - 1].getRightVelocity()) / dt, maxAccel));
+			moments[i - 1].setLeftAcceleration((moments[i].getLeftVelocity() - moments[i - 1].getLeftVelocity()) / dt);
+			moments[i - 1].setRightAcceleration((moments[i].getRightVelocity() - moments[i - 1].getRightVelocity()) / dt);
 			moments[i].setTime(trajMoments[i].getTime());
 			moments[i].setHeading(trajMoments[i].getHeading());
 		}

@@ -1,10 +1,12 @@
 # RobotPathfinder
-Robot motion profiler/path planner. Used on the robot of <a href="https://github.com/Arctos6135">FRC Team 6135 (Arctos)</a><br>
+Robot motion profiler/path planner for tank drive robots. Used on the robot of <a href="https://github.com/Arctos6135">FRC Team 6135 (Arctos)</a><br>
 Inspired by <a href="https://github.com/JacisNonsense/Pathfinder">Pathfinder by Jaci Brunning</a>.<br>
 Thank you to FRC Team 254 (The Cheesy Poofs) for <a href="https://youtu.be/8319J1BEHwM">their amazing video on motion control</a>!<br><br>
-Currently, RobotPathfinder can only generate trajectories for tank/skid-steer drive bots, and cannot limit jerk.
 
-*Unlike many other motion profilers, RobotPathfinder respects maximum velocity for both wheels even when turning, and can handle tight turns with ease!*
+Some of the highlights include:
+* Smooth path generation with 3 different fit types
+* Respects maximum velocity constraints for both wheels, even when turning
+* Allows wheels to turn backwards if turns are too tight
 
 ***Even though version 2 releases are still in beta, they're preferred over the 1.x releases. The 1.x releases contain major issues that are fixed in version 2.***
 

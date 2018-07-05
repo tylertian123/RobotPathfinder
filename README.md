@@ -4,7 +4,7 @@ Inspired by <a href="https://github.com/JacisNonsense/Pathfinder">Pathfinder by 
 Thank you to FRC Team 254 (The Cheesy Poofs) for <a href="https://youtu.be/8319J1BEHwM">their amazing video on motion control</a>!<br><br>
 Currently, RobotPathfinder can only generate trajectories for tank/skid-steer drive bots, and cannot limit jerk.
 
-*Unlike many other motion profilers, RobotPathfinder respects maximum velocity and acceleration for both wheels even when turning, and can handle tight turns with ease!*
+*Unlike many other motion profilers, RobotPathfinder respects maximum velocity for both wheels even when turning, and can handle tight turns with ease!*
 
 ***Even though version 2 releases are still in beta, they're preferred over the 1.x releases. The 1.x releases contain major issues that are fixed in version 2.***
 

@@ -106,6 +106,8 @@ public class TankDriveTrajectory {
 			//double rightVelocity = MathUtils.clampAbs(vel + vel / traj.pathRadius[i] * baseRadius, maxVel);
 			double leftVelocity = vel - vel / traj.pathRadius[i] * baseRadius;
 			double rightVelocity = vel + vel / traj.pathRadius[i] * baseRadius;
+			double r = traj.pathRadius[i];
+			double rPrime = (traj.pathRadius[i] - traj.pathRadius[i - 1]) / dt;
 			//As described, a negative velocity means the wheel has to move backwards
 			//So negate the distance difference
 			if(leftVelocity < 0) {
@@ -124,10 +126,20 @@ public class TankDriveTrajectory {
 			//Derive velocity to get acceleration
 			//moments[i - 1].setLeftAcceleration(MathUtils.clampAbs((moments[i].getLeftVelocity() - moments[i - 1].getLeftVelocity()) / dt, maxAccel));
 			//moments[i - 1].setRightAcceleration(MathUtils.clampAbs((moments[i].getRightVelocity() - moments[i - 1].getRightVelocity()) / dt, maxAccel));
-			moments[i - 1].setLeftAcceleration((moments[i].getLeftVelocity() - moments[i - 1].getLeftVelocity()) / dt);
-			moments[i - 1].setRightAcceleration((moments[i].getRightVelocity() - moments[i - 1].getRightVelocity()) / dt);
-			//moments[i - 1].setLeftAcceleration(accel * (1 - baseRadius / traj.pathRadius[i]) + accel * baseRadius / Math.pow(traj.pathRadius[i], 2));
-			//moments[i - 1].setRightAcceleration(accel * (1 + baseRadius / traj.pathRadius[i]) - accel * baseRadius / Math.pow(traj.pathRadius[i], 2));
+			//moments[i - 1].setLeftAcceleration((moments[i].getLeftVelocity() - moments[i - 1].getLeftVelocity()) / dt);
+			//moments[i - 1].setRightAcceleration((moments[i].getRightVelocity() - moments[i - 1].getRightVelocity()) / dt);
+			if(Double.isInfinite(rPrime)) {
+				System.out.println((traj.pathRadius[i] - traj.pathRadius[i - 1]));
+				System.out.println(dt);
+			}
+			if(!Double.isFinite(r) || !Double.isFinite(rPrime)) {
+				moments[i].setLeftAcceleration(accel);
+			}
+			else {
+				moments[i].setLeftAcceleration(accel - baseRadius * (accel * r - rPrime * vel) / Math.pow(r, 2));
+			}
+			//moments[i - 1].setLeftAcceleration(accel * (1 - baseRadius / traj.pathRadius[i]) + vel * baseRadius / Math.copySign(Math.pow(traj.pathRadius[i], 2), traj.pathRadius[i]));
+			//moments[i - 1].setRightAcceleration(accel * (1 + baseRadius / traj.pathRadius[i]) - vel * baseRadius / Math.pow(traj.pathRadius[i], 2));
 			moments[i].setTime(trajMoments[i].getTime());
 			moments[i].setHeading(trajMoments[i].getHeading());
 		}

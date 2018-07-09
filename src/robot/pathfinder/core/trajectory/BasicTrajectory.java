@@ -174,11 +174,11 @@ public class BasicTrajectory {
 				 * 
 				 * Repeat steps 3-6 for when the left wheel is faster, and the result will be V = Vmax / (1 - b / (2R));
 				 * but since if the robot is turning right, the curvature and thus R are negative, the minus sign is
-				 * cancelled out. The generalized equation then becomes V = Vmax / (1 + b / (2 |R|)).
+				 * cancelled out. The generalized equation then becomes V = Vmax / (1 + b / (2|R|)).
 				 */
 				//Notice here base width is used instead of base radius
 				double vel = maxVelocity / (1 + baseWidth / (2 * r));
-				double accel = maxAcceleration / (1 + baseWidth / (2 * r));
+				double accel = (maxAcceleration - vel * baseWidth / 2 / Math.pow(r, 2)) / (1 + baseWidth / 2 / r);
 				
 				//Store the signed curvature in the array to be used by TankDriveTrajectory later
 				pathRadius[i] = 1.0 / curvature;

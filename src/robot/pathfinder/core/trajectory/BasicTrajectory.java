@@ -150,10 +150,19 @@ public class BasicTrajectory {
 				headingVectors[i] = new Vec2D(xDeriv, yDeriv);
 				headingVectors[i].normalize();
 				
+				//Store the signed curvature in the array to be used by TankDriveTrajectory later
+				pathRadius[i] = 1.0 / curvature;
 				//Since curvature is 1 / radius, we take its reciprocal to get the radius of the path at this point
 				//And since the robot's speed is always positive no matter which direction we turn in,
 				//the absolute value is taken
 				double r = Math.abs(1 / curvature);
+				double rPrime;
+				if(i >= 1) {
+					rPrime = (pathRadius[i] - pathRadius[i - 1]) / (pathT[i] - pathT[i - 1]);
+				}
+				else {
+					rPrime = 0;
+				}
 				/*
 				 * The maximum speed for the entire robot is computed with a formula. Derivation here:
 				 * Start with the equations:
@@ -178,10 +187,18 @@ public class BasicTrajectory {
 				 */
 				//Notice here base width is used instead of base radius
 				double vel = maxVelocity / (1 + baseWidth / (2 * r));
-				double accel = (maxAcceleration - vel * baseWidth / 2 / Math.pow(r, 2)) / (1 + baseWidth / 2 / r);
-				
-				//Store the signed curvature in the array to be used by TankDriveTrajectory later
-				pathRadius[i] = 1.0 / curvature;
+				double accel;
+				if(i >= 1 && Double.isFinite(r) && Double.isFinite(rPrime)) {
+					if(curvature < 0) {
+						accel = Math.abs((maxAcceleration * Math.pow(r, 2) - baseWidth / 2 * rPrime * vel) / (Math.pow(r, 2) - pathRadius[i] * baseWidth / 2));
+					}
+					else {
+						accel = Math.abs((maxAcceleration * Math.pow(r, 2) + baseWidth / 2 * rPrime * vel) / (Math.pow(r, 2) + pathRadius[i] * baseWidth / 2));
+					}
+				}
+				else {
+					accel = maxAcceleration;
+				}
 				
 				maxConstraints.add(i, new Pair<>(vel, accel));
 			}

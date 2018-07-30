@@ -128,8 +128,17 @@ public class TankDriveTrajectory {
 			//moments[i - 1].setLeftAcceleration((moments[i].getLeftVelocity() - moments[i - 1].getLeftVelocity()) / dt);
 			//moments[i - 1].setRightAcceleration((moments[i].getRightVelocity() - moments[i - 1].getRightVelocity()) / dt);
 			if(Double.isFinite(r) && Double.isFinite(rPrime)) {
-				moments[i - 1].setLeftAcceleration(accel - baseRadius * (accel * r - rPrime * vel) / Math.pow(r, 2));
-				moments[i - 1].setRightAcceleration(accel + baseRadius * (accel * r - rPrime * vel) / Math.pow(r, 2));
+				moments[i - 1].setLeftAcceleration((accel * r * (r - baseRadius) + vel * baseRadius * rPrime) / Math.pow(r, 2));
+				moments[i - 1].setRightAcceleration((accel * r * (r - baseRadius) - vel * baseRadius * rPrime) / Math.pow(r, 2));
+				
+				/*double a1 = (Math.abs(moments[i - 1].getLeftAcceleration()) * Math.pow(r, 2) - baseRadius * rPrime * vel) / (r * (r - baseRadius));
+				double a2 = (Math.abs(moments[i - 1].getRightAcceleration()) * Math.pow(r, 2) + baseRadius * rPrime * vel) / (r * (r - baseRadius));
+				
+				System.out.println(Math.abs(a1 - accel));
+				System.out.println(Math.abs(a2 - accel));
+				System.out.println(i);
+				assert(Math.abs(a1 - accel) < 0.0000001);
+				assert(Math.abs(a2 - accel) < 0.0000001);*/
 			}
 			else {
 				moments[i - 1].setLeftAcceleration(accel);

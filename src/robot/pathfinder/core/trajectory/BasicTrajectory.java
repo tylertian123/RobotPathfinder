@@ -188,15 +188,18 @@ public class BasicTrajectory {
 				//Notice here base width is used instead of base radius
 				double vel = maxVelocity / (1 + baseWidth / (2 * r));
 				double accel;
+				r = 1 / curvature;
 				if(i >= 1 && Double.isFinite(r) && Double.isFinite(rPrime)) {
-					if(curvature < 0) {
-						accel = Math.abs((maxAcceleration * Math.pow(r, 2) - baseWidth / 2 * rPrime * vel) / (Math.pow(r, 2) - pathRadius[i] * baseWidth / 2));
-					}
-					else {
-						accel = Math.abs((maxAcceleration * Math.pow(r, 2) + baseWidth / 2 * rPrime * vel) / (Math.pow(r, 2) + pathRadius[i] * baseWidth / 2));
-					}
+					accel = Math.abs(r < 0 ? (maxAcceleration * Math.pow(r, 2) - baseWidth / 2 * rPrime * vel) / (r * (r - baseWidth / 2))
+							: (maxAcceleration * Math.pow(r, 2) + baseWidth / 2 * rPrime * vel) / (r * (r - baseWidth / 2)));
+					//System.out.println(accel);
+					/*if(r < 0)
+						System.out.println((accel * r * (r - baseWidth / 2) + vel * baseWidth / 2 * rPrime) / Math.pow(r, 2));
+					else
+						System.out.println((accel * r * (r - baseWidth / 2) - vel * baseWidth / 2 * rPrime) / Math.pow(r, 2));*/
 				}
 				else {
+					System.out.println(i);
 					accel = maxAcceleration;
 				}
 				

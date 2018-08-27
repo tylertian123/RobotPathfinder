@@ -1,5 +1,7 @@
 package robot.pathfinder.core.trajectory;
 
+import java.util.Arrays;
+
 import robot.pathfinder.core.RobotSpecs;
 import robot.pathfinder.core.TrajectoryParams;
 import robot.pathfinder.core.Waypoint;
@@ -194,6 +196,9 @@ public class BasicTrajectory {
 		//Create the BasicMoment array and initialize first element to 0 position, velocity, acceleration and time
 		moments = new BasicMoment[segmentCount];
 		moments[0] = new BasicMoment(0, 0, 0, headings[0], 0);
+		
+		double[] precomputedTimeDiff = new double[moments.length - 1];
+		Arrays.fill(precomputedTimeDiff, Double.NaN);
 
 		//Forwards pass as described in the algorithm in the video
 		for(int i = 1; i < moments.length; i ++) {
@@ -224,6 +229,7 @@ public class BasicTrajectory {
 				}
 				
 				moments[i] = new BasicMoment(accumulatedDist, vel, 0, headings[i]);
+				precomputedTimeDiff[i - 1] = (vel - moments[i - 1].getVelocity()) / (moments[i - 1].getAcceleration());
 			}
 			else {
 				//If not, then do not accelerate, and set the velocity to the maximum
@@ -258,15 +264,26 @@ public class BasicTrajectory {
 				}
 				
 				moments[i].setVelocity(vel);
+				precomputedTimeDiff[i] = (moments[i + 1].getVelocity() - vel) / moments[i].getAcceleration();
 			}
 		}
 		
-		for(int i = 1; i < moments.length; i ++) {
+		/*for(int i = 1; i < moments.length; i ++) {
 			//Now that we have the desired position, velocity and acceleration for each moment, we can solve
 			//for the time using the kinematic formulas
 			double dt = MathUtils.findPositiveQuadraticRoot(moments[i - 1].getAcceleration() / 2, moments[i - 1].getVelocity(), 
 					-(moments[i].getPosition() - moments[i - 1].getPosition()), params.roundingLimit);
 			moments[i].setTime(moments[i - 1].getTime() + dt);
+		}*/
+		
+		for(int i = 1; i < moments.length; i ++) {
+			if(!Double.isNaN(precomputedTimeDiff[i - 1])) {
+				moments[i].setTime(moments[i - 1].getTime() + precomputedTimeDiff[i - 1]);
+			}
+			else {
+				double dt = (moments[i].getPosition() - moments[i - 1].getPosition()) / moments[i - 1].getVelocity();
+				moments[i].setTime(moments[i - 1].getTime() + dt);
+			}
 		}
 	}
 	/*

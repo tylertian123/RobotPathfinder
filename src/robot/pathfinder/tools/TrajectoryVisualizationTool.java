@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -80,7 +81,6 @@ public class TrajectoryVisualizationTool {
 	static JTextField segments = new JTextField("1000");
 	static JTextField maxVelocity = new JTextField();
 	static JTextField maxAcceleration = new JTextField();
-	static JTextField roundingLimit = new JTextField("1.0e-6");
 	static JPanel argumentsPanel;
 	
 	static JMenuBar menuBar;
@@ -223,7 +223,6 @@ public class TrajectoryVisualizationTool {
 		baseWidth.setPreferredSize(textFieldSize);
 		alpha.setPreferredSize(textFieldSize);
 		segments.setPreferredSize(textFieldSize);
-		roundingLimit.setPreferredSize(textFieldSize);
 		
 		JPanel subPanel1 = new JPanel();
 		subPanel1.setLayout(new BoxLayout(subPanel1, BoxLayout.Y_AXIS));
@@ -241,8 +240,10 @@ public class TrajectoryVisualizationTool {
 		subPanel3.setLayout(new BoxLayout(subPanel3, BoxLayout.Y_AXIS));
 		subPanel3.add(new JLabel("Number of Segments"));
 		subPanel3.add(segments);
-		subPanel3.add(new JLabel("Rounding Limit"));
-		subPanel3.add(roundingLimit);
+		subPanel3.add(Box.createVerticalStrut(new JLabel().getFont().getSize()));
+		isTank = new JCheckBox("Tank Drive");
+		isTank.setSelected(true);
+		subPanel3.add(isTank);
 		JPanel subPanel4 = new JPanel();
 		subPanel4.setLayout(new BoxLayout(subPanel4, BoxLayout.Y_AXIS));
 		ActionListener changePathType = e -> {
@@ -276,17 +277,11 @@ public class TrajectoryVisualizationTool {
 		subPanel4.add(quinticHermiteButton);
 		subPanel4.add(cubicHermiteButton);
 		subPanel4.add(bezierButton);
-		JPanel subPanel5 = new JPanel();
-		subPanel5.setLayout(new BoxLayout(subPanel5, BoxLayout.Y_AXIS));
-		isTank = new JCheckBox("Tank Drive");
-		isTank.setSelected(true);
-		subPanel5.add(isTank);
 		
 		argumentsPanel.add(subPanel1);
 		argumentsPanel.add(subPanel2);
 		argumentsPanel.add(subPanel3);
 		argumentsPanel.add(subPanel4);
-		argumentsPanel.add(subPanel5);
 		
 		mainPanel.add(argumentsPanel, BorderLayout.CENTER);
 		
@@ -446,7 +441,7 @@ public class TrajectoryVisualizationTool {
 		
 		JButton generateButton = new JButton("Generate");
 		generateButton.addActionListener(e -> {
-			double maxVel, maxAccel, base, a, minUnit;
+			double maxVel, maxAccel, base, a;
 			int segmentCount;
 			
 			try {
@@ -455,7 +450,6 @@ public class TrajectoryVisualizationTool {
 				base = isTank.isSelected() ? Double.parseDouble(baseWidth.getText()) : 0;
 				a = Double.parseDouble(alpha.getText());
 				segmentCount = Integer.parseInt(segments.getText());
-				minUnit = Double.parseDouble(roundingLimit.getText());
 			}
 			catch(NumberFormatException e1) {
 				JOptionPane.showMessageDialog(mainFrame, "Error: An invalid token was entered\nin one or more fields.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -477,7 +471,6 @@ public class TrajectoryVisualizationTool {
 			params.alpha = a;
 			params.isTank = isTank.isSelected();
 			params.pathType = selectedType;
-			params.roundingLimit = minUnit;
 			params.segmentCount = segmentCount;
 			params.waypoints = waypointArray;
 			
@@ -543,7 +536,7 @@ public class TrajectoryVisualizationTool {
 		JButton generateCodeButton = new JButton("Get Code");
 		generateCodeButton.addActionListener(e -> {
 			
-			double maxVel, maxAccel, base, a, minUnit;
+			double maxVel, maxAccel, base, a;
 			int segmentCount;
 			
 			try {
@@ -552,7 +545,6 @@ public class TrajectoryVisualizationTool {
 				base = isTank.isSelected() ? Double.parseDouble(baseWidth.getText()) : 0;
 				a = Double.parseDouble(alpha.getText());
 				segmentCount = Integer.parseInt(segments.getText());
-				minUnit = Double.parseDouble(roundingLimit.getText());
 			}
 			catch(NumberFormatException e1) {
 				JOptionPane.showMessageDialog(mainFrame, "Error: An invalid token was entered\nin one or more fields.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -587,7 +579,6 @@ public class TrajectoryVisualizationTool {
 			generatedCode.append("};\n");
 			generatedCode.append("params.alpha = " + a + ";\n");
 			generatedCode.append("params.segmentCount = " + segmentCount + ";\n");
-			generatedCode.append("params.roundingLimit = " + minUnit + ";\n");
 			generatedCode.append("params.isTank = " + isTank.isSelected() + ";\n");
 			generatedCode.append("params.pathType = PathType." + selectedType.name() + ";\n");
 			if(isTank.isSelected()) {
@@ -626,7 +617,7 @@ public class TrajectoryVisualizationTool {
 				return;
 			}
 			
-			double maxVel, maxAccel, base, a, minUnit;
+			double maxVel, maxAccel, base, a;
 			int segmentCount;
 			
 			try {
@@ -635,7 +626,6 @@ public class TrajectoryVisualizationTool {
 				base = Double.parseDouble(baseWidth.getText());
 				a = Double.parseDouble(alpha.getText());
 				segmentCount = Integer.parseInt(segments.getText());
-				minUnit = Double.parseDouble(roundingLimit.getText());
 			}
 			catch(NumberFormatException e1) {
 				JOptionPane.showMessageDialog(mainFrame, "Error: An invalid token was entered\nin one or more fields.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -655,7 +645,7 @@ public class TrajectoryVisualizationTool {
 					path += ".csv";
 				
 				try(BufferedWriter out = new BufferedWriter(new FileWriter(path))) {
-					out.write(maxVel + "," + maxAccel + "," + base + "," + a + "," + segmentCount + "," + minUnit + ",");
+					out.write(maxVel + "," + maxAccel + "," + base + "," + a + "," + segmentCount + ",");
 					switch(selectedType) {
 					case QUINTIC_HERMITE:
 						out.write(QHERMITE);
@@ -706,7 +696,7 @@ public class TrajectoryVisualizationTool {
 			if(ret == JFileChooser.APPROVE_OPTION) {
 				try(BufferedReader in = new BufferedReader(new FileReader(fc.getSelectedFile()))) {
 					String[] parameters = in.readLine().split(",");
-					if(parameters.length < 8) {
+					if(parameters.length < 7) {
 						JOptionPane.showMessageDialog(mainFrame, "Error: The file format is invalid.", "Error", JOptionPane.ERROR_MESSAGE);
 						return;
 					}
@@ -715,9 +705,8 @@ public class TrajectoryVisualizationTool {
 					baseWidth.setText(parameters[2]);
 					alpha.setText(parameters[3]);
 					segments.setText(parameters[4]);
-					roundingLimit.setText(parameters[5]);
 					
-					switch(parameters[6].trim()) {
+					switch(parameters[5].trim()) {
 					case QHERMITE:
 						selectedType = PathType.QUINTIC_HERMITE;
 						quinticHermiteButton.setSelected(true);
@@ -740,7 +729,7 @@ public class TrajectoryVisualizationTool {
 						JOptionPane.showMessageDialog(mainFrame, "Error: The file format is invalid.", "Error", JOptionPane.ERROR_MESSAGE);
 						return;
 					}
-					if(parameters[7].trim().equals("TankDriveTrajectory")) {
+					if(parameters[6].trim().equals("TankDriveTrajectory")) {
 						isTank.setSelected(true);
 					}
 					else {

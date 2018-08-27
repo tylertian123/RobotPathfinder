@@ -40,6 +40,7 @@ public class TrajectoryParams implements Cloneable {
 	 * floating-point rounding errors can stack up, resulting in unsolvable equations. Any number smaller in
 	 * magnitude than this value will be rounded down to 0. This field can usually be ignored. Default value is
 	 * {@code 1.0e-6}.
+	 * @deprecated This field is no longer needed in the current implementation. It is only kept for compatibility.
 	 */
 	public double roundingLimit = 1.0e-6;
 	/**

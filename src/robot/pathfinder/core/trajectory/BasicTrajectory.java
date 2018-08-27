@@ -197,7 +197,13 @@ public class BasicTrajectory {
 		moments = new BasicMoment[segmentCount];
 		moments[0] = new BasicMoment(0, 0, 0, headings[0], 0);
 		
+		/*
+		 * This array holds the difference in time between two moments.
+		 * During the forward and backwards passes, the time difference can be computed just using simple
+		 * division. If computed at the end, they would require more expensive calls to sqrt().
+		 */
 		double[] precomputedTimeDiff = new double[moments.length - 1];
+		//Set the elements to NaN to indicate that they're not initialized
 		Arrays.fill(precomputedTimeDiff, Double.NaN);
 
 		//Forwards pass as described in the algorithm in the video
@@ -229,6 +235,7 @@ public class BasicTrajectory {
 				}
 				
 				moments[i] = new BasicMoment(accumulatedDist, vel, 0, headings[i]);
+				//Calculate the time difference
 				precomputedTimeDiff[i - 1] = (vel - moments[i - 1].getVelocity()) / (moments[i - 1].getAcceleration());
 			}
 			else {
@@ -264,23 +271,21 @@ public class BasicTrajectory {
 				}
 				
 				moments[i].setVelocity(vel);
+				//Calculate the time difference
 				precomputedTimeDiff[i] = (moments[i + 1].getVelocity() - vel) / moments[i].getAcceleration();
 			}
 		}
 		
-		/*for(int i = 1; i < moments.length; i ++) {
-			//Now that we have the desired position, velocity and acceleration for each moment, we can solve
-			//for the time using the kinematic formulas
-			double dt = MathUtils.findPositiveQuadraticRoot(moments[i - 1].getAcceleration() / 2, moments[i - 1].getVelocity(), 
-					-(moments[i].getPosition() - moments[i - 1].getPosition()), params.roundingLimit);
-			moments[i].setTime(moments[i - 1].getTime() + dt);
-		}*/
-		
+		//Here we give each moment a timestamp
 		for(int i = 1; i < moments.length; i ++) {
+			//First test if the time difference is already computed
 			if(!Double.isNaN(precomputedTimeDiff[i - 1])) {
 				moments[i].setTime(moments[i - 1].getTime() + precomputedTimeDiff[i - 1]);
 			}
 			else {
+				//Otherwise, compute the time difference
+				//Since the time difference will always be computed if acceleration is non-zero,
+				//we can assume here that the acceleration will be 0, so only a division is needed.
 				double dt = (moments[i].getPosition() - moments[i - 1].getPosition()) / moments[i - 1].getVelocity();
 				moments[i].setTime(moments[i - 1].getTime() + dt);
 			}

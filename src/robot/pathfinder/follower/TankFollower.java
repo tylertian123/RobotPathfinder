@@ -10,7 +10,7 @@ public class TankFollower extends Follower {
 	DistanceSource lDistSrc, rDistSrc;
 	Motor lMotor, rMotor;
 	
-	double initTime, lastTime, lLastErr, rLastErr;
+	double initTime, lastTime, lLastErr, rLastErr, lInitDist, rInitDist;
 	boolean running = false;
 	
 	public TankFollower(TankDriveTrajectory traj, Motor lMotor, Motor rMotor, 
@@ -59,8 +59,8 @@ public class TankFollower extends Follower {
 		if(running) {
 			return;
 		}
-		lDistSrc.resetDistance();
-		rDistSrc.resetDistance();
+		lInitDist = lDistSrc.getDistance();
+		rInitDist = rDistSrc.getDistance();
 		initTime = lastTime = timer.getTimestamp();
 		
 		running = true;
@@ -81,8 +81,8 @@ public class TankFollower extends Follower {
 		
 		TankDriveMoment m = traj.get(t);
 		//Calculate left and right errors
-		double leftErr = lDistSrc.getDistance() - m.getLeftPosition();
-		double rightErr = rDistSrc.getDistance() - m.getRightPosition();
+		double leftErr = (lDistSrc.getDistance() - lInitDist) - m.getLeftPosition();
+		double rightErr = (rDistSrc.getDistance() -lInitDist) - m.getRightPosition();
 		//Get the derivative of the errors
 		//Subtract away the desired velocity to get the true error
 		double leftDeriv = (leftErr - lLastErr) / dt 

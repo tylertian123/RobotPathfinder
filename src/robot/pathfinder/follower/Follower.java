@@ -72,24 +72,70 @@ abstract public class Follower {
 	public abstract void stop();
 	
 	/**
-	 * This functional interface is used by the follower to retrieve timestamps.
+	 * This functional interface represents a source of timestamp data, such as a FPGA timer.<br>
+	 * The timestamps are used to calculate the derivative part of the control loop; therefore, it is 
+	 * recommended that they have a resolution of at least one millisecond (preferably higher). Higher
+	 * resolutions will yield better results.
 	 * @author Tyler Tian
 	 *
 	 */
 	@FunctionalInterface
 	public interface TimestampSource {
+		/**
+		 * Gets a timestamp from the source.<br>
+		 * <br>
+		 * Please note that the unit of the result should stay consistent with the unit used to generate the
+		 * trajectory the follower is to follow. For example, if the trajectory is generated with units of
+		 * m/s, the result should be in seconds.
+		 * @return The timestamp
+		 */
 		public double getTimestamp();
 	}
+	/**
+	 * This functional interface represents a source of distance data, such as an encoder.
+	 * @author Tyler Tian
+	 *
+	 */
 	@FunctionalInterface
 	public interface DistanceSource {
+		/**
+		 * Gets distance data from the source.<br>
+		 * <br>
+		 * Please note that the unit of the result should stay consistent with the unit used to generate the
+		 * trajectory the follower is to follow. For example, if the trajectory is generated with units of
+		 * m/s, the result should be in meters.
+		 * @return The distance
+		 */
 		public double getDistance();
 	}
+	/**
+	 * This functional interface represents a source of orientation/directional data, such as a gyroscope.
+	 * @author Tyler Tian
+	 *
+	 */
 	@FunctionalInterface
 	public interface DirectionSource {
+		/**
+		 * Gets orientation/directional data from the source.<br>
+		 * </br>
+		 * Please note that the result should be in radians, with 0 representing right. The representation
+		 * should be the same as the angles used to generate the trajectory.
+		 * @return The angle the robot is facing
+		 */
 		public double getDirection();
 	}
+	/**
+	 * This functional interface represents a motor or any kind of device that will accept the output.
+	 * @author Tyler Tian
+	 *
+	 */
 	@FunctionalInterface
 	public interface Motor {
+		/**
+		 * Sets the speed of the motor. The speed should be a number between -1 and 1, with -1 being
+		 * full speed reverse, 1 being full speed forward, and 0 being no motion.
+		 * @param speed The speed to set the motor to
+		 */
 		public void set(double speed);
 	}
 }

@@ -96,7 +96,6 @@ public class BasicTrajectory implements Trajectory {
 			throw new IllegalArgumentException("A tank trajectory must have a base with");
 		}
 		
-		this.initialFacing = waypoints[0].getHeading();
 		this.isTank = isTank;
 		//Generate the path
 		path = Path.constructPath(params.pathType, waypoints, alpha);
@@ -196,7 +195,7 @@ public class BasicTrajectory implements Trajectory {
 		
 		//Create the BasicMoment array and initialize first element to 0 position, velocity, acceleration and time
 		moments = new BasicMoment[segmentCount];
-		moments[0] = new BasicMoment(0, 0, 0, headings[0], 0, initialFacing);
+		moments[0] = new BasicMoment(0, 0, 0, headings[0], 0);
 		
 		/*
 		 * This array holds the difference in time between two moments.
@@ -236,7 +235,6 @@ public class BasicTrajectory implements Trajectory {
 				}
 				
 				moments[i] = new BasicMoment(accumulatedDist, vel, 0, headings[i]);
-				moments[i].setInitialFacing(initialFacing);
 				//Calculate the time difference
 				precomputedTimeDiff[i - 1] = (vel - moments[i - 1].getVelocity()) / (moments[i - 1].getAcceleration());
 			}
@@ -244,7 +242,6 @@ public class BasicTrajectory implements Trajectory {
 				//If not, then do not accelerate, and set the velocity to the maximum
 				moments[i] = new BasicMoment(accumulatedDist, theoreticalMax, 0, headings[i]);
 				moments[i - 1].setAcceleration(0);
-				moments[i].setInitialFacing(initialFacing);
 			}
 		}
 		
@@ -279,6 +276,12 @@ public class BasicTrajectory implements Trajectory {
 			}
 		}
 		
+		//Set the initial facing directions for all moments
+		this.initialFacing = moments[0].getFacingAbsolute();
+		for(int i = 0; i < moments.length; i ++) {
+			moments[i].setInitialFacing(moments[0].getFacingAbsolute());
+		}
+		
 		//Here we give each moment a timestamp
 		for(int i = 1; i < moments.length; i ++) {
 			//First test if the time difference is already computed
@@ -306,6 +309,7 @@ public class BasicTrajectory implements Trajectory {
 		this.pathRadius = pathRadius;
 		this.robotSpecs = specs;
 		this.params = params;
+		this.initialFacing = moments[0].getInitialFacing();
 		
 		headingVectors = new Vec2D[moments.length];
 		for(int i = 0; i < moments.length; i ++) {
@@ -430,7 +434,6 @@ public class BasicTrajectory implements Trajectory {
 	public BasicTrajectory mirrorLeftRight() {
 		//Construct new path
 		Path newPath = path.mirrorLeftRight();
-		double newInitialFacing = newPath.getWaypoints()[0].getHeading();
 		//This is the angle to reflect all angles across
 		double refAngle = params.waypoints[0].getHeading();
 		
@@ -441,7 +444,7 @@ public class BasicTrajectory implements Trajectory {
 		for(int i = 0; i < newMoments.length; i ++) {
 			newMoments[i] = moments[i].clone();
 			newMoments[i].setHeading(MathUtils.mirrorAngle(moments[i].getHeading(), refAngle));
-			newMoments[i].setInitialFacing(newInitialFacing);
+			newMoments[i].setInitialFacing(newMoments[0].getFacingAbsolute());
 		}
 		
 		//The params have to be updated since the waypoints are changed
@@ -469,7 +472,6 @@ public class BasicTrajectory implements Trajectory {
 	 */
 	public BasicTrajectory mirrorFrontBack() {
 		Path newPath = path.mirrorFrontBack();
-		double newInitialFacing = newPath.getWaypoints()[0].getHeading();
 		//This time, mirror all angles across the line perpendicular to the one at the first waypoint
 		double refAngle = params.waypoints[0].getHeading() + Math.PI / 2;
 		
@@ -479,7 +481,10 @@ public class BasicTrajectory implements Trajectory {
 			//The angle is reflected across the line perpendicular to the one at the first waypoint
 			newMoments[i] = new BasicMoment(-moments[i].getPosition(), -moments[i].getVelocity(), 
 					-moments[i].getAcceleration(), MathUtils.mirrorAngle(moments[i].getHeading(), refAngle),
-					moments[i].getTime(), newInitialFacing);
+					moments[i].getTime());
+		}
+		for(int i = 0; i < newMoments.length; i ++) {
+			newMoments[i].setInitialFacing(newMoments[0].getFacingAbsolute());
 		}
 		
 		TrajectoryParams newParams = params.clone();
@@ -493,7 +498,6 @@ public class BasicTrajectory implements Trajectory {
 	 */
 	public BasicTrajectory retrace() {
 		Path newPath = path.retrace();
-		double newInitialFacing = newPath.getWaypoints()[0].getHeading();
 		
 		BasicMoment[] newMoments = new BasicMoment[moments.length];
 		//keep a reference to the last moment for convenience
@@ -515,7 +519,10 @@ public class BasicTrajectory implements Trajectory {
 			newMoments[i] = new BasicMoment(-(lastMoment.getPosition() - currentMoment.getPosition()), 
 					-currentMoment.getVelocity(), currentMoment.getAcceleration(), 
 					(currentMoment.getHeading() + Math.PI) / (2 * Math.PI), 
-					lastMoment.getTime() - currentMoment.getTime(), newInitialFacing);
+					lastMoment.getTime() - currentMoment.getTime());
+		}
+		for(int i = 0; i < newMoments.length; i ++) {
+			newMoments[i].setInitialFacing(newMoments[0].getFacingAbsolute());
 		}
 		
 		TrajectoryParams newParams = params.clone();

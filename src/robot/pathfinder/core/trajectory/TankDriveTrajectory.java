@@ -263,7 +263,6 @@ public class TankDriveTrajectory implements Trajectory {
 	public TankDriveTrajectory mirrorLeftRight() {
 		//Create new path
 		Path newPath = path.mirrorLeftRight();
-		double newInitialFacing = newPath.getWaypoints()[0].getHeading();
 		
 		TankDriveMoment[] newMoments = new TankDriveMoment[moments.length];
 		for(int i = 0; i < newMoments.length; i ++) {
@@ -271,7 +270,7 @@ public class TankDriveTrajectory implements Trajectory {
 			newMoments[i] = TankDriveMoment.fromComponents(moments[i].rightComponent(), moments[i].leftComponent());
 			//See BasicTrajectory.mirrorLeftRight()
 			newMoments[i].setHeading(-moments[i].getHeading() + Math.PI);
-			newMoments[i].setInitialFacing(newInitialFacing);
+			newMoments[i].setInitialFacing(newMoments[0].getFacingAbsolute());
 		}
 		
 		TrajectoryParams newParams = params.clone();
@@ -288,12 +287,14 @@ public class TankDriveTrajectory implements Trajectory {
 		//See BasicTrajectory.mirrorFrontBack()
 		TankDriveMoment[] newMoments = new TankDriveMoment[moments.length];
 		Path newPath = path.mirrorFrontBack();
-		double newInitialFacing = newPath.getWaypoints()[0].getHeading();
 		
 		for(int i = 0; i < newMoments.length; i ++) {
 			newMoments[i] = new TankDriveMoment(-moments[i].getLeftPosition(), -moments[i].getRightPosition(),
 					-moments[i].getLeftVelocity(), -moments[i].getRightVelocity(), -moments[i].getLeftAcceleration(),
-					-moments[i].getRightAcceleration(), -moments[i].getHeading(), moments[i].getTime(), newInitialFacing);
+					-moments[i].getRightAcceleration(), -moments[i].getHeading(), moments[i].getTime());
+		}
+		for(int i = 0; i < newMoments.length; i ++) {
+			newMoments[i].setInitialFacing(newMoments[0].getFacingAbsolute());
 		}
 		
 		TrajectoryParams newParams = params.clone();
@@ -311,7 +312,6 @@ public class TankDriveTrajectory implements Trajectory {
 		
 		//Create new path
 		Path newPath = path.retrace();
-		double newInitialFacing = newPath.getWaypoints()[0].getHeading();
 		
 		TankDriveMoment lastMoment = moments[moments.length - 1];
 		
@@ -331,8 +331,10 @@ public class TankDriveTrajectory implements Trajectory {
 			newMoments[i] = new TankDriveMoment(-(lastMoment.getLeftPosition() - current.getLeftPosition()),
 					-(lastMoment.getRightPosition() - current.getRightPosition()), -current.getLeftVelocity(),
 					-current.getRightVelocity(), current.getLeftAcceleration(), current.getRightAcceleration(),
-					(current.getHeading() + Math.PI) % (2 * Math.PI), lastMoment.getTime() - current.getTime(),
-					newInitialFacing);
+					(current.getHeading() + Math.PI) % (2 * Math.PI), lastMoment.getTime() - current.getTime());
+		}
+		for(int i = 0; i < newMoments.length; i ++) {
+			newMoments[i].setInitialFacing(newMoments[0].getFacingAbsolute());
 		}
 
 		TrajectoryParams newParams = params.clone();

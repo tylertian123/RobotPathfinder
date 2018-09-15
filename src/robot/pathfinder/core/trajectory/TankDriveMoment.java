@@ -79,7 +79,7 @@ public class TankDriveMoment implements Moment {
 	 * @param rightAcl The acceleration of the right wheel
 	 * @param heading The desired heading; see {@link #getHeading()} and {@link #getFacing()} for more information
 	 * @param time The desired time
-	 * @param initialFacing The initial direction the robot is facing; used to calculate the result of {@link #getFacingRelative()}
+	 * @param initialFacing The initial direction the robot is <b>facing</b>; used to calculate the result of {@link #getFacingRelative()}
 	 */
 	public TankDriveMoment(double leftPos, double rightPos, double leftVel, double rightVel, double leftAcl, double rightAcl, double heading, double time, double initialFacing) {
 		this(leftPos, rightPos, leftVel, rightVel, leftAcl, rightAcl, heading);

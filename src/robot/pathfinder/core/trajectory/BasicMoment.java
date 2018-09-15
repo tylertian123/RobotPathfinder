@@ -69,7 +69,7 @@ public class BasicMoment implements Moment {
 	 * @param acceleration The desired acceleration
 	 * @param heading The desired heading; see {@link #getHeading()} and {@link #getFacing()} for more information.
 	 * @param t The desired time
-	 * @param initialFacing The initial direction the robot is facing
+	 * @param initialFacing The initial direction the robot is <b>facing</b>
 	 */
 	public BasicMoment(double position, double velocity, double acceleration, double heading, double t, double initialFacing) {
 		this(position, velocity, acceleration, heading);

@@ -137,7 +137,7 @@ public final class Grapher {
 			rPos[i] = m.getRightPosition();
 			rVel[i] = m.getRightVelocity();
 			rAcl[i] = m.getRightAcceleration();
-			//heading[i] = m.getFacing();
+			heading[i] = m.getFacingRelative();
 			
 			i++;
 		}

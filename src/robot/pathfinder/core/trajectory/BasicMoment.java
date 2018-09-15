@@ -36,7 +36,7 @@ public class BasicMoment implements Moment {
 	
 	@Override
 	public BasicMoment clone() {
-		return new BasicMoment(d, v, a, heading, t);
+		return new BasicMoment(d, v, a, heading, t, initialFacing);
 	}
 	
 	/**

@@ -34,7 +34,7 @@ public class TankDriveMoment implements Moment {
 	
 	@Override
 	public TankDriveMoment clone() {
-		return new TankDriveMoment(ld, rd, lv, rv, la, ra, heading, t);
+		return new TankDriveMoment(ld, rd, lv, rv, la, ra, heading, t, initialFacing);
 	}
 	
 	/**

@@ -62,6 +62,20 @@ public class BasicMoment implements Moment {
 		this(position, velocity, acceleration, heading);
 		this.t = t;
 	}
+	/**
+	 * Creates a new moment with the specified values.
+	 * @param position The desired position
+	 * @param velocity The desired velocity
+	 * @param acceleration The desired acceleration
+	 * @param heading The desired heading; see {@link #getHeading()} and {@link #getFacing()} for more information.
+	 * @param t The desired time
+	 * @param initialFacing The initial direction the robot is facing
+	 */
+	public BasicMoment(double position, double velocity, double acceleration, double heading, double t, double initialFacing) {
+		this(position, velocity, acceleration, heading);
+		this.t = t;
+		this.initialFacing = initialFacing;
+	}
 	
 	/**
 	 * Sets the time of the moment.

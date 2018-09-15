@@ -1,5 +1,7 @@
 package robot.pathfinder.core.trajectory;
 
+import robot.pathfinder.math.MathUtils;
+
 /**
  * A class that holds information about a tank drive robot at a moment in time. Unlike {@link BasicMoment},
  * this class holds information about two wheels.
@@ -245,20 +247,20 @@ public class TankDriveMoment implements Moment {
 	}
 	@Override
 	public double getFacingRelative() {
-		return getFacingAbsolute() - initialFacing;
+		return MathUtils.restrictAngle(getFacingAbsolute() - initialFacing);
 	}
 	@Override
 	public double getFacingAbsolute() {
 		//If one of the wheels is going forward, then the robot's heading is the direction it's facing
 		if(lv > 0 || rv > 0) {
-			return heading;
+			return MathUtils.restrictAngle(heading);
 		}
 		else if(lv < 0 && rv < 0) {
-			return heading + Math.PI;
+			return MathUtils.restrictAngle(heading + Math.PI);
 		}
 		//If both velocities are 0 then refer to the acceleration
 		else {
-			return la >= 0 || ra >= 0 ? heading : heading + Math.PI;
+			return MathUtils.restrictAngle(la > 0 || ra > 0 ? heading : heading + Math.PI);
 		}
 	}
 	/**

@@ -1,5 +1,7 @@
 package robot.pathfinder.core.trajectory;
 
+import robot.pathfinder.math.MathUtils;
+
 /**
  * A class that holds information about a robot at a moment in time. 
  * <p>
@@ -179,18 +181,18 @@ public class BasicMoment implements Moment {
 	}
 	@Override
 	public double getFacingRelative() {
-		return getFacingAbsolute() - initialFacing;
+		return MathUtils.restrictAngle(getFacingAbsolute() - initialFacing);
 	}
 	@Override
 	public double getFacingAbsolute() {
 		if(v > 0) {
-			return heading;
+			return MathUtils.restrictAngle(heading);
 		}
 		else if(v < 0) {
-			return heading + Math.PI;
+			return MathUtils.restrictAngle(heading + Math.PI);
 		}
 		else {
-			return a >= 0 ? heading : heading + Math.PI;
+			return MathUtils.restrictAngle(a > 0 ? heading : heading + Math.PI);
 		}
 	}
 	/**

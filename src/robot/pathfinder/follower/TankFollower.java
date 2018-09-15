@@ -31,9 +31,9 @@ public class TankFollower extends Follower {
 	 * @param traj The trajectory to follow
 	 * @param lMotor The left side motor
 	 * @param rMotor The right side motor
-	 * @param lDistSrc A {@link #robot.pathfinder.follower.Follower.DistanceSource DistanceSource} for the left motor
-	 * @param rDistSrc A {@link #robot.pathfinder.follower.Follower.DistanceSource DistanceSource} for the right motor
-	 * @param timer A {@link #robot.pathfinder.follower.Follower.TimestampSource TimestampSource} to grab timestamps from
+	 * @param lDistSrc A {@link robot.pathfinder.follower.Follower.DistanceSource DistanceSource} for the left motor
+	 * @param rDistSrc A {@link robot.pathfinder.follower.Follower.DistanceSource DistanceSource} for the right motor
+	 * @param timer A {@link robot.pathfinder.follower.Follower.TimestampSource TimestampSource} to grab timestamps from
 	 * @param kV The velocity feedforward 
 	 * @param kA The acceleration feedforward
 	 * @param kP The proportional gain
@@ -101,9 +101,8 @@ public class TankFollower extends Follower {
 	}
 	
 	/**
-	 * Tests whether the follower is running. The follower is considered to be "running" if {@link initialize()}
-	 * has been called, the trajectory did not end, and {@link stop()} has not been called.
-	 * @return Whether the follower is currently running
+	 * {@inheritDoc} The follower is considered to be "running" if {@link #initialize()}
+	 * has been called, the trajectory did not end, and {@link #stop()} has not been called.
 	 */
 	public boolean isRunning() {
 		return running;

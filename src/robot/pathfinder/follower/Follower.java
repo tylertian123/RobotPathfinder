@@ -57,6 +57,11 @@ abstract public class Follower {
 	}
 	
 	/**
+	 * Tests whether the follower is running.
+	 * @return Whether the follower is running
+	 */
+	public abstract boolean isRunning();
+	/**
 	 * Initializes and starts the follower. This method must be called before {@link #run()} can be called.
 	 */
 	public abstract void initialize();
@@ -117,7 +122,7 @@ abstract public class Follower {
 	public interface DirectionSource {
 		/**
 		 * Gets orientation/directional data from the source.<br>
-		 * </br>
+		 * <br>
 		 * Please note that the result should be in radians, with 0 representing right. The representation
 		 * should be the same as the angles used to generate the trajectory.
 		 * @return The angle the robot is facing

@@ -247,11 +247,21 @@ public class TankDriveMoment implements Moment {
 	}
 	@Override
 	public double getFacingRelative() {
-		return MathUtils.restrictAngle(getFacingAbsolute() - initialFacing);
+		return getFacingAbsolute() - initialFacing;
 	}
 	@Override
 	public double getFacingAbsolute() {
-		return lv >= 0 || rv >= 0 ? heading : -heading;
+		//If one of the wheels is going forward, then the robot's heading is the direction it's facing
+		if(lv > 0 || rv > 0) {
+			return heading;
+		}
+		else if(lv < 0 && rv < 0) {
+			return heading + Math.PI;
+		}
+		//If both velocities are 0 then refer to the acceleration
+		else {
+			return la >= 0 || ra >= 0 ? heading : heading + Math.PI;
+		}
 	}
 	/**
 	 * Retrieves the direction the robot is <em>facing</em> at this moment in time. <em>Not to be confused with

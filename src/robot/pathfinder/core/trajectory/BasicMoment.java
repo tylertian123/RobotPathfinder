@@ -181,11 +181,19 @@ public class BasicMoment implements Moment {
 	}
 	@Override
 	public double getFacingRelative() {
-		return MathUtils.restrictAngle(getFacingAbsolute() - initialFacing);
+		return getFacingAbsolute() - initialFacing;
 	}
 	@Override
 	public double getFacingAbsolute() {
-		return v >= 0 ? heading : -heading;
+		if(v > 0) {
+			return heading;
+		}
+		else if(v < 0) {
+			return heading + Math.PI;
+		}
+		else {
+			return a >= 0 ? heading : heading + Math.PI;
+		}
 	}
 	/**
 	 * Retrieves the direction the robot is <em>facing</em> at this moment in time. <em>Not to be confused with

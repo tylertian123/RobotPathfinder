@@ -123,6 +123,7 @@ public final class Grapher {
 		double[] rPos = new double[elemCount];
 		double[] rVel = new double[elemCount];
 		double[] rAcl = new double[elemCount];
+		double[] heading = new double[elemCount];
 		
 		int i = 0;
 		for(double t = 0; t <= trajectory.totalTime() && i < elemCount; t += dt) {
@@ -136,6 +137,7 @@ public final class Grapher {
 			rPos[i] = m.getRightPosition();
 			rVel[i] = m.getRightVelocity();
 			rAcl[i] = m.getRightAcceleration();
+			//heading[i] = m.getFacing();
 			
 			i++;
 		}
@@ -145,12 +147,13 @@ public final class Grapher {
 			Plot2DPanel plot = new Plot2DPanel();
 			plot.setLegendOrientation("EAST");
 			//Add graphs
-			plot.addLinePlot("Left Position", time, lPos);
+			//plot.addLinePlot("Left Position", time, lPos);
 			plot.addLinePlot("Left Velocity", time, lVel);
-			plot.addLinePlot("Left Acceleration", time, lAcl);
-			plot.addLinePlot("Right Position", time, rPos);
+			//plot.addLinePlot("Left Acceleration", time, lAcl);
+			//plot.addLinePlot("Right Position", time, rPos);
 			plot.addLinePlot("Right Velocity", time, rVel);
-			plot.addLinePlot("Right Acceleration", time, rAcl);
+			//plot.addLinePlot("Right Acceleration", time, rAcl);
+			plot.addLinePlot("Robot Heading", time, heading);
 			
 			//Create window that holds the graph
 			frame = new JFrame("Trajectory Graph");

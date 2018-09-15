@@ -50,6 +50,26 @@ public class TankFollower extends Follower {
 		this.rDistSrc = rDistSrc;
 		this.timer = timer;
 	}
+	/**
+	 * Constructs a new tank drive follower. Note that since this constructor does not require distance 
+	 * sources, the trajectory following is based entirely on the feedforward terms.
+	 * @param traj The trajectory to follow
+	 * @param lMotor The left side motor
+	 * @param rMotor The right side motor
+	 * @param timer A {@link robot.pathfinder.follower.Follower.TimestampSource TimestampSource} to grab timestamps from
+	 * @param kV The velocity feedforward 
+	 * @param kA The acceleration feedforward
+	 */
+	public TankFollower(TankDriveTrajectory traj, Motor lMotor, Motor rMotor, TimestampSource timer,
+			double kV, double kA) {
+		setGains(kV, kA, 0, 0);
+		this.traj = traj;
+		this.lMotor = lMotor;
+		this.rMotor = rMotor;
+		this.lDistSrc = null;
+		this.rDistSrc = null;
+		this.timer = timer;
+	}
 	
 	/**
 	 * Sets the trajectory to follow.
@@ -143,15 +163,20 @@ public class TankFollower extends Follower {
 		}
 		
 		TankDriveMoment m = traj.get(t);
-		//Calculate left and right errors
-		double leftErr = (lDistSrc.getDistance() - lInitDist) - m.getLeftPosition();
-		double rightErr = (rDistSrc.getDistance() -lInitDist) - m.getRightPosition();
-		//Get the derivative of the errors
-		//Subtract away the desired velocity to get the true error
-		double leftDeriv = (leftErr - lLastErr) / dt 
-    			- m.getLeftVelocity();
-    	double rightDeriv = (rightErr - rLastErr) / dt
-    			- m.getRightVelocity();
+		
+		double leftErr = 0, rightErr = 0, leftDeriv = 0, rightDeriv = 0;
+		//Calculate errors and derivatives only if the distance sources are not null
+		if(lDistSrc != null && rDistSrc != null) {
+			//Calculate left and right errors
+			leftErr = (lDistSrc.getDistance() - lInitDist) - m.getLeftPosition();
+			rightErr = (rDistSrc.getDistance() -lInitDist) - m.getRightPosition();
+			//Get the derivative of the errors
+			//Subtract away the desired velocity to get the true error
+			leftDeriv = (leftErr - lLastErr) / dt 
+	    			- m.getLeftVelocity();
+	    	rightDeriv = (rightErr - rLastErr) / dt
+	    			- m.getRightVelocity();
+		}
     	//Calculate outputs
     	double leftOutput = kA * m.getLeftAcceleration() + kV * m.getLeftVelocity()
 				+ kP * leftErr + kD * leftDeriv;

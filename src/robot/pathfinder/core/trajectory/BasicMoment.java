@@ -9,12 +9,27 @@ import robot.pathfinder.math.MathUtils;
  * at a certain time. They're returned by trajectories when querying a specific time.
  * </p>
  * <p>
- * Note that the units used for these moment objects are completely decided by which units are used in a trajectory's
+ * This class represents a moment in time for a basic robot.
+ * </p>
+ * <h2>Difference Between Heading and Facing</h2>
+ * <p>
+ * <em>Heading</em> refers to the direction <em>the robot is moving in</em>, while <em>facing</em> refers to
+ * the direction <em>the front of the robot is facing</em>. Because RobotPathfinder allows the robot to move 
+ * backwards, these are not necessarily the same. For example, a robot moving backwards would have a heading
+ * going backwards, but the facing direction would still be the front.
+ * <h3>Relative And Absolute Directions</h3>
+ * <p>
+ * <em>Absolute</em> directions are directions relative to the positive x-axis, while <em>relative</em> directions
+ * are relative to the starting position of the robot. For example, a robot starting in direction &pi;/2 and
+ * is currently facing the direction 0 would have an absolute facing direction of 0, but a relative 
+ * facing direction of -&pi;.
+ * </p>
+ * </p>
+ * <h2>Units</h2>
+ * <p>
+ * The units used for these moment objects are completely decided by which units are used in a trajectory's
  * {@link robot.pathfinder.core.RobotSpecs RobotSpecs} during generation. For example, if the unit for max velocity was in m/s, then the unit used
  * here for velocity would also be m/s.
- * </p>
- * <p>
- * This class represents a moment in time for a basic robot.
  * </p>
  * @author Tyler Tian
  *
@@ -44,7 +59,7 @@ public class BasicMoment implements Moment {
 	 * @param position The desired position
 	 * @param velocity The desired velocity
 	 * @param acceleration The desired acceleration
-	 * @param heading The desired heading; see {@link #getHeading()} and {@link #getFacing()} for more information.
+	 * @param heading The desired heading; see the class JavaDoc for more information
 	 */
 	public BasicMoment(double position, double velocity, double acceleration, double heading) {
 		d = position;
@@ -57,7 +72,7 @@ public class BasicMoment implements Moment {
 	 * @param position The desired position
 	 * @param velocity The desired velocity
 	 * @param acceleration The desired acceleration
-	 * @param heading The desired heading; see {@link #getHeading()} and {@link #getFacing()} for more information.
+	 * @param heading The desired heading; see the class JavaDoc for more information
 	 * @param t The desired time
 	 */
 	public BasicMoment(double position, double velocity, double acceleration, double heading, double t) {
@@ -69,9 +84,9 @@ public class BasicMoment implements Moment {
 	 * @param position The desired position
 	 * @param velocity The desired velocity
 	 * @param acceleration The desired acceleration
-	 * @param heading The desired heading; see {@link #getHeading()} and {@link #getFacing()} for more information.
+	 * @param heading The desired heading; see the class JavaDoc for more information
 	 * @param t The desired time
-	 * @param initialFacing The initial direction the robot is <b>facing</b>
+	 * @param initialFacing The initial direction the robot is <b>facing</b>; see the class JavaDoc for more information
 	 */
 	public BasicMoment(double position, double velocity, double acceleration, double heading, double t, double initialFacing) {
 		this(position, velocity, acceleration, heading);
@@ -137,52 +152,43 @@ public class BasicMoment implements Moment {
 	}
 	
 	/**
-	 * Sets the heading of the moment.
-	 * <p>
-	 * Headings are the direction of the velocity vector; that is, <em><b>they're the direction the robot is moving
-	 * in, not the direction the robot is facing</b></em>. For the direction that the robot is <em>facing</em>,
-	 * use {@link #getFacing()} instead.
-	 * </p>
-	 * <p>
-	 * The angles are in radians and follow the unit circle, that is, increasing counterclockwise. <em><b>They're
-	 * relative to the positive x axis, not the initial direction of the robot</b></em>. For example, if the
-	 * first waypoint used to generate a trajectory has a heading of pi/2, then the angle that represents "forwards"
-	 * is also pi/2.
-	 * </p>
-	 * @param heading The new heading
+	 * {@inheritDoc}
 	 */
+	@Override
 	public void setHeading(double heading) {
 		this.heading = heading;
 	}
 	/**
-	 * Retrieves the heading of the moment. <em>Not to be confused with {@link #getFacing()}.</em>
-	 * <p>
-	 * Headings are the direction of the velocity vector; that is, <em><b>they're the direction the robot is moving
-	 * in, not the direction the robot is facing</b></em>. For the direction that the robot is <em>facing</em>,
-	 * use {@link #getFacing()} instead.
-	 * </p>
-	 * <p>
-	 * The angles are in radians and follow the unit circle, that is, increasing counterclockwise. <em><b>They're
-	 * relative to the positive x axis, not the initial direction of the robot</b></em>. For example, if the
-	 * first waypoint used to generate a trajectory has a heading of pi/2, then the angle that represents "forwards"
-	 * is also pi/2.
-	 * </p>
-	 * @return The heading of the robot at this moment
+	 * {@inheritDoc}
 	 */
+	@Override
 	public double getHeading() {
 		return heading;
 	}
-	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public double getInitialFacing() {
 		return initialFacing;
 	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void setInitialFacing(double initFacing) {
 		initialFacing = initFacing;
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public double getFacingRelative() {
 		return MathUtils.restrictAngle(getFacingAbsolute() - initialFacing);
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public double getFacingAbsolute() {
 		if(v > 0) {

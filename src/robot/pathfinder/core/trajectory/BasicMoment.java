@@ -1,7 +1,5 @@
 package robot.pathfinder.core.trajectory;
 
-import robot.pathfinder.math.MathUtils;
-
 /**
  * A class that holds information about a robot at a moment in time. 
  * <p>

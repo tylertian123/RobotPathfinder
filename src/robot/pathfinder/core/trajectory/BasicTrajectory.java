@@ -518,7 +518,7 @@ public class BasicTrajectory implements Trajectory {
 			 */
 			newMoments[i] = new BasicMoment(-(lastMoment.getPosition() - currentMoment.getPosition()), 
 					-currentMoment.getVelocity(), currentMoment.getAcceleration(), 
-					(currentMoment.getHeading() + Math.PI) / (2 * Math.PI), 
+					(currentMoment.getHeading() + Math.PI) % (2 * Math.PI), 
 					lastMoment.getTime() - currentMoment.getTime());
 		}
 		for(int i = 0; i < newMoments.length; i ++) {

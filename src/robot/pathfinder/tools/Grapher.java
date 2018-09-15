@@ -51,7 +51,7 @@ public final class Grapher {
 		double[] pos = new double[elemCount];
 		double[] vel = new double[elemCount];
 		double[] acl = new double[elemCount];
-		double[] heading = new double[elemCount];
+		//double[] heading = new double[elemCount];
 		
 		int i = 0;
 		for(double t = 0; t <= trajectory.totalTime(); t += dt) {
@@ -62,7 +62,7 @@ public final class Grapher {
 			pos[i] = m.getPosition();
 			vel[i] = m.getVelocity();
 			acl[i] = m.getAcceleration();
-			heading[i] = m.getHeading();
+			//heading[i] = m.getFacingRelative();
 			
 			i++;
 		}
@@ -123,7 +123,7 @@ public final class Grapher {
 		double[] rPos = new double[elemCount];
 		double[] rVel = new double[elemCount];
 		double[] rAcl = new double[elemCount];
-		double[] heading = new double[elemCount];
+		//double[] heading = new double[elemCount];
 		
 		int i = 0;
 		for(double t = 0; t <= trajectory.totalTime() && i < elemCount; t += dt) {
@@ -137,7 +137,7 @@ public final class Grapher {
 			rPos[i] = m.getRightPosition();
 			rVel[i] = m.getRightVelocity();
 			rAcl[i] = m.getRightAcceleration();
-			heading[i] = m.getFacingRelative();
+			//heading[i] = m.getFacingRelative();
 			
 			i++;
 		}
@@ -147,13 +147,13 @@ public final class Grapher {
 			Plot2DPanel plot = new Plot2DPanel();
 			plot.setLegendOrientation("EAST");
 			//Add graphs
-			//plot.addLinePlot("Left Position", time, lPos);
+			plot.addLinePlot("Left Position", time, lPos);
 			plot.addLinePlot("Left Velocity", time, lVel);
-			//plot.addLinePlot("Left Acceleration", time, lAcl);
-			//plot.addLinePlot("Right Position", time, rPos);
+			plot.addLinePlot("Left Acceleration", time, lAcl);
+			plot.addLinePlot("Right Position", time, rPos);
 			plot.addLinePlot("Right Velocity", time, rVel);
-			//plot.addLinePlot("Right Acceleration", time, rAcl);
-			plot.addLinePlot("Robot Heading", time, heading);
+			plot.addLinePlot("Right Acceleration", time, rAcl);
+			//plot.addLinePlot("Robot Heading", time, heading);
 			
 			//Create window that holds the graph
 			frame = new JFrame("Trajectory Graph");

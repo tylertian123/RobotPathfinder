@@ -11,10 +11,13 @@ package robot.pathfinder.core.trajectory;
  * {@link robot.pathfinder.core.RobotSpecs RobotSpecs} during generation. For example, if the unit for max velocity was in m/s, then the unit used
  * here for velocity would also be m/s.
  * </p>
+ * <p>
+ * This class represents a moment in time for a basic robot.
+ * </p>
  * @author Tyler Tian
  *
  */
-public class BasicMoment implements Cloneable {
+public class BasicMoment implements Moment {
 	
 	double d, v, a;
 	double t;

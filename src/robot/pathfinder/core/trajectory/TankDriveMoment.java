@@ -15,7 +15,7 @@ package robot.pathfinder.core.trajectory;
  * @author Tyler Tian
  *
  */
-public class TankDriveMoment implements Cloneable {
+public class TankDriveMoment implements Moment {
 	
 	double ld, lv, la, rd, rv, ra;
 	double t;

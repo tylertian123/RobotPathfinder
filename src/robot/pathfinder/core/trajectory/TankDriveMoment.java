@@ -21,6 +21,8 @@ public class TankDriveMoment implements Moment {
 	double t;
 	double heading;
 	
+	double initialFacing = 0;
+	
 	/**
 	 * Constructs a new moment with all fields set to 0.s
 	 */
@@ -66,6 +68,23 @@ public class TankDriveMoment implements Moment {
 	public TankDriveMoment(double leftPos, double rightPos, double leftVel, double rightVel, double leftAcl, double rightAcl, double heading, double time) {
 		this(leftPos, rightPos, leftVel, rightVel, leftAcl, rightAcl, heading);
 		t = time;
+	}
+	/**
+	 * Creates a new moment with the specified values.
+	 * @param leftPos The distance the left wheel has traveled
+	 * @param rightPos The distance the right wheel has traveled
+	 * @param leftVel The velocity of the left wheel
+	 * @param rightVel The velocity of the right wheel
+	 * @param leftAcl The acceleration of the left wheel
+	 * @param rightAcl The acceleration of the right wheel
+	 * @param heading The desired heading; see {@link #getHeading()} and {@link #getFacing()} for more information
+	 * @param time The desired time
+	 * @param initialFacing The initial direction the robot is facing; used to calculate the result of {@link #getFacingRelative()}
+	 */
+	public TankDriveMoment(double leftPos, double rightPos, double leftVel, double rightVel, double leftAcl, double rightAcl, double heading, double time, double initialFacing) {
+		this(leftPos, rightPos, leftVel, rightVel, leftAcl, rightAcl, heading);
+		t = time;
+		this.initialFacing = initialFacing;
 	}
 
 	/**
@@ -218,6 +237,20 @@ public class TankDriveMoment implements Moment {
 		this.heading = heading;
 	}
 	
+	public double getInitialFacing() {
+		return initialFacing;
+	}
+	public void setInitialFacing(double initFacing) {
+		initialFacing = initFacing;
+	}
+	@Override
+	public double getFacingRelative() {
+		return getFacingAbsolute() - initialFacing;
+	}
+	@Override
+	public double getFacingAbsolute() {
+		return lv >= 0 || rv >= 0 ? heading : -heading;
+	}
 	/**
 	 * Retrieves the direction the robot is <em>facing</em> at this moment in time. <em>Not to be confused with
 	 * {@link #getHeading()}.</em>
@@ -232,6 +265,7 @@ public class TankDriveMoment implements Moment {
 	 * returning the heading when at least one wheel's velocity is positive, returning the negative of the heading
 	 * when both wheels have negative velocities.
 	 * </p>
+	 * @deprecated Use {@link #getFacingRelative()} or {@link #getFacingAbsolute()} instead.
 	 * @return The direction the robot is facing
 	 */
 	public double getFacing() {

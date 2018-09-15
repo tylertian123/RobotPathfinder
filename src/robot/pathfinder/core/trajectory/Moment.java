@@ -20,5 +20,6 @@ package robot.pathfinder.core.trajectory;
  */
 public interface Moment extends Cloneable {
 	public double getHeading();
-	public double getFacing();
+	public double getFacingRelative();
+	public double getFacingAbsolute();
 }

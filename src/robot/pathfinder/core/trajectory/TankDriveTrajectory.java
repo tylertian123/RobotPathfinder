@@ -34,6 +34,8 @@ public class TankDriveTrajectory implements Trajectory {
 	RobotSpecs specs;
 	TrajectoryParams params;
 	
+	double initialFacing;
+	
 	/**
 	 * Generates a new {@link TankDriveTrajectory} based on the {@link BasicTrajectory} provided.
 	 * <p>
@@ -57,6 +59,7 @@ public class TankDriveTrajectory implements Trajectory {
 		specs = traj.getRobotSpecs();
 		params = traj.getGenerationParams();
 		headingVectors = traj.headingVectors;
+		initialFacing = traj.initialFacing;
 		
 		path = traj.getPath();
 		RobotSpecs specs = traj.getRobotSpecs();
@@ -123,6 +126,7 @@ public class TankDriveTrajectory implements Trajectory {
 			moments[i - 1].setRightAcceleration((moments[i].getRightVelocity() - moments[i - 1].getRightVelocity()) / dt);
 			moments[i].setTime(trajMoments[i].getTime());
 			moments[i].setHeading(trajMoments[i].getHeading());
+			moments[i].setInitialFacing(initialFacing);
 		}
 	}
 	/**
@@ -143,6 +147,7 @@ public class TankDriveTrajectory implements Trajectory {
 		this.path = path;
 		this.specs = specs;
 		this.params = params;
+		this.initialFacing = moments[0].getInitialFacing();
 		
 		headingVectors = new Vec2D[moments.length];
 		for(int i = 0; i < moments.length; i ++) {
@@ -236,7 +241,7 @@ public class TankDriveTrajectory implements Trajectory {
 						MathUtils.lerp(moments[mid].getRightVelocity(), moments[mid + 1].getRightVelocity(), f),
 						MathUtils.lerp(moments[mid].getLeftAcceleration(), moments[mid + 1].getLeftAcceleration(), f), 
 						MathUtils.lerp(moments[mid].getRightAcceleration(), moments[mid + 1].getRightAcceleration(), f),
-						MathUtils.lerpAngle(headingVectors[mid], headingVectors[mid + 1], f), t);
+						MathUtils.lerpAngle(headingVectors[mid], headingVectors[mid + 1], f), t, initialFacing);
 			}
 			//Continue the binary search if not found
 			if(midTime < t) {
@@ -258,6 +263,7 @@ public class TankDriveTrajectory implements Trajectory {
 	public TankDriveTrajectory mirrorLeftRight() {
 		//Create new path
 		Path newPath = path.mirrorLeftRight();
+		double newInitialFacing = newPath.getWaypoints()[0].getHeading();
 		
 		TankDriveMoment[] newMoments = new TankDriveMoment[moments.length];
 		for(int i = 0; i < newMoments.length; i ++) {
@@ -265,6 +271,7 @@ public class TankDriveTrajectory implements Trajectory {
 			newMoments[i] = TankDriveMoment.fromComponents(moments[i].rightComponent(), moments[i].leftComponent());
 			//See BasicTrajectory.mirrorLeftRight()
 			newMoments[i].setHeading(-moments[i].getHeading() + Math.PI);
+			newMoments[i].setInitialFacing(newInitialFacing);
 		}
 		
 		TrajectoryParams newParams = params.clone();
@@ -280,14 +287,14 @@ public class TankDriveTrajectory implements Trajectory {
 	public TankDriveTrajectory mirrorFrontBack() {
 		//See BasicTrajectory.mirrorFrontBack()
 		TankDriveMoment[] newMoments = new TankDriveMoment[moments.length];
+		Path newPath = path.mirrorFrontBack();
+		double newInitialFacing = newPath.getWaypoints()[0].getHeading();
 		
 		for(int i = 0; i < newMoments.length; i ++) {
 			newMoments[i] = new TankDriveMoment(-moments[i].getLeftPosition(), -moments[i].getRightPosition(),
 					-moments[i].getLeftVelocity(), -moments[i].getRightVelocity(), -moments[i].getLeftAcceleration(),
-					-moments[i].getRightAcceleration(), -moments[i].getHeading(), moments[i].getTime());
+					-moments[i].getRightAcceleration(), -moments[i].getHeading(), moments[i].getTime(), newInitialFacing);
 		}
-		
-		Path newPath = path.mirrorFrontBack();
 		
 		TrajectoryParams newParams = params.clone();
 		newParams.waypoints = newPath.getWaypoints();
@@ -300,6 +307,11 @@ public class TankDriveTrajectory implements Trajectory {
 	public TankDriveTrajectory retrace() {
 		//See BasicTrajectory.retrace()
 		TankDriveMoment[] newMoments = new TankDriveMoment[moments.length];
+		
+		
+		//Create new path
+		Path newPath = path.retrace();
+		double newInitialFacing = newPath.getWaypoints()[0].getHeading();
 		
 		TankDriveMoment lastMoment = moments[moments.length - 1];
 		
@@ -319,11 +331,9 @@ public class TankDriveTrajectory implements Trajectory {
 			newMoments[i] = new TankDriveMoment(-(lastMoment.getLeftPosition() - current.getLeftPosition()),
 					-(lastMoment.getRightPosition() - current.getRightPosition()), -current.getLeftVelocity(),
 					-current.getRightVelocity(), current.getLeftAcceleration(), current.getRightAcceleration(),
-					(current.getHeading() + Math.PI) % (2 * Math.PI), lastMoment.getTime() - current.getTime());
+					(current.getHeading() + Math.PI) % (2 * Math.PI), lastMoment.getTime() - current.getTime(),
+					newInitialFacing);
 		}
-		
-		//Create new path
-		Path newPath = path.retrace();
 
 		TrajectoryParams newParams = params.clone();
 		newParams.waypoints = newPath.getWaypoints();

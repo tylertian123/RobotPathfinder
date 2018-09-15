@@ -23,6 +23,8 @@ public class BasicMoment implements Moment {
 	double t;
 	double heading;
 	
+	double initialFacing = 0;
+	
 	/**
 	 * Constructs a new moment with all fields set to 0.s
 	 */
@@ -154,6 +156,21 @@ public class BasicMoment implements Moment {
 	public double getHeading() {
 		return heading;
 	}
+	
+	public double getInitialFacing() {
+		return initialFacing;
+	}
+	public void setInitialFacing(double initFacing) {
+		initialFacing = initFacing;
+	}
+	@Override
+	public double getFacingRelative() {
+		return getFacingAbsolute() - initialFacing;
+	}
+	@Override
+	public double getFacingAbsolute() {
+		return v >= 0 ? heading : -heading;
+	}
 	/**
 	 * Retrieves the direction the robot is <em>facing</em> at this moment in time. <em>Not to be confused with
 	 * {@link #getHeading()}.</em>
@@ -168,6 +185,7 @@ public class BasicMoment implements Moment {
 	 * returning the heading when the velocity is positive, and returning the negative of the heading when the 
 	 * velocity is negative.
 	 * </p>
+	 * @deprecated Use {@link #getFacingRelative()} or {@link #getFacingAbsolute()} instead.
 	 * @return The direction the robot is facing
 	 */
 	public double getFacing() {

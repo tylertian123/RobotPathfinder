@@ -60,6 +60,8 @@ public class BasicTrajectory implements Trajectory {
 	//Stores the radius of the path for each moment
 	double[] pathRadius = null;
 	
+	double initialFacing;
+	
 	/**
 	 * Creates a basic trajectory with the specified robot properties and generation parameters.
 	 * <p>

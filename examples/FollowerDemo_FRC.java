@@ -39,7 +39,7 @@ public class FollowerDemo_FRC extends Command {
 	
 	Follower follower;
 	
-    public FollowTrajectory(TankDriveTrajectory trajectory) {
+    public FollowerDemo_FRC(TankDriveTrajectory trajectory) {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     	requires(Robot.drive);

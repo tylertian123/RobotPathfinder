@@ -2,13 +2,15 @@ package robot.pathfinder.follower;
 
 import robot.pathfinder.core.trajectory.TankDriveMoment;
 import robot.pathfinder.core.trajectory.TankDriveTrajectory;
+import robot.pathfinder.math.MathUtils;
 
 /**
  * A follower class for tank drive robots and trajectories.
  * <p>
  * Followers are classes that can be given parameters to follow a specific trajectory.
- * They do so using a feedback control system, consisting of 4 gains: velocity feedforward,
- * acceleration feedforward, proportional gain, and derivative gain.
+ * Tank drive follower does so by using a feedback loop, consisting of 5 gains: velocity feedforward,
+ * acceleration feedforward, optional proportional gain, optional derivative gain, and optional 
+ * directional-proportional gain.
  * </p>
  * @author Tyler Tian
  *
@@ -18,16 +20,42 @@ public class TankFollower extends Follower {
 	TankDriveTrajectory traj;
 	TimestampSource timer;
 	DistanceSource lDistSrc, rDistSrc;
+	DirectionSource directionSrc;
 	Motor lMotor, rMotor;
+	
+	//Directional proportional gain
+	double kDP = 0;
 	
 	//Keep track of the initial timestamp and distance measurements so we don't have to reset
 	//Keep track of the error and timestamp of the last iteration to calculate the derivative
-	double initTime, lastTime, lLastErr, rLastErr, lInitDist, rInitDist;
+	double initTime, lastTime, lLastErr, rLastErr, lInitDist, rInitDist, initDirection;
 	
 	boolean running = false;
 	
 	/**
-	 * Constructs a new tank drive follower.
+	 * Constructs a new tank drive follower. Note that since this constructor does not require distance 
+	 * sources or direction sources, the trajectory following is based entirely on the feedforward terms.
+	 * @param traj The trajectory to follow
+	 * @param lMotor The left side motor
+	 * @param rMotor The right side motor
+	 * @param timer A {@link robot.pathfinder.follower.Follower.TimestampSource TimestampSource} to grab timestamps from
+	 * @param kV The velocity feedforward 
+	 * @param kA The acceleration feedforward
+	 */
+	public TankFollower(TankDriveTrajectory traj, Motor lMotor, Motor rMotor, TimestampSource timer,
+			double kV, double kA) {
+		setGains(kV, kA, 0, 0, 0);
+		this.traj = traj;
+		this.lMotor = lMotor;
+		this.rMotor = rMotor;
+		this.lDistSrc = null;
+		this.rDistSrc = null;
+		this.timer = timer;
+		this.directionSrc = null;
+	}
+	/**
+	 * Constructs a new tank drive follower. Note that since this constructor does not require a direction
+	 * source, the directional-proportional term will not be used.
 	 * @param traj The trajectory to follow
 	 * @param lMotor The left side motor
 	 * @param rMotor The right side motor
@@ -42,35 +70,100 @@ public class TankFollower extends Follower {
 	public TankFollower(TankDriveTrajectory traj, Motor lMotor, Motor rMotor, 
 			DistanceSource lDistSrc, DistanceSource rDistSrc, TimestampSource timer,
 			double kV, double kA, double kP, double kD) {
-		setGains(kV, kA, kP, kD);
+		setGains(kV, kA, kP, kD, 0);
 		this.traj = traj;
 		this.lMotor = lMotor;
 		this.rMotor = rMotor;
 		this.lDistSrc = lDistSrc;
 		this.rDistSrc = rDistSrc;
 		this.timer = timer;
+		this.directionSrc = null;
 	}
 	/**
-	 * Constructs a new tank drive follower. Note that since this constructor does not require distance 
-	 * sources, the trajectory following is based entirely on the feedforward terms.
+	 * Constructs a new tank drive follower. Note that since this constructor does not require distance
+	 * sources, the proportional and derivative terms will not be used.
 	 * @param traj The trajectory to follow
 	 * @param lMotor The left side motor
 	 * @param rMotor The right side motor
 	 * @param timer A {@link robot.pathfinder.follower.Follower.TimestampSource TimestampSource} to grab timestamps from
+	 * @param dirSrc A {@link robot.pathfinder.follower.Follower.DirectionSource DirectionSource} to get angle data from
 	 * @param kV The velocity feedforward 
 	 * @param kA The acceleration feedforward
+	 * @param kDP The directional-proportional gain; for more information, see {@link #setDP(double)}
 	 */
-	public TankFollower(TankDriveTrajectory traj, Motor lMotor, Motor rMotor, TimestampSource timer,
-			double kV, double kA) {
-		setGains(kV, kA, 0, 0);
+	public TankFollower(TankDriveTrajectory traj, Motor lMotor, Motor rMotor, TimestampSource timer, 
+			DirectionSource dirSrc, double kV, double kA, double kDP) {
+		setGains(kV, kA, 0, 0, kDP);
 		this.traj = traj;
 		this.lMotor = lMotor;
 		this.rMotor = rMotor;
 		this.lDistSrc = null;
 		this.rDistSrc = null;
 		this.timer = timer;
+		this.directionSrc = dirSrc;
+	}
+	/**
+	 * Constructs a new tank drive follower.
+	 * @param traj The trajectory to follow
+	 * @param lMotor The left side motor
+	 * @param rMotor The right side motor
+	 * @param lDistSrc A {@link robot.pathfinder.follower.Follower.DistanceSource DistanceSource} for the left motor
+	 * @param rDistSrc A {@link robot.pathfinder.follower.Follower.DistanceSource DistanceSource} for the right motor
+	 * @param timer A {@link robot.pathfinder.follower.Follower.TimestampSource TimestampSource} to grab timestamps from
+	 * @param dirSrc A {@link robot.pathfinder.follower.Follower.DirectionSource DirectionSource} to get angle data from
+	 * @param kV The velocity feedforward 
+	 * @param kA The acceleration feedforward
+	 * @param kP The proportional gain
+	 * @param kD The derivative gain
+	 * @param kDP The directional-proportional gain; for more information, see {@link #setDP(double)}
+	 */
+	public TankFollower(TankDriveTrajectory traj, Motor lMotor, Motor rMotor, DistanceSource lDistSrc,
+			DistanceSource rDistSrc, TimestampSource timer, DirectionSource dirSrc, 
+			double kV, double kA, double kP, double kD, double kDP) {
+		setGains(kV, kA, kP, kD, kDP);
+		this.traj = traj;
+		this.lMotor = lMotor;
+		this.rMotor = rMotor;
+		this.lDistSrc = lDistSrc;
+		this.rDistSrc = rDistSrc;
+		this.timer = timer;
+		this.directionSrc = dirSrc;
 	}
 	
+	/**
+	 * Sets the directional-proportional gain of the feedback loop. The directional-proportional gain allows
+	 * the robot to better follow the trajectory by trying to follow not just the position, velocity and 
+	 * acceleration, but the direction as well. The actual angle the robot is facing at a given time is 
+	 * subtracted from the angle it is supposed to be facing, and then multiplied by the 
+	 * directional-proportional gain and added/subtracted to the outputs of the left and right wheels.
+	 * @param kDP The new directional-proportional gain
+	 */
+	public void setDP(double kDP) {
+		this.kDP = kDP;
+	}
+	/**
+	 * Gets the directional-proportional gain of the feedback loop. The directional-proportional gain allows
+	 * the robot to better follow the trajectory by trying to follow not just the position, velocity and 
+	 * acceleration, but the direction as well. The actual angle the robot is facing at a given time is 
+	 * subtracted from the angle it is supposed to be facing, and then multiplied by the 
+	 * directional-proportional gain and added/subtracted to the outputs of the left and right wheels.
+	 * @return The directional-proportional gain
+	 */
+	public double getDP() {
+		return kDP;
+	}
+	/**
+	 * Sets the gains of the feedback loop.
+	 * @param kV The velocity feedforward
+	 * @param kA The acceleration feedforward
+	 * @param kP The proportional gain
+	 * @param kD The derivative gain
+	 * @param kDP The directional-proportional gain
+	 */
+	public void setGains(double kV, double kA, double kP, double kD, double kDP) {
+		setGains(kV, kA, kP, kD);
+		setDP(kDP);
+	}
 	/**
 	 * Sets the trajectory to follow.
 	 * @param traj The new trajectory to follow
@@ -138,6 +231,7 @@ public class TankFollower extends Follower {
 		}
 		lInitDist = lDistSrc.getDistance();
 		rInitDist = rDistSrc.getDistance();
+		initDirection = directionSrc.getDirection();
 		initTime = lastTime = timer.getTimestamp();
 		
 		running = true;
@@ -164,7 +258,7 @@ public class TankFollower extends Follower {
 		
 		TankDriveMoment m = traj.get(t);
 		
-		double leftErr = 0, rightErr = 0, leftDeriv = 0, rightDeriv = 0;
+		double leftErr = 0, rightErr = 0, leftDeriv = 0, rightDeriv = 0, directionalErr = 0;
 		//Calculate errors and derivatives only if the distance sources are not null
 		if(lDistSrc != null && rDistSrc != null) {
 			//Calculate left and right errors
@@ -177,11 +271,16 @@ public class TankFollower extends Follower {
 	    	rightDeriv = (rightErr - rLastErr) / dt
 	    			- m.getRightVelocity();
 		}
+		//Calculate directional error only if the direction source is not null
+		if(directionSrc != null) {
+			//This angle diff will be positive if the robot needs to turn left
+			directionalErr = MathUtils.angleDiff(directionSrc.getDirection() - initDirection, m.getFacingRelative());
+		}
     	//Calculate outputs
     	double leftOutput = kA * m.getLeftAcceleration() + kV * m.getLeftVelocity()
-				+ kP * leftErr + kD * leftDeriv;
+				+ kP * leftErr + kD * leftDeriv - directionalErr * kDP;
 		double rightOutput = kA * m.getRightAcceleration() + kV * m.getRightVelocity()
-				+ kP * rightErr + kD * rightDeriv;
+				+ kP * rightErr + kD * rightDeriv + directionalErr * kDP;
 		//Constrain
     	leftOutput = Math.max(-1, Math.min(1, leftOutput));
     	rightOutput = Math.max(-1, Math.min(1, rightOutput));

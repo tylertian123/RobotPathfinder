@@ -23,12 +23,11 @@ package robot.pathfinder.core.trajectory;
  * is currently facing the direction 0 would have an absolute facing direction of 0, but a relative 
  * facing direction of -&pi;.
  * </p>
- * </p>
  * <h2>Units</h2>
  * <p>
  * The units used for these moment objects are completely decided by which units are used in a trajectory's
  * {@link robot.pathfinder.core.RobotSpecs RobotSpecs} during generation. For example, if the unit for max velocity was in m/s, then the unit used
- * here for velocity would also be m/s.
+ * here for velocity would also be m/s. All angles are in radians and are in the range (-&pi;, &pi;].
  * </p>
  * @author Tyler Tian
  *

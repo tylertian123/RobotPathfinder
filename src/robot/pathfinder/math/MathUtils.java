@@ -235,4 +235,22 @@ public class MathUtils {
 	public static double mirrorAngle(double theta, double ref) {
 		return restrictAngle(theta - 2 * (theta - ref));
 	}
+	/**
+	 * Finds the difference between two angles in radians. The angles should be in the range (-pi, pi]. 
+	 * This method will always find the least of the two angles.
+	 * @param src The source angle
+	 * @param target The target angle
+	 * @return The smaller of the two angle differences
+	 */
+	public static double angleDiff(double src, double target) {
+		double diff = target - src;
+		if(diff > Math.PI) {
+			diff -= 2 * Math.PI;
+		}
+		else if(diff <= -Math.PI) {
+			diff += 2 * Math.PI;
+		}
+		
+		return diff;
+	}
 }

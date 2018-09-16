@@ -24,7 +24,6 @@ import robot.pathfinder.math.MathUtils;
  * is currently facing the direction 0 would have an absolute facing direction of 0, but a relative 
  * facing direction of -&pi;.
  * </p>
- * </p>
  * <h2>Units</h2>
  * <p>
  * The units used for these moment objects are completely decided by which units are used in a trajectory's

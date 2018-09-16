@@ -5,10 +5,13 @@ Thank you to FRC Team 254 (The Cheesy Poofs) for <a href="https://youtu.be/8319J
 
 Some of the highlights include:
 * Smooth path generation with 3 different fit types
-* Respects maximum velocity constraints for both wheels, even when turning
-* Allows wheels to turn backwards if turns are too tight
+* *Respects maximum velocity constraints for both wheels, even when turning*
+* *Allows wheels to turn backwards if turns are too tight*
+* Handy methods that allows the mirroring and retracing of trajectories
+* Follower class that can be set to follow position, velocity, acceleration and direction
+* And much more...!
 
-***Even though version 2 releases are still in beta, they're preferred over the 1.x releases. The 1.x releases contain major issues that are fixed in version 2.***
+***Version 1 is deprecated; they contain serious design oversights that make them very inaccurate. Please use a Version 2 release instead.***
 
 ## Purpose
 Given an array of waypoints, each with coordinates and a heading, RobotPathfinder generates a smooth path that follows all the waypoints. Then, using that path, it generates left and right wheel trajectories for a robot to follow in order to achieve the desired path.

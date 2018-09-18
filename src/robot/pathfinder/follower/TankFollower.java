@@ -229,9 +229,13 @@ public class TankFollower extends Follower {
 		if(running) {
 			return;
 		}
-		lInitDist = lDistSrc.getDistance();
-		rInitDist = rDistSrc.getDistance();
-		initDirection = directionSrc.getDirection();
+		if(lDistSrc != null && rDistSrc != null) {
+			lInitDist = lDistSrc.getDistance();
+			rInitDist = rDistSrc.getDistance();
+		}
+		if(directionSrc != null) {
+			initDirection = directionSrc.getDirection();
+		}
 		initTime = lastTime = timer.getTimestamp();
 		
 		running = true;

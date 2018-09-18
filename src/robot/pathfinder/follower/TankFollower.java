@@ -262,8 +262,8 @@ public class TankFollower extends Follower {
 		//Calculate errors and derivatives only if the distance sources are not null
 		if(lDistSrc != null && rDistSrc != null) {
 			//Calculate left and right errors
-			leftErr = (lDistSrc.getDistance() - lInitDist) - m.getLeftPosition();
-			rightErr = (rDistSrc.getDistance() -lInitDist) - m.getRightPosition();
+			leftErr = m.getLeftPosition() - (lDistSrc.getDistance() - lInitDist);
+			rightErr = m.getRightPosition() - (rDistSrc.getDistance() -lInitDist);
 			//Get the derivative of the errors
 			//Subtract away the desired velocity to get the true error
 			leftDeriv = (leftErr - lLastErr) / dt 
@@ -288,7 +288,7 @@ public class TankFollower extends Follower {
     	lMotor.set(leftOutput);
     	rMotor.set(rightOutput);
     	
-    	lastTime = timer.getTimestamp();
+    	lastTime = t;
     	lLastErr = leftErr;
     	rLastErr = rightErr;
 		

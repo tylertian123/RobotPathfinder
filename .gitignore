@@ -1,5 +1,5 @@
 /bin/
-.classpath
-.project
+#.classpath
+#.project
 src/Test.java
 doc/

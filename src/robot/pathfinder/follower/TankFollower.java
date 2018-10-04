@@ -32,6 +32,9 @@ public class TankFollower extends Follower {
 	
 	boolean running = false;
 	
+	//Store these as member variables so they can be accessed from outside the class for testing purposes
+	double leftErr, rightErr, dirErr, leftOutput, rightOutput, leftDeriv, rightDeriv, leftVelo, rightVelo, leftAccel, rightAccel;
+	
 	/**
 	 * Constructs a new tank drive follower. Note that since this constructor does not require distance 
 	 * sources or direction sources, the trajectory following is based entirely on the feedforward terms.
@@ -262,12 +265,12 @@ public class TankFollower extends Follower {
 		
 		TankDriveMoment m = traj.get(t);
 		
-		double leftErr = 0, rightErr = 0, leftDeriv = 0, rightDeriv = 0, directionalErr = 0;
+		leftErr = rightErr = leftDeriv = rightDeriv = dirErr = 0;
 		//Calculate errors and derivatives only if the distance sources are not null
 		if(lDistSrc != null && rDistSrc != null) {
 			//Calculate left and right errors
 			leftErr = m.getLeftPosition() - (lDistSrc.getDistance() - lInitDist);
-			rightErr = m.getRightPosition() - (rDistSrc.getDistance() -lInitDist);
+			rightErr = m.getRightPosition() - (rDistSrc.getDistance() -rInitDist);
 			//Get the derivative of the errors
 			//Subtract away the desired velocity to get the true error
 			leftDeriv = (leftErr - lLastErr) / dt 
@@ -278,13 +281,17 @@ public class TankFollower extends Follower {
 		//Calculate directional error only if the direction source is not null
 		if(directionSrc != null) {
 			//This angle diff will be positive if the robot needs to turn left
-			directionalErr = MathUtils.angleDiff(directionSrc.getDirection() - initDirection, m.getFacingRelative());
+			dirErr = MathUtils.angleDiff(directionSrc.getDirection() - initDirection, m.getFacingRelative());
 		}
+		leftVelo = m.getLeftVelocity();
+		rightVelo = m.getRightVelocity();
+		leftAccel = m.getLeftAcceleration();
+		rightAccel = m.getRightAcceleration();
     	//Calculate outputs
-    	double leftOutput = kA * m.getLeftAcceleration() + kV * m.getLeftVelocity()
-				+ kP * leftErr + kD * leftDeriv - directionalErr * kDP;
-		double rightOutput = kA * m.getRightAcceleration() + kV * m.getRightVelocity()
-				+ kP * rightErr + kD * rightDeriv + directionalErr * kDP;
+    	leftOutput = kA * m.getLeftAcceleration() + kV * m.getLeftVelocity()
+				+ kP * leftErr + kD * leftDeriv - dirErr * kDP;
+		rightOutput = kA * m.getRightAcceleration() + kV * m.getRightVelocity()
+				+ kP * rightErr + kD * rightDeriv + dirErr * kDP;
 		//Constrain
     	leftOutput = Math.max(-1, Math.min(1, leftOutput));
     	rightOutput = Math.max(-1, Math.min(1, rightOutput));
@@ -305,6 +312,84 @@ public class TankFollower extends Follower {
 		rMotor.set(0);
 		
 		running = false;
+	}
+	
+	/**
+	 * Retrieves the last positional error of the left wheel. This value is multiplied by <b>kP</b>, and added to the left output.
+	 * @return The last left positional error
+	 */
+	public double lastLeftError() {
+		return leftErr;
+	}
+	/**
+	 * Retrieves the last positional error of the right wheel. This value is multiplied by <b>kP</b>, and added to the right output.
+	 * @return The last right positional error
+	 */
+	public double lastRightError() {
+		return rightErr;
+	}
+	/**
+	 * Retrieves the last directional error of the robot. This value is multiplied by <b>kDP</b>, and subtracted from the left output and added to the right output.
+	 * @return The last directional error
+	 */
+	public double lastDirectionalError() {
+		return dirErr;
+	}
+	/**
+	 * Retrieves the last output written to the left motor.
+	 * @return The last left output
+	 */
+	public double lastLeftOutput() {
+		return leftOutput;
+	}
+	/**
+	 * Retrieves the last output written to the right motor.
+	 * @return The last right output
+	 */
+	public double lastRightOutput() {
+		return rightOutput;
+	}
+	/**
+	 * Retrieves the last derivative error of the left wheel. This value is multiplied by <b>kD</b>, and added to the left output.
+	 * @return The last left derivative error
+	 */
+	public double lastLeftDerivative() {
+		return leftDeriv;
+	}
+	/**
+	 * Retrieves the last derivative error of the right wheel. This value is multiplied by <b>kD</b>, and added to the right output.
+	 * @return The last right derivative error
+	 */
+	public double lastRightDerivative() {
+		return rightDeriv;
+	}
+	/**
+	 * Retrieves the last desired (not actual!) velocity of the left wheel. This value is multiplied by <b>kV</b>, and added to the left output.
+	 * @return The last left velocity
+	 */
+	public double lastLeftVelocity() {
+		return leftVelo;
+	}
+	/**
+	 * Retrieves the last desired (not actual!) velocity of the right wheel. This value is multiplied by <b>kV</b>, and added to the right output.
+	 * @return The last right velocity
+	 */
+	public double lastRightVelocity() {
+		return rightVelo;
+	}
+	/**
+	 * Retrieves the last desired (not actual!) acceleration of the left wheel. This value is multiplied by <b>kV</b>, and added to the left output.
+	 * @return The last left acceleration
+	 */
+	public double lastLeftAcceleration() {
+		return leftAccel;
+	}
+	/**
+	 * Retrieves the last desired (not actual!) acceleration of the right wheel. This value is multiplied by <b>kV</b>, and added to the right output.
+	 * @return The last right acceleration
+	 */
+	public double lastRightAcceleration() {
+		return rightAccel;
 	}
 
 }

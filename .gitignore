@@ -1,5 +1,10 @@
+# Build output
 /bin/
-#.classpath
-#.project
-src/Test.java
-doc/
+
+# Gradle files
+.gradle
+/build/
+
+# Visual studio code
+.settings
+.vscode

@@ -58,7 +58,6 @@ public class Test {
 		};
 		params.alpha = 60.0;
 		params.segmentCount = 1000;
-		params.roundingLimit = 1.0E-6;
 		params.isTank = true;
 		params.pathType = PathType.QUINTIC_HERMITE;
 		TankDriveTrajectory trajectory = new TankDriveTrajectory(robotSpecs, params);

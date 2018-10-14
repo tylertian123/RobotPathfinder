@@ -7,6 +7,7 @@
  */
 
 plugins {
+    id 'base'
     id 'java-library'
     // Build Scans
     id 'com.gradle.build-scan' version '1.16'
@@ -32,3 +33,39 @@ repositories {
 }
 
 version = '2.1.0-beta2'
+
+// Add sources to the jar
+jar {
+    from sourceSets.main.allSource
+}
+
+def visualizerMainClass = 'robot.pathfinder.tools.TrajectoryVisualizationTool'
+// This task assembles the trajecotry visualizer jar
+task visualizerJar(type: Jar, group: 'Build', description: 'Assembles a runnable jar that runs the visualizer.') {
+    dependsOn build
+
+    // Include outputs
+    from(sourceSets.main.output) {
+        include "**"
+    }
+    // Add manifest attribute to make it runnable
+    manifest {
+        attributes 'Main-Class': visualizerMainClass
+    }
+    // Set archive name
+    archiveName 'Trajectory-Visualizer-' + project.version + '.jar'
+}
+
+task copyJars(type: Copy, group: 'Archive', description: 'Copies the library jar and the visualizer jar to the output directory') {
+    dependsOn build
+    dependsOn visualizerJar
+    from 'build/libs'
+    into 'output'
+}
+
+task zipDoc(type: Zip, group: 'Archive', description: 'Zips the generated JavaDoc and puts it in the output directory') {
+    dependsOn javadoc
+    from 'build/docs/javadoc'
+    destinationDir file('output')
+    archiveName 'RobotPathfinder-Doc-' + project.version + '.zip'
+}

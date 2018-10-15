@@ -43,3 +43,12 @@ Features include:
 * Creating path and trajectory graphs
 * Saving waypoint data and robot specification parameters
 * Code generation
+
+## Building
+This project uses Gradle as the build system. From the project root directory, running `./gradlew allArchives` will build the project and generate the jars and a zipped JavaDoc under the `/output/` directory.
+Alternatively, here are a list of tasks:
+* `./gradlew build` builds the project and generates the library jar under `/build/libs/`
+* `./gradlew visualizerJar` generates the Trajectory Visualization Tool jar under `/build/libs/`
+* `./gradlew copyJars` copies the generated jars to `/output/`
+* `./gradlew javadoc` generates JavaDocs under `/build/docs/`
+* `./gradlew zipDoc` zips the generated docs into `/output/`

@@ -46,7 +46,8 @@ task visualizerJar(type: Jar, group: 'Build', description: 'Assembles a runnable
 
     // Include outputs
     from(sourceSets.main.output) {
-        include "**"
+        include '**'
+        exclude '**/follower/*', '**/package-info.java'
     }
     // Add manifest attribute to make it runnable
     manifest {
@@ -68,4 +69,9 @@ task zipDoc(type: Zip, group: 'Archive', description: 'Zips the generated JavaDo
     from 'build/docs/javadoc'
     destinationDir file('output')
     archiveName 'RobotPathfinder-Doc-' + project.version + '.zip'
+}
+
+task allArchives(group: 'Archive', description: 'Builds the project, generates the JavaDoc and jars, zips JavaDoc and copies all items to the output directory') {
+    dependsOn copyJars
+    dependsOn zipDoc
 }

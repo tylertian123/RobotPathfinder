@@ -1,9 +1,10 @@
 # Build output
 /bin/
+/build/
+/output/
 
 # Gradle files
 .gradle
-/build/
 
 # Visual studio code
 .settings

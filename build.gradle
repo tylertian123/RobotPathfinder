@@ -19,7 +19,7 @@ buildScan {
 }
 
 dependencies {
-    implementation files('lib/jmathplot.jar', 'lib/jmathio.jar')
+    compile files('lib/jmathplot.jar', 'lib/jmathio.jar')
 
     // Use JUnit test framework
     //testImplementation 'junit:junit:4.12'
@@ -41,6 +41,7 @@ jar {
 
 def visualizerMainClass = 'robot.pathfinder.tools.TrajectoryVisualizationTool'
 // This task assembles the trajecotry visualizer jar
+// This jar is a fat jar
 task visualizerJar(type: Jar, group: 'Build', description: 'Assembles a runnable jar that runs the visualizer.') {
     dependsOn build
 
@@ -55,6 +56,11 @@ task visualizerJar(type: Jar, group: 'Build', description: 'Assembles a runnable
     }
     // Set archive name
     archiveName 'Trajectory-Visualizer-' + project.version + '.jar'
+
+    // Include all dependencies in this jar
+    classifier = 'all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
 }
 
 task copyJars(type: Copy, group: 'Archive', description: 'Copies the library jar and the visualizer jar to the output directory') {

@@ -198,7 +198,7 @@ public class BasicTrajectory implements Trajectory {
 		
 		//Create the BasicMoment array and initialize first element to 0 position, velocity, acceleration and time
 		moments = new BasicMoment[segmentCount];
-		moments[0] = new BasicMoment(0, 0, 0, headings[0], 0);
+		moments[0] = new BasicMoment(0, 0, 0, 0, headings[0], 0);
 		
 		/*
 		 * This array holds the difference in time between two moments.
@@ -237,20 +237,21 @@ public class BasicTrajectory implements Trajectory {
 					moments[i - 1].setAcceleration(maxAcceleration);
 				}
 				
-				moments[i] = new BasicMoment(accumulatedDist, vel, 0, headings[i]);
+				moments[i] = new BasicMoment(accumulatedDist, vel, 0, 0, headings[i]);
 				//Calculate the time difference
 				precomputedTimeDiff[i - 1] = (vel - moments[i - 1].getVelocity()) / (moments[i - 1].getAcceleration());
 			}
 			else {
 				//If not, then do not accelerate, and set the velocity to the maximum
-				moments[i] = new BasicMoment(accumulatedDist, theoreticalMax, 0, headings[i]);
+				moments[i] = new BasicMoment(accumulatedDist, theoreticalMax, 0, 0, headings[i]);
 				moments[i - 1].setAcceleration(0);
 			}
 		}
 		
 		//Prepare for backwards pass
 		moments[moments.length - 1].setVelocity(0);
-		moments[moments.length - 1].setAcceleration(0);
+        moments[moments.length - 1].setAcceleration(0);
+        moments[moments.length - 1].setJerk(0);
 		//Backwards pass as described in the algorithm in the video
 		for(int i = moments.length - 2; i >= 0; i --) {
 			//Only do processing if the velocity of this moment is greater than the next
@@ -277,7 +278,16 @@ public class BasicTrajectory implements Trajectory {
 				//Calculate the time difference
 				precomputedTimeDiff[i] = (moments[i + 1].getVelocity() - vel) / moments[i].getAcceleration();
 			}
-		}
+        }
+        
+        /*
+         * At this point the trajectory generated follows the maximum velocity and acceleration constraints, but not the max jerk.
+         * The next steps will hopefully fix this.
+         */
+        for(int i = 1; i < moments.length; i ++) {
+            double accumulatedDist = i * distPerIteration;
+			
+        }
 		
 		//Set the initial facing directions for all moments
 		this.initialFacing = moments[0].getFacingAbsolute();

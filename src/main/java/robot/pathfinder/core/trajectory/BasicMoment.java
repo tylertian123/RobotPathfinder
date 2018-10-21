@@ -35,7 +35,7 @@ import robot.pathfinder.math.MathUtils;
  */
 public class BasicMoment implements Moment {
 	
-	double d, v, a;
+	double d, v, a, j;
 	double t;
 	double heading;
 	
@@ -45,12 +45,12 @@ public class BasicMoment implements Moment {
 	 * Constructs a new moment with all fields set to 0.s
 	 */
 	public BasicMoment() {
-		d = v = a = t = heading = 0;
+		d = v = a = j = t = heading = 0;
 	}
 	
 	@Override
 	public BasicMoment clone() {
-		return new BasicMoment(d, v, a, heading, t, initialFacing);
+		return new BasicMoment(d, v, a, j, heading, t, initialFacing);
 	}
 	
 	/**
@@ -60,10 +60,11 @@ public class BasicMoment implements Moment {
 	 * @param acceleration The desired acceleration
 	 * @param heading The desired heading; see the class JavaDoc for more information
 	 */
-	public BasicMoment(double position, double velocity, double acceleration, double heading) {
+	public BasicMoment(double position, double velocity, double acceleration, double jerk, double heading) {
 		d = position;
 		v = velocity;
-		a = acceleration;
+        a = acceleration;
+        j = jerk;
 		this.heading = heading;
 	}
 	/**
@@ -74,8 +75,8 @@ public class BasicMoment implements Moment {
 	 * @param heading The desired heading; see the class JavaDoc for more information
 	 * @param t The desired time
 	 */
-	public BasicMoment(double position, double velocity, double acceleration, double heading, double t) {
-		this(position, velocity, acceleration, heading);
+	public BasicMoment(double position, double velocity, double acceleration, double jerk, double heading, double t) {
+		this(position, velocity, acceleration, jerk, heading);
 		this.t = t;
 	}
 	/**
@@ -87,8 +88,8 @@ public class BasicMoment implements Moment {
 	 * @param t The desired time
 	 * @param initialFacing The initial direction the robot is <b>facing</b>; see the class JavaDoc for more information
 	 */
-	public BasicMoment(double position, double velocity, double acceleration, double heading, double t, double initialFacing) {
-		this(position, velocity, acceleration, heading);
+	public BasicMoment(double position, double velocity, double acceleration, double jerk, double heading, double t, double initialFacing) {
+		this(position, velocity, acceleration, jerk, heading);
 		this.t = t;
 		this.initialFacing = initialFacing;
 	}
@@ -148,7 +149,14 @@ public class BasicMoment implements Moment {
 	 */
 	public double getAcceleration() {
 		return a;
-	}
+    }
+    
+    public void setJerk(double jerk) {
+        j = jerk;
+    }
+    public double getJerk() {
+        return j;
+    }
 	
 	/**
 	 * {@inheritDoc}

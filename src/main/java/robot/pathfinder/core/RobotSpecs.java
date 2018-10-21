@@ -16,7 +16,7 @@ package robot.pathfinder.core;
 public class RobotSpecs {
 	
 	double baseWidth = Double.NaN;
-	double maxVelocity, maxAcceleration;
+	double maxVelocity, maxAcceleration, maxJerk;
 	
 	/**
 	 * Constructs a new robot specification object with the specified values.
@@ -30,9 +30,10 @@ public class RobotSpecs {
 	 * @param maxVelocity The absolute value of the max velocity of the robot
 	 * @param maxAcceleration The absolute value of the max acceleration of the robot
 	 */
-	public RobotSpecs(double maxVelocity, double maxAcceleration) {
+	public RobotSpecs(double maxVelocity, double maxAcceleration, double maxJerk) {
 		this.maxVelocity = maxVelocity;
-		this.maxAcceleration = maxAcceleration;
+        this.maxAcceleration = maxAcceleration;
+        this.maxJerk = maxJerk;
 	}
 	/**
 	 * Constructs a new robot specification object with the specified values.
@@ -47,8 +48,8 @@ public class RobotSpecs {
 	 * @param baseWidth The width of the base plate of the robot (distance from wheels on one side to wheels on
 	 * the other side)
 	 */
-	public RobotSpecs(double maxVelocity, double maxAcceleration, double baseWidth) {
-		this(maxVelocity, maxAcceleration);
+	public RobotSpecs(double maxVelocity, double maxAcceleration, double maxJerk, double baseWidth) {
+		this(maxVelocity, maxAcceleration, maxJerk);
 		this.baseWidth = baseWidth;
 	}
 	
@@ -94,5 +95,12 @@ public class RobotSpecs {
 	 */
 	public void setMaxAcceleration(double maxAcceleration) {
 		this.maxAcceleration = maxAcceleration;
-	}
+    }
+    
+    public double getMaxJerk() {
+        return maxJerk;
+    }
+    public void setMaxJerk(double maxJerk) {
+        this.maxJerk = maxJerk;
+    }
 }

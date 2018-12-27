@@ -6,8 +6,15 @@ jdk:
   - oraclejdk11
   - openjdk11
 
+matrix:
+  # Allow builds with JDK11 to fail as the gradle version Travis has does not recognize it
+  allow_failures:
+    - jdk:
+      - oraclejdk11
+      - openjdk11
+
 install: 
-  - sudo apt-get install gradle # Update gradle; otherwise it will not work with JDK 11
+  #- sudo apt-get install gradle
   - gradle --version
   - gradle wrapper --gradle-version 4.10
 

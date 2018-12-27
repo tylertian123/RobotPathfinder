@@ -42,6 +42,7 @@ public class TrajectoryParams implements Cloneable {
 	 * {@code 1.0e-6}.
 	 * @deprecated This field is no longer needed in the current implementation. It is only kept for compatibility.
 	 */
+    @Deprecated
 	public double roundingLimit = 1.0e-6;
 	/**
 	 * Whether the trajectory is to be used as the base for a {@link robot.pathfinder.core.trajectory.TankDriveTrajectory TankDriveTrajectory}. Setting this value to

@@ -217,6 +217,7 @@ public class BasicMoment implements Moment {
 	 * @deprecated Use {@link #getFacingRelative()} or {@link #getFacingAbsolute()} instead.
 	 * @return The direction the robot is facing
 	 */
+    @Deprecated
 	public double getFacing() {
 		return v >= 0 ? heading : -heading;
 	}

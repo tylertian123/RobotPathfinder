@@ -286,6 +286,7 @@ public class TankDriveMoment implements Moment {
 	 * @deprecated Use {@link #getFacingRelative()} or {@link #getFacingAbsolute()} instead.
 	 * @return The direction the robot is facing
 	 */
+    @Deprecated
 	public double getFacing() {
 		return lv >= 0 || rv >= 0 ? heading : -heading;
 	}

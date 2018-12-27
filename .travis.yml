@@ -7,14 +7,14 @@ jdk:
   - openjdk11
 
 install: 
-  - sudo apt-get update
-  - sudo apt upgrade gradle
+  - sudo apt-get --only-upgrade gradle # Update gradle; otherwise it will not work with JDK 11
   - gradle --version
   - gradle wrapper --gradle-version 4.10
 
 script:
   - ./gradlew build --scan -s
 
+# Enable gradle cache
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/

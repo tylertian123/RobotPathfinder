@@ -3,13 +3,13 @@ language: java
 jdk:
   - oraclejdk8
   - openjdk8
-  #- oraclejdk11
-  #- openjdk11
+  - oraclejdk11
+  - openjdk11
 
 install: 
-  #- sudo apt-get install gradle
-  - gradle --version
-  - gradle wrapper --gradle-version 4.10
+  # chmod the wrapper to be executable
+  - sudo chmod +x ./gradlew
+  - ./gradlew --version
 
 script:
   - ./gradlew build --scan -s

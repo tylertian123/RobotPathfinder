@@ -1,12 +1,14 @@
 language: java
 
 jdk:
-  - oraclejdk8
-  - openjdk8
+  #- oraclejdk8
+  #- openjdk8
   - oraclejdk11
-  - openjdk11
+  #- openjdk11
 
-install: gradle wrapper --gradle-version 4.10
+install: 
+  - gradle --version
+  - gradle wrapper --gradle-version 4.10
 
 script:
   - ./gradlew build

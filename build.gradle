@@ -26,6 +26,15 @@ repositories {
 
 version = '2.1.0'
 
+compileJava {
+    doFirst {
+        options.compilerArgs = [
+            '--module-path', classpath.asPath,
+        ]
+        classpath = files()  
+    }
+}
+
 // Add sources to the jar
 jar {
     from sourceSets.main.allSource

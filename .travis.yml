@@ -7,7 +7,7 @@ jdk:
   - openjdk11
 
 install: 
-  - sudo apt-get --only-upgrade gradle # Update gradle; otherwise it will not work with JDK 11
+  - sudo apt-get install gradle # Update gradle; otherwise it will not work with JDK 11
   - gradle --version
   - gradle wrapper --gradle-version 4.10
 

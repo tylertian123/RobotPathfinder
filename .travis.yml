@@ -1,14 +1,23 @@
 language: java
 
 jdk:
-  #- oraclejdk8
-  #- openjdk8
+  - oraclejdk8
+  - openjdk8
   - oraclejdk11
-  #- openjdk11
+  - openjdk11
 
 install: 
   - gradle --version
   - gradle wrapper --gradle-version 4.10
 
 script:
-  - ./gradlew build
+  - ./gradlew build --scan -s
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/

@@ -28,10 +28,12 @@ after_success:
   - >
     curl --request 'POST' 
     --header 'Content-Type: text/plain; charset=utf-8' 
-    --data '&#9989; The latest commit pushed to **RobotPathfinder** has **passed** CI checks!' https://arctos6135.ryver.com/application/webhook/DCrjbShXT4HvRtp
+    --data "&#9989; The latest commit pushed to **RobotPathfinder** (commit $TRAVIS_COMMIT on branch $TRAVIS_BRANCH) has **passed** CI checks on $TRAVIS_JDK_VERSION!"
+    https://arctos6135.ryver.com/application/webhook/DCrjbShXT4HvRtp
 
 after_failure:
 - >
-  curl --request 'POST' 
-  --header 'Content-Type: text/plain; charset=utf-8' 
-  --data '&#10060; The latest commit pushed to **RobotPathfinder** has **failed** CI checks!' https://arctos6135.ryver.com/application/webhook/DCrjbShXT4HvRtp
+    curl --request 'POST' 
+    --header 'Content-Type: text/plain; charset=utf-8' 
+    --data "&#10060; The latest commit pushed to **RobotPathfinder** (commit $TRAVIS_COMMIT on branch $TRAVIS_BRANCH) has **failed** CI checks on $TRAVIS_JDK_VERSION!" 
+    https://arctos6135.ryver.com/application/webhook/DCrjbShXT4HvRtp

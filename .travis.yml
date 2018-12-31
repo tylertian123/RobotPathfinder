@@ -23,3 +23,15 @@ cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
+
+after_success:
+  - >
+    curl --request 'POST' 
+    --header 'Content-Type: text/plain; charset=utf-8' 
+    --data '&#9989; The latest commit pushed to **RobotPathfinder** has **passed** CI checks!' https://arctos6135.ryver.com/application/webhook/DCrjbShXT4HvRtp
+
+after_failure:
+- >
+  curl --request 'POST' 
+  --header 'Content-Type: text/plain; charset=utf-8' 
+  --data '&#10060; The latest commit pushed to **RobotPathfinder** has **failed** CI checks!' https://arctos6135.ryver.com/application/webhook/DCrjbShXT4HvRtp

@@ -9,8 +9,8 @@ import robot.pathfinder.math.Vec2D;
  */
 public class CubicHermiteSegment implements SplineSegment {
 	
-	//The 4 cubic hermite basis functions
-	//They can be found here: https://en.wikipedia.org/wiki/Cubic_Hermite_spline
+	// The 4 cubic hermite basis functions
+	// They can be found here: https:// en.wikipedia.org/wiki/Cubic_Hermite_spline
 	protected static double basis0(double t) {
 		return 2 * Math.pow(t, 3) - 3 * Math.pow(t, 2) + 1;
 	}
@@ -24,7 +24,7 @@ public class CubicHermiteSegment implements SplineSegment {
 		return Math.pow(t, 3) - Math.pow(t, 2);
 	}
 	
-	//The derivatives of the basis functions
+	// The derivatives of the basis functions
 	protected static double basisDeriv0(double t) {
 		return 6 * Math.pow(t, 2) - 6 * t;
 	}
@@ -38,7 +38,7 @@ public class CubicHermiteSegment implements SplineSegment {
 		return 3 * Math.pow(t, 2) - 2 * t;
 	}
 	
-	//The second derivatives of the basis functions
+	// The second derivatives of the basis functions
 	protected static double basisSecondDeriv0(double t) {
 		return 12 * t - 6;
 	}

@@ -28,7 +28,7 @@ import robot.pathfinder.math.Vec2D;
  */
 public class TankDriveTrajectory implements Trajectory {
 	
-	//The internal path that this trajectory is based on
+	// The internal path that this trajectory is based on
 	Path path;
 	//"Moments" are generated for left and right separately
 	TankDriveMoment[] moments;
@@ -53,9 +53,9 @@ public class TankDriveTrajectory implements Trajectory {
 			throw new IllegalArgumentException("Base trajectory is not generated with tank drive");
 		}
 		
-		//Initialize and copy some fields
+		// Initialize and copy some fields
 		BasicMoment[] trajMoments = traj.getMoments();
-		//Initialize moments array
+		// Initialize moments array
 		moments = new TankDriveMoment[trajMoments.length];
 		moments[0] = new TankDriveMoment(0, 0, 0, 0, 0, 0, trajMoments[0].getHeading(), 0);
 		
@@ -70,13 +70,13 @@ public class TankDriveTrajectory implements Trajectory {
 		double maxVel = specs.getMaxVelocity();
 		path.setBaseRadius(traj.getRobotSpecs().getBaseWidth() / 2);
 		
-		//Numerical integration is used
-		//This keeps track of where the wheels were in the last interation
+		// Numerical integration is used
+		// This keeps track of where the wheels were in the last interation
 		Vec2D[] initPos = path.wheelsAt(0);
 		Vec2D prevLeft = initPos[0], prevRight = initPos[1];
 		
 		for(int i = 1; i < trajMoments.length; i ++) {
-			//First find where the wheels are at this moment and integrate the length
+			// First find where the wheels are at this moment and integrate the length
 			Vec2D[] wheelPos = path.wheelsAt(traj.pathT[i]);
 			double dxLeft = prevLeft.distTo(wheelPos[0]);
 			double dxRight = prevRight.distTo(wheelPos[1]);
@@ -85,7 +85,7 @@ public class TankDriveTrajectory implements Trajectory {
 			prevLeft = wheelPos[0];
 			prevRight = wheelPos[1];
 			
-			//Find out the velocity of the two wheels
+			// Find out the velocity of the two wheels
 			double vel = trajMoments[i].getVelocity();
 			/*
 			 * The formula for velocity is derived as follows:
@@ -104,13 +104,13 @@ public class TankDriveTrajectory implements Trajectory {
 			 * velocities when the turn is too tight and the wheel has to move backwards, unlike the distance
 			 * difference which is always positive.
 			 */
-			//Use MathUtils.clampAbs() to do a sanity check
-			//The calculated velocity should never be greater than the maximum (this can be proven algebraically)
-			//But add a check just in case
+			// Use MathUtils.clampAbs() to do a sanity check
+			// The calculated velocity should never be greater than the maximum (this can be proven algebraically)
+			// But add a check just in case
 			double leftVelocity = MathUtils.clampAbs(vel - vel / traj.pathRadius[i] * baseRadius, maxVel);
 			double rightVelocity = MathUtils.clampAbs(vel + vel / traj.pathRadius[i] * baseRadius, maxVel);
-			//As described, a negative velocity means the wheel has to move backwards
-			//So negate the distance difference
+			// As described, a negative velocity means the wheel has to move backwards
+			// So negate the distance difference
 			if(leftVelocity < 0) {
 				dxLeft = -dxLeft;
 			}
@@ -119,12 +119,12 @@ public class TankDriveTrajectory implements Trajectory {
 			}
 			
 			moments[i] = new TankDriveMoment();
-			//Integrate position
+			// Integrate position
 			moments[i].setLeftPosition(moments[i - 1].getLeftPosition() + dxLeft);
 			moments[i].setRightPosition(moments[i - 1].getRightPosition() + dxRight);
 			moments[i].setLeftVelocity(leftVelocity);
 			moments[i].setRightVelocity(rightVelocity);
-			//Derive velocity to get acceleration
+			// Derive velocity to get acceleration
 			moments[i - 1].setLeftAcceleration((moments[i].getLeftVelocity() - moments[i - 1].getLeftVelocity()) / dt);
 			moments[i - 1].setRightAcceleration((moments[i].getRightVelocity() - moments[i - 1].getRightVelocity()) / dt);
 			moments[i].setTime(trajMoments[i].getTime());
@@ -203,12 +203,12 @@ public class TankDriveTrajectory implements Trajectory {
 	 */
 	@Override
 	public TankDriveMoment get(double t) {
-		//Do binary search to find the closest approximation
+		// Do binary search to find the closest approximation
 		int start = 0;
 		int end = moments.length - 1;
 		int mid;
 		
-		//If t is greater than the entire length in time of the left side, return the last BasicMoment
+		// If t is greater than the entire length in time of the left side, return the last BasicMoment
 		if(t >= moments[moments.length - 1].getTime())
 			return moments[moments.length - 1];
 		
@@ -219,13 +219,13 @@ public class TankDriveTrajectory implements Trajectory {
 			
 			if(midTime == t)
 				return moments[mid].clone();
-			//If we reached the end, return the end
+			// If we reached the end, return the end
 			if(mid == moments.length - 1)
 				return moments[mid].clone();
 			
 			double nextTime = moments[mid + 1].getTime();
 			
-			//If t is sandwiched between 2 existing times, the return the closest one
+			// If t is sandwiched between 2 existing times, the return the closest one
 			if(midTime <= t && nextTime >= t) {
 				double f = (t - midTime) / (nextTime - midTime);
 				return new TankDriveMoment(MathUtils.lerp(moments[mid].getLeftPosition(), moments[mid + 1].getLeftPosition(), f), 
@@ -236,7 +236,7 @@ public class TankDriveTrajectory implements Trajectory {
 						MathUtils.lerp(moments[mid].getRightAcceleration(), moments[mid + 1].getRightAcceleration(), f),
 						MathUtils.lerpAngle(headingVectors[mid], headingVectors[mid + 1], f), t, initialFacing);
 			}
-			//Continue the binary search if not found
+			// Continue the binary search if not found
 			if(midTime < t) {
 				start = mid;
 				continue;
@@ -253,16 +253,16 @@ public class TankDriveTrajectory implements Trajectory {
 	 */
 	@Override
 	public TankDriveTrajectory mirrorLeftRight() {
-		//Create new path
+		// Create new path
 		Path newPath = path.mirrorLeftRight();
 		
 		double refAngle = params.waypoints[0].getHeading();
 		
 		TankDriveMoment[] newMoments = new TankDriveMoment[moments.length];
 		for(int i = 0; i < newMoments.length; i ++) {
-			//Moment data stays the same, but left and right sides are swapped
+			// Moment data stays the same, but left and right sides are swapped
 			newMoments[i] = TankDriveMoment.fromComponents(moments[i].rightComponent(), moments[i].leftComponent());
-			//See BasicTrajectory.mirrorLeftRight()
+			// See BasicTrajectory.mirrorLeftRight()
 			newMoments[i].setHeading(MathUtils.mirrorAngle(moments[i].getHeading(), refAngle));
 			newMoments[i].setInitialFacing(newMoments[0].getFacingAbsolute());
 		}
@@ -276,7 +276,7 @@ public class TankDriveTrajectory implements Trajectory {
 	 */
 	@Override
 	public TankDriveTrajectory mirrorFrontBack() {
-		//See BasicTrajectory.mirrorFrontBack()
+		// See BasicTrajectory.mirrorFrontBack()
 		TankDriveMoment[] newMoments = new TankDriveMoment[moments.length];
 		Path newPath = path.mirrorFrontBack();
 		double refAngle = params.waypoints[0].getHeading() + Math.PI / 2;
@@ -299,11 +299,11 @@ public class TankDriveTrajectory implements Trajectory {
 	 */
 	@Override
 	public TankDriveTrajectory retrace() {
-		//See BasicTrajectory.retrace()
+		// See BasicTrajectory.retrace()
 		TankDriveMoment[] newMoments = new TankDriveMoment[moments.length];
 		
 		
-		//Create new path
+		// Create new path
 		Path newPath = path.retrace();
 		
 		TankDriveMoment lastMoment = moments[moments.length - 1];

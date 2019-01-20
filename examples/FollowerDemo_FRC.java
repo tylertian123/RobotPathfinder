@@ -14,11 +14,11 @@ import robot.pathfinder.follower.TankFollower;
  * 	and the unit for time must be <em>seconds</em>.
  *	@author Tyler Tian
  */
-//Note: This example does not include the use of the directional-proportional term.
+// Note: This example does not include the use of the directional-proportional term.
 public class FollowerDemo_FRC extends Command {
 
-	//Acceleration feedforward term, velocity feedforward term, proportional gain, derivative gain
-	//Must tune later by trial and error
+	// Acceleration feedforward term, velocity feedforward term, proportional gain, derivative gain
+	// Must tune later by trial and error
 	public static double kA = 0.00215, kV = 0.01, kP = 0.02225, kD = 0.001;
 	
 	static final Follower.TimestampSource TIMER = () -> {

@@ -24,8 +24,8 @@ public class Test {
 				new Waypoint(0, 0, Math.PI / 2),
 				new Waypoint(-10, 25, Math.PI / 2),
 				new Waypoint(20, 0, 0),
-				//new Waypoint(0, 25, Math.PI / 2),
-				//new Waypoint(0, 50, Math.PI / 2),
+				// new Waypoint(0, 25, Math.PI / 2),
+				// new Waypoint(0, 50, Math.PI / 2),
 		};
 		
 		RobotSpecs specs = new RobotSpecs(5, 3.5, 2);
@@ -61,7 +61,7 @@ public class Test {
 		params.isTank = true;
 		params.pathType = PathType.QUINTIC_HERMITE;
 		TankDriveTrajectory trajectory = new TankDriveTrajectory(robotSpecs, params);
-		//BasicTrajectory trajectory = new BasicTrajectory(robotSpecs, params);
+		// BasicTrajectory trajectory = new BasicTrajectory(robotSpecs, params);
 		
 		JFrame f = Grapher.graphTrajectory(trajectory, 0.01);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -82,9 +82,9 @@ public class Test {
 				new Waypoint(0.0, 0.0, Math.PI / 2),
 				new Waypoint(-10.0, 25.0, Math.PI / 2),
 				new Waypoint(-10.0, 50.0, Math.PI / 2),
-				//new Waypoint(0.0, 75.0, 0.0),
-				//new Waypoint(0, 0, 0),
-				//new Waypoint(20, 0, 0),
+				// new Waypoint(0.0, 75.0, 0.0),
+				// new Waypoint(0, 0, 0),
+				// new Waypoint(20, 0, 0),
 		};
 		params.alpha = 50.0;
 		params.segmentCount = 5000;
@@ -94,12 +94,12 @@ public class Test {
 		TankDriveTrajectory trajectory = new TankDriveTrajectory(robotSpecs, params);
 		BasicTrajectory trajectory1 = new BasicTrajectory(robotSpecs, params);
 		
-		//JFrame f = Grapher.graphTrajectory(trajectory, 0.01);
-		//f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//f.setVisible(true);
-		//JFrame f2 = Grapher.graphPath(trajectory.getPath(), 0.01);
-		//f2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//f2.setVisible(true);
+		// JFrame f = Grapher.graphTrajectory(trajectory, 0.01);
+		// f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// f.setVisible(true);
+		// JFrame f2 = Grapher.graphPath(trajectory.getPath(), 0.01);
+		// f2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// f2.setVisible(true);
 		
 		double dt = 0.01;
 		double[] v1 = new double[(int) Math.ceil(trajectory.totalTime() / dt)];
@@ -139,8 +139,8 @@ public class Test {
 				new Waypoint(0, 0, Math.PI / 2),
 				new Waypoint(-10, 25, Math.PI / 2),
 				new Waypoint(20, 0, 0),
-				//new Waypoint(0, 25, Math.PI / 2),
-				//new Waypoint(0, 50, Math.PI / 2),
+				// new Waypoint(0, 25, Math.PI / 2),
+				// new Waypoint(0, 50, Math.PI / 2),
 		};
 		
 		RobotSpecs specs = new RobotSpecs(5, 3.5, 2);

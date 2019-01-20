@@ -263,9 +263,17 @@ public class BasicTrajectory implements Trajectory {
 			}
 		}
 		
-		// Prepare for backwards pass
-		moments[moments.length - 1].setVelocity(0);
-		moments[moments.length - 1].setAcceleration(0);
+        // Prepare for backwards pass
+        // Once again, if the waypoint specifies a velocity and acceleration, take that into account
+        if(waypoints[waypoints.length - 1] instanceof WaypointEx) {
+            WaypointEx ex = (WaypointEx) waypoints[waypoints.length - 1];
+            moments[moments.length - 1].setVelocity(ex.getVelocity());
+            moments[moments.length - 1].setAcceleration(ex.getAcceleration());
+        }
+        else {
+		    moments[moments.length - 1].setVelocity(0);
+            moments[moments.length - 1].setAcceleration(0);
+        }
 		// Backwards pass as described in the algorithm in the video
 		for(int i = moments.length - 2; i >= 0; i --) {
 			// Only do processing if the velocity of this moment is greater than the next

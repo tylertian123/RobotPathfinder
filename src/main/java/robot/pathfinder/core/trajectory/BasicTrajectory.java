@@ -27,6 +27,13 @@ import robot.pathfinder.math.Vec2D;
  *
  */
 public class BasicTrajectory implements Trajectory {
+
+    /*
+     * Abandon all hope, ye who enter here.
+     * 
+     * I genuinely feel bad for whoever is going to be maintaining this in the future.
+     * I'm just as clueless as you are about what some of this does.
+     */
 	
 	/*
 	 * The algorithm used to generate these trajectories are based almost entirely on the algorithm from Team
@@ -114,7 +121,7 @@ public class BasicTrajectory implements Trajectory {
 		 * calling the s2T method in Path, and any special processing can be done with that.
 		 */
 		//Instead of iterating over t, we iterate over s, which represents the fraction of the total distance
-		double s_delta = 1.0 / (segmentCount - 1);
+		double sDelta = 1.0 / (segmentCount - 1);
 		double totalDist = path.computePathLength(segmentCount);
 		double distPerIteration = totalDist / (segmentCount - 1);
 		
@@ -134,7 +141,7 @@ public class BasicTrajectory implements Trajectory {
 			pathT = new double[segmentCount];
 			for(int i = 0; i < segmentCount; i ++) {
 				//Call s2T to translate between length and time
-				double t = path.s2T(s_delta * i);
+				double t = path.s2T(sDelta * i);
 				pathT[i] = t;
 				
 				//Use the curvature formula in multivariable calculus to figure out the curvature at this point
@@ -186,7 +193,7 @@ public class BasicTrajectory implements Trajectory {
 				maxVelocities[i] = maxVelocity;
 				
 				//Even if the trajectory is not for tank drive robots, the heading still needs to be calculated
-				double t = path.s2T(s_delta * i);
+				double t = path.s2T(sDelta * i);
 				Vec2D deriv = path.derivAt(t);
 				double xDeriv = deriv.getX();
 				double yDeriv = deriv.getY();

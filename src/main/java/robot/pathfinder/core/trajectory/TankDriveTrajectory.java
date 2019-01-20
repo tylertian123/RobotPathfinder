@@ -56,7 +56,8 @@ public class TankDriveTrajectory implements Trajectory {
 		// Initialize and copy some fields
 		BasicMoment[] trajMoments = traj.getMoments();
 		// Initialize moments array
-		moments = new TankDriveMoment[trajMoments.length];
+        moments = new TankDriveMoment[trajMoments.length];
+        // Initialize first moment
 		moments[0] = new TankDriveMoment(0, 0, 0, 0, 0, 0, trajMoments[0].getHeading(), 0);
 		
 		specs = traj.getRobotSpecs();

@@ -9,7 +9,7 @@ import robot.pathfinder.math.Vec2D;
  * (direction the robot is travelling in). All angles are in <em>radians</em>. Used to construct paths and trajectories.
  * This class is immutable.
  * <p>
- * The {@code WaypointEx} adds additional velocity and acceleration information in addition to the {@code Waypoint}'s 
+ * The {@code WaypointEx} adds additional velocity information in addition to the {@code Waypoint}'s 
  * position and heading. This allows a path to start as a continuation of some other path.
  * </p>
  * <p>
@@ -23,26 +23,19 @@ import robot.pathfinder.math.Vec2D;
  */
 public class WaypointEx extends Waypoint {
     
-    final double velocity, acceleration;
+    final double velocity;
 
-    public WaypointEx(double x, double y, double heading, double velocity, double acceleration) {
+    public WaypointEx(double x, double y, double heading, double velocity) {
         super(x, y, heading);
         this.velocity = velocity;
-        this.acceleration = acceleration;
     }
 
-    public WaypointEx(Vec2D location, double heading, double velocity, double acceleration) {
+    public WaypointEx(Vec2D location, double heading, double velocity) {
         super(location, heading);
         this.velocity = velocity;
-        this.acceleration = acceleration;
-
     }
 
     public double getVelocity() {
         return velocity;
-    }
-
-    public double getAcceleration() {
-        return acceleration;
     }
 }

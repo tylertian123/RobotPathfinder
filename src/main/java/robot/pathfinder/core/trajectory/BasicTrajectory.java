@@ -209,7 +209,9 @@ public class BasicTrajectory implements Trajectory {
         // If the first waypoint is a WaypointEx, take the velocity and acceleration as well
         if(waypoints[0] instanceof WaypointEx) {
             WaypointEx ex = (WaypointEx) waypoints[0];
-            moments[0] = new BasicMoment(0, ex.getVelocity(), ex.getAcceleration(), headings[0], 0);
+            // We don't really care about the acceleration. Even if we set it here, it's going to be overridden later anyways
+            // because there is no jerk constraint.
+            moments[0] = new BasicMoment(0, ex.getVelocity(), 0, headings[0], 0);
         }
         else {
             moments[0] = new BasicMoment(0, 0, 0, headings[0], 0);
@@ -268,7 +270,7 @@ public class BasicTrajectory implements Trajectory {
         if(waypoints[waypoints.length - 1] instanceof WaypointEx) {
             WaypointEx ex = (WaypointEx) waypoints[waypoints.length - 1];
             moments[moments.length - 1].setVelocity(ex.getVelocity());
-            moments[moments.length - 1].setAcceleration(ex.getAcceleration());
+            moments[moments.length - 1].setAcceleration(0);
         }
         else {
 		    moments[moments.length - 1].setVelocity(0);

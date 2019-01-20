@@ -103,7 +103,7 @@ public class MathUtils {
 	 * @return The discriminant of the polynomial
 	 */
 	public static double cubicDiscriminant(double a, double b, double c, double d) {
-		// Formula can be found on Wikipedia: https:// en.wikipedia.org/wiki/Cubic_function#General_formula
+		// Formula can be found on Wikipedia: https://en.wikipedia.org/wiki/Cubic_function#General_formula
 		return 18 * a * b * c * d - 4 * Math.pow(b, 3) * d + Math.pow(b, 2) * Math.pow(c, 2) - 4 * a * Math.pow(c, 3) - 27 * Math.pow(a, 2) * Math.pow(d, 2);
 	}
 	/**
@@ -123,7 +123,7 @@ public class MathUtils {
 			return findPositiveQuadraticRoot(b, c, d);
 		}
 		
-		// Formula can be found on Wikipedia: https:// en.wikipedia.org/wiki/Cubic_function#General_formula
+		// Formula can be found on Wikipedia: https://en.wikipedia.org/wiki/Cubic_function#General_formula
 		double d0 = b * b - 3 * a * c;
 		double d1 = 2 * Math.pow(b, 3) - 9 * a * b * c + 27 * Math.pow(a, 2) * d;
 		double C;

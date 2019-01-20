@@ -10,7 +10,7 @@ import robot.pathfinder.math.Vec2D;
 public class CubicHermiteSegment implements SplineSegment {
 	
 	// The 4 cubic hermite basis functions
-	// They can be found here: https:// en.wikipedia.org/wiki/Cubic_Hermite_spline
+	// They can be found here: https://en.wikipedia.org/wiki/Cubic_Hermite_spline
 	protected static double basis0(double t) {
 		return 2 * Math.pow(t, 3) - 3 * Math.pow(t, 2) + 1;
 	}

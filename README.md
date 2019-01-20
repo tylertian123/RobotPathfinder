@@ -1,9 +1,9 @@
 # RobotPathfinder
-[![Build Status](https:// travis-ci.com/Arctos6135/RobotPathfinder.svg?branch=dev%2Fmisc%2Ftravis)](https:// travis-ci.com/Arctos6135/RobotPathfinder)
+[![Build Status](https://travis-ci.com/Arctos6135/RobotPathfinder.svg?branch=dev%2Fmisc%2Ftravis)](https://travis-ci.com/Arctos6135/RobotPathfinder)
 
-Robot motion profiler/path planner for tank drive robots. Used and developed by <a href="https:// github.com/Arctos6135">FRC Team 6135 (Arctos)</a>!<br>
-Inspired by and partially based on <a href="https:// github.com/JacisNonsense/Pathfinder">Pathfinder by Jaci Brunning</a>. <em>This project is in no way intended to be a copy or replacement for Pathfinder! Though a lot of it is based on Pathfinder, the two generators have their own pros and cons.</em><br>
-Thank you to FRC Team 254 (The Cheesy Poofs) for <a href="https:// youtu.be/8319J1BEHwM">their amazing video on motion control</a>!<br><br>
+Robot motion profiler/path planner for tank drive robots. Used and developed by <a href="https://github.com/Arctos6135">FRC Team 6135 (Arctos)</a>!<br>
+Inspired by and partially based on <a href="https://github.com/JacisNonsense/Pathfinder">Pathfinder by Jaci Brunning</a>. <em>This project is in no way intended to be a copy or replacement for Pathfinder! Though a lot of it is based on Pathfinder, the two generators have their own pros and cons.</em><br>
+Thank you to FRC Team 254 (The Cheesy Poofs) for <a href="https://youtu.be/8319J1BEHwM">their amazing video on motion control</a>!<br><br>
 
 Some of the highlights include:
 * Smooth path generation with 3 different fit types
@@ -19,10 +19,10 @@ Some of the highlights include:
 Given an array of waypoints, each with coordinates and a heading, RobotPathfinder generates a smooth path that follows all the waypoints. Then, using that path, it generates left and right wheel trajectories for a robot to follow in order to achieve the desired path.
 
 Example path:
-![Path graph](http:// tylertian123.github.io/images/RobotPathfinder/path1.png)<br>
+![Path graph](http://tylertian123.github.io/images/RobotPathfinder/path1.png)<br>
 Trajectory for the example path:
-![Trajectory](http:// tylertian123.github.io/images/RobotPathfinder/traj1.png)<br>
-These graphs are generated using <b>JMathPlot</b>. You can find its repository <a href="https:// github.com/yannrichet/jmathplot">here</a>.<br>
+![Trajectory](http://tylertian123.github.io/images/RobotPathfinder/traj1.png)<br>
+These graphs are generated using <b>JMathPlot</b>. You can find its repository <a href="https://github.com/yannrichet/jmathplot">here</a>.<br>
 The program that generated this trajectory can be found under the `examples` directory as `TrajectoryGenerationDemo.java`.
 
 ## Usage
@@ -62,7 +62,7 @@ Examples can be found under the `examples` directory.<br><br>
 
 ## GUI Trajectory Visualization Tool
 A GUI Trajectory Visualization Tool in the form of an executable jar is included with every release.
-![Trajectory Visualization Tool](http:// tylertian123.github.io/images/RobotPathfinder/tvtool1.png)<br>
+![Trajectory Visualization Tool](http://tylertian123.github.io/images/RobotPathfinder/tvtool1.png)<br>
 
 This tool generates path and trajectory graphs from waypoints and robot specification parameters; it can be used to preview paths and trajectories and check if a path is possible without having to write code for it. 
 

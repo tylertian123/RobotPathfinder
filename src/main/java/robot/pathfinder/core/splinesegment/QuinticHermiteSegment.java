@@ -10,7 +10,7 @@ import robot.pathfinder.math.Vec2D;
 public class QuinticHermiteSegment implements SplineSegment {
 	
 	// The 6 quintic hermite basis functions
-	// They can be found here: https:// www.rose-hulman.edu/~finn/CCLI/Notes/day09.pdf
+	// They can be found here: https://www.rose-hulman.edu/~finn/CCLI/Notes/day09.pdf
 	protected static double basis0(double t) {
 		return 1 - 10 * Math.pow(t, 3) + 15 * Math.pow(t, 4) - 6 * Math.pow(t, 5);
 	}

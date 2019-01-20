@@ -38,7 +38,7 @@ public class BasicTrajectory implements Trajectory {
 	
 	/*
 	 * The algorithm used to generate these trajectories are based almost entirely on the algorithm from Team
-	 * 254 The Cheesy Poofs. Video here: https:// youtu.be/8319J1BEHwM
+	 * 254 The Cheesy Poofs. Video here: https://youtu.be/8319J1BEHwM
 	 */
 	
 	// The path followed by this trajectory

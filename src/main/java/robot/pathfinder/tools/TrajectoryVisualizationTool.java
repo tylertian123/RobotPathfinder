@@ -48,6 +48,7 @@ import javax.swing.table.DefaultTableModel;
 import robot.pathfinder.core.RobotSpecs;
 import robot.pathfinder.core.TrajectoryParams;
 import robot.pathfinder.core.Waypoint;
+import robot.pathfinder.core.WaypointEx;
 import robot.pathfinder.core.path.Path;
 import robot.pathfinder.core.path.PathType;
 import robot.pathfinder.core.trajectory.BasicTrajectory;
@@ -66,7 +67,8 @@ public class TrajectoryVisualizationTool {
 	
 	static JTextField waypointX = new JTextField();
 	static JTextField waypointY = new JTextField();
-	static JTextField waypointHeading = new JTextField();
+    static JTextField waypointHeading = new JTextField();
+    static JTextField waypointVelocity = new JTextField();
 	static JPanel waypointPanel;
 
 	static int pathSamples = 200;
@@ -98,7 +100,8 @@ public class TrajectoryVisualizationTool {
 	static final String[] COLUMN_NAMES = new String[] {
 			"X Position",
 			"Y Position",
-			"Robot Direction (Degrees)"
+            "Robot Direction (Degrees)",
+            "Velocity",
 	};
 	
 	static HashMap<Double, String> specialAngles = new HashMap<>();
@@ -202,7 +205,9 @@ public class TrajectoryVisualizationTool {
 		waypointPanel.add(new JLabel("Waypoint Y"));
 		waypointPanel.add(waypointY);
 		waypointPanel.add(new JLabel("Robot Direction (Degrees)"));
-		waypointPanel.add(waypointHeading);
+        waypointPanel.add(waypointHeading);
+        waypointPanel.add(new JLabel("Velocity (Optional)"));
+        waypointPanel.add(waypointVelocity);
 		
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new BorderLayout());
@@ -299,17 +304,22 @@ public class TrajectoryVisualizationTool {
 				try {
 					double x = Double.parseDouble(waypointX.getText());
 					double y = Double.parseDouble(waypointY.getText());
-					double heading = Double.parseDouble(waypointHeading.getText());
+                    double heading = Double.parseDouble(waypointHeading.getText());
+                    double velocity = waypointVelocity.getText().length() > 0 ? Double.parseDouble(waypointVelocity.getText()) : Double.NaN;
 					
-					if(selectedRow == -1)
-						waypoints.add(new Waypoint(x, y, Math.toRadians(constrainAngle(heading))));
-					else 
-						waypoints.add(selectedRow, new Waypoint(x, y, Math.toRadians(constrainAngle(heading))));
-					WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
-					if(selectedRow == -1)
-						tableModel.addRow(new Object[] { String.valueOf(x), String.valueOf(y), String.valueOf(heading) });
-					else
-						tableModel.insertRow(selectedRow, new Object[] { String.valueOf(x), String.valueOf(y), String.valueOf(heading) });
+                    WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
+					if(selectedRow == -1) {
+                        waypoints.add(Double.isNaN(velocity) ? new Waypoint(x, y, Math.toRadians(constrainAngle(heading)))
+                                : new WaypointEx(x, y, Math.toRadians(constrainAngle(heading)), velocity));
+                        tableModel.addRow(new Object[] { waypointX.getText(), waypointY.getText(), waypointHeading.getText(),
+                                Double.isNaN(velocity) ? "unconstrained" : waypointVelocity.getText() });
+                    }
+					else { 
+                        waypoints.add(selectedRow, Double.isNaN(velocity) ? new Waypoint(x, y, Math.toRadians(constrainAngle(heading)))
+                                : new WaypointEx(x, y, Math.toRadians(constrainAngle(heading)), velocity));
+                        tableModel.insertRow(selectedRow, new Object[] { waypointX.getText(), waypointY.getText(), waypointHeading.getText(),
+                                Double.isNaN(velocity) ? "unconstrained" : waypointVelocity.getText() });
+                    }
 					
 					error = false;
 				}
@@ -321,7 +331,8 @@ public class TrajectoryVisualizationTool {
 			
 			waypointX.setText("");
 			waypointY.setText("");
-			waypointHeading.setText("");
+            waypointHeading.setText("");
+            waypointVelocity.setText("");
 		};
 		addWaypointButton.addActionListener(addWaypointAction);
 		addWaypointButton.setPreferredSize(buttonSize);
@@ -338,11 +349,13 @@ public class TrajectoryVisualizationTool {
 			WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
 			String xStr = (String) tableModel.getValueAt(index, 0);
 			String yStr = (String) tableModel.getValueAt(index, 1);
-			String headingStr = (String) tableModel.getValueAt(index, 2);
+            String headingStr = (String) tableModel.getValueAt(index, 2);
+            String velocityStr = (String) tableModel.getValueAt(index, 3);
 			
 			waypointX.setText(xStr);
 			waypointY.setText(yStr);
-			waypointHeading.setText(headingStr);
+            waypointHeading.setText(headingStr);
+            waypointVelocity.setText(velocityStr.equals("unconstrained") ? "" : velocityStr);
 			
 			boolean error;
 			do {
@@ -353,12 +366,15 @@ public class TrajectoryVisualizationTool {
 				try {
 					double x = Double.parseDouble(waypointX.getText());
 					double y = Double.parseDouble(waypointY.getText());
-					double heading = Double.parseDouble(waypointHeading.getText());
+                    double heading = Double.parseDouble(waypointHeading.getText());
+                    double velocity = waypointVelocity.getText().length() > 0 ? Double.parseDouble(waypointVelocity.getText()) : Double.NaN;
 					
-					waypoints.set(index, new Waypoint(x, y, Math.toRadians(constrainAngle(heading))));
-					tableModel.setValueAt(String.valueOf(x), index, 0);
-					tableModel.setValueAt(String.valueOf(y), index, 1);
-					tableModel.setValueAt(String.valueOf(heading), index, 2);
+                    waypoints.set(index, Double.isNaN(velocity) ? new Waypoint(x, y, Math.toRadians(constrainAngle(heading)))
+                            : new WaypointEx(x, y, heading, velocity));
+					tableModel.setValueAt(waypointX.getText(), index, 0);
+					tableModel.setValueAt(waypointY.getText(), index, 1);
+                    tableModel.setValueAt(waypointHeading.getText(), index, 2);
+                    tableModel.setValueAt(Double.isNaN(velocity) ? "unconstrained" : waypointVelocity.getText(), index, 3);
 					
 					error = false;
 				}
@@ -370,7 +386,8 @@ public class TrajectoryVisualizationTool {
 			
 			waypointX.setText("");
 			waypointY.setText("");
-			waypointHeading.setText("");
+            waypointHeading.setText("");
+            waypointVelocity.setText("");
 		};
 		editWaypointButton.addActionListener(editWaypointAction);
 		editWaypointButton.setPreferredSize(buttonSize);
@@ -572,7 +589,7 @@ public class TrajectoryVisualizationTool {
 			for(Waypoint w : waypoints) {
 				double heading = w.getHeading();
 				String angle = specialAngles.containsKey(heading) ? specialAngles.get(heading) : String.valueOf(heading);
-				String waypointCode = "\t\tnew Waypoint(" + String.valueOf(w.getX()) + ", " + String.valueOf(w.getY()) + ", " + angle + "),\n";
+				String waypointCode = "\t\tnew Waypoint(" + w.getX() + ", " + w.getY() + ", " + angle + "),\n";
 				generatedCode.append(waypointCode);
 			}
 			generatedCode.append("};\n");

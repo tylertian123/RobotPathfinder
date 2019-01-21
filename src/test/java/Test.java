@@ -197,14 +197,14 @@ public class Test {
         TrajectoryParams params = new TrajectoryParams();
         params.waypoints = new Waypoint[] {
                 new WaypointEx(0.0, 0.0, Math.PI / 4, 2.0),
-                new Waypoint(25.0, 25.0, Math.PI / 2),
+                new WaypointEx(25.0, 25.0, Math.PI / 2, 0),
                 new WaypointEx(40.0, 25.0, -Math.PI / 2, 2.0),
         };
         params.alpha = 40.0;
         params.segmentCount = 1000;
         params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
-        TankDriveTrajectory trajectory = new TankDriveTrajectory(robotSpecs, params);
+        BasicTrajectory trajectory = new BasicTrajectory(robotSpecs, params);
 
         JFrame f1 = Grapher.graphPath(trajectory.getPath(), 0.01);
         f1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

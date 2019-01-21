@@ -1,6 +1,8 @@
 package robot.pathfinder.core.trajectory;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedList;
 
 import robot.pathfinder.core.RobotSpecs;
 import robot.pathfinder.core.TrajectoryParams;
@@ -9,6 +11,7 @@ import robot.pathfinder.core.WaypointEx;
 import robot.pathfinder.core.path.Path;
 import robot.pathfinder.math.MathUtils;
 import robot.pathfinder.math.Vec2D;
+import robot.pathfinder.util.Pair;
 
 /**
  * A class that represents a basic trajectory (motion profile).
@@ -124,7 +127,7 @@ public class BasicTrajectory implements Trajectory {
 		// Instead of iterating over t, we iterate over s, which represents the fraction of the total distance
 		double sDelta = 1.0 / (segmentCount - 1);
 		double totalDist = path.computePathLength(segmentCount);
-		double distPerIteration = totalDist / (segmentCount - 1);
+        double distPerIteration = totalDist / (segmentCount - 1);
 		
 		// This array stores the direction of the robot at each moment
 		// Directions are generated in a separate process as the velocities and accelerations
@@ -134,7 +137,22 @@ public class BasicTrajectory implements Trajectory {
 		// This array stores the theoretical max velocity at each point in this trajectory
 		// This is needed for tank drive, since the robot has to slow down when turning
 		// For regular basic trajectories every element of this array is set to the max velocity
-		double[] maxVelocities = new double[segmentCount];
+        double[] maxVelocities = new double[segmentCount];
+        
+        // Extract and organize all the additional velocity constraints from the waypoints
+        // The first element of each Pair of doubles holds the path distance for the constraint
+        // The second element holds the velocity
+        // Make it a LinkedList, since reallistically the size is going to be small and we're removing elements later
+        LinkedList<Pair<Double, Double>> additionalConstraints = new LinkedList<>();
+        // Since waypoints are spaced evenly though time we can calculate the constant difference here
+        double waypointDt = 1.0 / (waypoints.length - 1);
+        // Iterate though all of them except the first and last one, which are handled later
+        for(int i = 1; i < waypoints.length - 1; i ++) {
+            if(waypoints[i] instanceof WaypointEx) {
+                // Use t2S to find the fractional distance, then multiply by the total distance
+                additionalConstraints.add(new Pair<>(path.t2S(i * waypointDt) * path.getPathLength(), ((WaypointEx) waypoints[i]).getVelocity()));
+            }
+        }
 		
 		if(isTank) {
 			// Tank drive trajectories require extra processing as described above
@@ -202,7 +220,7 @@ public class BasicTrajectory implements Trajectory {
 				headingVectors[i] = new Vec2D(xDeriv, yDeriv);
 				headingVectors[i].normalize();
 			}
-		}
+        }
 		
 		// Create the BasicMoment array and initialize first element
         moments = new BasicMoment[segmentCount];
@@ -225,10 +243,42 @@ public class BasicTrajectory implements Trajectory {
 		double[] precomputedTimeDiff = new double[moments.length - 1];
 		// Set the elements to NaN to indicate that they're not initialized
 		Arrays.fill(precomputedTimeDiff, Double.NaN);
-
+        // Keep a set of all moment indices for which the velocity cannot be changed (specified by the waypoint).
+        // This is because you can only tell if some velocity specifications are impossible in the backwards pass.
+        HashSet<Integer> unchangeableIndices = new HashSet<>();
 		// Forwards pass as described in the algorithm in the video
 		for(int i = 1; i < moments.length; i ++) {
-			double accumulatedDist = i * distPerIteration;
+            double accumulatedDist = i * distPerIteration;
+            
+            // Since the additional velocity constraints are sorted from shortest path length to longest, we can check if
+            // we just surpassed one to determine whether we're on the point. Then, remove it so the process still works.
+            if(additionalConstraints.size() > 0 && accumulatedDist >= additionalConstraints.getFirst().getElem1()) {
+                Pair<Double, Double> constraint = additionalConstraints.getFirst();
+                additionalConstraints.remove();
+
+                // If the velocity is higher than the current, perform some extra checks and computations
+                if(constraint.getElem2() > moments[i - 1].getVelocity()) {
+                    // First calculate the acceleration needed and throw an exception if it's impossible
+                    double accel = (Math.pow(constraint.getElem2(), 2) - Math.pow(moments[i - 1].getVelocity(), 2)) / (2 * distPerIteration);
+                    if(accel > maxAcceleration) {
+                        throw new TrajectoryGenerationException("Error: Waypoint velocity constraint (" + constraint.getElem2() + ") is impossible");
+                    }
+                    // Otherwise set the accel
+                    moments[i - 1].setAcceleration(accel);
+                    // Set precomputed time diff
+                    precomputedTimeDiff[i - 1] = (constraint.getElem2() - moments[i - 1].getVelocity()) / accel;
+                }
+                else {
+                    // Set the accel to 0 to be handled by the backwards pass
+                    moments[i - 1].setAcceleration(0);
+                }
+                // Set the velocity equal to the constraint
+                moments[i] = new BasicMoment(accumulatedDist, constraint.getElem2(), 0, headings[i]);
+
+                unchangeableIndices.add(i);
+
+                continue;
+            }
 			
 			double theoreticalMax = maxVelocities[i];
 			
@@ -287,13 +337,19 @@ public class BasicTrajectory implements Trajectory {
 				double maxVel = Math.sqrt(Math.pow(moments[i + 1].getVelocity(), 2) + 2 * maxAcceleration * distDiff);
 				
 				double vel;
-				// Compare with the velocity set by the forwards pass
+                // Compare with the velocity set by the forwards pass
+                // If reachable, then just set the acceleration
 				if(maxVel > moments[i].getVelocity()) {
 					double accel = (Math.pow(moments[i].getVelocity(), 2) - Math.pow(moments[i + 1].getVelocity(), 2)) / (2 * distDiff);
 					moments[i].setAcceleration(-accel);
 					vel = moments[i].getVelocity();
-				}
+                }
+                // Otherwise, bring the velocity down to the maximum reachable limit
 				else {
+                    // Check if this is one of the unchangeable specified moments
+                    if(unchangeableIndices.contains(i)) {
+                        throw new TrajectoryGenerationException("Error: Waypoint velocity constraint (" + moments[i].getVelocity() + ") is impossible");
+                    }
 					vel = maxVel;
 					moments[i].setAcceleration(-maxAcceleration);
 				}

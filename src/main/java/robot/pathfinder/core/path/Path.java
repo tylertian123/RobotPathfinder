@@ -83,6 +83,11 @@ abstract public class Path {
 	
 	/**
 	 * Returns the position at a specified time in the path.
+     * <p>
+     * Note that this method does not take into account the lengths of the segments of the path.
+     * Rather it divides the total time evenly into equal sized segments for each segment, regardless of their lengths.
+     * This means that even though some segments may be longer than others, they still take up the same amount of time.
+     * </p>
 	 * @param t A real number in the range [0, 1]
 	 * @return The position on this path at the specified time
 	 */
@@ -262,7 +267,67 @@ abstract public class Path {
 				end = mid;
 			}
 		}
-	}
+    }
+    /**
+	 * Converts a time to a fractional path length. For example, {@code t2S(0.25)} would return the fraction of the path
+     * length travelled at t=0.25. {@link #prepareS2T(int)} or {@link #computePathLength(int)}
+	 * <em>must be called</em> prior to calling this method, or a {@link NullPointerException} will be thrown.
+	 * @param t The fraction representing the time; a real value in the range [0, 1]
+	 * @return The fraction of the path travelled at the specified time
+	 */
+    public double t2S(double t) {
+        /*
+         * This method does binary search to find a time value in the lookup table that has the same t value,
+         * or it finds the nearest 2 entries in the table, and linearly interpolates their s value.
+         */
+        if(s2tLookupTable == null) {
+            throw new NullPointerException("prepareS2T() or computePathLength() must be called before t2S()");
+        }
+
+        int start = 0;
+        int end = s2tLookupTable.size() - 1;
+        int mid;
+
+        // Return 1 if the time is greater than 1
+        if(t > s2tLookupTable.get(s2tLookupTable.size() - 1).getElem2()) {
+            return 1;
+        }
+        while(true) {
+            mid = (start + end) / 2;
+            double midTime = s2tLookupTable.get(mid).getElem2();
+
+            // Check if we have a match
+            if(midTime == t) {
+                // Divide the value found by the total length to get a fraction
+                return s2tLookupTable.get(mid).getElem1() / totalLen;
+            }
+            // Or, check if we are at the end of the lookup table
+            if(mid == s2tLookupTable.size() - 1) {
+                return 1;
+            }
+
+            // Check if our time is in between two times
+            double nextTime = s2tLookupTable.get(mid + 1).getElem2();
+            if(midTime <= t && t <= nextTime) {
+                // Lerp them to get an approximation
+                double f = (t - midTime) / (nextTime - midTime);
+                return MathUtils.lerp(s2tLookupTable.get(mid).getElem1(), 
+                        s2tLookupTable.get(mid + 1).getElem1(), f) / totalLen;
+            }
+            // Check if we are at the first element after checking if we are between two elements
+            // Otherwise, in the case of a value between the first and second, the lerp will not happen
+            if(mid == 0) {
+                return 0;
+            }
+            // If not found continue the search
+            if(midTime < t) {
+                start = mid;
+            }
+            else if(midTime > t) {
+                end = mid;
+            }
+        }
+    }
 	
 	/**
 	 * Retrieves the waypoints this path passes through.

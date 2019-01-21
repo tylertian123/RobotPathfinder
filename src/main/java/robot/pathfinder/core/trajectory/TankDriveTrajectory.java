@@ -2,6 +2,8 @@ package robot.pathfinder.core.trajectory;
 
 import robot.pathfinder.core.RobotSpecs;
 import robot.pathfinder.core.TrajectoryParams;
+import robot.pathfinder.core.Waypoint;
+import robot.pathfinder.core.WaypointEx;
 import robot.pathfinder.core.path.Path;
 import robot.pathfinder.math.MathUtils;
 import robot.pathfinder.math.Vec2D;
@@ -56,9 +58,20 @@ public class TankDriveTrajectory implements Trajectory {
 		// Initialize and copy some fields
 		BasicMoment[] trajMoments = traj.getMoments();
 		// Initialize moments array
-        moments = new TankDriveMoment[trajMoments.length];
-        // Initialize first moment
-		moments[0] = new TankDriveMoment(0, 0, 0, 0, 0, 0, trajMoments[0].getHeading(), 0);
+		moments = new TankDriveMoment[trajMoments.length];
+		// Initialize first moment
+		// Check for special cases
+		Waypoint start = traj.getPath().getWaypoints()[0];
+		if(start instanceof WaypointEx) {
+			// Apply the velocity formula (derived below) to find the wheel velocities for the two wheels
+			double v = trajMoments[0].getVelocity();
+			double d = v / traj.pathRadius[0] * traj.getRobotSpecs().getBaseWidth() / 2;
+			
+			moments[0] = new TankDriveMoment(0, 0, v - d, v + d, 0, 0, trajMoments[0].getHeading(), 0);
+		}
+		else {
+			moments[0] = new TankDriveMoment(0, 0, 0, 0, 0, 0, trajMoments[0].getHeading(), 0);
+		}
 		
 		specs = traj.getRobotSpecs();
 		params = traj.getGenerationParams();
@@ -69,7 +82,7 @@ public class TankDriveTrajectory implements Trajectory {
 		RobotSpecs specs = traj.getRobotSpecs();
 		double baseRadius = specs.getBaseWidth() / 2;
 		double maxVel = specs.getMaxVelocity();
-		path.setBaseRadius(traj.getRobotSpecs().getBaseWidth() / 2);
+		path.setBaseRadius(baseRadius);
 		
 		// Numerical integration is used
 		// This keeps track of where the wheels were in the last interation

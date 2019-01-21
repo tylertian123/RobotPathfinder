@@ -54,7 +54,7 @@ public final class Grapher {
 		// double[] heading = new double[elemCount];
 		
 		int i = 0;
-		for(double t = 0; t <= trajectory.totalTime(); t += dt) {
+		for(double t = 0; t <= trajectory.totalTime() && i < elemCount; t += dt) {
 			// Collect data
 			time[i] = t;
 			BasicMoment m = trajectory.get(t);

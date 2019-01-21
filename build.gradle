@@ -24,7 +24,7 @@ repositories {
     jcenter()
 }
 
-version = '2.1.0'
+project.version = '2.1.1-dev'
 
 // Add sources to the jar
 jar {

@@ -588,8 +588,9 @@ public class TrajectoryVisualizationTool {
 			generatedCode.append("params.waypoints = new Waypoint[] {\n");
 			for(Waypoint w : waypoints) {
 				double heading = w.getHeading();
-				String angle = specialAngles.containsKey(heading) ? specialAngles.get(heading) : String.valueOf(heading);
-				String waypointCode = "\t\tnew Waypoint(" + w.getX() + ", " + w.getY() + ", " + angle + "),\n";
+                String angle = specialAngles.containsKey(heading) ? specialAngles.get(heading) : String.valueOf(heading);
+                String waypointCode = w instanceof WaypointEx ? "\t\tnew WaypointEx(" + w.getX() + ", " + w.getY() + ", " + angle + ", " + ((WaypointEx) w).getVelocity() + "),\n" 
+                        : "\t\tnew Waypoint(" + w.getX() + ", " + w.getY() + ", " + angle + "),\n";
 				generatedCode.append(waypointCode);
 			}
 			generatedCode.append("};\n");

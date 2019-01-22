@@ -60,7 +60,7 @@ import robot.pathfinder.core.trajectory.TankDriveTrajectory;
  *
  */
 public class TrajectoryVisualizationTool {
-
+    // TODO: Add saving and codegen
 	static JFrame mainFrame;
 	static JPanel mainPanel;
 	static JPanel buttonsPanel;
@@ -686,9 +686,15 @@ public class TrajectoryVisualizationTool {
 					for(int row = 0; row < tableModel.getRowCount(); row ++) {
 						String x = (String) (tableModel.getValueAt(row, 0));
 						String y = (String) (tableModel.getValueAt(row, 1));
-						String heading = (String) (tableModel.getValueAt(row, 2));
-						
-						out.write(x + "," + y + "," + heading + "\n");
+                        String heading = (String) (tableModel.getValueAt(row, 2));
+                        String velocity = (String) (tableModel.getValueAt(row, 3));
+                        
+                        if(velocity.equals("unconstrained")) {
+                            out.write(x + "," + y + "," + heading + "\n");
+                        }
+                        else {
+                            out.write(x + "," + y + "," + heading + "," + velocity + "\n");
+                        }
 					}
 					JOptionPane.showMessageDialog(mainFrame, "Data saved successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
 				}
@@ -764,10 +770,12 @@ public class TrajectoryVisualizationTool {
 					
 					String line;
 					while((line = in.readLine()) != null && !line.equals("")) {
-						String[] point = line.split(",");
-						Waypoint w = new Waypoint(Double.parseDouble(point[0]), Double.parseDouble(point[1]), Math.toRadians(constrainAngle(Double.parseDouble(point[2]))));
-						waypoints.add(w);
-						tableModel.addRow(point);
+                        String[] point = line.split(",");
+                        Waypoint w = point.length < 4 ? new Waypoint(Double.parseDouble(point[0]), Double.parseDouble(point[1]), Math.toRadians(constrainAngle(Double.parseDouble(point[2]))))
+                                : new WaypointEx(Double.parseDouble(point[0]), Double.parseDouble(point[1]), Math.toRadians(constrainAngle(Double.parseDouble(point[2]))), Double.parseDouble(point[3]));
+                        waypoints.add(w);
+                    
+						tableModel.addRow(point.length == 4 ? point : new String[] { point[0], point[1], point[2], "unconstrained" });
 					}
 				}
 				catch (IOException e1) {

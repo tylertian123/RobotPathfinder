@@ -9,8 +9,8 @@ import robot.pathfinder.math.Vec2D;
  */
 public class QuinticHermiteSegment implements SplineSegment {
 	
-	//The 6 quintic hermite basis functions
-	//They can be found here: https://www.rose-hulman.edu/~finn/CCLI/Notes/day09.pdf
+	// The 6 quintic hermite basis functions
+	// They can be found here: https://www.rose-hulman.edu/~finn/CCLI/Notes/day09.pdf
 	protected static double basis0(double t) {
 		return 1 - 10 * Math.pow(t, 3) + 15 * Math.pow(t, 4) - 6 * Math.pow(t, 5);
 	}
@@ -30,7 +30,7 @@ public class QuinticHermiteSegment implements SplineSegment {
 		return 10 * Math.pow(t, 3) - 15 * Math.pow(t, 4) + 6 * Math.pow(t, 5);
 	}
 	
-	//The derivatives of the basis functions
+	// The derivatives of the basis functions
 	protected static double basisDeriv0(double t) {
 		return -30 * Math.pow(t, 2) + 60 * Math.pow(t, 3) - 30 * Math.pow(t, 4);
 	}
@@ -50,7 +50,7 @@ public class QuinticHermiteSegment implements SplineSegment {
 		return 30 * Math.pow(t, 2) - 60 * Math.pow(t, 3) + 30 * Math.pow(t, 4);
 	}
 	
-	//The second derivatives of the basis functions
+	// The second derivatives of the basis functions
 	protected static double basisSecondDeriv0(double t) {
 		return -60 * t + 180 * Math.pow(t, 2) - 120 * Math.pow(t, 3);
 	}

@@ -48,6 +48,7 @@ import javax.swing.table.DefaultTableModel;
 import robot.pathfinder.core.RobotSpecs;
 import robot.pathfinder.core.TrajectoryParams;
 import robot.pathfinder.core.Waypoint;
+import robot.pathfinder.core.WaypointEx;
 import robot.pathfinder.core.path.Path;
 import robot.pathfinder.core.path.PathType;
 import robot.pathfinder.core.trajectory.BasicTrajectory;
@@ -60,33 +61,50 @@ import robot.pathfinder.core.trajectory.TankDriveTrajectory;
  */
 public class TrajectoryVisualizationTool {
 
-	static JFrame mainFrame;
-	static JPanel mainPanel;
+    /*
+     * This generates the most beautiful UI you've ever seen.
+     * It is also the biggest mess of code you've ever seen.
+     */
+
+    // The main window frame
+    static JFrame mainFrame;
+    // The main window's panel
+    static JPanel mainPanel;
+    // The panel at the bottom of the main window's panel that holds all the buttons
 	static JPanel buttonsPanel;
-	
+    
+    // The text boxes in the add/edit waypoint dialog panel
 	static JTextField waypointX = new JTextField();
 	static JTextField waypointY = new JTextField();
-	static JTextField waypointHeading = new JTextField();
-	static JPanel waypointPanel;
-
+    static JTextField waypointHeading = new JTextField();
+    static JTextField waypointVelocity = new JTextField();
+    // The add/edit waypoint dialog panel
+    static JPanel waypointPanel;
+    
+    // The number of samples for graphing paths and trajectories
 	static int pathSamples = 200;
-	static int trajSamples = 500;
+    static int trajSamples = 500;
+    // Text boxes and panel for the change sample count dialog
 	static JTextField pathSamplesField = new JTextField(String.valueOf(pathSamples));
 	static JTextField trajSamplesField = new JTextField(String.valueOf(trajSamples));
 	static JPanel sampleCountPanel;
-	
+    
+    // Text boxes on the main screen
 	static JTextField baseWidth = new JTextField("0");
 	static JTextField alpha = new JTextField();
 	static JTextField segments = new JTextField("1000");
 	static JTextField maxVelocity = new JTextField();
-	static JTextField maxAcceleration = new JTextField();
+    static JTextField maxAcceleration = new JTextField();
+    // The JPanel that holds all the parameter textboxes above
 	static JPanel argumentsPanel;
 	
 	static JMenuBar menuBar;
 	static JMenu fileMenu;
-	
+    
+    // Waypoints used for generation
 	static ArrayList<Waypoint> waypoints = new ArrayList<Waypoint>();
-	
+    
+    // Action commands for the radio buttons
 	static final String QHERMITE = "Q";
 	static final String CHERMITE = "C";
 	static final String BEZIER = "B";
@@ -94,13 +112,17 @@ public class TrajectoryVisualizationTool {
 	static PathType selectedType = PathType.QUINTIC_HERMITE;
 	
 	JCheckBox isTank;
-	
+    
+    // Column names for the waypoint table
 	static final String[] COLUMN_NAMES = new String[] {
 			"X Position",
 			"Y Position",
-			"Robot Direction (Degrees)"
+            "Robot Direction (Degrees)",
+            "Velocity",
 	};
-	
+    
+    // This maps special angles in degrees to string representations of those angles in radians
+    // Used for codegen
 	static HashMap<Double, String> specialAngles = new HashMap<>();
 	static {
 		specialAngles.put(Math.toRadians(30.0), "Math.PI / 6");
@@ -142,7 +164,8 @@ public class TrajectoryVisualizationTool {
 		}
 		return angle;
 	}
-	
+    
+    // A file filter that only allows CSV files
 	static class CSVFilter extends FileFilter {
 
 		@Override
@@ -167,7 +190,10 @@ public class TrajectoryVisualizationTool {
 		}
 		
 	}
-	
+    
+    /**
+     * Custom table model for waypoints.
+     */
 	static class WaypointTableModel extends DefaultTableModel {
 		/**
 		 * 
@@ -180,6 +206,7 @@ public class TrajectoryVisualizationTool {
 
 		@Override
 		public boolean isCellEditable(int row, int col) {
+            // Make the cells all non-editable so only entire rows can be edited at a time via the buttons
 			return false;
 		}
 	}
@@ -191,7 +218,8 @@ public class TrajectoryVisualizationTool {
 				| UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
-		
+        
+        // Set up the waypoints dialog
 		waypointX.setPreferredSize(new Dimension(100, 20));
 		waypointY.setPreferredSize(new Dimension(100, 20));
 		waypointHeading.setPreferredSize(new Dimension(100, 20));
@@ -202,19 +230,25 @@ public class TrajectoryVisualizationTool {
 		waypointPanel.add(new JLabel("Waypoint Y"));
 		waypointPanel.add(waypointY);
 		waypointPanel.add(new JLabel("Robot Direction (Degrees)"));
-		waypointPanel.add(waypointHeading);
-		
+        waypointPanel.add(waypointHeading);
+        waypointPanel.add(new JLabel("Velocity (Optional)"));
+        waypointPanel.add(waypointVelocity);
+        
+        // Set up the main JPanel
 		mainPanel = new JPanel();
-		mainPanel.setLayout(new BorderLayout());
+        mainPanel.setLayout(new BorderLayout());
+        // Waypoint table
 		JTable table = new JTable(new WaypointTableModel(COLUMN_NAMES, 0));
 		table.setCellSelectionEnabled(false);
 		table.setRowSelectionAllowed(true);
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        // Wrap a JScrollPane around the table to make it scrollable
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setPreferredSize(new Dimension(620, 300));
 		table.setFillsViewportHeight(true);
 		mainPanel.add(scrollPane, BorderLayout.PAGE_START);
-		
+        
+        // Set up parameters section
 		argumentsPanel = new JPanel();
 		Dimension textFieldSize = new Dimension(75, 20);
 		maxVelocity.setPreferredSize(textFieldSize);
@@ -222,7 +256,8 @@ public class TrajectoryVisualizationTool {
 		baseWidth.setPreferredSize(textFieldSize);
 		alpha.setPreferredSize(textFieldSize);
 		segments.setPreferredSize(textFieldSize);
-		
+        
+        // Use a bunch of sub-panels to make the parameter boxes line up
 		JPanel subPanel1 = new JPanel();
 		subPanel1.setLayout(new BoxLayout(subPanel1, BoxLayout.Y_AXIS));
 		subPanel1.add(new JLabel("Maximum Velocity"));
@@ -244,7 +279,8 @@ public class TrajectoryVisualizationTool {
 		isTank.setSelected(true);
 		subPanel3.add(isTank);
 		JPanel subPanel4 = new JPanel();
-		subPanel4.setLayout(new BoxLayout(subPanel4, BoxLayout.Y_AXIS));
+        subPanel4.setLayout(new BoxLayout(subPanel4, BoxLayout.Y_AXIS));
+        // Attach a special action listener to the change path type radio buttons
 		ActionListener changePathType = e -> {
 			switch(e.getActionCommand()) {
 			case QHERMITE:
@@ -285,31 +321,42 @@ public class TrajectoryVisualizationTool {
 		mainPanel.add(argumentsPanel, BorderLayout.CENTER);
 		
 		buttonsPanel = new JPanel();
-		
+        
+        // Set up buttons
 		Dimension buttonSize = new Dimension(120, 30);
-		JButton addWaypointButton = new JButton("Add Waypoint");
+        JButton addWaypointButton = new JButton("Add Waypoint");
+        // Add waypoint button action listener
 		ActionListener addWaypointAction = e -> {
 			boolean error = false;
 			do {
 				int selectedRow = table.getSelectedRow();
-				
+				// Show the custom dialog
 				int response = JOptionPane.showConfirmDialog(mainFrame, waypointPanel, "New Waypoint...", JOptionPane.OK_CANCEL_OPTION);
 				if(response != JOptionPane.OK_OPTION)
 					break;
 				try {
+                    // Try and parse all the arguments
 					double x = Double.parseDouble(waypointX.getText());
 					double y = Double.parseDouble(waypointY.getText());
-					double heading = Double.parseDouble(waypointHeading.getText());
+                    double heading = Double.parseDouble(waypointHeading.getText());
+                    // If velocity is not specified, set it to NaN
+                    double velocity = waypointVelocity.getText().length() > 0 ? Double.parseDouble(waypointVelocity.getText()) : Double.NaN;
 					
-					if(selectedRow == -1)
-						waypoints.add(new Waypoint(x, y, Math.toRadians(constrainAngle(heading))));
-					else 
-						waypoints.add(selectedRow, new Waypoint(x, y, Math.toRadians(constrainAngle(heading))));
-					WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
-					if(selectedRow == -1)
-						tableModel.addRow(new Object[] { String.valueOf(x), String.valueOf(y), String.valueOf(heading) });
-					else
-						tableModel.insertRow(selectedRow, new Object[] { String.valueOf(x), String.valueOf(y), String.valueOf(heading) });
+                    WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
+                    // selectedRow = -1 when there is no row selected
+					if(selectedRow == -1) {
+                        waypoints.add(Double.isNaN(velocity) ? new Waypoint(x, y, Math.toRadians(constrainAngle(heading)))
+                                : new WaypointEx(x, y, Math.toRadians(constrainAngle(heading)), velocity));
+                        tableModel.addRow(new Object[] { waypointX.getText(), waypointY.getText(), waypointHeading.getText(),
+                                Double.isNaN(velocity) ? "unconstrained" : waypointVelocity.getText() });
+                    }
+                    // If a row is selected then insert the row and the waypoint at the correct location
+					else { 
+                        waypoints.add(selectedRow, Double.isNaN(velocity) ? new Waypoint(x, y, Math.toRadians(constrainAngle(heading)))
+                                : new WaypointEx(x, y, Math.toRadians(constrainAngle(heading)), velocity));
+                        tableModel.insertRow(selectedRow, new Object[] { waypointX.getText(), waypointY.getText(), waypointHeading.getText(),
+                                Double.isNaN(velocity) ? "unconstrained" : waypointVelocity.getText() });
+                    }
 					
 					error = false;
 				}
@@ -318,15 +365,18 @@ public class TrajectoryVisualizationTool {
 					JOptionPane.showMessageDialog(mainFrame, "Error: An invalid token was entered\nin one or more fields.", "Error", JOptionPane.ERROR_MESSAGE);
 				}
 			} while(error);
-			
+            
+            // Clear the contents of the text boxes afterwards
 			waypointX.setText("");
 			waypointY.setText("");
-			waypointHeading.setText("");
+            waypointHeading.setText("");
+            waypointVelocity.setText("");
 		};
 		addWaypointButton.addActionListener(addWaypointAction);
 		addWaypointButton.setPreferredSize(buttonSize);
 		buttonsPanel.add(addWaypointButton);
-		
+        
+        // Edit waypoint button
 		JButton editWaypointButton = new JButton("Edit Waypoint");
 		ActionListener editWaypointAction = e -> {
 			int index = table.getSelectedRow();
@@ -334,15 +384,18 @@ public class TrajectoryVisualizationTool {
 				JOptionPane.showMessageDialog(mainFrame, "Error: No waypoint selected.", "Error", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			
+            
+            // Grab the values from the row and put them into the dialog's text boxes
 			WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
 			String xStr = (String) tableModel.getValueAt(index, 0);
 			String yStr = (String) tableModel.getValueAt(index, 1);
-			String headingStr = (String) tableModel.getValueAt(index, 2);
+            String headingStr = (String) tableModel.getValueAt(index, 2);
+            String velocityStr = (String) tableModel.getValueAt(index, 3);
 			
 			waypointX.setText(xStr);
 			waypointY.setText(yStr);
-			waypointHeading.setText(headingStr);
+            waypointHeading.setText(headingStr);
+            waypointVelocity.setText(velocityStr.equals("unconstrained") ? "" : velocityStr);
 			
 			boolean error;
 			do {
@@ -351,14 +404,19 @@ public class TrajectoryVisualizationTool {
 					break;
 				
 				try {
+                    // Once again parse all the args
 					double x = Double.parseDouble(waypointX.getText());
 					double y = Double.parseDouble(waypointY.getText());
-					double heading = Double.parseDouble(waypointHeading.getText());
-					
-					waypoints.set(index, new Waypoint(x, y, Math.toRadians(constrainAngle(heading))));
-					tableModel.setValueAt(String.valueOf(x), index, 0);
-					tableModel.setValueAt(String.valueOf(y), index, 1);
-					tableModel.setValueAt(String.valueOf(heading), index, 2);
+                    double heading = Double.parseDouble(waypointHeading.getText());
+                    double velocity = waypointVelocity.getText().length() > 0 ? Double.parseDouble(waypointVelocity.getText()) : Double.NaN;
+                    
+                    // Update the table and waypoint
+                    waypoints.set(index, Double.isNaN(velocity) ? new Waypoint(x, y, Math.toRadians(constrainAngle(heading)))
+                            : new WaypointEx(x, y, heading, velocity));
+					tableModel.setValueAt(waypointX.getText(), index, 0);
+					tableModel.setValueAt(waypointY.getText(), index, 1);
+                    tableModel.setValueAt(waypointHeading.getText(), index, 2);
+                    tableModel.setValueAt(Double.isNaN(velocity) ? "unconstrained" : waypointVelocity.getText(), index, 3);
 					
 					error = false;
 				}
@@ -370,12 +428,14 @@ public class TrajectoryVisualizationTool {
 			
 			waypointX.setText("");
 			waypointY.setText("");
-			waypointHeading.setText("");
+            waypointHeading.setText("");
+            waypointVelocity.setText("");
 		};
 		editWaypointButton.addActionListener(editWaypointAction);
 		editWaypointButton.setPreferredSize(buttonSize);
 		buttonsPanel.add(editWaypointButton);
-		
+        
+        // Delete waypoint button
 		JButton deleteWaypointButton = new JButton("Remove Waypoint");
 		ActionListener deleteWaypointAction = e -> {
 			int index = table.getSelectedRow();
@@ -392,12 +452,14 @@ public class TrajectoryVisualizationTool {
 		deleteWaypointButton.setPreferredSize(buttonSize);
 		buttonsPanel.add(deleteWaypointButton);
 		
-
+        // Preview button
+        // The preview only generates the path and not the trajectory
 		JButton previewButton = new JButton("Preview");
 		previewButton.addActionListener(e -> {
 			double base, a;
 			
 			try {
+                // Previewing only needs a base width and alpha
 				base = isTank.isSelected() ? Double.parseDouble(baseWidth.getText()) : 0;
 				a = Double.parseDouble(alpha.getText());
 			}
@@ -410,40 +472,37 @@ public class TrajectoryVisualizationTool {
 				JOptionPane.showMessageDialog(mainFrame, "Error: Not enough waypoints.", "Error", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			
-			Waypoint[] waypointArray = new Waypoint[waypoints.size()];
-			for(int i = 0; i < waypointArray.length; i ++) {
-				waypointArray[i] = waypoints.get(i);
-			}
+            
+            Waypoint[] waypointArray = new Waypoint[waypoints.size()];
+            waypointArray = waypoints.toArray(waypointArray);
 			
 			Path path = Path.constructPath(selectedType, waypointArray, a);
 			path.setBaseRadius(base / 2);
 			
-			JFrame pathFrame = Grapher.graphPath(path, 1.0 / pathSamples);
+            JFrame pathFrame = Grapher.graphPath(path, 1.0 / pathSamples);
+            // Before showing the graphed window, add a listener to it
 			pathFrame.addWindowListener(new WindowAdapter() {
 				@Override
 				public void windowClosing(WindowEvent e) {
-					try {
-						UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-							| UnsupportedLookAndFeelException e1) {
-						e1.printStackTrace();
-					}
+                    // Show the main window again
 					mainFrame.setVisible(true);
 				}
-			});
+            });
+            // Hide the main window and show the grapher window
 			mainFrame.setVisible(false);
 			pathFrame.setVisible(true);
 		});
 		previewButton.setPreferredSize(buttonSize);
 		buttonsPanel.add(previewButton);
-		
+        
+        // Generate button
 		JButton generateButton = new JButton("Generate");
 		generateButton.addActionListener(e -> {
 			double maxVel, maxAccel, base, a;
 			int segmentCount;
 			
 			try {
+                // Parse all args
 				maxVel = Double.parseDouble(maxVelocity.getText());
 				maxAccel = Double.parseDouble(maxAcceleration.getText());
 				base = isTank.isSelected() ? Double.parseDouble(baseWidth.getText()) : 0;
@@ -461,10 +520,9 @@ public class TrajectoryVisualizationTool {
 			}
 			
 			Waypoint[] waypointArray = new Waypoint[waypoints.size()];
-			for(int i = 0; i < waypointArray.length; i ++) {
-				waypointArray[i] = waypoints.get(i);
-			}
-			
+			waypointArray = waypoints.toArray(waypointArray);
+            
+            // Generate the path and trajectory
 			RobotSpecs specs = new RobotSpecs(maxVel, maxAccel, base);
 			TrajectoryParams params = new TrajectoryParams();
 			params.alpha = a;
@@ -476,7 +534,8 @@ public class TrajectoryVisualizationTool {
 			JFrame pathFrame;
 			JFrame movementFrame;
 			double totalTime;
-			
+            
+            // Generate the correct trajectory based on options and graph it
 			if(isTank.isSelected()) {
 				TankDriveTrajectory traj = new TankDriveTrajectory(new BasicTrajectory(specs, params));
 				pathFrame = Grapher.graphPath(traj.getPath(), 1.0 / pathSamples);
@@ -489,7 +548,8 @@ public class TrajectoryVisualizationTool {
 				movementFrame = Grapher.graphTrajectory(traj, traj.totalTime() / trajSamples);
 				totalTime = traj.totalTime();
 			}
-			
+            
+            // Add the window close hook that shows the main window back
 			WindowAdapter closeHook = new WindowAdapter() {
 				@Override
 				public void windowClosing(WindowEvent e) {
@@ -497,24 +557,13 @@ public class TrajectoryVisualizationTool {
 					movementFrame.setVisible(false);
 					pathFrame.dispose();
 					movementFrame.dispose();
-					try {
-						UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-							| UnsupportedLookAndFeelException e1) {
-						e1.printStackTrace();
-					}
 					mainFrame.setVisible(true);
 				}
 			};
 			pathFrame.addWindowListener(closeHook);
 			movementFrame.addWindowListener(closeHook);
-			
-			try {
-				UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-					| UnsupportedLookAndFeelException e1) {
-				e1.printStackTrace();
-			}
+            
+            // Hide the main window and show the time dialog
 			JOptionPane.showMessageDialog(mainFrame, "Trajectory Total Time: " + totalTime + " seconds");
 			mainFrame.setVisible(false);
 			movementFrame.setVisible(true);
@@ -522,9 +571,11 @@ public class TrajectoryVisualizationTool {
 		});
 		generateButton.setPreferredSize(buttonSize);
 		buttonsPanel.add(generateButton);
-		
+        
+        // Codegen dialog
 		JPanel generatedCodePanel = new JPanel();
-		JTextArea generatedCodeTextArea = new JTextArea();
+        JTextArea generatedCodeTextArea = new JTextArea();
+        // Set the font to be monospaced and configure other properties
 		generatedCodeTextArea.setFont(new Font("monospaced", Font.PLAIN, 12));
 		generatedCodeTextArea.setEditable(false);
 		generatedCodeTextArea.setBackground(UIManager.getColor("Panel.background"));
@@ -539,6 +590,7 @@ public class TrajectoryVisualizationTool {
 			int segmentCount;
 			
 			try {
+                // Parse all params
 				maxVel = Double.parseDouble(maxVelocity.getText());
 				maxAccel = Double.parseDouble(maxAcceleration.getText());
 				base = isTank.isSelected() ? Double.parseDouble(baseWidth.getText()) : 0;
@@ -559,7 +611,8 @@ public class TrajectoryVisualizationTool {
 				if(ret != JOptionPane.YES_OPTION)
 					return;
 			}
-			
+            
+            // Start codegen
 			StringBuilder generatedCode = new StringBuilder("RobotSpecs robotSpecs = new RobotSpecs(" + maxVel + ", " + maxAccel);
 			if(isTank.isSelected()) {
 				generatedCode.append(", " + base + ");\n");
@@ -567,12 +620,15 @@ public class TrajectoryVisualizationTool {
 			else {
 				generatedCode.append(");\n");
 			}
-			generatedCode.append("TrajectoryParams params = new TrajectoryParams();\n");
+            generatedCode.append("TrajectoryParams params = new TrajectoryParams();\n");
+            // Generate each waypoint
 			generatedCode.append("params.waypoints = new Waypoint[] {\n");
 			for(Waypoint w : waypoints) {
 				double heading = w.getHeading();
-				String angle = specialAngles.containsKey(heading) ? specialAngles.get(heading) : String.valueOf(heading);
-				String waypointCode = "\t\tnew Waypoint(" + String.valueOf(w.getX()) + ", " + String.valueOf(w.getY()) + ", " + angle + "),\n";
+                String angle = specialAngles.containsKey(heading) ? specialAngles.get(heading) : String.valueOf(heading);
+                // Create different code for WaypointEx
+                String waypointCode = w instanceof WaypointEx ? "\t\tnew WaypointEx(" + w.getX() + ", " + w.getY() + ", " + angle + ", " + ((WaypointEx) w).getVelocity() + "),\n" 
+                        : "\t\tnew Waypoint(" + w.getX() + ", " + w.getY() + ", " + angle + "),\n";
 				generatedCode.append(waypointCode);
 			}
 			generatedCode.append("};\n");
@@ -593,7 +649,8 @@ public class TrajectoryVisualizationTool {
 			};
 			generatedCodeTextArea.setText(generatedCode.toString());
 			int ret = JOptionPane.showOptionDialog(mainFrame, generatedCodePanel, "Code", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
-			if(ret == JOptionPane.YES_OPTION) {
+            // If copy was selected, copy to the clipboard and display a message box
+            if(ret == JOptionPane.YES_OPTION) {
 				Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(generatedCode.toString()), null);
 				JOptionPane.showMessageDialog(mainFrame, "Successfully copied to clipboard.", "Success", JOptionPane.INFORMATION_MESSAGE);
 			}
@@ -605,7 +662,7 @@ public class TrajectoryVisualizationTool {
 		fileMenu = new JMenu("File");
 		fileMenu.setMnemonic(KeyEvent.VK_F);
 		menuBar.add(fileMenu);
-		
+		// Save menu
 		JMenuItem saveMenuItem = new JMenuItem("Save", KeyEvent.VK_S);
 		saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
 		saveMenuItem.addActionListener(e -> {
@@ -630,7 +687,8 @@ public class TrajectoryVisualizationTool {
 				JOptionPane.showMessageDialog(mainFrame, "Error: An invalid token was entered\nin one or more fields.", "Error", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			
+            
+            // Choose a csv to save
 			JFileChooser fc = new JFileChooser();
 			fc.setDialogTitle("Save As...");
 			fc.setAcceptAllFileFilterUsed(false);
@@ -669,9 +727,15 @@ public class TrajectoryVisualizationTool {
 					for(int row = 0; row < tableModel.getRowCount(); row ++) {
 						String x = (String) (tableModel.getValueAt(row, 0));
 						String y = (String) (tableModel.getValueAt(row, 1));
-						String heading = (String) (tableModel.getValueAt(row, 2));
-						
-						out.write(x + "," + y + "," + heading + "\n");
+                        String heading = (String) (tableModel.getValueAt(row, 2));
+                        String velocity = (String) (tableModel.getValueAt(row, 3));
+                        
+                        if(velocity.equals("unconstrained")) {
+                            out.write(x + "," + y + "," + heading + "\n");
+                        }
+                        else {
+                            out.write(x + "," + y + "," + heading + "," + velocity + "\n");
+                        }
 					}
 					JOptionPane.showMessageDialog(mainFrame, "Data saved successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
 				}
@@ -747,10 +811,12 @@ public class TrajectoryVisualizationTool {
 					
 					String line;
 					while((line = in.readLine()) != null && !line.equals("")) {
-						String[] point = line.split(",");
-						Waypoint w = new Waypoint(Double.parseDouble(point[0]), Double.parseDouble(point[1]), Math.toRadians(constrainAngle(Double.parseDouble(point[2]))));
-						waypoints.add(w);
-						tableModel.addRow(point);
+                        String[] point = line.split(",");
+                        Waypoint w = point.length < 4 ? new Waypoint(Double.parseDouble(point[0]), Double.parseDouble(point[1]), Math.toRadians(constrainAngle(Double.parseDouble(point[2]))))
+                                : new WaypointEx(Double.parseDouble(point[0]), Double.parseDouble(point[1]), Math.toRadians(constrainAngle(Double.parseDouble(point[2]))), Double.parseDouble(point[3]));
+                        waypoints.add(w);
+                    
+						tableModel.addRow(point.length == 4 ? point : new String[] { point[0], point[1], point[2], "unconstrained" });
 					}
 				}
 				catch (IOException e1) {

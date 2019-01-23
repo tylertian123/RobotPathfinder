@@ -4,7 +4,8 @@ import robot.pathfinder.math.Vec2D;
 
 /**
  * Represents a "waypoint" in a path or trajectory. A waypoint consists of an X value, Y value, and heading
- * (direction the robot is facing). All angles are in <em>radians</em>. Used to construct paths and trajectories.
+ * (direction the robot is travelling in). All angles are in <em>radians</em>. Used to construct paths and trajectories.
+ * This class is immutable.
  * <p>
  * Note that it does not matter what specific unit is used for distance; however, the unit must match with 
  * the units in the {@link RobotSpecs} object used to construct the trajectory. For example, if the unit
@@ -15,7 +16,8 @@ import robot.pathfinder.math.Vec2D;
  *
  */
 public class Waypoint {
-	double x, y, heading;
+
+	final double x, y, heading;
 	
 	/**
 	 * Constructs a new waypoint with the specified X and Y value and heading.

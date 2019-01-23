@@ -168,7 +168,7 @@ public class Vec2D {
 	 * @return The result of the reflection
 	 */
 	public Vec2D reflect(Vec2D vec) {
-		//Nice geometrical property
+		// Nice geometrical property
 		return proj(vec).multiply(2).subtract(this);
 	}
 }

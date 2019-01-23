@@ -25,10 +25,10 @@ import robot.pathfinder.math.Vec2D;
  *
  */
 public final class Grapher {
-	//Private constructor
+	// Private constructor
 	private Grapher() {}
 	
-	//These fields are static instead of local because lambdas using them are used
+	// These fields are static instead of local because lambdas using them are used
 	private static JFrame frame;
 	private static double maxX, maxY, minX, minY;
 	
@@ -46,51 +46,51 @@ public final class Grapher {
 	public static JFrame graphTrajectory(BasicTrajectory trajectory, double dt) {
 		int elemCount = (int) Math.ceil(trajectory.totalTime() / dt);
 		
-		//Create arrays to store data
+		// Create arrays to store data
 		double[] time = new double[elemCount];
 		double[] pos = new double[elemCount];
 		double[] vel = new double[elemCount];
 		double[] acl = new double[elemCount];
-		//double[] heading = new double[elemCount];
+		// double[] heading = new double[elemCount];
 		
 		int i = 0;
-		for(double t = 0; t <= trajectory.totalTime(); t += dt) {
-			//Collect data
+		for(double t = 0; t <= trajectory.totalTime() && i < elemCount; t += dt) {
+			// Collect data
 			time[i] = t;
 			BasicMoment m = trajectory.get(t);
 			
 			pos[i] = m.getPosition();
 			vel[i] = m.getVelocity();
 			acl[i] = m.getAcceleration();
-			//heading[i] = m.getFacingRelative();
+			// heading[i] = m.getFacingRelative();
 			
 			i++;
 		}
 
 
 		Runnable r = () -> {
-			//Create plot
+			// Create plot
 			Plot2DPanel plot = new Plot2DPanel();
 			plot.setLegendOrientation("EAST");
-			//Add graphs
+			// Add graphs
 			plot.addLinePlot("Position", time, pos);
 			plot.addLinePlot("Velocity", time, vel);
 			plot.addLinePlot("Acceleration", time, acl);
-			//plot.addLinePlot("Heading", time, heading);
+			// plot.addLinePlot("Heading", time, heading);
 			
-			//Create window that holds the graph
+			// Create window that holds the graph
 			frame = new JFrame("Trajectory Graph");
 			frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			frame.setContentPane(plot);
-			//Maximize
+			// Maximize
 			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		};
-		//Since everything has to be done on the EDT, check if we are on it already
+		// Since everything has to be done on the EDT, check if we are on it already
 		if(SwingUtilities.isEventDispatchThread()) {
 			r.run();
 		}
 		else {
-			//If not then invoke on EDT
+			// If not then invoke on EDT
 			try {
 				SwingUtilities.invokeAndWait(r);
 			} 
@@ -115,7 +115,7 @@ public final class Grapher {
 	public static JFrame graphTrajectory(TankDriveTrajectory trajectory, double dt) {
 		int elemCount = (int) Math.ceil(trajectory.totalTime() / dt);
 		
-		//Create arrays to store data
+		// Create arrays to store data
 		double[] time = new double[elemCount];
 		double[] lPos = new double[elemCount];
 		double[] lVel = new double[elemCount];
@@ -123,11 +123,11 @@ public final class Grapher {
 		double[] rPos = new double[elemCount];
 		double[] rVel = new double[elemCount];
 		double[] rAcl = new double[elemCount];
-		//double[] heading = new double[elemCount];
+		// double[] heading = new double[elemCount];
 		
 		int i = 0;
 		for(double t = 0; t <= trajectory.totalTime() && i < elemCount; t += dt) {
-			//Collect data
+			// Collect data
 			time[i] = t;
 			TankDriveMoment m = trajectory.get(t);
 			
@@ -137,29 +137,29 @@ public final class Grapher {
 			rPos[i] = m.getRightPosition();
 			rVel[i] = m.getRightVelocity();
 			rAcl[i] = m.getRightAcceleration();
-			//heading[i] = m.getFacingRelative();
+			// heading[i] = m.getFacingRelative();
 			
 			i++;
 		}
 		
 		Runnable r = () -> {
-			//Create plot
+			// Create plot
 			Plot2DPanel plot = new Plot2DPanel();
 			plot.setLegendOrientation("EAST");
-			//Add graphs
+			// Add graphs
 			plot.addLinePlot("Left Position", time, lPos);
 			plot.addLinePlot("Left Velocity", time, lVel);
 			plot.addLinePlot("Left Acceleration", time, lAcl);
 			plot.addLinePlot("Right Position", time, rPos);
 			plot.addLinePlot("Right Velocity", time, rVel);
 			plot.addLinePlot("Right Acceleration", time, rAcl);
-			//plot.addLinePlot("Robot Heading", time, heading);
+			// plot.addLinePlot("Robot Heading", time, heading);
 			
-			//Create window that holds the graph
+			// Create window that holds the graph
 			frame = new JFrame("Trajectory Graph");
 			frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			frame.setContentPane(plot);
-			//Maximize
+			// Maximize
 			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		};
 		if(SwingUtilities.isEventDispatchThread()) {
@@ -190,13 +190,13 @@ public final class Grapher {
 	 * @return The graphed path in a {@link JFrame}
 	 */
 	public static JFrame graphPath(Path path, double dt) {
-		//Divide and round up to get the number of samples
-		//Add 1 for the last sample (see below)
+		// Divide and round up to get the number of samples
+		// Add 1 for the last sample (see below)
 		int elemCount = (int) Math.ceil(1.0 / dt) + 1;
 		
 		boolean graphWheels = path.getBaseRadius() != 0;
 		
-		//Create arrays to hold samples
+		// Create arrays to hold samples
 		double[] x = new double[elemCount];
 		double[] y = new double[elemCount];
 		double[] leftX = new double[elemCount];
@@ -204,13 +204,13 @@ public final class Grapher {
 		double[] rightX = new double[elemCount];
 		double[] rightY = new double[elemCount];
 		
-		//These values are used later to determine the size of the graph
+		// These values are used later to determine the size of the graph
 		minX = Double.MAX_VALUE; minY = Double.MAX_VALUE;
 		maxX = -Double.MAX_VALUE; maxY = -Double.MAX_VALUE;
 		
 		int i = 0;
 		for(double t = 0; t <= 1 && i < elemCount; t += dt) {
-			//Collect data
+			// Collect data
 			Vec2D v = path.at(t);
 			x[i] = v.getX();
 			y[i] = v.getY();
@@ -223,7 +223,7 @@ public final class Grapher {
 				rightY[i] = v2[1].getY();
 			}
 			
-			//Update min and max x and y values
+			// Update min and max x and y values
 			minX = Math.min(minX, v.getX());
 			minY = Math.min(minY, v.getY());
 			maxX = Math.max(maxX, v.getX());
@@ -232,8 +232,8 @@ public final class Grapher {
 			i ++;
 		}
 		
-		//Collect another sample at t = 1
-		//This makes sure the graphed path connects all the waypoints
+		// Collect another sample at t = 1
+		// This makes sure the graphed path connects all the waypoints
 		Vec2D v = path.at(1);
 		x[x.length - 1] = v.getX();
 		y[y.length - 1] = v.getY();
@@ -250,7 +250,7 @@ public final class Grapher {
 		maxY = Math.max(maxY, v.getY());
 		
 		Runnable r = () -> {
-			//Graph path
+			// Graph path
 			Plot2DPanel plot = new Plot2DPanel();
 			plot.setLegendOrientation("EAST");
 			plot.addLinePlot("Robot Center", x, y);
@@ -261,7 +261,7 @@ public final class Grapher {
 			}
 			
 			Waypoint[] waypoints = path.getWaypoints();
-			//Fixes a bug with JMathPlot
+			// Fixes a bug with JMathPlot
 			double[][] xy = new double[2][waypoints.length > 2 ? waypoints.length : 3];
 			for(int j = 0; j < path.getWaypoints().length; j ++) {
 				xy[0][j] = waypoints[j].getX();
@@ -278,27 +278,27 @@ public final class Grapher {
 			plot.addScatterPlot("Waypoints", Color.BLACK, xy);
 			
 	
-			//Take the longer of the two differences
-			//We want the smallest square that can fit the whole graph
+			// Take the longer of the two differences
+			// We want the smallest square that can fit the whole graph
 			double len = Math.max(maxX - minX, maxY - minY);
 			
 			double xOffset = (len - (maxX - minX)) / 2;
 			double yOffset = (len - (maxY - minY)) / 2;
 			
 			
-			//Set bounds to make the x and y scales the same
-			//Make the square a bit bigger than the graph to leave a margin
+			// Set bounds to make the x and y scales the same
+			// Make the square a bit bigger than the graph to leave a margin
 			plot.setFixedBounds(0, minX - 2 * path.getBaseRadius() - xOffset, minX + len + 2 * path.getBaseRadius() - xOffset);
 			plot.setFixedBounds(1, minY - 2 * path.getBaseRadius() - yOffset, minY + len + 2 * path.getBaseRadius() - yOffset);
 			
-			//Create the window that will hold the graph
+			// Create the window that will hold the graph
 			frame = new JFrame("Path Graph");
 			frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			frame.setContentPane(plot);
 			frame.setResizable(false);
-			//Find the maximum size of the window
+			// Find the maximum size of the window
 			Rectangle bounds = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
-			//The window has to be square, so take the smaller one of the width and height
+			// The window has to be square, so take the smaller one of the width and height
 			int size = Math.min(bounds.width, bounds.height);
 			frame.setSize(new Dimension(size, size));
 		};

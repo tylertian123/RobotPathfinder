@@ -53,13 +53,13 @@ abstract public class Path {
 	
 	PathType type;
 
-	//These values are used later to store the result of computePathLength
+	// These values are used later to store the result of computePathLength
 	double totalLen = Double.NaN;
-	//Lookup table for conversion between length and t
+	// Lookup table for conversion between length and t
 	ArrayList<Pair<Double, Double>> s2tLookupTable = null;
 	
-	//If set to true, the locations of left and right wheels are reversed
-	//This is so that paths generated with the mirror methods are still accurate
+	// If set to true, the locations of left and right wheels are reversed
+	// This is so that paths generated with the mirror methods are still accurate
 	boolean drivingBackwards = false;
 	
 	double baseRadius;
@@ -83,18 +83,23 @@ abstract public class Path {
 	
 	/**
 	 * Returns the position at a specified time in the path.
+     * <p>
+     * Note that this method does not take into account the lengths of the segments of the path.
+     * Rather it divides the total time evenly into equal sized segments for each segment, regardless of their lengths.
+     * This means that even though some segments may be longer than others, they still take up the same amount of time.
+     * </p>
 	 * @param t A real number in the range [0, 1]
 	 * @return The position on this path at the specified time
 	 */
 	public Vec2D at(double t) {
-		//Spline segments take in t values from 0 to 1, so extra conversions are needed
-		//If t is more than or equal to 1, just return the end of the last segment
+		// Spline segments take in t values from 0 to 1, so extra conversions are needed
+		// If t is more than or equal to 1, just return the end of the last segment
 		if(t >= 1) {
 			return segments[segments.length - 1].at(1);
 		}
-		//Otherwise, first multiply by the number of segments
+		// Otherwise, first multiply by the number of segments
 		t *= segments.length;
-		//Now the number rounded down is the index of the path, and the number mod 1 is the local t for the segment
+		// Now the number rounded down is the index of the path, and the number mod 1 is the local t for the segment
 		return segments[(int) Math.floor(t)].at(t % 1.0);
 	}
 	/**
@@ -103,7 +108,7 @@ abstract public class Path {
 	 * @return The derivative of the path at the specified time
 	 */
 	public Vec2D derivAt(double t) {
-		//For explanations see at()
+		// For explanations see at()
 		if(t >= 1) {
 			return segments[segments.length - 1].derivAt(1);
 		}
@@ -117,7 +122,7 @@ abstract public class Path {
 	 * @return The second derivative of the path at the specified time
 	 */
 	public Vec2D secondDerivAt(double t) {
-		//For explanations see at()
+		// For explanations see at()
 		if(t >= 1) {
 			return segments[segments.length - 1].secondDerivAt(1);
 		}
@@ -133,12 +138,12 @@ abstract public class Path {
 	 * element is the right wheel
 	 */
 	public Vec2D[] wheelsAt(double t) {
-		//First get the position of the center and the derivative
+		// First get the position of the center and the derivative
 		Vec2D position = at(t);
 		Vec2D derivative = derivAt(t);
-		//Heading can be calculated from the derivative
+		// Heading can be calculated from the derivative
 		double heading = Math.atan2(derivative.getY(), derivative.getX());
-		//Store these for multiple use
+		// Store these for multiple use
 		double sinHeading = Math.sin(heading);
 		double cosHeading = Math.cos(heading);
 		/*
@@ -183,10 +188,10 @@ abstract public class Path {
 		s2tLookupTable = new ArrayList<>(points);
 		s2tLookupTable.add(new Pair<>(0.0, 0.0));
 		for(int i = 1; i < points; i ++) {
-			//Numerically integrate the path length
+			// Numerically integrate the path length
 			Vec2D current = at(i * dt);
 			totalLen += last.distTo(current);
-			//Add the path length-time pair to the lookup table
+			// Add the path length-time pair to the lookup table
 			s2tLookupTable.add(new Pair<>(totalLen, i * dt));
 			last = current;
 		}
@@ -217,14 +222,14 @@ abstract public class Path {
 		if(s2tLookupTable == null) {
 			throw new NullPointerException("prepareS2T() or computePathLength() must be called before s2T()");
 		}
-		//Multiply by total path length to find the actual path length (not a fraction)
+		// Multiply by total path length to find the actual path length (not a fraction)
 		double dist = s * totalLen;
 		
 		int start = 0;
 		int end = s2tLookupTable.size() - 1;
 		int mid;
 		
-		//Return 1 if the distance is greater than the maximum distance
+		// Return 1 if the distance is greater than the maximum distance
 		if(dist > s2tLookupTable.get(s2tLookupTable.size() - 1).getElem1()) {
 			return 1;
 		}
@@ -232,29 +237,29 @@ abstract public class Path {
 			mid = (start + end) / 2;
 			double midDist = s2tLookupTable.get(mid).getElem1();
 			
-			//Check if we have a match
+			// Check if we have a match
 			if(midDist == dist) {
 				return s2tLookupTable.get(mid).getElem2();
 			}
-			//Or, check if we are at the end of the lookup table
+			// Or, check if we are at the end of the lookup table
 			if(mid == s2tLookupTable.size() - 1) {
 				return 1;
 			}
 			
-			//Check if our distance is in between two distances
+			// Check if our distance is in between two distances
 			double nextDist = s2tLookupTable.get(mid + 1).getElem1();
 			if(midDist <= dist && dist <= nextDist) {
-				//Lerp them to get an approximation
+				// Lerp them to get an approximation
 				double f = (dist - midDist) / (nextDist - midDist);
 				return MathUtils.lerp(s2tLookupTable.get(mid).getElem2(), 
 						s2tLookupTable.get(mid + 1).getElem2(), f);
 			}
-			//Check if we are at the first element after checking if we are between two elements
-			//Otherwise, in the case of a value between the first and second, the lerp will not happen
+			// Check if we are at the first element after checking if we are between two elements
+			// Otherwise, in the case of a value between the first and second, the lerp will not happen
 			if(mid == 0) {
 				return 0;
 			}
-			//If not found continue the search
+			// If not found continue the search
 			if(midDist < dist) {
 				start = mid;
 			}
@@ -262,7 +267,67 @@ abstract public class Path {
 				end = mid;
 			}
 		}
-	}
+    }
+    /**
+	 * Converts a time to a fractional path length. For example, {@code t2S(0.25)} would return the fraction of the path
+     * length travelled at t=0.25. {@link #prepareS2T(int)} or {@link #computePathLength(int)}
+	 * <em>must be called</em> prior to calling this method, or a {@link NullPointerException} will be thrown.
+	 * @param t The fraction representing the time; a real value in the range [0, 1]
+	 * @return The fraction of the path travelled at the specified time
+	 */
+    public double t2S(double t) {
+        /*
+         * This method does binary search to find a time value in the lookup table that has the same t value,
+         * or it finds the nearest 2 entries in the table, and linearly interpolates their s value.
+         */
+        if(s2tLookupTable == null) {
+            throw new NullPointerException("prepareS2T() or computePathLength() must be called before t2S()");
+        }
+
+        int start = 0;
+        int end = s2tLookupTable.size() - 1;
+        int mid;
+
+        // Return 1 if the time is greater than 1
+        if(t > s2tLookupTable.get(s2tLookupTable.size() - 1).getElem2()) {
+            return 1;
+        }
+        while(true) {
+            mid = (start + end) / 2;
+            double midTime = s2tLookupTable.get(mid).getElem2();
+
+            // Check if we have a match
+            if(midTime == t) {
+                // Divide the value found by the total length to get a fraction
+                return s2tLookupTable.get(mid).getElem1() / totalLen;
+            }
+            // Or, check if we are at the end of the lookup table
+            if(mid == s2tLookupTable.size() - 1) {
+                return 1;
+            }
+
+            // Check if our time is in between two times
+            double nextTime = s2tLookupTable.get(mid + 1).getElem2();
+            if(midTime <= t && t <= nextTime) {
+                // Lerp them to get an approximation
+                double f = (t - midTime) / (nextTime - midTime);
+                return MathUtils.lerp(s2tLookupTable.get(mid).getElem1(), 
+                        s2tLookupTable.get(mid + 1).getElem1(), f) / totalLen;
+            }
+            // Check if we are at the first element after checking if we are between two elements
+            // Otherwise, in the case of a value between the first and second, the lerp will not happen
+            if(mid == 0) {
+                return 0;
+            }
+            // If not found continue the search
+            if(midTime < t) {
+                start = mid;
+            }
+            else if(midTime > t) {
+                end = mid;
+            }
+        }
+    }
 	
 	/**
 	 * Retrieves the waypoints this path passes through.
@@ -304,16 +369,16 @@ abstract public class Path {
 	 * @return The mirrored path
 	 */
 	public Path mirrorLeftRight() {
-		//To make it so that left and right turns switch, we have to reflect every waypoint across a line
-		//This line has the angle of the first waypoint, so calculate its vector using trig functions
+		// To make it so that left and right turns switch, we have to reflect every waypoint across a line
+		// This line has the angle of the first waypoint, so calculate its vector using trig functions
 		Vec2D refLine = new Vec2D(Math.cos(waypoints[0].getHeading()), Math.sin(waypoints[0].getHeading()));
 		Waypoint[] newWaypoints = new Waypoint[waypoints.length];
 		
 		for(int i = 0; i < waypoints.length; i ++) {
-			//Mirror every waypoint and angle across the reference line
+			// Mirror every waypoint and angle across the reference line
 			newWaypoints[i] = new Waypoint(waypoints[i].asVector().reflect(refLine), MathUtils.mirrorAngle(waypoints[i].getHeading(), waypoints[0].getHeading()));
 		}
-		//Make and return new path
+		// Make and return new path
 		Path path = constructPath(type, newWaypoints, alpha);
 		path.setBaseRadius(baseRadius);
 		
@@ -327,20 +392,20 @@ abstract public class Path {
 	 */
 	public Path mirrorFrontBack() {
 
-		//Like in mirrorLeftRight, we have to first find our reference line
-		//That line has angle exactly 90 degrees from the heading of the first waypoint
-		//Utilize the property that cos(a + pi/2) = -sin(a) and sin(a + pi/2) = cos(a)
+		// Like in mirrorLeftRight, we have to first find our reference line
+		// That line has angle exactly 90 degrees from the heading of the first waypoint
+		// Utilize the property that cos(a + pi/2) = -sin(a) and sin(a + pi/2) = cos(a)
 		Vec2D refLine = new Vec2D(-Math.sin(waypoints[0].getHeading()), Math.cos(waypoints[0].getHeading()));
 		Waypoint[] newWaypoints = new Waypoint[waypoints.length];
 		
 		for(int i = 0; i < waypoints.length; i ++) {
-			//Reflect everything across the line that has angle 90 degrees more than the first waypoint's heading
+			// Reflect everything across the line that has angle 90 degrees more than the first waypoint's heading
 			newWaypoints[i] = new Waypoint(waypoints[i].asVector().reflect(refLine), MathUtils.mirrorAngle(waypoints[i].getHeading(), waypoints[0].getHeading() + Math.PI / 2));
 		}
-		//Construct new path
+		// Construct new path
 		Path path = constructPath(type, newWaypoints, alpha);
 		path.setBaseRadius(baseRadius);
-		//Since the new path is to be driven backwards, set this to true so the wheels' positions will be correct
+		// Since the new path is to be driven backwards, set this to true so the wheels' positions will be correct
 		path.setDrivingBackwards(true);
 		
 		return path;
@@ -352,13 +417,13 @@ abstract public class Path {
 	public Path retrace() {
 		Waypoint[] newWaypoints = new Waypoint[waypoints.length];
 		for(int i = 0; i < waypoints.length; i ++) {
-			//New path is just the same as the old path, but with the order of the waypoints reversed,
-			//and headings changed. The headings are always 180 degrees apart
+			// New path is just the same as the old path, but with the order of the waypoints reversed,
+			// and headings changed. The headings are always 180 degrees apart
 			newWaypoints[waypoints.length - 1 - i] = new Waypoint(waypoints[i].getX(), waypoints[i].getY(), (waypoints[i].getHeading() + Math.PI) % (2 * Math.PI));
 		}
 		Path path = constructPath(type, newWaypoints, alpha);
 		path.setBaseRadius(baseRadius);
-		//Since new path is to be driven backwards, set this to true
+		// Since new path is to be driven backwards, set this to true
 		path.setDrivingBackwards(true);
 		return path;
 	}

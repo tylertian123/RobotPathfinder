@@ -1,13 +1,17 @@
 package robot.pathfinder.core.trajectory;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedList;
 
 import robot.pathfinder.core.RobotSpecs;
 import robot.pathfinder.core.TrajectoryParams;
 import robot.pathfinder.core.Waypoint;
+import robot.pathfinder.core.WaypointEx;
 import robot.pathfinder.core.path.Path;
 import robot.pathfinder.math.MathUtils;
 import robot.pathfinder.math.Vec2D;
+import robot.pathfinder.util.Pair;
 
 /**
  * A class that represents a basic trajectory (motion profile).
@@ -27,13 +31,20 @@ import robot.pathfinder.math.Vec2D;
  *
  */
 public class BasicTrajectory implements Trajectory {
+
+    /*
+     * Abandon all hope, ye who enter here.
+     * 
+     * I genuinely feel bad for whoever is going to be maintaining this in the future.
+     * I'm just as clueless as you are about what some of this does.
+     */
 	
 	/*
 	 * The algorithm used to generate these trajectories are based almost entirely on the algorithm from Team
 	 * 254 The Cheesy Poofs. Video here: https://youtu.be/8319J1BEHwM
 	 */
 	
-	//The path followed by this trajectory
+	// The path followed by this trajectory
 	Path path;
 	
 	/*
@@ -51,18 +62,18 @@ public class BasicTrajectory implements Trajectory {
 	 */
 	Vec2D[] headingVectors;
 	
-	//Keep a copy of the robot's specs and the generation parameters
+	// Keep a copy of the robot's specs and the generation parameters
 	RobotSpecs robotSpecs;
 	TrajectoryParams params;
 	
-	//These are used by TankDriveTrajectory to generate different profiles for the left and right wheels
-	//They're made package-private so only TankDriveTrajectory can access them
+	// These are used by TankDriveTrajectory to generate different profiles for the left and right wheels
+	// They're made package-private so only TankDriveTrajectory can access them
 	boolean isTank;
-	//Stores the time on the path for each moment
+	// Stores the time on the path for each moment
 	double[] pathT = null;
-	//Stores the radius of the path for each moment
+	// Stores the radius of the path for each moment
 	double[] pathRadius = null;
-	//Stores the initial facing direction; used to construct moments later
+	// Stores the initial facing direction; used to construct moments later
 	double initialFacing;
 	
 	/**
@@ -78,7 +89,7 @@ public class BasicTrajectory implements Trajectory {
 		this.params = params;
 		this.robotSpecs = specs;
 		
-		//Extract the fields to make the code less cluttered later
+		// Extract the fields to make the code less cluttered later
 		boolean isTank = params.isTank;
 		Waypoint[] waypoints = params.waypoints;
 		int segmentCount = params.segmentCount;
@@ -87,8 +98,8 @@ public class BasicTrajectory implements Trajectory {
 		double maxAcceleration = specs.getMaxAcceleration();
 		double baseWidth = specs.getBaseWidth();
 		
-		//null and NaN are the default values for these fields
-		//Check to see if they're set
+		// null and NaN are the default values for these fields
+		// Check to see if they're set
 		if(waypoints == null) {
 			throw new IllegalArgumentException("Waypoints are not set, or is null");
 		}
@@ -100,7 +111,7 @@ public class BasicTrajectory implements Trajectory {
 		}
 		
 		this.isTank = isTank;
-		//Generate the path
+		// Generate the path
 		path = Path.constructPath(params.pathType, waypoints, alpha);
 		if(isTank) {
 			path.setBaseRadius(baseWidth / 2);
@@ -113,32 +124,47 @@ public class BasicTrajectory implements Trajectory {
 		 * of the path, and make each sample a constant length away. The time value can then be found by
 		 * calling the s2T method in Path, and any special processing can be done with that.
 		 */
-		//Instead of iterating over t, we iterate over s, which represents the fraction of the total distance
-		double s_delta = 1.0 / (segmentCount - 1);
+		// Instead of iterating over t, we iterate over s, which represents the fraction of the total distance
+		double sDelta = 1.0 / (segmentCount - 1);
 		double totalDist = path.computePathLength(segmentCount);
-		double distPerIteration = totalDist / (segmentCount - 1);
+        double distPerIteration = totalDist / (segmentCount - 1);
 		
-		//This array stores the direction of the robot at each moment
-		//Directions are generated in a separate process as the velocities and accelerations
+		// This array stores the direction of the robot at each moment
+		// Directions are generated in a separate process as the velocities and accelerations
 		double[] headings = new double[segmentCount];
 		headingVectors = new Vec2D[segmentCount];
 		
-		//This array stores the theoretical max velocity at each point in this trajectory
-		//This is needed for tank drive, since the robot has to slow down when turning
-		//For regular basic trajectories every element of this array is set to the max velocity
-		double[] maxVelocities = new double[segmentCount];
+		// This array stores the theoretical max velocity at each point in this trajectory
+		// This is needed for tank drive, since the robot has to slow down when turning
+		// For regular basic trajectories every element of this array is set to the max velocity
+        double[] maxVelocities = new double[segmentCount];
+        
+        // Extract and organize all the additional velocity constraints from the waypoints
+        // The first element of each Pair of doubles holds the path distance for the constraint
+        // The second element holds the velocity
+        // Make it a LinkedList, since reallistically the size is going to be small and we're removing elements later
+        LinkedList<Pair<Double, Double>> additionalConstraints = new LinkedList<>();
+        // Since waypoints are spaced evenly though time we can calculate the constant difference here
+        double waypointDt = 1.0 / (waypoints.length - 1);
+        // Iterate though all of them except the first and last one, which are handled later
+        for(int i = 1; i < waypoints.length - 1; i ++) {
+            if(waypoints[i] instanceof WaypointEx) {
+                // Use t2S to find the fractional distance, then multiply by the total distance
+                additionalConstraints.add(new Pair<>(path.t2S(i * waypointDt) * path.getPathLength(), ((WaypointEx) waypoints[i]).getVelocity()));
+            }
+        }
 		
 		if(isTank) {
-			//Tank drive trajectories require extra processing as described above
+			// Tank drive trajectories require extra processing as described above
 			pathRadius = new double[segmentCount];
 			pathT = new double[segmentCount];
 			for(int i = 0; i < segmentCount; i ++) {
-				//Call s2T to translate between length and time
-				double t = path.s2T(s_delta * i);
+				// Call s2T to translate between length and time
+				double t = path.s2T(sDelta * i);
 				pathT[i] = t;
 				
-				//Use the curvature formula in multivariable calculus to figure out the curvature at this point
-				//of the path
+				// Use the curvature formula in multivariable calculus to figure out the curvature at this point
+				// of the path
 				Vec2D deriv = path.derivAt(t);
 				double xDeriv = deriv.getX();
 				double yDeriv = deriv.getY();
@@ -146,14 +172,14 @@ public class BasicTrajectory implements Trajectory {
 				double xSecondDeriv = secondDeriv.getX();
 				double ySecondDeriv = secondDeriv.getY();
 				double curvature = MathUtils.curvature(xDeriv, xSecondDeriv, yDeriv, ySecondDeriv);
-				//The heading is generated as a by-product
+				// The heading is generated as a by-product
 				headings[i] = Math.atan2(yDeriv, xDeriv);
 				headingVectors[i] = new Vec2D(xDeriv, yDeriv);
 				headingVectors[i].normalize();
 				
-				//Since curvature is 1 / radius, we take its reciprocal to get the radius of the path at this point
-				//And since the robot's speed is always positive no matter which direction we turn in,
-				//the absolute value is taken
+				// Since curvature is 1 / radius, we take its reciprocal to get the radius of the path at this point
+				// And since the robot's speed is always positive no matter which direction we turn in,
+				// the absolute value is taken
 				double r = Math.abs(1 / curvature);
 				/*
 				 * The maximum speed for the entire robot is computed with a formula. Derivation here:
@@ -174,19 +200,19 @@ public class BasicTrajectory implements Trajectory {
 				 */
 				double vMax = maxVelocity / (1 + baseWidth / (2 * r));
 				
-				//Store the signed curvature in the array to be used by TankDriveTrajectory later
+				// Store the signed curvature in the array to be used by TankDriveTrajectory later
 				pathRadius[i] = 1.0 / curvature;
 				maxVelocities[i] = vMax;
 			}
 		}
 		else {
-			//If the trajectory is just a basic trajectory, there's no need to slow down, so every point's
-			//max velocity is the specified max velocity.
+			// If the trajectory is just a basic trajectory, there's no need to slow down, so every point's
+			// max velocity is the specified max velocity.
 			for(int i = 0; i < segmentCount; i ++) {
 				maxVelocities[i] = maxVelocity;
 				
-				//Even if the trajectory is not for tank drive robots, the heading still needs to be calculated
-				double t = path.s2T(s_delta * i);
+				// Even if the trajectory is not for tank drive robots, the heading still needs to be calculated
+				double t = path.s2T(sDelta * i);
 				Vec2D deriv = path.derivAt(t);
 				double xDeriv = deriv.getX();
 				double yDeriv = deriv.getY();
@@ -194,11 +220,20 @@ public class BasicTrajectory implements Trajectory {
 				headingVectors[i] = new Vec2D(xDeriv, yDeriv);
 				headingVectors[i].normalize();
 			}
-		}
+        }
 		
-		//Create the BasicMoment array and initialize first element to 0 position, velocity, acceleration and time
-		moments = new BasicMoment[segmentCount];
-		moments[0] = new BasicMoment(0, 0, 0, headings[0], 0);
+		// Create the BasicMoment array and initialize first element
+        moments = new BasicMoment[segmentCount];
+        // If the first waypoint is a WaypointEx, take the velocity and acceleration as well
+        if(waypoints[0] instanceof WaypointEx) {
+            WaypointEx ex = (WaypointEx) waypoints[0];
+            // We don't really care about the acceleration. Even if we set it here, it's going to be overridden later anyways
+            // because there is no jerk constraint.
+            moments[0] = new BasicMoment(0, ex.getVelocity(), 0, headings[0], 0);
+        }
+        else {
+            moments[0] = new BasicMoment(0, 0, 0, headings[0], 0);
+        }
 		
 		/*
 		 * This array holds the difference in time between two moments.
@@ -206,95 +241,141 @@ public class BasicTrajectory implements Trajectory {
 		 * division. If computed at the end, they would require more expensive calls to sqrt().
 		 */
 		double[] precomputedTimeDiff = new double[moments.length - 1];
-		//Set the elements to NaN to indicate that they're not initialized
+		// Set the elements to NaN to indicate that they're not initialized
 		Arrays.fill(precomputedTimeDiff, Double.NaN);
-
-		//Forwards pass as described in the algorithm in the video
+        // Keep a set of all moment indices for which the velocity cannot be changed (specified by the waypoint).
+        // This is because you can only tell if some velocity specifications are impossible in the backwards pass.
+        HashSet<Integer> unchangeableIndices = new HashSet<>();
+		// Forwards pass as described in the algorithm in the video
 		for(int i = 1; i < moments.length; i ++) {
-			double accumulatedDist = i * distPerIteration;
+            double accumulatedDist = i * distPerIteration;
+            
+            // Since the additional velocity constraints are sorted from shortest path length to longest, we can check if
+            // we just surpassed one to determine whether we're on the point. Then, remove it so the process still works.
+            if(additionalConstraints.size() > 0 && accumulatedDist >= additionalConstraints.getFirst().getElem1()) {
+                Pair<Double, Double> constraint = additionalConstraints.getFirst();
+                additionalConstraints.remove();
+
+                // If the velocity is higher than the current, perform some extra checks and computations
+                if(constraint.getElem2() > moments[i - 1].getVelocity()) {
+                    // First calculate the acceleration needed and throw an exception if it's impossible
+                    double accel = (Math.pow(constraint.getElem2(), 2) - Math.pow(moments[i - 1].getVelocity(), 2)) / (2 * distPerIteration);
+                    if(accel > maxAcceleration) {
+                        throw new TrajectoryGenerationException("Error: Waypoint velocity constraint (" + constraint.getElem2() + ") is impossible");
+                    }
+                    // Otherwise set the accel
+                    moments[i - 1].setAcceleration(accel);
+                    // Set precomputed time diff
+                    precomputedTimeDiff[i - 1] = (constraint.getElem2() - moments[i - 1].getVelocity()) / accel;
+                }
+                else {
+                    // Set the accel to 0 to be handled by the backwards pass
+                    moments[i - 1].setAcceleration(0);
+                }
+                // Set the velocity equal to the constraint
+                moments[i] = new BasicMoment(accumulatedDist, constraint.getElem2(), 0, headings[i]);
+
+                unchangeableIndices.add(i);
+
+                continue;
+            }
 			
 			double theoreticalMax = maxVelocities[i];
 			
-			//Check if we could accelerate
+			// Check if we could accelerate
 			if(moments[i - 1].getVelocity() < theoreticalMax) {
 				double distDiff = distPerIteration;
 				
-				//First, check what velocity we would reach if we were to accelerate at maximum acceleration
-				//Use the kinematic equations to figure it out
+				// First, check what velocity we would reach if we were to accelerate at maximum acceleration
+				// Use the kinematic equations to figure it out
 				double maxVel = Math.sqrt(Math.pow(moments[i - 1].getVelocity(), 2) + 2 * maxAcceleration * distDiff);
 				
 				double vel;
-				//Check if this velocity exceeds the max
+				// Check if this velocity exceeds the max
 				if(maxVel > theoreticalMax) {
-					//If it's too fast, use the kinematic equations to figure out exactly how much we can accelerate
+					// If it's too fast, use the kinematic equations to figure out exactly how much we can accelerate
 					double accel = (Math.pow(theoreticalMax, 2) - Math.pow(moments[i - 1].getVelocity(), 2)) / (2 * distDiff);
 					vel = theoreticalMax;
 					moments[i - 1].setAcceleration(accel);
 				}
 				else {
-					//If it's within limits, then accelerate at max acceleration
+					// If it's within limits, then accelerate at max acceleration
 					vel = maxVel;
 					moments[i - 1].setAcceleration(maxAcceleration);
 				}
 				
 				moments[i] = new BasicMoment(accumulatedDist, vel, 0, headings[i]);
-				//Calculate the time difference
+				// Calculate the time difference
 				precomputedTimeDiff[i - 1] = (vel - moments[i - 1].getVelocity()) / (moments[i - 1].getAcceleration());
 			}
 			else {
-				//If not, then do not accelerate, and set the velocity to the maximum
+				// If not, then do not accelerate, and set the velocity to the maximum
 				moments[i] = new BasicMoment(accumulatedDist, theoreticalMax, 0, headings[i]);
 				moments[i - 1].setAcceleration(0);
 			}
 		}
 		
-		//Prepare for backwards pass
-		moments[moments.length - 1].setVelocity(0);
-		moments[moments.length - 1].setAcceleration(0);
-		//Backwards pass as described in the algorithm in the video
+        // Prepare for backwards pass
+        // Once again, if the waypoint specifies a velocity and acceleration, take that into account
+        if(waypoints[waypoints.length - 1] instanceof WaypointEx) {
+            WaypointEx ex = (WaypointEx) waypoints[waypoints.length - 1];
+            moments[moments.length - 1].setVelocity(ex.getVelocity());
+            moments[moments.length - 1].setAcceleration(0);
+        }
+        else {
+		    moments[moments.length - 1].setVelocity(0);
+            moments[moments.length - 1].setAcceleration(0);
+        }
+		// Backwards pass as described in the algorithm in the video
 		for(int i = moments.length - 2; i >= 0; i --) {
-			//Only do processing if the velocity of this moment is greater than the next
-			//i.e. we need to decelerate
+			// Only do processing if the velocity of this moment is greater than the next
+			// i.e. we need to decelerate
 			if(moments[i].getVelocity() > moments[i + 1].getVelocity()) {
 			
 				double distDiff = moments[i + 1].getPosition() - moments[i].getPosition();
-				//Calculate max velocity like in the forwards pass
+				// Calculate max velocity like in the forwards pass
 				double maxVel = Math.sqrt(Math.pow(moments[i + 1].getVelocity(), 2) + 2 * maxAcceleration * distDiff);
 				
 				double vel;
-				//Compare with the velocity set by the forwards pass
+                // Compare with the velocity set by the forwards pass
+                // If reachable, then just set the acceleration
 				if(maxVel > moments[i].getVelocity()) {
 					double accel = (Math.pow(moments[i].getVelocity(), 2) - Math.pow(moments[i + 1].getVelocity(), 2)) / (2 * distDiff);
 					moments[i].setAcceleration(-accel);
 					vel = moments[i].getVelocity();
-				}
+                }
+                // Otherwise, bring the velocity down to the maximum reachable limit
 				else {
+                    // Check if this is one of the unchangeable specified moments
+                    if(unchangeableIndices.contains(i)) {
+                        throw new TrajectoryGenerationException("Error: Waypoint velocity constraint (" + moments[i].getVelocity() + ") is impossible");
+                    }
 					vel = maxVel;
 					moments[i].setAcceleration(-maxAcceleration);
 				}
 				
 				moments[i].setVelocity(vel);
-				//Calculate the time difference
+				// Calculate the time difference
 				precomputedTimeDiff[i] = (moments[i + 1].getVelocity() - vel) / moments[i].getAcceleration();
 			}
 		}
 		
-		//Set the initial facing directions for all moments
+		// Set the initial facing directions for all moments
 		this.initialFacing = moments[0].getFacingAbsolute();
 		for(int i = 0; i < moments.length; i ++) {
 			moments[i].setInitialFacing(moments[0].getFacingAbsolute());
 		}
 		
-		//Here we give each moment a timestamp
+		// Here we give each moment a timestamp
 		for(int i = 1; i < moments.length; i ++) {
-			//First test if the time difference is already computed
+			// First test if the time difference is already computed
 			if(!Double.isNaN(precomputedTimeDiff[i - 1])) {
 				moments[i].setTime(moments[i - 1].getTime() + precomputedTimeDiff[i - 1]);
 			}
 			else {
-				//Otherwise, compute the time difference
-				//Since the time difference will always be computed if acceleration is non-zero,
-				//we can assume here that the acceleration will be 0, so only a division is needed.
+				// Otherwise, compute the time difference
+				// Since the time difference will always be computed if acceleration is non-zero,
+				// we can assume here that the acceleration will be 0, so only a division is needed.
 				double dt = (moments[i].getPosition() - moments[i - 1].getPosition()) / moments[i - 1].getVelocity();
 				moments[i].setTime(moments[i - 1].getTime() + dt);
 			}
@@ -375,12 +456,12 @@ public class BasicTrajectory implements Trajectory {
 	 */
 	@Override
 	public BasicMoment get(double t) {
-		//This method retrieves the moment via binary search
+		// This method retrieves the moment via binary search
 		int start = 0;
 		int end = moments.length - 1;
 		int mid;
 		
-		//If t is greater than the entire length in time of the left side, return the last BasicMoment
+		// If t is greater than the entire length in time of the left side, return the last BasicMoment
 		if(t >= moments[moments.length - 1].getTime())
 			return moments[moments.length - 1];
 		
@@ -389,25 +470,25 @@ public class BasicTrajectory implements Trajectory {
 			
 			double midTime = moments[mid].getTime();
 			
-			//Check for a match
+			// Check for a match
 			if(midTime == t)
 				return moments[mid].clone();
-			//If we reached the end, return the end
+			// If we reached the end, return the end
 			if(mid == moments.length - 1)
 				return moments[mid].clone();
 			
 			double nextTime = moments[mid + 1].getTime();
-			//If there wasn't a match, check if the time specified is in between two existing times
+			// If there wasn't a match, check if the time specified is in between two existing times
 			if(midTime <= t && nextTime >= t) {
-				//If yes then interpolate to get approximation
+				// If yes then interpolate to get approximation
 				double f = (t - midTime) / (nextTime - midTime);
 				return new BasicMoment(MathUtils.lerp(moments[mid].getPosition(), moments[mid + 1].getPosition(), f),
 						MathUtils.lerp(moments[mid].getVelocity(), moments[mid + 1].getVelocity(), f),
 						MathUtils.lerp(moments[mid].getAcceleration(), moments[mid + 1].getAcceleration(), f),
-						//Use lerpAngle to avoid buggy behavior around 180 degrees
+						// Use lerpAngle to avoid buggy behavior around 180 degrees
 						MathUtils.lerpAngle(headingVectors[mid], headingVectors[mid + 1], f), t, initialFacing);
 			}
-			//Continue the binary search if not found
+			// Continue the binary search if not found
 			if(midTime < t) {
 				start = mid;
 				continue;
@@ -424,22 +505,22 @@ public class BasicTrajectory implements Trajectory {
 	 */
 	@Override
 	public BasicTrajectory mirrorLeftRight() {
-		//Construct new path
+		// Construct new path
 		Path newPath = path.mirrorLeftRight();
-		//This is the angle to reflect all angles across
+		// This is the angle to reflect all angles across
 		double refAngle = params.waypoints[0].getHeading();
 		
 		BasicMoment[] newMoments = new BasicMoment[moments.length];
-		//Basic trajectories don't change much when left and right turns are reversed
-		//Everything stays the same besides the headings, which are reflected across the line that has the same
-		//angle as the first waypoint's heading.
+		// Basic trajectories don't change much when left and right turns are reversed
+		// Everything stays the same besides the headings, which are reflected across the line that has the same
+		// angle as the first waypoint's heading.
 		for(int i = 0; i < newMoments.length; i ++) {
 			newMoments[i] = moments[i].clone();
 			newMoments[i].setHeading(MathUtils.mirrorAngle(moments[i].getHeading(), refAngle));
 			newMoments[i].setInitialFacing(newMoments[0].getFacingAbsolute());
 		}
 		
-		//The params have to be updated since the waypoints are changed
+		// The params have to be updated since the waypoints are changed
 		TrajectoryParams newParams = params.clone();
 		newParams.waypoints = newPath.getWaypoints();
 		
@@ -447,8 +528,8 @@ public class BasicTrajectory implements Trajectory {
 		if(pathRadius != null) {
 			newPathRadius = new double[pathRadius.length];
 			
-			//Since every left turn becomes a right turn, the curvature and thus the radius will also be negative 
-			//at every point
+			// Since every left turn becomes a right turn, the curvature and thus the radius will also be negative 
+			// at every point
 			for(int i = 0; i < newPathRadius.length; i ++) {
 				newPathRadius[i] = -pathRadius[i];
 			}
@@ -462,13 +543,13 @@ public class BasicTrajectory implements Trajectory {
 	@Override
 	public BasicTrajectory mirrorFrontBack() {
 		Path newPath = path.mirrorFrontBack();
-		//This time, mirror all angles across the line perpendicular to the one at the first waypoint
+		// This time, mirror all angles across the line perpendicular to the one at the first waypoint
 		double refAngle = params.waypoints[0].getHeading() + Math.PI / 2;
 		
 		BasicMoment[] newMoments = new BasicMoment[moments.length];
 		for(int i = 0; i < newMoments.length; i ++) {
-			//Since we're now driving backwards, every position, velocity and acceleration is now negative
-			//The angle is reflected across the line perpendicular to the one at the first waypoint
+			// Since we're now driving backwards, every position, velocity and acceleration is now negative
+			// The angle is reflected across the line perpendicular to the one at the first waypoint
 			newMoments[i] = new BasicMoment(-moments[i].getPosition(), -moments[i].getVelocity(), 
 					-moments[i].getAcceleration(), MathUtils.mirrorAngle(moments[i].getHeading(), refAngle),
 					moments[i].getTime());
@@ -490,10 +571,10 @@ public class BasicTrajectory implements Trajectory {
 		Path newPath = path.retrace();
 		
 		BasicMoment[] newMoments = new BasicMoment[moments.length];
-		//keep a reference to the last moment for convenience
+		// keep a reference to the last moment for convenience
 		BasicMoment lastMoment = moments[moments.length - 1];
 		for(int i = 0; i < newMoments.length; i ++) {
-			//Because now the trajectory starts from the end, every moment is reversed
+			// Because now the trajectory starts from the end, every moment is reversed
 			BasicMoment currentMoment = moments[moments.length - 1 - i];
 
 			/*
@@ -524,8 +605,8 @@ public class BasicTrajectory implements Trajectory {
 			newPathRadius = new double[pathRadius.length];
 			newPathT = new double[pathT.length];
 			
-			//Since now we start from the end, the order of path radiuses and t values are reversed
-			//But since left turns remain left turns, curvature and thus the radius stays the same
+			// Since now we start from the end, the order of path radiuses and t values are reversed
+			// But since left turns remain left turns, curvature and thus the radius stays the same
 			for(int i = 0; i < newPathRadius.length; i ++) {
 				newPathRadius[i] = pathRadius[pathRadius.length - 1 - i];
 				newPathT[i] = pathT[pathT.length - 1 - i];

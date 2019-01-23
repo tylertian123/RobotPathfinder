@@ -24,7 +24,7 @@ repositories {
     jcenter()
 }
 
-version = '2.1.0'
+project.version = '2.1.1'
 
 // Add sources to the jar
 jar {
@@ -60,7 +60,7 @@ task fatJar(type: Jar, group: 'Build', description: 'Assembles a jar of the libr
 
     archiveName 'RobotPathfinder-' + project.version + '-all.jar'
 
-    //Collect all
+    // Collect all
     classifier = 'all'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 

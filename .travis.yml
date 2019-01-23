@@ -1,8 +1,6 @@
 language: java
 
 jdk:
-  - oraclejdk8
-  - openjdk8
   - oraclejdk11
   - openjdk11
 
@@ -30,12 +28,12 @@ after_success:
     curl --request 'POST' 
     --header 'Content-Type: text/plain; charset=utf-8' 
     --data "&#9989; The latest commit pushed to **RobotPathfinder** (commit *$SHORT_COMMIT* on branch *$TRAVIS_BRANCH*) has **passed** CI checks on **$TRAVIS_JDK_VERSION**!"
-    https://arctos6135.ryver.com/application/webhook/DCrjbShXT4HvRtp
+    https://arctos6135.ryver.com/application/webhook/2EnmZwoD1TCAySR
 
 after_failure:
   - export SHORT_COMMIT=${TRAVIS_COMMIT:0:7}
   - >
-      curl --request 'POST' 
-      --header 'Content-Type: text/plain; charset=utf-8' 
-      --data "&#10060; The latest commit pushed to **RobotPathfinder** (commit *$SHORT_COMMIT* on branch *$TRAVIS_BRANCH*) has **failed** CI checks on **$TRAVIS_JDK_VERSION**!" 
-      https://arctos6135.ryver.com/application/webhook/DCrjbShXT4HvRtp
+    curl --request 'POST' 
+    --header 'Content-Type: text/plain; charset=utf-8' 
+    --data "&#10060; The latest commit pushed to **RobotPathfinder** (commit *$SHORT_COMMIT* on branch *$TRAVIS_BRANCH*) has **failed** CI checks on **$TRAVIS_JDK_VERSION**!" 
+    https://arctos6135.ryver.com/application/webhook/2EnmZwoD1TCAySR

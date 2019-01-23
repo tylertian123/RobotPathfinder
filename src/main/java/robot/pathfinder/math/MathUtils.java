@@ -38,7 +38,7 @@ public class MathUtils {
 	 * @return The roots of the equation
 	 */
 	public static double[] findQuadraticRoots(double a, double b, double c, double minUnit) {
-		//Special case
+		// Special case
 		if(a == 0) {
 			return new double[] {
 					-c / b,
@@ -103,7 +103,7 @@ public class MathUtils {
 	 * @return The discriminant of the polynomial
 	 */
 	public static double cubicDiscriminant(double a, double b, double c, double d) {
-		//Formula can be found on Wikipedia: https://en.wikipedia.org/wiki/Cubic_function#General_formula
+		// Formula can be found on Wikipedia: https://en.wikipedia.org/wiki/Cubic_function#General_formula
 		return 18 * a * b * c * d - 4 * Math.pow(b, 3) * d + Math.pow(b, 2) * Math.pow(c, 2) - 4 * a * Math.pow(c, 3) - 27 * Math.pow(a, 2) * Math.pow(d, 2);
 	}
 	/**
@@ -123,22 +123,22 @@ public class MathUtils {
 			return findPositiveQuadraticRoot(b, c, d);
 		}
 		
-		//Formula can be found on Wikipedia: https://en.wikipedia.org/wiki/Cubic_function#General_formula
+		// Formula can be found on Wikipedia: https://en.wikipedia.org/wiki/Cubic_function#General_formula
 		double d0 = b * b - 3 * a * c;
 		double d1 = 2 * Math.pow(b, 3) - 9 * a * b * c + 27 * Math.pow(a, 2) * d;
 		double C;
 		//"In addition either sign in front of the square root may be chosen unless d0 = 0
-		//in which case the sign must be chosen so that the two terms inside the cube root do not cancel."
+		// in which case the sign must be chosen so that the two terms inside the cube root do not cancel."
 		if(d0 != 0) {
 			C = Math.cbrt((d1 - Math.sqrt(Math.pow(d1, 2) - 4 * Math.pow(d0, 3))) / 2);
 		}
 		else {
 			if(d1 >= 0) {
-				//If d1 is greater than 0, then we must add, because the result of the square root is always going to be positive
+				// If d1 is greater than 0, then we must add, because the result of the square root is always going to be positive
 				C = Math.cbrt((d1 + Math.sqrt(Math.pow(d1, 2) - 4 * Math.pow(d0, 3))) / 2);
 			}
 			else {
-				//If d1 is less than 0, we must subtract
+				// If d1 is less than 0, we must subtract
 				C = Math.cbrt((d1 - Math.sqrt(Math.pow(d1, 2) - 4 * Math.pow(d0, 3))) / 2);
 			}
 		}
@@ -196,7 +196,7 @@ public class MathUtils {
 	 * @see #lerpAngle(double, double, double)
 	 */
 	public static double lerpAngle(Vec2D a, Vec2D b, double f) {
-		//Done by lerping the normalized direction vector
+		// Done by lerping the normalized direction vector
 		Vec2D angle = Vec2D.lerp(a, b, f);
 		return Math.atan2(angle.getY(), angle.getX());
 	}

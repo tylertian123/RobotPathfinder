@@ -23,17 +23,17 @@ final public class TrajectoryGenerator {
 	public static BasicTrajectory generateStraightBasic(RobotSpecs specs, double distance) {
 		TrajectoryParams params = new TrajectoryParams();
 		params.isTank = false;
-		//Use Bezier type since we only have one segment and it doesn't really matter
+		// Use Bezier type since we only have one segment and it doesn't really matter
 		params.pathType = PathType.BEZIER;
-		//Since we're going in a straight line, we don't need much precision
+		// Since we're going in a straight line, we don't need much precision
 		params.segmentCount = 200;
 		params.waypoints = new Waypoint[] {
 				new Waypoint(0, 0, Math.PI / 2),
-				//Take the absolute value; negative values aren't handled so well
+				// Take the absolute value; negative values aren't handled so well
 				new Waypoint(0, Math.abs(distance), Math.PI / 2)
 		};
 		params.alpha = Math.abs(distance) / 2;
-		//Now check if our distance is negative, and if yes just reverse the trajectory
+		// Now check if our distance is negative, and if yes just reverse the trajectory
 		return distance >= 0 ? new BasicTrajectory(specs, params) : new BasicTrajectory(specs, params).mirrorFrontBack();
 	}
 	/**

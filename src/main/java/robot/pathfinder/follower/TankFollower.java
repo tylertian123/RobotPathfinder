@@ -23,16 +23,16 @@ public class TankFollower extends Follower {
 	DirectionSource directionSrc;
 	Motor lMotor, rMotor;
 	
-	//Directional proportional gain
+	// Directional proportional gain
 	double kDP = 0;
 	
-	//Keep track of the initial timestamp and distance measurements so we don't have to reset
-	//Keep track of the error and timestamp of the last iteration to calculate the derivative
+	// Keep track of the initial timestamp and distance measurements so we don't have to reset
+	// Keep track of the error and timestamp of the last iteration to calculate the derivative
 	double initTime, lastTime, lLastErr, rLastErr, lInitDist, rInitDist, initDirection;
 	
 	boolean running = false;
 	
-	//Store these as member variables so they can be accessed from outside the class for testing purposes
+	// Store these as member variables so they can be accessed from outside the class for testing purposes
 	double leftErr, rightErr, dirErr, leftOutput, rightOutput, leftDeriv, rightDeriv, leftVelo, rightVelo, leftAccel, rightAccel;
 	
 	/**
@@ -254,7 +254,7 @@ public class TankFollower extends Follower {
 			initialize();
 		}
 		
-		//Calculate current t and time difference from last iteration
+		// Calculate current t and time difference from last iteration
 		double timestamp = timer.getTimestamp();
 		double dt = timestamp - lastTime;
 		double t = timestamp - initTime;
@@ -266,33 +266,33 @@ public class TankFollower extends Follower {
 		TankDriveMoment m = traj.get(t);
 		
 		leftErr = rightErr = leftDeriv = rightDeriv = dirErr = 0;
-		//Calculate errors and derivatives only if the distance sources are not null
+		// Calculate errors and derivatives only if the distance sources are not null
 		if(lDistSrc != null && rDistSrc != null) {
-			//Calculate left and right errors
+			// Calculate left and right errors
 			leftErr = m.getLeftPosition() - (lDistSrc.getDistance() - lInitDist);
 			rightErr = m.getRightPosition() - (rDistSrc.getDistance() -rInitDist);
-			//Get the derivative of the errors
-			//Subtract away the desired velocity to get the true error
+			// Get the derivative of the errors
+			// Subtract away the desired velocity to get the true error
 			leftDeriv = (leftErr - lLastErr) / dt 
 	    			- m.getLeftVelocity();
 	    	rightDeriv = (rightErr - rLastErr) / dt
 	    			- m.getRightVelocity();
 		}
-		//Calculate directional error only if the direction source is not null
+		// Calculate directional error only if the direction source is not null
 		if(directionSrc != null) {
-			//This angle diff will be positive if the robot needs to turn left
+			// This angle diff will be positive if the robot needs to turn left
 			dirErr = MathUtils.angleDiff(directionSrc.getDirection() - initDirection, m.getFacingRelative());
 		}
 		leftVelo = m.getLeftVelocity();
 		rightVelo = m.getRightVelocity();
 		leftAccel = m.getLeftAcceleration();
 		rightAccel = m.getRightAcceleration();
-    	//Calculate outputs
+    	// Calculate outputs
     	leftOutput = kA * m.getLeftAcceleration() + kV * m.getLeftVelocity()
 				+ kP * leftErr + kD * leftDeriv - dirErr * kDP;
 		rightOutput = kA * m.getRightAcceleration() + kV * m.getRightVelocity()
 				+ kP * rightErr + kD * rightDeriv + dirErr * kDP;
-		//Constrain
+		// Constrain
     	leftOutput = Math.max(-1, Math.min(1, leftOutput));
     	rightOutput = Math.max(-1, Math.min(1, rightOutput));
     	

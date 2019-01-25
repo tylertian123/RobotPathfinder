@@ -15,6 +15,7 @@ dependencies {
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
+    testImplementation 'org.hamcrest:hamcrest:2.1'
 }
 
 // In this section you declare where to find the dependencies of your project

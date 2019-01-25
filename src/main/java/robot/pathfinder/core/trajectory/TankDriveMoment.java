@@ -266,7 +266,7 @@ public class TankDriveMoment implements Moment {
 		}
 		// If both velocities are 0 then refer to the acceleration
 		else {
-			return MathUtils.restrictAngle(la > 0 || ra > 0 ? heading : heading + Math.PI);
+			return MathUtils.restrictAngle(la >= 0 || ra >= 0 ? heading : heading + Math.PI);
 		}
 	}
 	/**

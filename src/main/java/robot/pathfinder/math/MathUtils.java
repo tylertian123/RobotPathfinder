@@ -249,7 +249,10 @@ public class MathUtils {
 		}
 		else if(diff <= -Math.PI) {
 			diff += 2 * Math.PI;
-		}
+        }
+        
+        System.out.println(src);
+        System.out.println(target);
 		
 		return diff;
 	}

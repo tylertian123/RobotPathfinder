@@ -37,9 +37,9 @@ public class DebugTests {
     }
     
     public static void test19() {
-        RobotSpecs robotSpecs = new RobotSpecs(5.0, 3.5, 2.0);
+        RobotSpecs robotSpecs = new RobotSpecs(5.0, 3.5, 3.0);
 
-        TankDriveTrajectory traj = TrajectoryGenerator.generateRotationTank(robotSpecs, Math.PI / 2);
+        TankDriveTrajectory traj = TrajectoryGenerator.generateRotationTank(robotSpecs, -Math.PI);
 
         JFrame f1 = Grapher.graphTrajectory(traj, 0.001, true);
         f1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -47,6 +47,14 @@ public class DebugTests {
     }
 
 	public static void main(String[] args) throws Exception {
-		test19();
+		RobotSpecs specs = new RobotSpecs(10.0, 7.5, 1.5);
+        TankDriveTrajectory traj1 = TrajectoryGenerator.generateRotationTank(specs, Math.PI / 2);
+        TankDriveTrajectory traj2 = TrajectoryGenerator.generateRotationTank(specs, -Math.PI);
+
+        JFrame f1 = Grapher.graphTrajectory(traj1, 0.001, true);
+        f1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f1.setVisible(true);
+
+        System.out.println(traj1.get(traj1.totalTime()).getFacingAbsolute());
 	}
 }

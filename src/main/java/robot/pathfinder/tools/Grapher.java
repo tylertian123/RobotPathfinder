@@ -43,7 +43,22 @@ public final class Grapher {
 	 * @param dt The time increment between samples
 	 * @return The graphed trajectory in a {@link JFrame}
 	 */
-	public static JFrame graphTrajectory(BasicTrajectory trajectory, double dt) {
+    public static JFrame graphTrajectory(BasicTrajectory trajectory, double dt) {
+        return graphTrajectory(trajectory, dt, false);
+    }
+    /**
+	 * Graphs a {@link BasicTrajectory} in a {@link JFrame}.
+	 * <p>
+	 * In addition to graphing, this method also sets the {@link JFrame}'s default close operation to be
+	 * {@link JFrame#DISPOSE_ON_CLOSE}. Note that this method does not show the window; 
+	 * {@link JFrame#setVisible(boolean) setVisible()} needs to be called explicitly in order to show the window.
+	 * </p>
+	 * @param trajectory The trajectory to graph
+	 * @param dt The time increment between samples
+     * @param graphHeading Whether or not to graph the heading
+	 * @return The graphed trajectory in a {@link JFrame}
+	 */
+	public static JFrame graphTrajectory(BasicTrajectory trajectory, double dt, boolean graphHeading) {
 		int elemCount = (int) Math.ceil(trajectory.totalTime() / dt);
 		
 		// Create arrays to store data
@@ -51,7 +66,7 @@ public final class Grapher {
 		double[] pos = new double[elemCount];
 		double[] vel = new double[elemCount];
 		double[] acl = new double[elemCount];
-		// double[] heading = new double[elemCount];
+		double[] heading = graphHeading ? new double[elemCount] : null;
 		
 		int i = 0;
 		for(double t = 0; t <= trajectory.totalTime() && i < elemCount; t += dt) {
@@ -61,8 +76,10 @@ public final class Grapher {
 			
 			pos[i] = m.getPosition();
 			vel[i] = m.getVelocity();
-			acl[i] = m.getAcceleration();
-			// heading[i] = m.getFacingRelative();
+            acl[i] = m.getAcceleration();
+            if(graphHeading) {
+                heading[i] = m.getFacingRelative();
+            }
 			
 			i++;
 		}
@@ -75,8 +92,10 @@ public final class Grapher {
 			// Add graphs
 			plot.addLinePlot("Position", time, pos);
 			plot.addLinePlot("Velocity", time, vel);
-			plot.addLinePlot("Acceleration", time, acl);
-			// plot.addLinePlot("Heading", time, heading);
+            plot.addLinePlot("Acceleration", time, acl);
+            if(graphHeading) {
+                plot.addLinePlot("Heading", time, heading);
+            }
 			
 			// Create window that holds the graph
 			frame = new JFrame("Trajectory Graph");
@@ -112,7 +131,22 @@ public final class Grapher {
 	 * @param dt The time increment between samples
 	 * @return The graphed trajectory in a {@link JFrame}
 	 */
-	public static JFrame graphTrajectory(TankDriveTrajectory trajectory, double dt) {
+    public static JFrame graphTrajectory(TankDriveTrajectory trajectory, double dt) {
+        return graphTrajectory(trajectory, dt, false);
+    }
+    /**
+	 * Graphs a {@link TankDriveTrajectory} in a {@link JFrame}.
+	 * <p>
+	 * In addition to graphing, this method also sets the {@link JFrame}'s default close operation to be
+	 * {@link JFrame#DISPOSE_ON_CLOSE}. Note that this method does not show the window; 
+	 * {@link JFrame#setVisible(boolean) setVisible()} needs to be called explicitly in order to show the window.
+	 * </p>
+	 * @param trajectory The trajectory to graph
+	 * @param dt The time increment between samples
+     * @param graphHeading Whether or not to graph the relative facing.
+	 * @return The graphed trajectory in a {@link JFrame}
+	 */
+	public static JFrame graphTrajectory(TankDriveTrajectory trajectory, double dt, boolean graphHeading) {
 		int elemCount = (int) Math.ceil(trajectory.totalTime() / dt);
 		
 		// Create arrays to store data
@@ -123,7 +157,7 @@ public final class Grapher {
 		double[] rPos = new double[elemCount];
 		double[] rVel = new double[elemCount];
 		double[] rAcl = new double[elemCount];
-		// double[] heading = new double[elemCount];
+		double[] heading = graphHeading ? new double[elemCount] : null;
 		
 		int i = 0;
 		for(double t = 0; t <= trajectory.totalTime() && i < elemCount; t += dt) {
@@ -137,7 +171,9 @@ public final class Grapher {
 			rPos[i] = m.getRightPosition();
 			rVel[i] = m.getRightVelocity();
 			rAcl[i] = m.getRightAcceleration();
-			// heading[i] = m.getFacingRelative();
+			if(graphHeading) {
+                heading[i] = m.getFacingRelative();
+            }
 			
 			i++;
 		}
@@ -153,7 +189,9 @@ public final class Grapher {
 			plot.addLinePlot("Right Position", time, rPos);
 			plot.addLinePlot("Right Velocity", time, rVel);
 			plot.addLinePlot("Right Acceleration", time, rAcl);
-			// plot.addLinePlot("Robot Heading", time, heading);
+			if(graphHeading) {
+                plot.addLinePlot("Robot Heading", time, heading);
+            }
 			
 			// Create window that holds the graph
 			frame = new JFrame("Trajectory Graph");

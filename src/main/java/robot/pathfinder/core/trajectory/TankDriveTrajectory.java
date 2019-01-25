@@ -87,7 +87,9 @@ public class TankDriveTrajectory implements Trajectory {
 		// Numerical integration is used
 		// This keeps track of where the wheels were in the last interation
 		Vec2D[] initPos = path.wheelsAt(0);
-		Vec2D prevLeft = initPos[0], prevRight = initPos[1];
+        Vec2D prevLeft = initPos[0], prevRight = initPos[1];
+        
+        moments[0].setInitialFacing(initialFacing);
 		
 		for(int i = 1; i < trajMoments.length; i ++) {
 			// First find where the wheels are at this moment and integrate the length

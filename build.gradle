@@ -25,7 +25,7 @@ repositories {
     jcenter()
 }
 
-project.version = '2.1.1'
+project.version = '2.1.2-dev'
 
 // Add sources to the jar
 jar {
@@ -69,6 +69,9 @@ task fatJar(type: Jar, group: 'Build', description: 'Assembles a jar of the libr
 }
 
 task copyJars(type: Copy, group: 'Archive', description: 'Copies all generated jars to the output directory.') {
+    dependsOn jar
+    dependsOn fatJar
+    dependsOn visualizerJar
     from 'build/libs'
     into 'output'
 }

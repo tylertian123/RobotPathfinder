@@ -627,8 +627,8 @@ public class TrajectoryVisualizationTool {
 				double heading = w.getHeading();
                 String angle = specialAngles.containsKey(heading) ? specialAngles.get(heading) : String.valueOf(heading);
                 // Create different code for WaypointEx
-                String waypointCode = w instanceof WaypointEx ? "\t\tnew WaypointEx(" + w.getX() + ", " + w.getY() + ", " + angle + ", " + ((WaypointEx) w).getVelocity() + "),\n" 
-                        : "\t\tnew Waypoint(" + w.getX() + ", " + w.getY() + ", " + angle + "),\n";
+                String waypointCode = w instanceof WaypointEx ? "\tnew WaypointEx(" + w.getX() + ", " + w.getY() + ", " + angle + ", " + ((WaypointEx) w).getVelocity() + "),\n" 
+                        : "\tnew Waypoint(" + w.getX() + ", " + w.getY() + ", " + angle + "),\n";
 				generatedCode.append(waypointCode);
 			}
 			generatedCode.append("};\n");

@@ -2,8 +2,6 @@ import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-import javax.swing.JFrame;
-
 import org.junit.Test;
 
 import robot.pathfinder.core.RobotSpecs;
@@ -11,7 +9,6 @@ import robot.pathfinder.core.trajectory.BasicTrajectory;
 import robot.pathfinder.core.trajectory.TankDriveTrajectory;
 import robot.pathfinder.core.trajectory.TrajectoryGenerator;
 import robot.pathfinder.math.MathUtils;
-import robot.pathfinder.tools.Grapher;
 
 public class TrajectoryGeneratorTest {
 

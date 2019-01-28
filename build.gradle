@@ -12,6 +12,7 @@ buildScan {
 
 dependencies {
     compile files('lib/jmathplot.jar', 'lib/jmathio.jar')
+    compile 'com.google.code.gson:gson:2.8.5'
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'

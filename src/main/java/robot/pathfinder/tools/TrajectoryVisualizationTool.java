@@ -45,6 +45,9 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import robot.pathfinder.core.RobotSpecs;
 import robot.pathfinder.core.TrajectoryParams;
 import robot.pathfinder.core.Waypoint;
@@ -105,9 +108,9 @@ public class TrajectoryVisualizationTool {
 	static ArrayList<Waypoint> waypoints = new ArrayList<Waypoint>();
     
     // Action commands for the radio buttons
-	static final String QHERMITE = "Q";
-	static final String CHERMITE = "C";
-	static final String BEZIER = "B";
+	static final String QHERMITE = "quinticHermite";
+	static final String CHERMITE = "cubicHermite";
+	static final String BEZIER = "bezier";
 	JRadioButton quinticHermiteButton, cubicHermiteButton, bezierButton;
 	static PathType selectedType = PathType.QUINTIC_HERMITE;
 	
@@ -165,8 +168,8 @@ public class TrajectoryVisualizationTool {
 		return angle;
 	}
     
-    // A file filter that only allows CSV files
-	static class CSVFilter extends FileFilter {
+    // A file filter that only allows JSON files
+	static class JsonFilter extends FileFilter {
 
 		@Override
 		public boolean accept(File f) {
@@ -174,7 +177,7 @@ public class TrajectoryVisualizationTool {
 				return true;
 			try {
 				String ext = f.getName().substring(f.getName().lastIndexOf("."));
-				if(ext.equals(".csv"))
+				if(ext.equals(".json"))
 					return true;
 				else
 					return false;
@@ -186,7 +189,7 @@ public class TrajectoryVisualizationTool {
 
 		@Override
 		public String getDescription() {
-			return "Comma-Separated Values File (*.csv)";
+			return "JSON File (*.json)";
 		}
 		
 	}
@@ -209,7 +212,21 @@ public class TrajectoryVisualizationTool {
             // Make the cells all non-editable so only entire rows can be edited at a time via the buttons
 			return false;
 		}
-	}
+    }
+    
+    // Used for Json generation
+    static class TrajectoryVisualizerParameters {
+        public double maxVelocity;
+        public double maxAcceleration;
+        public double basePlateWidth;
+        public double alpha;
+        public int segmentCount;
+        
+        public boolean tankDrive;
+        public String pathType;
+
+        public Waypoint[] waypoints;
+    }
 	
 	public TrajectoryVisualizationTool() {
 		try {
@@ -688,55 +705,45 @@ public class TrajectoryVisualizationTool {
 				return;
 			}
             
-            // Choose a csv to save
+            // Choose a json to save
 			JFileChooser fc = new JFileChooser();
 			fc.setDialogTitle("Save As...");
 			fc.setAcceptAllFileFilterUsed(false);
-			fc.setFileFilter(new CSVFilter());
+			fc.setFileFilter(new JsonFilter());
 			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			
 			int ret = fc.showSaveDialog(mainFrame);
 			if(ret == JFileChooser.APPROVE_OPTION) {
 				String path = fc.getSelectedFile().getAbsolutePath();
-				if(!path.endsWith(".csv"))
-					path += ".csv";
+				if(!path.endsWith(".json"))
+					path += ".json";
 				
 				try(BufferedWriter out = new BufferedWriter(new FileWriter(path))) {
-					out.write(maxVel + "," + maxAccel + "," + base + "," + a + "," + segmentCount + ",");
-					switch(selectedType) {
-					case QUINTIC_HERMITE:
-						out.write(QHERMITE);
-						break;
-					case CUBIC_HERMITE:
-						out.write(CHERMITE);
-						break;
-					case BEZIER:
-						out.write(BEZIER);
-						break;
-					}
-					out.write(",");
-					if(isTank.isSelected()) {
-						out.write("TankDriveTrajectory");
-					}
-					else {
-						out.write("BasicTrajectory");
-					}
-					out.write("\n");
-					
-					WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
-					for(int row = 0; row < tableModel.getRowCount(); row ++) {
-						String x = (String) (tableModel.getValueAt(row, 0));
-						String y = (String) (tableModel.getValueAt(row, 1));
-                        String heading = (String) (tableModel.getValueAt(row, 2));
-                        String velocity = (String) (tableModel.getValueAt(row, 3));
-                        
-                        if(velocity.equals("unconstrained")) {
-                            out.write(x + "," + y + "," + heading + "\n");
-                        }
-                        else {
-                            out.write(x + "," + y + "," + heading + "," + velocity + "\n");
-                        }
-					}
+                    TrajectoryVisualizerParameters params = new TrajectoryVisualizerParameters();
+                    params.maxAcceleration = maxAccel;
+                    params.maxVelocity = maxVel;
+                    params.basePlateWidth = base;
+                    params.alpha = a;
+                    params.segmentCount = segmentCount;
+
+                    switch(selectedType) {
+                    case QUINTIC_HERMITE:
+                        params.pathType = QHERMITE;
+                        break;
+                    case CUBIC_HERMITE:
+                        params.pathType = CHERMITE;
+                        break;
+                    case BEZIER:
+                        params.pathType = BEZIER;
+                        break;
+                    }
+                    Waypoint[] paramsWaypoints = new Waypoint[waypoints.size()];
+                    waypoints.toArray(paramsWaypoints);
+                    params.waypoints = paramsWaypoints;
+                    
+                    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                    out.write(gson.toJson(params));
+
 					JOptionPane.showMessageDialog(mainFrame, "Data saved successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
 				}
 				catch (IOException e1) {
@@ -752,7 +759,7 @@ public class TrajectoryVisualizationTool {
 			JFileChooser fc = new JFileChooser();
 			fc.setDialogTitle("Load File...");
 			fc.setAcceptAllFileFilterUsed(false);
-			fc.setFileFilter(new CSVFilter());
+			fc.setFileFilter(new JsonFilter());
 			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			
 			int ret = fc.showOpenDialog(mainFrame);

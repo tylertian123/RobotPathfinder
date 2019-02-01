@@ -54,7 +54,5 @@ public class DebugTests {
         JFrame f1 = Grapher.graphTrajectory(traj1, 0.001, true);
         f1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f1.setVisible(true);
-
-        System.out.println(traj1.get(traj1.totalTime()).getFacingAbsolute());
 	}
 }

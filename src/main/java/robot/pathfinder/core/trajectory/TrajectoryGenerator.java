@@ -72,7 +72,6 @@ final public class TrajectoryGenerator {
      */
     public static TankDriveTrajectory generateRotationTank(RobotSpecs specs, double angle) {
         double distPerRadian = specs.getBaseWidth() / 2;
-        TrajectoryParams params = new TrajectoryParams();
         
         TankDriveTrajectory raw = generateStraightTank(specs, Math.abs(angle) * distPerRadian);
         raw.path = null;

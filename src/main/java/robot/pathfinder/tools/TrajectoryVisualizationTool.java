@@ -285,7 +285,7 @@ public class TrajectoryVisualizationTool {
 		}
     }
 
-    static void saveAsJSON(String path, double maxVel, double maxAccel, double baseWidth, double alpha, int segmentCount, 
+    static void saveAsJson(String path, double maxVel, double maxAccel, double baseWidth, double alpha, int segmentCount, 
             PathType pathType) throws IOException {
         if(!path.endsWith(".json"))
             path += ".json";
@@ -320,7 +320,7 @@ public class TrajectoryVisualizationTool {
             throw e;
         }
     }
-    static void loadJSON(File file) throws IOException {
+    static void loadJson(File file) throws IOException {
         try(BufferedReader in = new BufferedReader(new FileReader(file))) {
             // Read in the JSON
             Gson gson = new GsonBuilder().registerTypeAdapter(Waypoint.class, new WaypointDeserializer()).create();
@@ -395,7 +395,114 @@ public class TrajectoryVisualizationTool {
             throw e;
         }
     }
-	
+    static void saveAsCsv(String path, double maxVel, double maxAccel, double baseWidth, double alpha, int segmentCount, 
+            PathType pathType) throws IOException {
+        if(!path.endsWith(".csv"))
+            path += ".csv";
+
+        try(BufferedWriter out = new BufferedWriter(new FileWriter(path))) {
+            out.write(maxVel + "," + maxAccel + "," + baseWidth + "," + alpha + "," + segmentCount + ",");
+            switch(selectedType) {
+            case QUINTIC_HERMITE:
+                out.write("Q");
+                break;
+            case CUBIC_HERMITE:
+                out.write("C");
+                break;
+            case BEZIER:
+                out.write("B");
+                break;
+            }
+            out.write(",");
+            if(isTank.isSelected()) {
+                out.write("TankDriveTrajectory");
+            }
+            else {
+                out.write("BasicTrajectory");
+            }
+            out.write("\n");
+
+            WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
+            for(int row = 0; row < tableModel.getRowCount(); row ++) {
+                String x = (String) (tableModel.getValueAt(row, 0));
+                String y = (String) (tableModel.getValueAt(row, 1));
+                String heading = (String) (tableModel.getValueAt(row, 2));
+                String velocity = (String) (tableModel.getValueAt(row, 3));
+
+                if(velocity.equals("unconstrained")) {
+                    out.write(x + "," + y + "," + heading + "\n");
+                }
+                else {
+                    out.write(x + "," + y + "," + heading + "," + velocity + "\n");
+                }
+            }
+        }
+        catch (IOException e) {
+            throw e;
+        }
+    }
+    static void loadCsv(File file) throws IOException {
+        try(BufferedReader in = new BufferedReader(new FileReader(file))) {
+            String[] parameters = in.readLine().split(",");
+            if(parameters.length < 7) {
+                JOptionPane.showMessageDialog(mainFrame, "Error: The file format is invalid.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            maxVelocity.setText(parameters[0]);
+            maxAcceleration.setText(parameters[1]);
+            baseWidth.setText(parameters[2]);
+            alpha.setText(parameters[3]);
+            segments.setText(parameters[4]);
+
+            switch(parameters[5].trim()) {
+            case "Q":
+                selectedType = PathType.QUINTIC_HERMITE;
+                quinticHermiteButton.setSelected(true);
+                cubicHermiteButton.setSelected(false);
+                bezierButton.setSelected(false);
+                break;
+            case "C":
+                selectedType = PathType.CUBIC_HERMITE;
+                quinticHermiteButton.setSelected(false);
+                cubicHermiteButton.setSelected(true);
+                bezierButton.setSelected(false);
+                break;
+            case "B":
+                selectedType = PathType.BEZIER;
+                quinticHermiteButton.setSelected(false);
+                cubicHermiteButton.setSelected(false);
+                bezierButton.setSelected(true);
+                break;
+            default:
+                JOptionPane.showMessageDialog(mainFrame, "Error: The file format is invalid.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if(parameters[6].trim().equals("TankDriveTrajectory")) {
+                isTank.setSelected(true);
+            }
+            else {
+                isTank.setSelected(false);
+            }
+            
+            waypoints.clear();
+            WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
+            tableModel.setRowCount(0);
+
+            String line;
+            while((line = in.readLine()) != null && !line.equals("")) {
+                String[] point = line.split(",");
+                Waypoint w = point.length < 4 ? new Waypoint(Double.parseDouble(point[0]), Double.parseDouble(point[1]), Math.toRadians(constrainAngle(Double.parseDouble(point[2]))))
+                        : new WaypointEx(Double.parseDouble(point[0]), Double.parseDouble(point[1]), Math.toRadians(constrainAngle(Double.parseDouble(point[2]))), Double.parseDouble(point[3]));
+                waypoints.add(w);
+
+                tableModel.addRow(point.length == 4 ? point : new String[] { point[0], point[1], point[2], "unconstrained" });
+            }
+        }
+        catch (IOException e) {
+            throw e;
+        }
+    }
+ 	
 	TrajectoryVisualizationTool() {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -885,7 +992,13 @@ public class TrajectoryVisualizationTool {
 			if(ret == JFileChooser.APPROVE_OPTION) {
                 String path = fc.getSelectedFile().getAbsolutePath();
                 try {
-                    saveAsJSON(path, maxVel, maxAccel, base, a, segmentCount, selectedType);
+                    // Maintain legacy support for CSV
+                    if(fc.getFileFilter() instanceof JsonFilter) {
+                        saveAsJson(path, maxVel, maxAccel, base, a, segmentCount, selectedType);
+                    }
+                    else {
+                        saveAsCsv(path, maxVel, maxAccel, base, a, segmentCount, selectedType);
+                    }
                     JOptionPane.showMessageDialog(mainFrame, "Data saved successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
                 }
                 catch(IOException e1) {
@@ -909,7 +1022,12 @@ public class TrajectoryVisualizationTool {
 			int ret = fc.showOpenDialog(mainFrame);
 			if(ret == JFileChooser.APPROVE_OPTION) {
 				try {
-                    loadJSON(fc.getSelectedFile());
+                    if(fc.getFileFilter() instanceof JsonFilter) {
+                        loadJson(fc.getSelectedFile());
+                    }
+                    else {
+                        loadCsv(fc.getSelectedFile());
+                    }
                 }
                 catch(IOException e1) {
                     JOptionPane.showMessageDialog(mainFrame, "Load Failed!", "Error", JOptionPane.ERROR_MESSAGE);

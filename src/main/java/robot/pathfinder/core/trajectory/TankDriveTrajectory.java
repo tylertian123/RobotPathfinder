@@ -349,5 +349,60 @@ public class TankDriveTrajectory implements Trajectory {
 		TrajectoryParams newParams = params.clone();
 		newParams.waypoints = newPath.getWaypoints();
 		return new TankDriveTrajectory(newMoments, newPath, specs, newParams);
-	}
+    }
+    
+    /**
+     * Tests for whether this trajectory is smooth.
+     * <p>
+     * A {@link TankDriveTrajectory} is considered "smooth" if and only if the sign of both velocities never change.
+     * That is, no wheel ever reverses direction. 
+     * </p>
+     * @return Whether this trajectory is smooth
+     */
+    public boolean isSmooth() {
+        // Holds the sign of the left and right velocity
+        int lSign = 0, rSign = 0;
+        for(TankDriveMoment m : moments) {
+            if(m.getLeftVelocity() != 0) {
+                // Ignore zero
+                if(m.getLeftVelocity() > 0) {
+                    // Change the sign if needed
+                    if(lSign == 0) {
+                        lSign = 1;
+                    }
+                    // If sign does not match, return false
+                    else if(lSign == -1) {
+                        return false;
+                    }
+                }
+                else {
+                    if(lSign == 0) {
+                        lSign = -1;
+                    }
+                    else if(lSign == 1) {
+                        return false;
+                    }
+                }
+            }
+            if(m.getRightVelocity() != 0) {
+                if(m.getRightVelocity() > 0) {
+                    if(rSign == 0) {
+                        rSign = 1;
+                    }
+                    else if(rSign == -1) {
+                        return false;
+                    }
+                }
+                else {
+                    if(rSign == 0) {
+                        rSign = -1;
+                    }
+                    else if(rSign == 1) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
 }

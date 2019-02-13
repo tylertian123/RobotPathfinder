@@ -12,9 +12,11 @@ buildScan {
 
 dependencies {
     compile files('lib/jmathplot.jar', 'lib/jmathio.jar')
+    compile 'com.google.code.gson:gson:2.8.5'
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
+    testImplementation 'org.hamcrest:hamcrest:2.1'
 }
 
 // In this section you declare where to find the dependencies of your project
@@ -24,7 +26,7 @@ repositories {
     jcenter()
 }
 
-project.version = '2.1.1'
+project.version = '2.2.0-alpha'
 
 // Add sources to the jar
 jar {
@@ -68,6 +70,9 @@ task fatJar(type: Jar, group: 'Build', description: 'Assembles a jar of the libr
 }
 
 task copyJars(type: Copy, group: 'Archive', description: 'Copies all generated jars to the output directory.') {
+    dependsOn jar
+    dependsOn fatJar
+    dependsOn visualizerJar
     from 'build/libs'
     into 'output'
 }

@@ -16,7 +16,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import javax.swing.Box;
@@ -44,6 +46,15 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
 
 import robot.pathfinder.core.RobotSpecs;
 import robot.pathfinder.core.TrajectoryParams;
@@ -80,6 +91,9 @@ public class TrajectoryVisualizationTool {
     static JTextField waypointVelocity = new JTextField();
     // The add/edit waypoint dialog panel
     static JPanel waypointPanel;
+
+    // The table that holds the waypoints
+    static JTable table;
     
     // The number of samples for graphing paths and trajectories
 	static int pathSamples = 200;
@@ -105,13 +119,13 @@ public class TrajectoryVisualizationTool {
 	static ArrayList<Waypoint> waypoints = new ArrayList<Waypoint>();
     
     // Action commands for the radio buttons
-	static final String QHERMITE = "Q";
-	static final String CHERMITE = "C";
-	static final String BEZIER = "B";
-	JRadioButton quinticHermiteButton, cubicHermiteButton, bezierButton;
+	static final String QHERMITE = "quinticHermite";
+	static final String CHERMITE = "cubicHermite";
+	static final String BEZIER = "bezier";
+	static JRadioButton quinticHermiteButton, cubicHermiteButton, bezierButton;
 	static PathType selectedType = PathType.QUINTIC_HERMITE;
 	
-	JCheckBox isTank;
+	static JCheckBox isTank;
     
     // Column names for the waypoint table
 	static final String[] COLUMN_NAMES = new String[] {
@@ -165,8 +179,8 @@ public class TrajectoryVisualizationTool {
 		return angle;
 	}
     
-    // A file filter that only allows CSV files
-	static class CSVFilter extends FileFilter {
+    // A file filter that only allows JSON files
+	static class JsonFilter extends FileFilter {
 
 		@Override
 		public boolean accept(File f) {
@@ -174,10 +188,7 @@ public class TrajectoryVisualizationTool {
 				return true;
 			try {
 				String ext = f.getName().substring(f.getName().lastIndexOf("."));
-				if(ext.equals(".csv"))
-					return true;
-				else
-					return false;
+				return ext.equals(".json");
 			}
 			catch(StringIndexOutOfBoundsException e) {
 				return false;
@@ -186,10 +197,33 @@ public class TrajectoryVisualizationTool {
 
 		@Override
 		public String getDescription() {
-			return "Comma-Separated Values File (*.csv)";
+			return "JSON File (*.json)";
 		}
 		
-	}
+    }
+    
+    // A file filter that only allows CSV files (for compatibility)
+    static class CsvFilter extends FileFilter {
+
+        @Override
+        public boolean accept(File f) {
+            if(f.isDirectory())
+                return true;
+            try {
+                String ext = f.getName().substring(f.getName().lastIndexOf("."));
+                return ext.equals(".csv");
+            }
+            catch(StringIndexOutOfBoundsException e) {
+                return false;
+            }
+        }
+
+        @Override
+        public String getDescription() {
+            return "Comma-Separated Values File (*.csv)";
+        }
+
+    }
     
     /**
      * Custom table model for waypoints.
@@ -209,9 +243,267 @@ public class TrajectoryVisualizationTool {
             // Make the cells all non-editable so only entire rows can be edited at a time via the buttons
 			return false;
 		}
-	}
-	
-	public TrajectoryVisualizationTool() {
+    }
+    
+    // Used for JSON generation
+    static class TrajectoryVisualizerParameters {
+        public double maxVelocity;
+        public double maxAcceleration;
+        public double basePlateWidth;
+        public double alpha;
+        public int segmentCount;
+        
+        public boolean tankDrive;
+        public String pathType;
+
+        public Waypoint[] waypoints;
+    }
+
+    // Custom JSON deserializer
+    // Needed because waypoints are polymorphic
+    static class WaypointDeserializer implements JsonDeserializer<Waypoint> {
+
+		@Override
+		public Waypoint deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+				throws JsonParseException {
+            JsonObject obj = json.getAsJsonObject();
+            // Attempt to get the velocity field
+            JsonElement velocity = obj.get("velocity");
+            JsonElement x = obj.get("x");
+            JsonElement y = obj.get("y");
+            JsonElement heading = obj.get("heading");
+
+            Waypoint waypoint;
+            // If the velocity exists, this waypoint must be a WaypointEx
+            if(velocity != null) {
+                waypoint = new WaypointEx(x.getAsDouble(), y.getAsDouble(), heading.getAsDouble(), velocity.getAsDouble());
+            }
+            else {
+                waypoint = new Waypoint(x.getAsDouble(), y.getAsDouble(), heading.getAsDouble());
+            }
+            return waypoint;
+		}
+    }
+
+    static void saveAsJson(String path, double maxVel, double maxAccel, double baseWidth, double alpha, int segmentCount, 
+            PathType pathType) throws IOException {
+        if(!path.endsWith(".json"))
+            path += ".json";
+
+        try(BufferedWriter out = new BufferedWriter(new FileWriter(path))) {
+            TrajectoryVisualizerParameters params = new TrajectoryVisualizerParameters();
+            params.maxAcceleration = maxAccel;
+            params.maxVelocity = maxVel;
+            params.basePlateWidth = baseWidth;
+            params.alpha = alpha;
+            params.segmentCount = segmentCount;
+
+            switch(selectedType) {
+            case QUINTIC_HERMITE:
+                params.pathType = QHERMITE;
+                break;
+            case CUBIC_HERMITE:
+                params.pathType = CHERMITE;
+                break;
+            case BEZIER:
+                params.pathType = BEZIER;
+                break;
+            }
+            Waypoint[] paramsWaypoints = new Waypoint[waypoints.size()];
+            waypoints.toArray(paramsWaypoints);
+            params.waypoints = paramsWaypoints;
+
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            out.write(gson.toJson(params));
+        }
+        catch (IOException e) {
+            throw e;
+        }
+    }
+    static void loadJson(File file) throws IOException {
+        try(BufferedReader in = new BufferedReader(new FileReader(file))) {
+            // Read in the JSON
+            Gson gson = new GsonBuilder().registerTypeAdapter(Waypoint.class, new WaypointDeserializer()).create();
+            StringBuilder jsonBuilder = new StringBuilder();
+            String line;
+            while((line = in.readLine()) != null) {
+                jsonBuilder.append(line);
+            }
+            String json = jsonBuilder.toString();
+            TrajectoryVisualizerParameters params;
+            try {
+                params = gson.fromJson(json, TrajectoryVisualizerParameters.class);
+            }
+            catch(JsonSyntaxException e1) {
+                JOptionPane.showMessageDialog(mainFrame, "Error: The file format is invalid.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Load the path type
+            switch(params.pathType) {
+            case QHERMITE:
+                selectedType = PathType.QUINTIC_HERMITE;
+                quinticHermiteButton.setSelected(true);
+                cubicHermiteButton.setSelected(false);
+                bezierButton.setSelected(false);
+                break;
+            case CHERMITE:
+                selectedType = PathType.CUBIC_HERMITE;
+                quinticHermiteButton.setSelected(false);
+                cubicHermiteButton.setSelected(true);
+                bezierButton.setSelected(false);
+                break;
+            case BEZIER:
+                selectedType = PathType.BEZIER;
+                quinticHermiteButton.setSelected(false);
+                cubicHermiteButton.setSelected(false);
+                bezierButton.setSelected(true);
+                break;
+            default:
+                JOptionPane.showMessageDialog(mainFrame, "Error: The file format is invalid.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            maxVelocity.setText(String.valueOf(params.maxVelocity));
+            maxAcceleration.setText(String.valueOf(params.maxAcceleration));
+            baseWidth.setText(String.valueOf(params.basePlateWidth));
+            alpha.setText(String.valueOf(params.alpha));
+            segments.setText(String.valueOf(params.segmentCount));
+            // Load the tank drive checkbox
+            if(params.tankDrive) {
+                isTank.setSelected(true);
+            }
+            else {
+                isTank.setSelected(false);
+            }
+            // Load the waypoints
+            waypoints.clear();
+            WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
+            tableModel.setRowCount(0);
+
+            // Fill in the table
+            waypoints = new ArrayList<Waypoint>(Arrays.asList(params.waypoints));
+            for(Waypoint wp : waypoints) {
+                if(wp instanceof WaypointEx) {
+                    tableModel.addRow(new String[] { String.valueOf(wp.getX()), String.valueOf(wp.getY()), String.valueOf(Math.toDegrees(wp.getHeading())), String.valueOf(((WaypointEx) wp).getVelocity()) });
+                }
+                else {
+                    tableModel.addRow(new String[] { String.valueOf(wp.getX()), String.valueOf(wp.getY()), String.valueOf(Math.toDegrees(wp.getHeading())), "unconstrained" });
+                }
+            }
+        }
+        catch (IOException e) {
+            throw e;
+        }
+    }
+    static void saveAsCsv(String path, double maxVel, double maxAccel, double baseWidth, double alpha, int segmentCount, 
+            PathType pathType) throws IOException {
+        if(!path.endsWith(".csv"))
+            path += ".csv";
+
+        try(BufferedWriter out = new BufferedWriter(new FileWriter(path))) {
+            out.write(maxVel + "," + maxAccel + "," + baseWidth + "," + alpha + "," + segmentCount + ",");
+            switch(selectedType) {
+            case QUINTIC_HERMITE:
+                out.write("Q");
+                break;
+            case CUBIC_HERMITE:
+                out.write("C");
+                break;
+            case BEZIER:
+                out.write("B");
+                break;
+            }
+            out.write(",");
+            if(isTank.isSelected()) {
+                out.write("TankDriveTrajectory");
+            }
+            else {
+                out.write("BasicTrajectory");
+            }
+            out.write("\n");
+
+            WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
+            for(int row = 0; row < tableModel.getRowCount(); row ++) {
+                String x = (String) (tableModel.getValueAt(row, 0));
+                String y = (String) (tableModel.getValueAt(row, 1));
+                String heading = (String) (tableModel.getValueAt(row, 2));
+                String velocity = (String) (tableModel.getValueAt(row, 3));
+
+                if(velocity.equals("unconstrained")) {
+                    out.write(x + "," + y + "," + heading + "\n");
+                }
+                else {
+                    out.write(x + "," + y + "," + heading + "," + velocity + "\n");
+                }
+            }
+        }
+        catch (IOException e) {
+            throw e;
+        }
+    }
+    static void loadCsv(File file) throws IOException {
+        try(BufferedReader in = new BufferedReader(new FileReader(file))) {
+            String[] parameters = in.readLine().split(",");
+            if(parameters.length < 7) {
+                JOptionPane.showMessageDialog(mainFrame, "Error: The file format is invalid.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            maxVelocity.setText(parameters[0]);
+            maxAcceleration.setText(parameters[1]);
+            baseWidth.setText(parameters[2]);
+            alpha.setText(parameters[3]);
+            segments.setText(parameters[4]);
+
+            switch(parameters[5].trim()) {
+            case "Q":
+                selectedType = PathType.QUINTIC_HERMITE;
+                quinticHermiteButton.setSelected(true);
+                cubicHermiteButton.setSelected(false);
+                bezierButton.setSelected(false);
+                break;
+            case "C":
+                selectedType = PathType.CUBIC_HERMITE;
+                quinticHermiteButton.setSelected(false);
+                cubicHermiteButton.setSelected(true);
+                bezierButton.setSelected(false);
+                break;
+            case "B":
+                selectedType = PathType.BEZIER;
+                quinticHermiteButton.setSelected(false);
+                cubicHermiteButton.setSelected(false);
+                bezierButton.setSelected(true);
+                break;
+            default:
+                JOptionPane.showMessageDialog(mainFrame, "Error: The file format is invalid.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if(parameters[6].trim().equals("TankDriveTrajectory")) {
+                isTank.setSelected(true);
+            }
+            else {
+                isTank.setSelected(false);
+            }
+            
+            waypoints.clear();
+            WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
+            tableModel.setRowCount(0);
+
+            String line;
+            while((line = in.readLine()) != null && !line.equals("")) {
+                String[] point = line.split(",");
+                Waypoint w = point.length < 4 ? new Waypoint(Double.parseDouble(point[0]), Double.parseDouble(point[1]), Math.toRadians(constrainAngle(Double.parseDouble(point[2]))))
+                        : new WaypointEx(Double.parseDouble(point[0]), Double.parseDouble(point[1]), Math.toRadians(constrainAngle(Double.parseDouble(point[2]))), Double.parseDouble(point[3]));
+                waypoints.add(w);
+
+                tableModel.addRow(point.length == 4 ? point : new String[] { point[0], point[1], point[2], "unconstrained" });
+            }
+        }
+        catch (IOException e) {
+            throw e;
+        }
+    }
+ 	
+	TrajectoryVisualizationTool() {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
@@ -238,7 +530,7 @@ public class TrajectoryVisualizationTool {
 		mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
         // Waypoint table
-		JTable table = new JTable(new WaypointTableModel(COLUMN_NAMES, 0));
+		table = new JTable(new WaypointTableModel(COLUMN_NAMES, 0));
 		table.setCellSelectionEnabled(false);
 		table.setRowSelectionAllowed(true);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -627,8 +919,8 @@ public class TrajectoryVisualizationTool {
 				double heading = w.getHeading();
                 String angle = specialAngles.containsKey(heading) ? specialAngles.get(heading) : String.valueOf(heading);
                 // Create different code for WaypointEx
-                String waypointCode = w instanceof WaypointEx ? "\t\tnew WaypointEx(" + w.getX() + ", " + w.getY() + ", " + angle + ", " + ((WaypointEx) w).getVelocity() + "),\n" 
-                        : "\t\tnew Waypoint(" + w.getX() + ", " + w.getY() + ", " + angle + "),\n";
+                String waypointCode = w instanceof WaypointEx ? "\tnew WaypointEx(" + w.getX() + ", " + w.getY() + ", " + angle + ", " + ((WaypointEx) w).getVelocity() + "),\n" 
+                        : "\tnew Waypoint(" + w.getX() + ", " + w.getY() + ", " + angle + "),\n";
 				generatedCode.append(waypointCode);
 			}
 			generatedCode.append("};\n");
@@ -688,60 +980,31 @@ public class TrajectoryVisualizationTool {
 				return;
 			}
             
-            // Choose a csv to save
+            // Choose a json to save
 			JFileChooser fc = new JFileChooser();
 			fc.setDialogTitle("Save As...");
-			fc.setAcceptAllFileFilterUsed(false);
-			fc.setFileFilter(new CSVFilter());
+            fc.setAcceptAllFileFilterUsed(false);
+            fc.addChoosableFileFilter(new JsonFilter());
+            fc.addChoosableFileFilter(new CsvFilter());
 			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			
 			int ret = fc.showSaveDialog(mainFrame);
 			if(ret == JFileChooser.APPROVE_OPTION) {
-				String path = fc.getSelectedFile().getAbsolutePath();
-				if(!path.endsWith(".csv"))
-					path += ".csv";
-				
-				try(BufferedWriter out = new BufferedWriter(new FileWriter(path))) {
-					out.write(maxVel + "," + maxAccel + "," + base + "," + a + "," + segmentCount + ",");
-					switch(selectedType) {
-					case QUINTIC_HERMITE:
-						out.write(QHERMITE);
-						break;
-					case CUBIC_HERMITE:
-						out.write(CHERMITE);
-						break;
-					case BEZIER:
-						out.write(BEZIER);
-						break;
-					}
-					out.write(",");
-					if(isTank.isSelected()) {
-						out.write("TankDriveTrajectory");
-					}
-					else {
-						out.write("BasicTrajectory");
-					}
-					out.write("\n");
-					
-					WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
-					for(int row = 0; row < tableModel.getRowCount(); row ++) {
-						String x = (String) (tableModel.getValueAt(row, 0));
-						String y = (String) (tableModel.getValueAt(row, 1));
-                        String heading = (String) (tableModel.getValueAt(row, 2));
-                        String velocity = (String) (tableModel.getValueAt(row, 3));
-                        
-                        if(velocity.equals("unconstrained")) {
-                            out.write(x + "," + y + "," + heading + "\n");
-                        }
-                        else {
-                            out.write(x + "," + y + "," + heading + "," + velocity + "\n");
-                        }
-					}
-					JOptionPane.showMessageDialog(mainFrame, "Data saved successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
-				}
-				catch (IOException e1) {
-					e1.printStackTrace();
-				}
+                String path = fc.getSelectedFile().getAbsolutePath();
+                try {
+                    // Maintain legacy support for CSV
+                    if(fc.getFileFilter() instanceof JsonFilter) {
+                        saveAsJson(path, maxVel, maxAccel, base, a, segmentCount, selectedType);
+                    }
+                    else {
+                        saveAsCsv(path, maxVel, maxAccel, base, a, segmentCount, selectedType);
+                    }
+                    JOptionPane.showMessageDialog(mainFrame, "Data saved successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                }
+                catch(IOException e1) {
+                    e1.printStackTrace();
+                    JOptionPane.showMessageDialog(mainFrame, "Failed to save data!", "Error", JOptionPane.ERROR_MESSAGE);
+                }
 			}
 		});
 		fileMenu.add(saveMenuItem);
@@ -752,77 +1015,23 @@ public class TrajectoryVisualizationTool {
 			JFileChooser fc = new JFileChooser();
 			fc.setDialogTitle("Load File...");
 			fc.setAcceptAllFileFilterUsed(false);
-			fc.setFileFilter(new CSVFilter());
+            fc.addChoosableFileFilter(new JsonFilter());
+            fc.addChoosableFileFilter(new CsvFilter());
 			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			
 			int ret = fc.showOpenDialog(mainFrame);
 			if(ret == JFileChooser.APPROVE_OPTION) {
-				try(BufferedReader in = new BufferedReader(new FileReader(fc.getSelectedFile()))) {
-					String[] parameters = in.readLine().split(",");
-					if(parameters.length < 7) {
-						JOptionPane.showMessageDialog(mainFrame, "Error: The file format is invalid.", "Error", JOptionPane.ERROR_MESSAGE);
-						return;
-					}
-					maxVelocity.setText(parameters[0]);
-					maxAcceleration.setText(parameters[1]);
-					baseWidth.setText(parameters[2]);
-					alpha.setText(parameters[3]);
-					segments.setText(parameters[4]);
-					
-					switch(parameters[5].trim()) {
-					case QHERMITE:
-						selectedType = PathType.QUINTIC_HERMITE;
-						quinticHermiteButton.setSelected(true);
-						cubicHermiteButton.setSelected(false);
-						bezierButton.setSelected(false);
-						break;
-					case CHERMITE:
-						selectedType = PathType.CUBIC_HERMITE;
-						quinticHermiteButton.setSelected(false);
-						cubicHermiteButton.setSelected(true);
-						bezierButton.setSelected(false);
-						break;
-					case BEZIER:
-						selectedType = PathType.BEZIER;
-						quinticHermiteButton.setSelected(false);
-						cubicHermiteButton.setSelected(false);
-						bezierButton.setSelected(true);
-						break;
-					default:
-						JOptionPane.showMessageDialog(mainFrame, "Error: The file format is invalid.", "Error", JOptionPane.ERROR_MESSAGE);
-						return;
-					}
-					if(parameters[6].trim().equals("TankDriveTrajectory")) {
-						isTank.setSelected(true);
-					}
-					else {
-						isTank.setSelected(false);
-					}
-					
-					in.mark(512);
-					String nextLine;
-					if((nextLine = in.readLine()) == null || nextLine.equals(""))
-						return;
-					in.reset();
-					
-					waypoints.clear();
-					WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
-					tableModel.setRowCount(0);
-					
-					String line;
-					while((line = in.readLine()) != null && !line.equals("")) {
-                        String[] point = line.split(",");
-                        Waypoint w = point.length < 4 ? new Waypoint(Double.parseDouble(point[0]), Double.parseDouble(point[1]), Math.toRadians(constrainAngle(Double.parseDouble(point[2]))))
-                                : new WaypointEx(Double.parseDouble(point[0]), Double.parseDouble(point[1]), Math.toRadians(constrainAngle(Double.parseDouble(point[2]))), Double.parseDouble(point[3]));
-                        waypoints.add(w);
-                    
-						tableModel.addRow(point.length == 4 ? point : new String[] { point[0], point[1], point[2], "unconstrained" });
-					}
-				}
-				catch (IOException e1) {
-					e1.printStackTrace();
-				}
-				
+				try {
+                    if(fc.getFileFilter() instanceof JsonFilter) {
+                        loadJson(fc.getSelectedFile());
+                    }
+                    else {
+                        loadCsv(fc.getSelectedFile());
+                    }
+                }
+                catch(IOException e1) {
+                    JOptionPane.showMessageDialog(mainFrame, "Load Failed!", "Error", JOptionPane.ERROR_MESSAGE);
+                }
 			}
 		});
 		fileMenu.add(loadMenuItem);

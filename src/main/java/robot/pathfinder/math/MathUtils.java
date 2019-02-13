@@ -249,7 +249,7 @@ public class MathUtils {
 		}
 		else if(diff <= -Math.PI) {
 			diff += 2 * Math.PI;
-		}
+        }
 		
 		return diff;
 	}

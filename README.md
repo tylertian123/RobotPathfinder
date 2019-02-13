@@ -60,7 +60,8 @@ Setup instructions for Eclipse:
 
 ## Documentation
 All classes and methods are documented with JavaDocs, in `RobotPathfinder-Doc-(VERSION).zip`.\
-Examples can be found under the `examples` directory.<br><br>
+Head over to the wiki for tutorials and examples!
+More examples can be found under the `examples` directory.<br><br>
 
 ## GUI Trajectory Visualization Tool
 A GUI Trajectory Visualization Tool in the form of an executable jar is included with every release.

@@ -12,6 +12,11 @@ public:
     Vec2D& operator+=(const Vec2D&);
     Vec2D operator-(const Vec2D &) const;
     Vec2D& operator-=(const Vec2D&);
+    Vec2D operator*(double) const;
+    Vec2D& operator*=(double);
+    friend Vec2D operator*(double, const Vec2D &);
+    Vec2D operator/(double) const;
+    Vec2D& operator/=(double);
 
 protected:
     double x, y;

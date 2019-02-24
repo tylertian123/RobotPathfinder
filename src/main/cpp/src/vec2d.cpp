@@ -28,3 +28,22 @@ Vec2D& Vec2D::operator-=(const Vec2D &other) {
     y -= other.y;
     return *this;
 }
+Vec2D Vec2D::operator*(double scalar) const {
+    return Vec2D(x * scalar, y * scalar);
+}
+Vec2D operator*(double scalar, const Vec2D &vec) {
+    return Vec2D(vec.x * scalar, vec.y * scalar);
+}
+Vec2D& Vec2D::operator*=(double scalar) {
+    x *= scalar;
+    y *= scalar;
+    return *this;
+}
+Vec2D Vec2D::operator/(double scalar) const {
+    return Vec2D(x / scalar, y / scalar);
+}
+Vec2D& Vec2D::operator/=(double scalar) {
+    x /= scalar;
+    y /= scalar;
+    return *this;
+}

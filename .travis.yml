@@ -13,6 +13,7 @@ install:
   # chmod the wrapper to be executable
   - sudo chmod +x ./gradlew
   - ./gradlew --version
+  - ./gradlew installRoboRioToolchain
 
 script:
   - ./gradlew build --scan -s

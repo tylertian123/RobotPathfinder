@@ -1,5 +1,7 @@
 #pragma once
 
-class BasicTrajectory {
+namespace rpf {
+    class BasicTrajectory {
 
-};
+    };
+}

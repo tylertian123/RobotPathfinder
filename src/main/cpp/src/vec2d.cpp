@@ -21,6 +21,18 @@ namespace rpf {
     double Vec2D::magnitude() const {
         return std::sqrt(x * x + y * y);
     }
+    double Vec2D::dot(const Vec2D &other) const {
+        return x * other.x + y * other.y;
+    }
+    Vec2D Vec2D::proj(const Vec2D &other) const {
+        double mag = dot(other) / other.magnitude();
+        Vec2D v(other);
+        v.normalize();
+        return v * mag;
+    }
+    Vec2D Vec2D::reflect(const Vec2D &other) const {
+        return proj(other) * 2 - *this;
+    }
 
     Vec2D Vec2D::lerp(const Vec2D &a, const Vec2D &b, double f) {
         return Vec2D(rpf::lerp(a.x, b.x, f), rpf::lerp(a.y, b.y, f));

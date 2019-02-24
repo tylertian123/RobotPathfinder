@@ -10,6 +10,9 @@ namespace rpf {
         double dist(const Vec2D &) const;
         void normalize();
         double magnitude() const;
+        double dot(const Vec2D &) const;
+        Vec2D proj(const Vec2D &) const;
+        Vec2D reflect(const Vec2D &) const;
 
         Vec2D operator+(const Vec2D &) const;
         Vec2D& operator+=(const Vec2D&);

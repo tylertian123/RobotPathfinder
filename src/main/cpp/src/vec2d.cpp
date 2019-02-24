@@ -1,5 +1,6 @@
 #include "vec2d.h"
 #include <cmath>
+#include "rpfmath.h"
 
 double Vec2D::get_x() const {
     return x;
@@ -10,6 +11,18 @@ double Vec2D::get_y() const {
 
 double Vec2D::dist(const Vec2D &other) const {
     return std::sqrt(std::pow(x - other.x, 2) + std::pow(y - other.y, 2));
+}
+void Vec2D::normalize() {
+    double mag = magnitude();
+    x /= mag;
+    y /= mag;
+}
+double Vec2D::magnitude() const {
+    return std::sqrt(x * x + y * y);
+}
+
+Vec2D Vec2D::lerp(const Vec2D &a, const Vec2D &b, double f) {
+    return Vec2D(rpf::lerp(a.x, b.x, f), rpf::lerp(a.y, b.y, f));
 }
 
 Vec2D Vec2D::operator+(const Vec2D &other) const {

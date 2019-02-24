@@ -4,6 +4,7 @@ namespace rpf {
     class Vec2D {
     public:
         Vec2D(double x, double y) : x(x), y(y) {}
+        Vec2D() : x(0), y(0) {}
 
         double get_x() const;
         double get_y() const;

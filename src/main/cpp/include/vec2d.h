@@ -6,7 +6,12 @@ public:
 
     double get_x() const;
     double get_y() const;
-    double dist(const Vec2D &other) const;
+    double dist(const Vec2D &) const;
+
+    Vec2D operator+(const Vec2D &) const;
+    Vec2D& operator+=(const Vec2D&);
+    Vec2D operator-(const Vec2D &) const;
+    Vec2D& operator-=(const Vec2D&);
 
 protected:
     double x, y;

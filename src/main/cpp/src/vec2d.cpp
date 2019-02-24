@@ -11,7 +11,7 @@ namespace rpf {
     }
 
     double Vec2D::dist(const Vec2D &other) const {
-        return std::sqrt(std::pow(x - other.x, 2) + std::pow(y - other.y, 2));
+        return std::sqrt((x - other.x) * (x - other.x) + (y - other.y) * (y - other.y));
     }
     void Vec2D::normalize() {
         double mag = magnitude();

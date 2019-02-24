@@ -1,7 +1,6 @@
 #pragma once
 
 #include "splinesegment.h"
-#include "vec2d.h"
 
 namespace rpf {
     class BezierSegment : public SplineSegment {

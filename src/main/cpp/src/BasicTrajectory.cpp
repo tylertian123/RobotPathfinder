@@ -1,5 +1,5 @@
-#include "BasicTrajectory.h"
+#include "basictrajectory.h"
 
 class BasicTrajectory {
-    
+
 };

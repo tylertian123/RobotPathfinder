@@ -25,7 +25,10 @@ namespace rpf {
         std::pair<Vec2D, Vec2D> wheels_at(double) const;
         
         double compute_len(int);
-        
+        double get_len() const;
+
+        double s2t(double) const;
+        double t2s(double) const;
 
     protected:
         Path() {}

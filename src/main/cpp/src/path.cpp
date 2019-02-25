@@ -1,5 +1,7 @@
 #include "path.h"
+#include "rpfmath.h"
 #include <cmath>
+#include <stdexcept>
 
 namespace rpf {
     void Path::set_base(double base_radius) {
@@ -65,6 +67,91 @@ namespace rpf {
             last = current;
         }
         return total_len;
+    }
+    double Path::get_len() const {
+        return total_len;
+    }
+
+    double Path::s2t(double s) const {
+        if(s2t_table.size() == 0) {
+            throw std::runtime_error("Lookup table not generated");
+        }
+        
+        double dist = s * total_len;
+        int start = 0;
+        int end = s2t_table.size() - 1;
+        int mid;
+
+        if(dist > s2t_table[end - 1].first) {
+            return 1;
+        }
+        while(true) {
+            mid = (start + end) / 2;
+            double mid_dist = s2t_table[mid].first;
+
+            if(mid_dist == dist) {
+                return s2t_table[mid].second;
+            }
+            if(mid == s2t_table.size() - 1) {
+                return 1;
+            }
+            if(mid == 0) {
+                return 0;
+            }
+
+            double next = s2t_table[mid + 1].first;
+            if(mid_dist <= dist && dist <= next) {
+                double f = (dist - mid_dist) / (next - mid_dist);
+                return rpf::lerp(s2t_table[mid].second, s2t_table[mid + 1].second, f);
+            }
+            
+            if(mid_dist < dist) {
+                start = mid;
+            }
+            else {
+                end = mid;
+            }
+        }
+    }
+    double Path::t2s(double t) const {
+        if(s2t_table.size() == 0) {
+            throw std::runtime_error("Lookup table not generated");
+        }
+        
+        int start = 0;
+        int end = s2t_table.size() - 1;
+        int mid;
+
+        if(t >= 1) {
+            return 1;
+        }
+        while(true) {
+            mid = (start + end) / 2;
+            double mid_t = s2t_table[mid].second;
+
+            if(mid_t == t) {
+                return s2t_table[mid].first / total_len;
+            }
+            if(mid == s2t_table.size() - 1) {
+                return 1;
+            }
+            if(mid == 0) {
+                return 0;
+            }
+            
+            double next = s2t_table[mid + 1].second;
+            if(mid_t <= t && t <= next) {
+                double f = (t - mid_t) / (next - mid_t);
+                return rpf::lerp(s2t_table[mid].first, s2t_table[mid + 1].first, f) / total_len;
+            }
+
+            if(mid_t < t) {
+                start = mid;
+            }
+            else {
+                end = mid;
+            }
+        }
     }
 }
 

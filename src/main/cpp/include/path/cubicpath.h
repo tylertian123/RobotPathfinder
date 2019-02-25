@@ -1,6 +1,6 @@
 #pragma once
 
-#include "cubicsegment.h"
+#include "segment/cubicsegment.h"
 #include "path.h"
 #include "math/vec2d.h"
 #include <stdexcept>

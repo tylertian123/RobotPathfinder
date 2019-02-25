@@ -1,6 +1,6 @@
 #pragma once
 
-#include "quinticsegment.h"
+#include "segment/quinticsegment.h"
 #include "path.h"
 #include "math/vec2d.h"
 #include <stdexcept>

@@ -42,6 +42,8 @@ namespace rpf {
         std::shared_ptr<Path> mirror_lr() const;
         std::shared_ptr<Path> retrace() const;
 
+        static std::shared_ptr<Path> construct_path(const std::vector<Waypoint> &, double, PathType);
+
     protected:
         std::vector<Waypoint> waypoints;
         double alpha;

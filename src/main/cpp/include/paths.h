@@ -1,6 +1,6 @@
 #pragma once
 
-#include "path.h"
-#include "bezierpath.h"
-#include "cubicpath.h"
-#include "quinticpath.h"
+#include "path/path.h"
+#include "path/bezierpath.h"
+#include "path/cubicpath.h"
+#include "path/quinticpath.h"

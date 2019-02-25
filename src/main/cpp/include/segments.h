@@ -1,6 +1,6 @@
 #pragma once
 
-#include "splinesegment.h"
-#include "beziersegment.h"
-#include "cubicsegment.h"
-#include "quinticsegment.h"
+#include "segment/splinesegment.h"
+#include "segment/beziersegment.h"
+#include "segment/cubicsegment.h"
+#include "segment/quinticsegment.h"

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "beziersegment.h"
+#include "segment/beziersegment.h"
 #include "path.h"
 #include "math/vec2d.h"
 #include <stdexcept>

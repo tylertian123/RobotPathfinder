@@ -1,5 +1,6 @@
 #include "path/path.h"
 #include "math/rpfmath.h"
+#include "paths.h"
 #include <cmath>
 #include <stdexcept>
 
@@ -168,6 +169,17 @@ namespace rpf {
     }
     void Path::set_backwards(bool backwards) {
         this->backwards = backwards;
+    }
+
+    static std::shared_ptr<Path> construct_path(const std::vector<Waypoint> &waypoints, double alpha, PathType type) {
+        switch(type) {
+        case PathType::BEZIER:
+            return std::make_shared<BezierPath>(waypoints, alpha);
+        case PathType::CUBIC_HERMITE:
+            return std::make_shared<CubicPath>(waypoints, alpha);
+        case PathType::QUINTIC_HERMITE:
+            return std::make_shared<QuinticPath>(waypoints, alpha);
+        }
     }
 }
 

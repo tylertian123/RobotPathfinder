@@ -1,6 +1,6 @@
-#include "vec2d.h"
+#include "math/vec2d.h"
 #include <cmath>
-#include "rpfmath.h"
+#include "math/rpfmath.h"
 
 namespace rpf {
     double Vec2D::get_x() const {

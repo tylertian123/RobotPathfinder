@@ -2,7 +2,7 @@
 
 #include "beziersegment.h"
 #include "path.h"
-#include "vec2d.h"
+#include "math/vec2d.h"
 #include <stdexcept>
 #include <cmath>
 

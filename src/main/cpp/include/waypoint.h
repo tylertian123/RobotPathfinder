@@ -1,7 +1,7 @@
 #pragma once
 
 #include <limits>
-#include "vec2d.h"
+#include "math/vec2d.h"
 
 namespace rpf {
     struct Waypoint {

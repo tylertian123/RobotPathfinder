@@ -1,4 +1,4 @@
-#include "rpfmath.h"
+#include "math/rpfmath.h"
 
 namespace rpf {
     double lerp(double a, double b, double f) {

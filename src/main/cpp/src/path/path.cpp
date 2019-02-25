@@ -1,5 +1,5 @@
 #include "path/path.h"
-#include "rpfmath.h"
+#include "math/rpfmath.h"
 #include <cmath>
 #include <stdexcept>
 

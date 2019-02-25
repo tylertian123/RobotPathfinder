@@ -1,6 +1,6 @@
 #pragma once
 
-#include "vec2d.h"
+#include "math/vec2d.h"
 
 namespace rpf {
     class SplineSegment {

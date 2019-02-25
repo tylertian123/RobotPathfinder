@@ -16,6 +16,8 @@ namespace rpf {
 
     class Path {
     public:
+        Path() = delete;
+
         void set_base(double);
         double get_base() const;
 
@@ -36,9 +38,11 @@ namespace rpf {
         bool get_backwards() const;
         void set_backwards(bool);
 
-    protected:
-        Path() {}
+        Path mirror_fb() const;
+        Path mirror_lr() const;
+        Path retrace() const;
 
+    protected:
         std::vector<Waypoint> waypoints;
         double alpha;
         std::vector<std::unique_ptr<SplineSegment>> segments;

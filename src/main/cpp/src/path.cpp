@@ -166,7 +166,7 @@ namespace rpf {
     bool Path::get_backwards() const {
         return backwards;
     }
-    void Path::set_backwards(bool backwards) const {
+    void Path::set_backwards(bool backwards) {
         this->backwards = backwards;
     }
 }

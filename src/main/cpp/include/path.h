@@ -16,6 +16,14 @@ namespace rpf {
 
     class Path {
     public:
+        void set_base(double);
+        double get_base() const;
+
+        Vec2D at(double) const;
+        Vec2D deriv_at(double) const;
+        Vec2D second_deriv_at(double) const;
+
+        std::pair<Vec2D, Vec2D> wheels_at(double) const;
 
     protected:
         Path() {}

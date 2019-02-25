@@ -55,13 +55,13 @@ namespace rpf {
         Vec2D last = at(0);
         total_len = 0;
         s2t_table.resize(points);
-        s2t_table.push_back(std::pair(0, 0));
+        s2t_table.push_back(std::pair<double, double>(0, 0));
 
         for(int i = 1; i < points; i ++) {
             Vec2D current = at(i * dt);
             total_len += last.dist(current);
 
-            s2t_table.push_back(std::pair(total_len, i * dt));
+            s2t_table.push_back(std::pair<double, double>(total_len, i * dt));
             last = current;
         }
         return total_len;

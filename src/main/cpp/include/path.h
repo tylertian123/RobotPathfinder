@@ -22,8 +22,10 @@ namespace rpf {
         Vec2D at(double) const;
         Vec2D deriv_at(double) const;
         Vec2D second_deriv_at(double) const;
-
         std::pair<Vec2D, Vec2D> wheels_at(double) const;
+        
+        double compute_len(int);
+        
 
     protected:
         Path() {}

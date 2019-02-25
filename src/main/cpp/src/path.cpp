@@ -153,5 +153,21 @@ namespace rpf {
             }
         }
     }
+
+    double Path::get_alpha() const {
+        return alpha;
+    }
+    PathType Path::get_type() const {
+        return type;
+    }
+    std::vector<Waypoint> Path::get_waypoints() const {
+        return waypoints;
+    }
+    bool Path::get_backwards() const {
+        return backwards;
+    }
+    void Path::set_backwards(bool backwards) const {
+        this->backwards = backwards;
+    }
 }
 

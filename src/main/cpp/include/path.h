@@ -30,10 +30,17 @@ namespace rpf {
         double s2t(double) const;
         double t2s(double) const;
 
+        double get_alpha() const;
+        PathType get_type() const;
+        std::vector<Waypoint> get_waypoints() const;
+        bool get_backwards() const;
+        void set_backwards(bool);
+
     protected:
         Path() {}
 
         std::vector<Waypoint> waypoints;
+        double alpha;
         std::vector<std::unique_ptr<SplineSegment>> segments;
         PathType type;
         

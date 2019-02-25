@@ -16,7 +16,7 @@ namespace rpf {
 
     class Path {
     public:
-        Path() = delete;
+        virtual ~Path() = 0;
 
         void set_base(double);
         double get_base() const;
@@ -38,9 +38,9 @@ namespace rpf {
         bool get_backwards() const;
         void set_backwards(bool);
 
-        Path mirror_fb() const;
-        Path mirror_lr() const;
-        Path retrace() const;
+        std::shared_ptr<Path> mirror_fb() const;
+        std::shared_ptr<Path> mirror_lr() const;
+        std::shared_ptr<Path> retrace() const;
 
     protected:
         std::vector<Waypoint> waypoints;

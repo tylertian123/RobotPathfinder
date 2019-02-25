@@ -1,7 +1,7 @@
 #pragma once
 
 #include "waypoint.h"
-#include "splinesegment.h"
+#include "segment/splinesegment.h"
 #include <memory>
 #include <vector>
 #include <limits>

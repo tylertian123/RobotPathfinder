@@ -1,4 +1,4 @@
-#include "quinticsegment.h"
+#include "segment/quinticsegment.h"
 #include <cmath>
 
 namespace rpf {

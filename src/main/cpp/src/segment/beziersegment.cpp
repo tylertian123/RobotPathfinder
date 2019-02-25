@@ -1,4 +1,4 @@
-#include "beziersegment.h"
+#include "segment/beziersegment.h"
 
 namespace rpf {
     BezierSegment BezierSegment::from_hermite(const Vec2D &at0, const Vec2D &at1, 

@@ -1,4 +1,4 @@
-#include "cubicsegment.h"
+#include "segment/cubicsegment.h"
 #include <cmath>
 
 namespace rpf {

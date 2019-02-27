@@ -45,6 +45,30 @@ JNIEXPORT void JNICALL Java_robot_pathfinder_core_path_JNIPath__1setBaseRadius
 JNIEXPORT void JNICALL Java_robot_pathfinder_core_path_JNIPath__1setBackwards
   (JNIEnv *, jobject, jboolean);
 
+/*
+ * Class:     robot_pathfinder_core_path_JNIPath
+ * Method:    _at
+ * Signature: (D)Lrobot/pathfinder/math/Vec2D;
+ */
+JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath__1at
+  (JNIEnv *, jobject, jdouble);
+
+/*
+ * Class:     robot_pathfinder_core_path_JNIPath
+ * Method:    _derivAt
+ * Signature: (D)Lrobot/pathfinder/math/Vec2D;
+ */
+JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath__1derivAt
+  (JNIEnv *, jobject, jdouble);
+
+/*
+ * Class:     robot_pathfinder_core_path_JNIPath
+ * Method:    _secondDerivAt
+ * Signature: (D)Lrobot/pathfinder/math/Vec2D;
+ */
+JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath__1secondDerivAt
+  (JNIEnv *, jobject, jdouble);
+
 #ifdef __cplusplus
 }
 #endif

@@ -30,3 +30,28 @@ JNIEXPORT void JNICALL Java_robot_pathfinder_core_path_JNIPath__1setBaseRadius(J
 JNIEXPORT void JNICALL Java_robot_pathfinder_core_path_JNIPath__1setBackwards(JNIEnv *env, jobject obj, jboolean backwards) {
     rpf::get_obj_ptr<rpf::Path>(env, obj)->set_backwards(backwards);
 }
+
+JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath__1at(JNIEnv *env, jobject obj, jdouble t) {
+    auto v = rpf::get_obj_ptr<rpf::Path>(env, obj)->at(t);
+    
+    jclass clazz = env->FindClass("robot/pathfinder/math/Vec2D");
+    jmethodID mid = env->GetMethodID(clazz, "<init>", "(DD)V");
+    jobject vec = env->NewObject(clazz, mid, v.get_x(), v.get_y());
+    return vec;
+}
+JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath__1derivAt(JNIEnv *env, jobject obj, jdouble t) {
+    auto v = rpf::get_obj_ptr<rpf::Path>(env, obj)->deriv_at(t);
+
+    jclass clazz = env->FindClass("robot/pathfinder/math/Vec2D");
+    jmethodID mid = env->GetMethodID(clazz, "<init>", "(DD)V");
+    jobject vec = env->NewObject(clazz, mid, v.get_x(), v.get_y());
+    return vec;
+}
+JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath__1secondDerivAt(JNIEnv *env, jobject obj, jdouble t) {
+    auto v = rpf::get_obj_ptr<rpf::Path>(env, obj)->second_deriv_at(t);
+
+    jclass clazz = env->FindClass("robot/pathfinder/math/Vec2D");
+    jmethodID mid = env->GetMethodID(clazz, "<init>", "(DD)V");
+    jobject vec = env->NewObject(clazz, mid, v.get_x(), v.get_y());
+    return vec;
+}

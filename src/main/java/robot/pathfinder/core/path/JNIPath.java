@@ -5,6 +5,7 @@ import java.io.File;
 import robot.pathfinder.core.JNIWaypoint;
 import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.core.WaypointEx;
+import robot.pathfinder.math.Vec2D;
 
 public class JNIPath implements AutoCloseable {
     static {
@@ -83,9 +84,11 @@ public class JNIPath implements AutoCloseable {
     protected boolean backwards = false;
 
     public void setBaseRadius(double radius) {
+        this.radius = radius;
         _setBaseRadius(radius);
     }
     public void setDrivingBackwards(boolean backwards) {
+        this.backwards = backwards;
         _setBackwards(backwards);
     }
     public double getBaseRadius() {
@@ -94,4 +97,8 @@ public class JNIPath implements AutoCloseable {
     public boolean getDrivingBackwards() {
         return backwards;
     }
+
+    public native Vec2D _at(double time);
+    public native Vec2D _derivAt(double time);
+    public native Vec2D _secondDerivAt(double time);
 }

@@ -23,6 +23,14 @@ JNIEXPORT void JNICALL Java_robot_pathfinder_core_path_JNIPath__1construct
 
 /*
  * Class:     robot_pathfinder_core_path_JNIPath
+ * Method:    _destroy
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_robot_pathfinder_core_path_JNIPath__1destroy
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     robot_pathfinder_core_path_JNIPath
  * Method:    _setBaseRadius
  * Signature: (D)V
  */

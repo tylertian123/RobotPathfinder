@@ -6,7 +6,7 @@ import robot.pathfinder.core.JNIWaypoint;
 import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.core.WaypointEx;
 
-public class JNIPath {
+public class JNIPath implements AutoCloseable {
     static {
         try {
             System.loadLibrary("RobotPathfinder");
@@ -62,6 +62,19 @@ public class JNIPath {
         }
         
         _construct(jniWaypoints, alpha, iType);
+    }
+    
+    private native void _destroy();
+    public void free() {
+        _destroy();
+    }
+    @Override
+    public void finalize() {
+        _destroy();
+    }
+    @Override
+    public void close() {
+        _destroy();
     }
 
     private native void _setBaseRadius(double radius);

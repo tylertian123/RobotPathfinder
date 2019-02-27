@@ -16,6 +16,14 @@ JNIEXPORT void JNICALL Java_robot_pathfinder_core_path_JNIPath__1construct
     rpf::set_obj_ptr(env, obj, rpf::Path::construct_path(wp, alpha, static_cast<rpf::PathType>(type)));
 }
 
+JNIEXPORT void JNICALL Java_robot_pathfinder_core_path_JNIPath__1destroy(JNIEnv *env, jobject obj) {
+    auto ptr = rpf::get_obj_ptr<rpf::Path>(env, obj);
+    if(ptr) {
+        delete ptr;
+        rpf::set_obj_ptr<rpf::Path>(env, obj, nullptr);
+    }
+}
+
 JNIEXPORT void JNICALL Java_robot_pathfinder_core_path_JNIPath__1setBaseRadius(JNIEnv *env, jobject obj, jdouble radius) {
     rpf::get_obj_ptr<rpf::Path>(env, obj)->set_base(radius);
 }

@@ -1,12 +1,25 @@
 package robot.pathfinder.core.path;
 
+import java.io.File;
+
 import robot.pathfinder.core.JNIWaypoint;
 import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.core.WaypointEx;
 
 public class JNIPath {
     static {
-        System.loadLibrary("RobotPathfinder");
+        try {
+            System.loadLibrary("RobotPathfinder");
+        }
+        catch(UnsatisfiedLinkError ule) {
+            System.err.println("Warning: RobotPathfinder dynamic library not found in library path. Searching working directory...");
+            try {
+                System.loadLibrary(System.getProperty("user.dir") + File.separator + System.mapLibraryName("RobotPathfinder"));
+            }
+            catch(UnsatisfiedLinkError ule2) {
+                System.err.println("Critical error: Library cannot be loaded.");
+            }
+        }
     }
 
     private long _nativePtr;

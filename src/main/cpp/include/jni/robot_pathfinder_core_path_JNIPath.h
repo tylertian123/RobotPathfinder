@@ -15,10 +15,10 @@ extern "C" {
 #define robot_pathfinder_core_path_JNIPath_PT_QUINTIC_HERMITE 3L
 /*
  * Class:     robot_pathfinder_core_path_JNIPath
- * Method:    construct
- * Signature: ([Lrobot/pathfinder/core/Waypoint;DI)V
+ * Method:    _construct
+ * Signature: ([Lrobot/pathfinder/core/JNIWaypoint;DI)V
  */
-JNIEXPORT void JNICALL Java_robot_pathfinder_core_path_JNIPath_construct
+JNIEXPORT void JNICALL Java_robot_pathfinder_core_path_JNIPath__1construct
   (JNIEnv *, jobject, jobjectArray, jdouble, jint);
 
 #ifdef __cplusplus

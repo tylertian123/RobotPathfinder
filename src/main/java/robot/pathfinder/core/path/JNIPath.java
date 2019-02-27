@@ -6,6 +6,7 @@ import robot.pathfinder.core.JNIWaypoint;
 import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.core.WaypointEx;
 import robot.pathfinder.math.Vec2D;
+import robot.pathfinder.util.Pair;
 
 public class JNIPath implements AutoCloseable {
     static {
@@ -101,4 +102,5 @@ public class JNIPath implements AutoCloseable {
     public native Vec2D _at(double time);
     public native Vec2D _derivAt(double time);
     public native Vec2D _secondDerivAt(double time);
+    public native Pair<Vec2D, Vec2D> _wheelsAt(double time);
 }

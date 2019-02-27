@@ -55,3 +55,16 @@ JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath__1secondDerivA
     jobject vec = env->NewObject(clazz, mid, v.get_x(), v.get_y());
     return vec;
 }
+JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath__1wheelsAt(JNIEnv *env, jobject obj, jdouble t) {
+    auto v = rpf::get_obj_ptr<rpf::Path>(env, obj)->wheels_at(t);
+
+    jclass clazz = env->FindClass("robot/pathfinder/util/Pair");
+    jmethodID pcmid = env->GetMethodID(clazz, "<init>", "(Ljava/lang/Object;Ljava/lang/Object;)V");
+    jclass clazz2 = env->FindClass("robot/pathfinder/math/Vec2D");
+    jmethodID vcmid = env->GetMethodID(clazz2, "<init>", "(DD)V");
+    
+    jobject left = env->NewObject(clazz2, vcmid, v.first.get_x(), v.first.get_y());
+    jobject right = env->NewObject(clazz2, vcmid, v.second.get_x(), v.second.get_y());
+    jobject p = env->NewObject(clazz, pcmid, left, right);
+    return p;
+}

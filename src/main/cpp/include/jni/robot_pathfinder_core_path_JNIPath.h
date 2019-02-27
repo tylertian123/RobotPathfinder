@@ -69,6 +69,14 @@ JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath__1derivAt
 JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath__1secondDerivAt
   (JNIEnv *, jobject, jdouble);
 
+/*
+ * Class:     robot_pathfinder_core_path_JNIPath
+ * Method:    _wheelsAt
+ * Signature: (D)Lrobot/pathfinder/util/Pair;
+ */
+JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath__1wheelsAt
+  (JNIEnv *, jobject, jdouble);
+
 #ifdef __cplusplus
 }
 #endif

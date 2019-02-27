@@ -8,7 +8,7 @@
 #include <utility>
 
 namespace rpf {
-    enum PathType {
+    enum PathType : int {
         BEZIER = 1,
         CUBIC_HERMITE = 2,
         QUINTIC_HERMITE = 3,

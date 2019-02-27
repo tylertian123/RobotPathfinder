@@ -8,6 +8,11 @@ namespace rpf {
         jfieldID fid = env->GetFieldID(env->GetObjectClass(obj), "_nativePtr", "J");
         return reinterpret_cast<T*>(env->GetLongField(obj, fid));
     }
+    template <typename T>
+    void set_obj_ptr(JNIEnv *env, jobject obj, T* ptr) {
+        jfieldID fid = env->GetFieldID(env->GetObjectClass(obj), "_nativePtr", "J");
+        env->SetLongField(obj, fid, reinterpret_cast<jlong>(ptr));
+    }
     
     template <typename T>
     T get_field(JNIEnv *env, jobject obj, const char *fname);

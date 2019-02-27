@@ -207,7 +207,7 @@ namespace rpf {
         return p;
     }
 
-    static Path* construct_path(const std::vector<Waypoint> &waypoints, double alpha, PathType type) {
+    Path* construct_path(const std::vector<Waypoint> &waypoints, double alpha, PathType type) {
         switch(type) {
         case PathType::BEZIER:
             return new BezierPath(waypoints, alpha);
@@ -217,5 +217,7 @@ namespace rpf {
             return new QuinticPath(waypoints, alpha);
         }
     }
+
+    Path::~Path() {}
 }
 

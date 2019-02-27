@@ -15,7 +15,7 @@ public class JNIPath implements AutoCloseable {
         catch(UnsatisfiedLinkError ule) {
             System.err.println("Warning: RobotPathfinder dynamic library not found in library path. Searching working directory...");
             try {
-                System.loadLibrary(System.getProperty("user.dir") + File.separator + System.mapLibraryName("RobotPathfinder"));
+                System.load(System.getProperty("user.dir") + File.separator + System.mapLibraryName("RobotPathfinder"));
             }
             catch(UnsatisfiedLinkError ule2) {
                 System.err.println("Critical error: Library cannot be loaded.");
@@ -40,10 +40,10 @@ public class JNIPath implements AutoCloseable {
         JNIWaypoint[] jniWaypoints = new JNIWaypoint[waypoints.length];
         for(int i = 0; i < waypoints.length; i ++) {
             if(waypoints[i] instanceof WaypointEx) {
-                jniWaypoints[i] = new JNIWaypoint(waypoints[i].getX(), waypoints[i].getY(), waypoints[i].getHeading());
+                jniWaypoints[i] = new JNIWaypoint(waypoints[i].getX(), waypoints[i].getY(), waypoints[i].getHeading(), ((WaypointEx) waypoints[i]).getVelocity());
             }
             else {
-                jniWaypoints[i] = new JNIWaypoint(waypoints[i].getX(), waypoints[i].getY(), waypoints[i].getHeading(), ((WaypointEx) waypoints[i]).getVelocity());
+                jniWaypoints[i] = new JNIWaypoint(waypoints[i].getX(), waypoints[i].getY(), waypoints[i].getHeading());
             }
         }
         int iType;

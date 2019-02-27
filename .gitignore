@@ -9,3 +9,11 @@
 # Visual studio code
 .settings
 .vscode
+
+# Native Libraries
+*.a
+*.o
+*.so
+*.dll
+*.lib
+*.dylib

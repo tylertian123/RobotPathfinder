@@ -11,6 +11,10 @@ plugins {
     id "edu.wpi.first.GradleRIO" version "2019.3.2"
 }
 
+compileJava {
+    options.compilerArgs << '-Xlint:deprecation'
+}
+
 // Use Gradle 5.0 as GradleRIO only supports 5.0
 wrapper {
     gradleVersion = 5.0
@@ -105,6 +109,14 @@ task visualizerJar(type: Jar, group: 'Build', description: 'Assembles a runnable
     classifier = 'all'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
+
+task updateJNIHeaders(type: Copy, group: 'Development', description: 'Copies JNI generated headers into the JNI headers directory.') {
+    dependsOn build
+
+    from 'build/jniinclude/compileJava'
+    into 'src/main/cpp/include/jni'
+}
+
 task fatJar(type: Jar, group: 'Build', description: 'Assembles a jar of the library, including the libraries for the Grapher class.') {
     dependsOn build
 

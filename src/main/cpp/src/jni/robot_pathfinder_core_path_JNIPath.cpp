@@ -13,7 +13,7 @@ JNIEXPORT void JNICALL Java_robot_pathfinder_core_path_JNIPath__1construct
                 rpf::get_field<double>(env, waypoint, "heading")));
     }
     
-    rpf::set_obj_ptr(env, obj, rpf::Path::construct_path(wp, alpha, static_cast<rpf::PathType>(type)));
+    rpf::set_obj_ptr(env, obj, rpf::construct_path(wp, alpha, static_cast<rpf::PathType>(type)));
 }
 
 JNIEXPORT void JNICALL Java_robot_pathfinder_core_path_JNIPath__1destroy(JNIEnv *env, jobject obj) {

@@ -42,8 +42,6 @@ namespace rpf {
         Path* mirror_lr() const;
         Path* retrace() const;
 
-        static Path* construct_path(const std::vector<Waypoint> &, double, PathType);
-
     protected:
         std::vector<Waypoint> waypoints;
         double alpha;
@@ -56,4 +54,6 @@ namespace rpf {
         bool backwards = false;
         double base_radius;
     };
+
+    Path* construct_path(const std::vector<Waypoint> &, double, PathType);
 }

@@ -6,6 +6,7 @@ import robot.pathfinder.core.RobotSpecs;
 import robot.pathfinder.core.TrajectoryParams;
 import robot.pathfinder.core.Waypoint;
 import robot.pathfinder.core.WaypointEx;
+import robot.pathfinder.core.path.JNIPath;
 import robot.pathfinder.core.path.PathType;
 import robot.pathfinder.core.trajectory.BasicTrajectory;
 import robot.pathfinder.core.trajectory.TankDriveTrajectory;
@@ -47,12 +48,12 @@ public class DebugTests {
     }
 
 	public static void main(String[] args) throws Exception {
-		RobotSpecs specs = new RobotSpecs(10.0, 7.5, 1.5);
-        TankDriveTrajectory traj1 = TrajectoryGenerator.generateRotationTank(specs, Math.PI / 2);
-        TankDriveTrajectory traj2 = TrajectoryGenerator.generateRotationTank(specs, -Math.PI);
+		JNIPath path = new JNIPath(new Waypoint[] {
+            new Waypoint(0, 0, Math.PI / 2),
+            new Waypoint(0, 30, Math.PI / 2),
+        }, 10, PathType.QUINTIC_HERMITE);
 
-        JFrame f1 = Grapher.graphTrajectory(traj1, 0.001, true);
-        f1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f1.setVisible(true);
+        path.free();
+        System.out.println("I AM ALIVE!");
 	}
 }

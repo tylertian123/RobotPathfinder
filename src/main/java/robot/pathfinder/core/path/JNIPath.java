@@ -63,4 +63,22 @@ public class JNIPath {
         
         _construct(jniWaypoints, alpha, iType);
     }
+
+    private native void _setBaseRadius(double radius);
+    private native void _setBackwards(boolean backwards);
+    protected double radius;
+    protected boolean backwards = false;
+
+    public void setBaseRadius(double radius) {
+        _setBaseRadius(radius);
+    }
+    public void setDrivingBackwards(boolean backwards) {
+        _setBackwards(backwards);
+    }
+    public double getBaseRadius() {
+        return radius;
+    }
+    public boolean getDrivingBackwards() {
+        return backwards;
+    }
 }

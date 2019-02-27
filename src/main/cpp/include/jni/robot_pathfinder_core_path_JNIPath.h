@@ -21,6 +21,22 @@ extern "C" {
 JNIEXPORT void JNICALL Java_robot_pathfinder_core_path_JNIPath__1construct
   (JNIEnv *, jobject, jobjectArray, jdouble, jint);
 
+/*
+ * Class:     robot_pathfinder_core_path_JNIPath
+ * Method:    _setBaseRadius
+ * Signature: (D)V
+ */
+JNIEXPORT void JNICALL Java_robot_pathfinder_core_path_JNIPath__1setBaseRadius
+  (JNIEnv *, jobject, jdouble);
+
+/*
+ * Class:     robot_pathfinder_core_path_JNIPath
+ * Method:    _setBackwards
+ * Signature: (Z)V
+ */
+JNIEXPORT void JNICALL Java_robot_pathfinder_core_path_JNIPath__1setBackwards
+  (JNIEnv *, jobject, jboolean);
+
 #ifdef __cplusplus
 }
 #endif

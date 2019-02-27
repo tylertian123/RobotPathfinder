@@ -2,7 +2,7 @@ package robot.pathfinder.core.path;
 
 import robot.pathfinder.core.Waypoint;
 
-public class PathJNI {
+public class JNIPath {
     static {
         System.loadLibrary("RobotPathfinder");
     }

@@ -171,7 +171,7 @@ namespace rpf {
         this->backwards = backwards;
     }
 
-    std::shared_ptr<Path> Path::mirror_lr() const {
+    Path* Path::mirror_lr() const {
         Vec2D ref(std::cos(waypoints[0].heading), std::sin(waypoints[0].heading));
         std::vector<Waypoint> w(waypoints.size());
 
@@ -182,7 +182,7 @@ namespace rpf {
         p->set_base(base_radius);
         return p;
     }
-    std::shared_ptr<Path> Path::mirror_fb() const {
+    Path* Path::mirror_fb() const {
         Vec2D ref(-std::sin(waypoints[0].heading), std::cos(waypoints[0].heading));
         std::vector<Waypoint> w(waypoints.size());
 
@@ -194,7 +194,7 @@ namespace rpf {
         p->set_backwards(!backwards);
         return p;
     }
-    std::shared_ptr<Path> Path::retrace() const {
+    Path* Path::retrace() const {
         std::vector<Waypoint> w(waypoints.size());
 
         for(auto rit = waypoints.rbegin(); rit != waypoints.rend(); ++rit) {
@@ -207,14 +207,14 @@ namespace rpf {
         return p;
     }
 
-    static std::shared_ptr<Path> construct_path(const std::vector<Waypoint> &waypoints, double alpha, PathType type) {
+    static Path* construct_path(const std::vector<Waypoint> &waypoints, double alpha, PathType type) {
         switch(type) {
         case PathType::BEZIER:
-            return std::make_shared<BezierPath>(waypoints, alpha);
+            return new BezierPath(waypoints, alpha);
         case PathType::CUBIC_HERMITE:
-            return std::make_shared<CubicPath>(waypoints, alpha);
+            return new CubicPath(waypoints, alpha);
         case PathType::QUINTIC_HERMITE:
-            return std::make_shared<QuinticPath>(waypoints, alpha);
+            return new QuinticPath(waypoints, alpha);
         }
     }
 }

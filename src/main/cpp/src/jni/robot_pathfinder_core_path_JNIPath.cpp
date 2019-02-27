@@ -3,6 +3,6 @@
 #include "jni/jniutil.h"
 
 JNIEXPORT void JNICALL Java_robot_pathfinder_core_path_JNIPath__1construct
-        (JNIEnv *, jobject, jobjectArray, jdouble, jint) {
+        (JNIEnv *env, jobject obj, jobjectArray waypoints, jdouble alpha, jint type) {
     
 }

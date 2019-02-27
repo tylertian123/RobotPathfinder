@@ -38,11 +38,11 @@ namespace rpf {
         bool get_backwards() const;
         void set_backwards(bool);
 
-        std::shared_ptr<Path> mirror_fb() const;
-        std::shared_ptr<Path> mirror_lr() const;
-        std::shared_ptr<Path> retrace() const;
+        Path* mirror_fb() const;
+        Path* mirror_lr() const;
+        Path* retrace() const;
 
-        static std::shared_ptr<Path> construct_path(const std::vector<Waypoint> &, double, PathType);
+        static Path* construct_path(const std::vector<Waypoint> &, double, PathType);
 
     protected:
         std::vector<Waypoint> waypoints;

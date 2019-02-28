@@ -77,6 +77,54 @@ JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath_secondDerivAt
 JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath_wheelsAt
   (JNIEnv *, jobject, jdouble);
 
+/*
+ * Class:     robot_pathfinder_core_path_JNIPath
+ * Method:    _computeLen
+ * Signature: (I)D
+ */
+JNIEXPORT jdouble JNICALL Java_robot_pathfinder_core_path_JNIPath__1computeLen
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     robot_pathfinder_core_path_JNIPath
+ * Method:    _s2T
+ * Signature: (D)D
+ */
+JNIEXPORT jdouble JNICALL Java_robot_pathfinder_core_path_JNIPath__1s2T
+  (JNIEnv *, jobject, jdouble);
+
+/*
+ * Class:     robot_pathfinder_core_path_JNIPath
+ * Method:    _t2S
+ * Signature: (D)D
+ */
+JNIEXPORT jdouble JNICALL Java_robot_pathfinder_core_path_JNIPath__1t2S
+  (JNIEnv *, jobject, jdouble);
+
+/*
+ * Class:     robot_pathfinder_core_path_JNIPath
+ * Method:    _mirrorLeftRight
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_robot_pathfinder_core_path_JNIPath__1mirrorLeftRight
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     robot_pathfinder_core_path_JNIPath
+ * Method:    _mirrorFrontBack
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_robot_pathfinder_core_path_JNIPath__1mirrorFrontBack
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     robot_pathfinder_core_path_JNIPath
+ * Method:    _retrace
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_robot_pathfinder_core_path_JNIPath__1retrace
+  (JNIEnv *, jobject);
+
 #ifdef __cplusplus
 }
 #endif

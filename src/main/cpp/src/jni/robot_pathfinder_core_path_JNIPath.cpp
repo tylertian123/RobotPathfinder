@@ -68,3 +68,26 @@ JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath_wheelsAt(JNIEn
     jobject p = env->NewObject(clazz, pcmid, left, right);
     return p;
 }
+
+JNIEXPORT jdouble JNICALL Java_robot_pathfinder_core_path_JNIPath__1computeLen(JNIEnv *env, jobject obj, int points) {
+    return rpf::get_obj_ptr<rpf::Path>(env, obj)->compute_len(points);
+}
+JNIEXPORT jdouble JNICALL Java_robot_pathfinder_core_path_JNIPath__1s2T(JNIEnv *env, jobject obj, jdouble s) {
+    return rpf::get_obj_ptr<rpf::Path>(env, obj)->s2t(s);
+}
+JNIEXPORT jdouble JNICALL Java_robot_pathfinder_core_path_JNIPath__1t2S(JNIEnv *env, jobject obj, jdouble t) {
+    return rpf::get_obj_ptr<rpf::Path>(env, obj)->t2s(t);
+}
+
+JNIEXPORT jlong JNICALL Java_robot_pathfinder_core_path_JNIPath__1mirrorLeftRight(JNIEnv *env, jobject obj) {
+    auto ptr = rpf::get_obj_ptr<rpf::Path>(env, obj)->mirror_lr();
+    return reinterpret_cast<jlong>(ptr);
+}
+JNIEXPORT jlong JNICALL Java_robot_pathfinder_core_path_JNIPath__1mirrorFrontBack(JNIEnv *env, jobject obj) {
+    auto ptr = rpf::get_obj_ptr<rpf::Path>(env, obj)->mirror_fb();
+    return reinterpret_cast<jlong>(ptr);
+}
+JNIEXPORT jlong JNICALL Java_robot_pathfinder_core_path_JNIPath__1retrace(JNIEnv *env, jobject obj) {
+    auto ptr = rpf::get_obj_ptr<rpf::Path>(env, obj)->retrace();
+    return reinterpret_cast<jlong>(ptr);
+}

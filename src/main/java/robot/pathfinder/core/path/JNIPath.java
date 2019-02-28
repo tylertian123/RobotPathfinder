@@ -99,8 +99,8 @@ public class JNIPath implements AutoCloseable {
         return backwards;
     }
 
-    public native Vec2D _at(double time);
-    public native Vec2D _derivAt(double time);
-    public native Vec2D _secondDerivAt(double time);
-    public native Pair<Vec2D, Vec2D> _wheelsAt(double time);
+    public native Vec2D at(double time);
+    public native Vec2D derivAt(double time);
+    public native Vec2D secondDerivAt(double time);
+    public native Pair<Vec2D, Vec2D> wheelsAt(double time);
 }

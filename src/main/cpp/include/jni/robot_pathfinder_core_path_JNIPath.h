@@ -47,34 +47,34 @@ JNIEXPORT void JNICALL Java_robot_pathfinder_core_path_JNIPath__1setBackwards
 
 /*
  * Class:     robot_pathfinder_core_path_JNIPath
- * Method:    _at
+ * Method:    at
  * Signature: (D)Lrobot/pathfinder/math/Vec2D;
  */
-JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath__1at
+JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath_at
   (JNIEnv *, jobject, jdouble);
 
 /*
  * Class:     robot_pathfinder_core_path_JNIPath
- * Method:    _derivAt
+ * Method:    derivAt
  * Signature: (D)Lrobot/pathfinder/math/Vec2D;
  */
-JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath__1derivAt
+JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath_derivAt
   (JNIEnv *, jobject, jdouble);
 
 /*
  * Class:     robot_pathfinder_core_path_JNIPath
- * Method:    _secondDerivAt
+ * Method:    secondDerivAt
  * Signature: (D)Lrobot/pathfinder/math/Vec2D;
  */
-JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath__1secondDerivAt
+JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath_secondDerivAt
   (JNIEnv *, jobject, jdouble);
 
 /*
  * Class:     robot_pathfinder_core_path_JNIPath
- * Method:    _wheelsAt
+ * Method:    wheelsAt
  * Signature: (D)Lrobot/pathfinder/util/Pair;
  */
-JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath__1wheelsAt
+JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath_wheelsAt
   (JNIEnv *, jobject, jdouble);
 
 #ifdef __cplusplus

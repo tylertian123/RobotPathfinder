@@ -31,7 +31,7 @@ JNIEXPORT void JNICALL Java_robot_pathfinder_core_path_JNIPath__1setBackwards(JN
     rpf::get_obj_ptr<rpf::Path>(env, obj)->set_backwards(backwards);
 }
 
-JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath__1at(JNIEnv *env, jobject obj, jdouble t) {
+JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath_at(JNIEnv *env, jobject obj, jdouble t) {
     auto v = rpf::get_obj_ptr<rpf::Path>(env, obj)->at(t);
     
     jclass clazz = env->FindClass("robot/pathfinder/math/Vec2D");
@@ -39,7 +39,7 @@ JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath__1at(JNIEnv *e
     jobject vec = env->NewObject(clazz, mid, v.get_x(), v.get_y());
     return vec;
 }
-JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath__1derivAt(JNIEnv *env, jobject obj, jdouble t) {
+JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath_derivAt(JNIEnv *env, jobject obj, jdouble t) {
     auto v = rpf::get_obj_ptr<rpf::Path>(env, obj)->deriv_at(t);
 
     jclass clazz = env->FindClass("robot/pathfinder/math/Vec2D");
@@ -47,7 +47,7 @@ JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath__1derivAt(JNIE
     jobject vec = env->NewObject(clazz, mid, v.get_x(), v.get_y());
     return vec;
 }
-JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath__1secondDerivAt(JNIEnv *env, jobject obj, jdouble t) {
+JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath_secondDerivAt(JNIEnv *env, jobject obj, jdouble t) {
     auto v = rpf::get_obj_ptr<rpf::Path>(env, obj)->second_deriv_at(t);
 
     jclass clazz = env->FindClass("robot/pathfinder/math/Vec2D");
@@ -55,7 +55,7 @@ JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath__1secondDerivA
     jobject vec = env->NewObject(clazz, mid, v.get_x(), v.get_y());
     return vec;
 }
-JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath__1wheelsAt(JNIEnv *env, jobject obj, jdouble t) {
+JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath_wheelsAt(JNIEnv *env, jobject obj, jdouble t) {
     auto v = rpf::get_obj_ptr<rpf::Path>(env, obj)->wheels_at(t);
 
     jclass clazz = env->FindClass("robot/pathfinder/util/Pair");

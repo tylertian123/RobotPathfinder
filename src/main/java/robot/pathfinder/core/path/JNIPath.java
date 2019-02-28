@@ -69,12 +69,17 @@ public class JNIPath implements AutoCloseable {
         
         _construct(jniWaypoints, alpha, iType);
     }
+    private JNIPath(Waypoint[] waypoints, double alpha, PathType type, long ptr) {
+        this.waypoints = waypoints;
+        this.alpha = alpha;
+        this.type = type;
+        _nativePtr = ptr;
+    }
     
     private native void _destroy();
     public void free() {
         _destroy();
     }
-    @SuppressWarnings("deprecation")
     @Override
     public void finalize() {
         _destroy();
@@ -147,4 +152,14 @@ public class JNIPath implements AutoCloseable {
     private native long _mirrorLeftRight();
     private native long _mirrorFrontBack();
     private native long _retrace();
+
+    public JNIPath mirrorLeftRight() {
+        return new JNIPath(waypoints, alpha, type, _mirrorLeftRight());
+    }
+    public JNIPath mirrorFrontBack() {
+        return new JNIPath(waypoints, alpha, type, _mirrorFrontBack());
+    }
+    public JNIPath retrace() {
+        return new JNIPath(waypoints, alpha, type, _retrace());
+    }
 }

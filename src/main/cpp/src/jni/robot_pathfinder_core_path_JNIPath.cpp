@@ -5,7 +5,7 @@
 
 JNIEXPORT void JNICALL Java_robot_pathfinder_core_path_JNIPath__1construct
         (JNIEnv *env, jobject obj, jobjectArray waypoints, jdouble alpha, jint type) {
-    std::vector<rpf::Waypoint> wp(env->GetArrayLength(waypoints));
+    std::vector<rpf::Waypoint> wp;
 
     for(int i = 0; i < env->GetArrayLength(waypoints); i ++) {
         auto waypoint = env->GetObjectArrayElement(waypoints, i);

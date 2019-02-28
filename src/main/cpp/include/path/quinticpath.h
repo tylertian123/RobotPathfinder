@@ -18,8 +18,6 @@ namespace rpf {
                 throw std::runtime_error("Not enough waypoints");
             }
 
-            segments.resize(waypoints.size() - 1);
-
             for(int i = 0; i < waypoints.size() - 1; i ++) {
                 segments.push_back(std::make_unique<QuinticSegment>(
                     static_cast<Vec2D>(waypoints[i]), static_cast<Vec2D>(waypoints[i + 1]),

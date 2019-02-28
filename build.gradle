@@ -117,6 +117,25 @@ task updateJNIHeaders(type: Copy, group: 'Development', description: 'Copies JNI
     into 'src/main/cpp/include/jni'
 }
 
+task copyLibLinuxx8664Debug(type: Copy, group: 'Development', description: 'Copies the dynamic library for linux x86-64 debug to the root of the project.') {
+    dependsOn build
+
+    from 'build/libs/jniLibrary/shared/linuxx86-64/debug'
+    into '.'
+    rename { String fileName ->
+        fileName.replace('libJniLibrary', 'libRobotPathfinder')
+    }
+}
+task copyLibLinuxx8664Release(type: Copy, group: 'Development', description: 'Copies the dynamic library for linux x86-64 release to the root of the project.') {
+    dependsOn build
+
+    from 'build/libs/jniLibrary/shared/linuxx86-64/release'
+    into '.'
+    rename { String fileName ->
+        fileName.replace('libJniLibrary', 'libRobotPathfinder')
+    }
+}
+
 task fatJar(type: Jar, group: 'Build', description: 'Assembles a jar of the library, including the libraries for the Grapher class.') {
     dependsOn build
 

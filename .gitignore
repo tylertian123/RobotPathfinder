@@ -17,3 +17,6 @@
 *.dll
 *.lib
 *.dylib
+
+# VM Crash Logs
+hs_err_pid*.log

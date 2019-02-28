@@ -62,7 +62,9 @@ public class DebugTests {
             new Waypoint(0, 0, Math.PI / 2),
             new Waypoint(0, 30, Math.PI / 2),
 		}, 10, PathType.QUINTIC_HERMITE);
-        
+        System.out.println(path.computeLen(1000));
+        System.out.println(path.s2T(0));
+        System.out.println(path.t2S(1));
         path.free();
         System.out.println("I AM ALIVE!");
 	}

@@ -74,6 +74,7 @@ public class JNIPath implements AutoCloseable {
     public void free() {
         _destroy();
     }
+    @SuppressWarnings("deprecation")
     @Override
     public void finalize() {
         _destroy();
@@ -118,6 +119,30 @@ public class JNIPath implements AutoCloseable {
     private native double _computeLen(int points);
     private native double _s2T(double s);
     private native double _t2S(double t);
+
+    protected double length = Double.NaN;
+    public double computeLen(int points) {
+        length = _computeLen(points);
+        return length;
+    }
+    public double getLength() {
+        if(length == Double.NaN) {
+            throw new IllegalStateException("Length has not been computed");
+        }
+        return length;
+    }
+    public double s2T(double s) {
+        if(length == Double.NaN) {
+            throw new IllegalStateException("Length has not been computed");
+        }
+        return _s2T(s);
+    }
+    public double t2S(double t) {
+        if(length == Double.NaN) {
+            throw new IllegalStateException("Length has not been computed");
+        }
+        return _t2S(t);
+    }
     
     private native long _mirrorLeftRight();
     private native long _mirrorFrontBack();

@@ -32,8 +32,12 @@ public class JNIPath implements AutoCloseable {
     private native void _construct(JNIWaypoint[] waypoints, double alpha, int type);
 
     protected PathType type;
+    protected Waypoint[] waypoints;
+    protected double alpha;
     public JNIPath(Waypoint[] waypoints, double alpha, PathType type) {
         this.type = type;
+        this.waypoints = waypoints;
+        this.alpha = alpha;
         if(waypoints.length < 2) {
             throw new IllegalArgumentException("Not enough waypoints");
         }
@@ -97,6 +101,13 @@ public class JNIPath implements AutoCloseable {
     }
     public boolean getDrivingBackwards() {
         return backwards;
+    }
+    
+    public Waypoint[] getWaypoints() {
+        return waypoints;
+    }
+    public double getAlpha() {
+        return alpha;
     }
 
     public native Vec2D at(double time);

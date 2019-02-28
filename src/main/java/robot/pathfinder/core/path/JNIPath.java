@@ -15,9 +15,6 @@ public class JNIPath implements AutoCloseable {
 
     private long _nativePtr;
 
-    private static final int PT_BEZIER = 1;
-    private static final int PT_CUBIC_HERMITE = 2;
-    private static final int PT_QUINTIC_HERMITE = 3;
     private native void _construct(JNIWaypoint[] waypoints, double alpha, int type);
 
     protected PathType type;
@@ -40,23 +37,8 @@ public class JNIPath implements AutoCloseable {
                 jniWaypoints[i] = new JNIWaypoint(waypoints[i].getX(), waypoints[i].getY(), waypoints[i].getHeading());
             }
         }
-        int iType;
-        switch(type) {
-        case BEZIER:
-            iType = PT_BEZIER;
-            break;
-        case CUBIC_HERMITE:
-            iType = PT_CUBIC_HERMITE;
-            break;
-        case QUINTIC_HERMITE:
-            iType = PT_QUINTIC_HERMITE;
-            break;
-        default: 
-            iType = 0;
-            break;
-        }
         
-        _construct(jniWaypoints, alpha, iType);
+        _construct(jniWaypoints, alpha, type.getJNIID());
     }
     private JNIPath(Waypoint[] waypoints, double alpha, PathType type, long ptr) {
         this.waypoints = waypoints;

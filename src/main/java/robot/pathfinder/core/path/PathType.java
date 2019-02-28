@@ -47,4 +47,21 @@ public enum PathType {
 		default: return null;
 		}
 	}
+
+	private static final int PT_BEZIER = 1;
+    private static final int PT_CUBIC_HERMITE = 2;
+    private static final int PT_QUINTIC_HERMITE = 3;
+
+	public int getJNIID() {
+		switch(this) {
+		case BEZIER:
+			return PT_BEZIER;
+		case CUBIC_HERMITE:
+			return PT_CUBIC_HERMITE;
+		case QUINTIC_HERMITE:
+			return PT_QUINTIC_HERMITE;
+		default: 
+			return 0;
+		}
+	}
 }

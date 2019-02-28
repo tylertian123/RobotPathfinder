@@ -34,6 +34,7 @@ namespace rpf {
     template <>
     jshort get_field<jshort>(JNIEnv *env, jobject obj, const char *fname) {
         jfieldID fid = env->GetFieldID(env->GetObjectClass(obj), fname, "S");
+        return env->GetShortField(obj, fid);
     }
     template <>
     jint get_field<jint>(JNIEnv *env, jobject obj, const char *fname) {

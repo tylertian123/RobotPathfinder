@@ -1,7 +1,7 @@
 #pragma once
 
 #include <limits>
-#include "rpfmath.h"
+#include "math/rpfmath.h"
 
 namespace rpf {
     struct BasicMoment {

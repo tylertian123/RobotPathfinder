@@ -40,15 +40,15 @@ namespace rpf {
 
         Vec2D pos = at(t);
         Vec2D deriv = deriv_at(t);
-        double heading = std::atan2(deriv.get_y(), deriv.get_x());
+        double heading = std::atan2(deriv.y, deriv.x);
         double s = std::sin(heading);
         double c = std::cos(heading);
 
         std::pair<Vec2D, Vec2D> wheels;
-        wheels.first = Vec2D(pos.get_x() - (!backwards ? base_radius * s : -base_radius * s),
-                pos.get_y() + (!backwards ? base_radius * c : -base_radius * c));
-        wheels.second = Vec2D(pos.get_y() + (!backwards ? base_radius * s : -base_radius * s),
-                pos.get_y() - (!backwards ? base_radius * c : -base_radius * c));
+        wheels.first = Vec2D(pos.x - (!backwards ? base_radius * s : -base_radius * s),
+                pos.y + (!backwards ? base_radius * c : -base_radius * c));
+        wheels.second = Vec2D(pos.y + (!backwards ? base_radius * s : -base_radius * s),
+                pos.y - (!backwards ? base_radius * c : -base_radius * c));
         return wheels;
     }
 

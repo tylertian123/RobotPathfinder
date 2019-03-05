@@ -3,12 +3,6 @@
 #include "math/rpfmath.h"
 
 namespace rpf {
-    double Vec2D::get_x() const {
-        return x;
-    }
-    double Vec2D::get_y() const {
-        return y;
-    }
 
     double Vec2D::dist(const Vec2D &other) const {
         return std::sqrt((x - other.x) * (x - other.x) + (y - other.y) * (y - other.y));

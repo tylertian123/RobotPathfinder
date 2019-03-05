@@ -1,13 +1,10 @@
 #pragma once
 
 namespace rpf {
-    class Vec2D {
-    public:
+    struct Vec2D {
         Vec2D(double x, double y) : x(x), y(y) {}
         Vec2D() : x(0), y(0) {}
 
-        double get_x() const;
-        double get_y() const;
         double dist(const Vec2D &) const;
         void normalize();
         double magnitude() const;
@@ -27,7 +24,6 @@ namespace rpf {
 
         static Vec2D lerp(const Vec2D &, const Vec2D &, double);
 
-    protected:
         double x, y;
     };
 }

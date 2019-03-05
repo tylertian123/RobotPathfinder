@@ -36,7 +36,7 @@ JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath_at(JNIEnv *env
     
     jclass clazz = env->FindClass("robot/pathfinder/math/Vec2D");
     jmethodID mid = env->GetMethodID(clazz, "<init>", "(DD)V");
-    jobject vec = env->NewObject(clazz, mid, v.get_x(), v.get_y());
+    jobject vec = env->NewObject(clazz, mid, v.x, v.y);
     return vec;
 }
 JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath_derivAt(JNIEnv *env, jobject obj, jdouble t) {
@@ -44,7 +44,7 @@ JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath_derivAt(JNIEnv
 
     jclass clazz = env->FindClass("robot/pathfinder/math/Vec2D");
     jmethodID mid = env->GetMethodID(clazz, "<init>", "(DD)V");
-    jobject vec = env->NewObject(clazz, mid, v.get_x(), v.get_y());
+    jobject vec = env->NewObject(clazz, mid, v.x, v.y);
     return vec;
 }
 JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath_secondDerivAt(JNIEnv *env, jobject obj, jdouble t) {
@@ -52,7 +52,7 @@ JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath_secondDerivAt(
 
     jclass clazz = env->FindClass("robot/pathfinder/math/Vec2D");
     jmethodID mid = env->GetMethodID(clazz, "<init>", "(DD)V");
-    jobject vec = env->NewObject(clazz, mid, v.get_x(), v.get_y());
+    jobject vec = env->NewObject(clazz, mid, v.x, v.y);
     return vec;
 }
 JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath_wheelsAt(JNIEnv *env, jobject obj, jdouble t) {
@@ -63,8 +63,8 @@ JNIEXPORT jobject JNICALL Java_robot_pathfinder_core_path_JNIPath_wheelsAt(JNIEn
     jclass clazz2 = env->FindClass("robot/pathfinder/math/Vec2D");
     jmethodID vcmid = env->GetMethodID(clazz2, "<init>", "(DD)V");
     
-    jobject left = env->NewObject(clazz2, vcmid, v.first.get_x(), v.first.get_y());
-    jobject right = env->NewObject(clazz2, vcmid, v.second.get_x(), v.second.get_y());
+    jobject left = env->NewObject(clazz2, vcmid, v.first.x, v.first.y);
+    jobject right = env->NewObject(clazz2, vcmid, v.second.x, v.second.y);
     jobject p = env->NewObject(clazz, pcmid, left, right);
     return p;
 }

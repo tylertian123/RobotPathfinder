@@ -42,10 +42,10 @@ namespace rpf {
                     
                     auto d = path->deriv_at(t);
                     auto dd = path->second_deriv_at(t);
-                    double curvature = rpf::curvature(d.get_x(), dd.get_x(), d.get_y(), dd.get_y());
+                    double curvature = rpf::curvature(d.x, dd.x, d.y, dd.y);
 
-                    headings.push_back(std::atan2(d.get_x(), d.get_y()));
-                    hvecs.push_back(Vec2D(d.get_x(), d.get_y()));
+                    headings.push_back(std::atan2(d.x, d.y));
+                    hvecs.push_back(Vec2D(d.x, d.y));
                     hvecs[i].normalize();
                     
                     pathr.push_back(1 / curvature);
@@ -58,8 +58,8 @@ namespace rpf {
 
                     double t = path->s2t(ds * i);
                     Vec2D d = path->deriv_at(t);
-                    headings.push_back(std::atan2(d.get_x(), d.get_y()));
-                    hvecs.push_back(Vec2D(d.get_x(), d.get_y()));
+                    headings.push_back(std::atan2(d.x, d.y));
+                    hvecs.push_back(Vec2D(d.x, d.y));
                     hvecs[i].normalize();
                 }
             }

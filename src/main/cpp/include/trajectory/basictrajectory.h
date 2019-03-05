@@ -32,12 +32,35 @@ namespace rpf {
                     constraints.push_back(std::make_pair(path->t2s(i * wpdt) * total, waypoints[i].velocity));
                 }
             }
+            
+            std::vector<double> headings;
 
             if(params.is_tank) {
                 for(int i = 0; i < params.seg_count; i ++) {
                     double t = path->s2t(ds * i);
                     patht.push_back(t);
                     
+                    auto d = path->deriv_at(t);
+                    auto dd = path->second_deriv_at(t);
+                    double curvature = rpf::curvature(d.get_x(), dd.get_x(), d.get_y(), dd.get_y());
+
+                    headings.push_back(std::atan2(d.get_x(), d.get_y()));
+                    hvecs.push_back(Vec2D(d.get_x(), d.get_y()));
+                    hvecs[i].normalize();
+                    
+                    pathr.push_back(1 / curvature);
+                    mv.push_back(specs.max_v / (1 + specs.base_width / (2 * std::abs(pathr[i]))));
+                }
+            }
+            else {
+                for(int i = 0; i < params.seg_count; i ++) {
+                    mv.push_back(specs.max_v);
+
+                    double t = path->s2t(ds * i);
+                    Vec2D d = path->deriv_at(t);
+                    headings.push_back(std::atan2(d.get_x(), d.get_y()));
+                    hvecs.push_back(Vec2D(d.get_x(), d.get_y()));
+                    hvecs[i].normalize();
                 }
             }
         }

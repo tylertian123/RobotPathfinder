@@ -15,7 +15,7 @@ namespace rpf {
             type = PathType::BEZIER;
 
             if(waypoints.size() < 2) {
-                throw std::runtime_error("Not enough waypoints");
+                throw std::invalid_argument("Not enough waypoints");
             }
             
             for(int i = 0; i < waypoints.size() - 1; i ++) {

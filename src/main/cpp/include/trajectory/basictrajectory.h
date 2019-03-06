@@ -8,6 +8,9 @@
 #include <memory>
 #include <vector>
 #include <list>
+#include <set>
+#include <limits>
+#include <stdexcept>
 
 namespace rpf {
     class BasicTrajectory {
@@ -61,6 +64,83 @@ namespace rpf {
                     headings.push_back(std::atan2(d.x, d.y));
                     hvecs.push_back(Vec2D(d.x, d.y));
                     hvecs[i].normalize();
+                }
+            }
+
+            if(!std::isnan(waypoints[0].velocity)) {
+                moments.push_back(BasicMoment(0, waypoints[0].velocity, 0, headings[0]));
+            }
+            else {
+                moments.push_back(BasicMoment(0, 0, 0, headings[0]));
+            }
+
+            std::vector<double> time_diff(params.seg_count - 1, std::numeric_limits<double>::quiet_NaN());
+            std::vector<int> constrained;
+
+            for(int i = 1; i < params.seg_count; i ++) {
+                double dist = i * dpi;
+
+                if(!constraints.empty() && dist >= constraints.front().first) {
+                    auto constraint = constraints.front();
+                    constraints.pop_front();
+
+                    if(constraint.second > moments[i - 1].vel) {
+                        double accel = constraint.second * constraint.second - moments[i - 1].vel * moments[i - 1].vel;
+                        if(accel > specs.max_a) {
+                            throw std::invalid_argument("Waypoint velocity constraint cannot be met");
+                        }
+                        moments[i - 1].accel = accel;
+                        time_diff[i - 1] = (constraint.second - moments[i - 1].vel) / accel;
+                    }
+                    else {
+                        moments[i - 1].accel = 0;
+                    }
+                    moments.push_back(BasicMoment(dist, constraint.second, 0, headings[i]));
+                    constrained.push_back(i);
+                    continue;
+                }
+
+                if(moments[i - 1].vel < mv[i]) {
+                    // Maybe improveable?
+                    double maxv = std::sqrt(moments[i - 1].vel * moments[i - 1].vel + 2 * specs.max_a * dpi);
+                    double vel;
+
+                    if(maxv > mv[i]) {
+                        double accel = (mv[i] * mv[i] - moments[i - 1].vel * moments[i - 1].vel) / (2 * dpi);
+                        vel = mv[i];
+                        moments[i - 1].accel = accel;
+                    }
+                    else {
+                        vel = maxv;
+                        moments[i - 1].accel = specs.max_a;
+                    }
+
+                    moments.push_back(BasicMoment(dist, vel, 0, headings[i]));
+                    time_diff[i - 1] = (vel - moments[i - 1].vel) / moments[i - 1].accel;
+                }
+                else {
+                    moments.push_back(BasicMoment(dist, mv[i], 0, headings[i]));
+                    moments[i - 1].accel = 0;
+                }
+            }
+
+            moments[moments.size() - 1].accel = 0;
+            moments[moments.size() - 1].vel = std::isnan(waypoints[waypoints.size() - 1].velocity) ? 0 : waypoints[waypoints.size() - 1].velocity;
+
+            for(int i = moments.size() - 2; i >= 0; i --) {
+                if(moments[i].vel > moments[i + 1].vel) {
+                    double maxv = std::sqrt(moments[i + 1].vel * moments[i + 1].vel + 2 * specs.max_a * dpi);
+
+                    double vel;
+                    if(maxv > moments[i].vel) {
+                        double accel = (moments[i].vel * moments[i].vel - moments[i + 1].vel * moments[i + 1].vel) / (2 * dpi);
+                        moments[i].accel = -accel;
+                        vel = moments[i].vel;
+                    }
+                    else {
+                        
+                    }
+
                 }
             }
         }

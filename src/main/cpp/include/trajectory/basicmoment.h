@@ -14,6 +14,7 @@ namespace rpf {
         double vel;
         double accel;
         double heading;
+        double time;
 
         double init_facing;
 

@@ -150,6 +150,21 @@ namespace rpf {
 
                 }
             }
+
+            init_facing = moments[0].get_afacing();
+            for(auto &moment : moments) {
+                moment.init_facing = init_facing;
+            }
+
+            for(int i = 1; i < moments.size(); i ++) {
+                if(!std::isnan(time_diff[i - 1])) {
+                    moments[i].time = moments[i - 1].time + time_diff[i - 1];
+                }
+                else {
+                    double dt = (moments[i].dist - moments[i - 1].dist) / moments[i - 1].vel;
+                    moments[i].time = moments[i - 1].time + dt;
+                }
+            }
         }
 
     protected:

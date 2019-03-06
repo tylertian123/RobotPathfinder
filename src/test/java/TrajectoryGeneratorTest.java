@@ -4,11 +4,11 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import robot.pathfinder.core.RobotSpecs;
-import robot.pathfinder.core.trajectory.BasicTrajectory;
-import robot.pathfinder.core.trajectory.TankDriveTrajectory;
-import robot.pathfinder.core.trajectory.TrajectoryGenerator;
-import robot.pathfinder.math.MathUtils;
+import com.arctos6135.robotpathfinder.core.RobotSpecs;
+import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
+import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
+import com.arctos6135.robotpathfinder.core.trajectory.TrajectoryGenerator;
+import com.arctos6135.robotpathfinder.math.MathUtils;
 
 public class TrajectoryGeneratorTest {
 

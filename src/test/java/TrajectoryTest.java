@@ -4,15 +4,15 @@ import static org.hamcrest.core.Is.is;
 
 import org.junit.Test;
 
-import robot.pathfinder.core.RobotSpecs;
-import robot.pathfinder.core.TrajectoryParams;
-import robot.pathfinder.core.Waypoint;
-import robot.pathfinder.core.WaypointEx;
-import robot.pathfinder.core.path.PathType;
-import robot.pathfinder.core.trajectory.BasicMoment;
-import robot.pathfinder.core.trajectory.BasicTrajectory;
-import robot.pathfinder.core.trajectory.TankDriveMoment;
-import robot.pathfinder.core.trajectory.TankDriveTrajectory;
+import com.arctos6135.robotpathfinder.core.RobotSpecs;
+import com.arctos6135.robotpathfinder.core.TrajectoryParams;
+import com.arctos6135.robotpathfinder.core.Waypoint;
+import com.arctos6135.robotpathfinder.core.WaypointEx;
+import com.arctos6135.robotpathfinder.core.path.PathType;
+import com.arctos6135.robotpathfinder.core.trajectory.BasicMoment;
+import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
+import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
+import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
 
 public class TrajectoryTest {
     

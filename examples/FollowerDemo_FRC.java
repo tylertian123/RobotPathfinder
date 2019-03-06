@@ -3,9 +3,9 @@ import org.usfirst.frc.team0000.robot.Robot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
-import robot.pathfinder.core.trajectory.TankDriveTrajectory;
-import robot.pathfinder.follower.Follower;
-import robot.pathfinder.follower.TankFollower;
+import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
+import com.arctos6135.robotpathfinder.follower.Follower;
+import com.arctos6135.robotpathfinder.follower.TankFollower;
 
 /**
  * 	Makes the Robot follow the trajectory of a {@link robot.pathfinder.core.trajectory.TankDriveTrajectory TankDriveTrajectory}.<br>

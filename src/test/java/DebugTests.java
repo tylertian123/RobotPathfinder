@@ -11,17 +11,17 @@ import javax.swing.SwingUtilities;
 
 import org.math.plot.Plot2DPanel;
 
-import robot.pathfinder.core.RobotSpecs;
-import robot.pathfinder.core.TrajectoryParams;
-import robot.pathfinder.core.Waypoint;
-import robot.pathfinder.core.WaypointEx;
-import robot.pathfinder.core.path.JNIPath;
-import robot.pathfinder.core.path.PathType;
-import robot.pathfinder.core.trajectory.BasicTrajectory;
-import robot.pathfinder.core.trajectory.TankDriveTrajectory;
-import robot.pathfinder.core.trajectory.TrajectoryGenerator;
-import robot.pathfinder.math.Vec2D;
-import robot.pathfinder.tools.Grapher;
+import com.arctos6135.robotpathfinder.core.RobotSpecs;
+import com.arctos6135.robotpathfinder.core.TrajectoryParams;
+import com.arctos6135.robotpathfinder.core.Waypoint;
+import com.arctos6135.robotpathfinder.core.WaypointEx;
+import com.arctos6135.robotpathfinder.core.path.JNIPath;
+import com.arctos6135.robotpathfinder.core.path.PathType;
+import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
+import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
+import com.arctos6135.robotpathfinder.core.trajectory.TrajectoryGenerator;
+import com.arctos6135.robotpathfinder.math.Vec2D;
+import com.arctos6135.robotpathfinder.tools.Grapher;
 
 public class DebugTests {
     

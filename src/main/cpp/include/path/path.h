@@ -1,11 +1,12 @@
 #pragma once
 
 #include "waypoint.h"
-#include "segment/splinesegment.h"
+#include "segments.h"
 #include <memory>
 #include <vector>
 #include <limits>
 #include <utility>
+#include <cmath>
 
 namespace rpf {
     enum PathType : int {
@@ -16,7 +17,43 @@ namespace rpf {
 
     class Path {
     public:
-        virtual ~Path() = 0;
+        Path(const std::vector<Waypoint> &waypoints, double alpha, PathType type) : 
+                waypoints(waypoints), alpha(alpha), type(type) {
+
+            if(waypoints.size() < 2) {
+                throw std::invalid_argument("Not enough waypoints");
+            }
+            switch(type) {
+            case PathType::BEZIER:
+                for(int i = 0; i < waypoints.size() - 1; i ++) {
+                    segments.push_back(std::make_unique<BezierSegment>(BezierSegment::from_hermite(
+                        static_cast<Vec2D>(waypoints[i]), static_cast<Vec2D>(waypoints[i + 1]),
+                        Vec2D(std::cos(waypoints[i].heading) * alpha, std::sin(waypoints[i].heading) * alpha),
+                        Vec2D(std::cos(waypoints[i + 1].heading) * alpha, std::sin(waypoints[i + 1].heading) * alpha)
+                    )));
+                }
+                break;
+            case PathType::CUBIC_HERMITE:
+                for(int i = 0; i < waypoints.size() - 1; i ++) {
+                    segments.push_back(std::make_unique<CubicSegment>(
+                        static_cast<Vec2D>(waypoints[i]), static_cast<Vec2D>(waypoints[i + 1]),
+                        Vec2D(std::cos(waypoints[i].heading) * alpha, std::sin(waypoints[i].heading) * alpha),
+                        Vec2D(std::cos(waypoints[i + 1].heading) * alpha, std::sin(waypoints[i + 1].heading) * alpha)
+                    ));
+                }
+                break;
+            case PathType::QUINTIC_HERMITE:
+                for(int i = 0; i < waypoints.size() - 1; i ++) {
+                    segments.push_back(std::make_unique<QuinticSegment>(
+                        static_cast<Vec2D>(waypoints[i]), static_cast<Vec2D>(waypoints[i + 1]),
+                        Vec2D(std::cos(waypoints[i].heading) * alpha, std::sin(waypoints[i].heading) * alpha),
+                        Vec2D(std::cos(waypoints[i + 1].heading) * alpha, std::sin(waypoints[i + 1].heading) * alpha),
+                        Vec2D(0, 0), Vec2D(0, 0)
+                    ));
+                }
+                break;
+            }
+        }
 
         void set_base(double);
         double get_base() const;

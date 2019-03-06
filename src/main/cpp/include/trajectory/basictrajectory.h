@@ -8,7 +8,7 @@
 #include <memory>
 #include <vector>
 #include <list>
-#include <set>
+#include <unordered_set>
 #include <limits>
 #include <stdexcept>
 
@@ -75,7 +75,7 @@ namespace rpf {
             }
 
             std::vector<double> time_diff(params.seg_count - 1, std::numeric_limits<double>::quiet_NaN());
-            std::vector<int> constrained;
+            std::unordered_set<int> constrained;
 
             for(int i = 1; i < params.seg_count; i ++) {
                 double dist = i * dpi;
@@ -96,7 +96,7 @@ namespace rpf {
                         moments[i - 1].accel = 0;
                     }
                     moments.push_back(BasicMoment(dist, constraint.second, 0, headings[i]));
-                    constrained.push_back(i);
+                    constrained.insert(i);
                     continue;
                 }
 
@@ -138,8 +138,15 @@ namespace rpf {
                         vel = moments[i].vel;
                     }
                     else {
-                        
+                        if(constrained.count(i)) {
+                            throw std::invalid_argument("Waypoint velocity constraint cannot be met");
+                        }
+                        vel = maxv;
+                        moments[i].accel = -specs.max_a;
                     }
+
+                    moments[i].vel = vel;
+                    time_diff[i] = (moments[i + 1].vel - vel) / moments[i].accel;
 
                 }
             }

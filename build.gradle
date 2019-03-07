@@ -1,3 +1,5 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
 plugins {
     id 'base'
     id 'java-library'
@@ -80,36 +82,6 @@ model {
     }
 }
 
-// Add sources to the jar
-jar {
-    from sourceSets.main.allSource
-    
-    archiveName 'RobotPathfinder-' + project.version + '.jar'
-}
-
-def visualizerMainClass = 'com.arctos6135.robotpathfinder.tools.TrajectoryVisualizationTool'
-// This task assembles the trajecotry visualizer jar
-// This jar is a fat jar
-task visualizerJar(type: Jar, group: 'Build', description: 'Assembles a runnable jar that runs the visualizer.') {
-    dependsOn build
-
-    // Include outputs
-    from(sourceSets.main.output) {
-        include '**'
-        exclude '**/follower/*', '**/package-info.java'
-    }
-    // Add manifest attribute to make it runnable
-    manifest {
-        attributes 'Main-Class': visualizerMainClass
-    }
-    // Set archive name
-    archiveName 'Trajectory-Visualizer-' + project.version + '.jar'
-
-    // Include all dependencies in this jar
-    classifier = 'all'
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-}
-
 task updateJNIHeaders(type: Copy, group: 'Development', description: 'Copies JNI generated headers into the JNI headers directory.') {
     dependsOn build
 
@@ -154,6 +126,36 @@ task copyLibWindowsx8664Release(type: Copy, group: 'Development', description: '
     }
 }
 
+// Add sources to the jar
+jar {
+    from sourceSets.main.allSource
+    
+    archiveName 'RobotPathfinder-' + project.version + '.jar'
+}
+
+def visualizerMainClass = 'com.arctos6135.robotpathfinder.tools.TrajectoryVisualizationTool'
+// This task assembles the trajecotry visualizer jar
+// This jar is a fat jar
+task visualizerJar(type: Jar, group: 'Build', description: 'Assembles a runnable jar that runs the visualizer.') {
+    dependsOn build
+
+    // Include outputs
+    from(sourceSets.main.output) {
+        include '**'
+        exclude '**/follower/*', '**/package-info.java'
+    }
+    // Add manifest attribute to make it runnable
+    manifest {
+        attributes 'Main-Class': visualizerMainClass
+    }
+    // Set archive name
+    archiveName 'Trajectory-Visualizer-' + project.version + '.jar'
+
+    // Include all dependencies in this jar
+    classifier = 'all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
 task fatJar(type: Jar, group: 'Build', description: 'Assembles a jar of the library, including the libraries for the Grapher class.') {
     dependsOn build
 
@@ -166,12 +168,21 @@ task fatJar(type: Jar, group: 'Build', description: 'Assembles a jar of the libr
     with jar
 }
 
+task markVisualizerJarExecutable(type: Exec, group: 'Archive', description: 'Sets the Trajectory Visualizer jar to be executable.') {
+    commandLine 'chmod', '+x', 'output/Trajectory-Visualizer-' + project.version + '.jar'
+}
+
 task copyJars(type: Copy, group: 'Archive', description: 'Copies all generated jars to the output directory.') {
     dependsOn jar
     dependsOn fatJar
     dependsOn visualizerJar
     from 'build/libs'
     into 'output'
+
+    // If the OS is part of the UNIX family, also chmod the visualizer jar to be executable
+    if(Os.isFamily(Os.FAMILY_UNIX)) {
+        finalizedBy markVisualizerJarExecutable
+    }
 }
 
 task zipDoc(type: Zip, group: 'Archive', description: 'Zips the generated JavaDoc and puts it in the output directory.') {

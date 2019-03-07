@@ -126,6 +126,44 @@ task copyLibWindowsx8664Release(type: Copy, group: 'Development', description: '
     }
 }
 
+task copyLibDebug(group: 'Development', description: 'Copies the correct debug dynamic library to the root of the project.') {
+    if(System.getProperty('os.arch') != 'amd64' && System.getProperty('os.arch') != 'x86_64') {
+        throw new GradleException('OS architecture not supported')
+    }
+    
+    println('Detected architeture: ' + System.getProperty('os.arch'))
+    if(Os.isFamily(Os.FAMILY_UNIX)) {
+        println('Detected OS: UNIX')
+        finalizedBy copyLibLinuxx8664Debug
+    }
+    else if(Os.isFamily(Os.FAMILY_WINDOWS)) {
+        println('Detected OS: Windows')
+        finalizedBy copyLibWindowsx8664Debug
+    }
+    else {
+        throw new GradleException('OS not supported')
+    }
+}
+
+task copyLibRelease(group: 'Development', description: 'Copies the correct release dynamic library to the root of the project.') {
+    if(System.getProperty('os.arch') != 'amd64' && System.getProperty('os.arch') != 'x86_64') {
+        throw new GradleException('OS architecture not supported')
+    }
+
+    println('Detected architeture: ' + System.getProperty('os.arch'))
+    if(Os.isFamily(Os.FAMILY_UNIX)) {
+        println('Detected OS: UNIX')
+        finalizedBy copyLibLinuxx8664Release
+    }
+    else if(Os.isFamily(Os.FAMILY_WINDOWS)) {
+        println('Detected OS: Windows')
+        finalizedBy copyLibWindowsx8664Release
+    }
+    else {
+        throw new GradleException('OS not supported')
+    }
+}
+
 // Add sources to the jar
 jar {
     from sourceSets.main.allSource

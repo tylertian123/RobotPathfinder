@@ -62,9 +62,9 @@ final public class TrajectoryGenerator {
      * Generates a {@link TankDriveTrajectory} that represents a rotation.
      * <p>
      * <em>Note: The resulting trajectory will not have an underlying path or generation parameters. Therefore, attempting to use
-     * methods such as {@link robot.pathfinder.core.trajectory.Trajectory#mirrorLeftRight() mirrorLeftRight()}, 
-     * {@link robot.pathfinder.core.trajectory.Trajectory#mirrorFrontBack() mirrorFrontBack()}
-     * or {@link robot.pathfinder.core.trajectory.Trajectory#retrace() retrace()} will result in an error.</em>
+     * methods such as {@link com.arctos6135.robotpathfinder.core.trajectory.Trajectory#mirrorLeftRight() mirrorLeftRight()}, 
+     * {@link com.arctos6135.robotpathfinder.core.trajectory.Trajectory#mirrorFrontBack() mirrorFrontBack()}
+     * or {@link com.arctos6135.robotpathfinder.core.trajectory.Trajectory#retrace() retrace()} will result in an error.</em>
      * </p>
      * @param specs The specifications of the robot
      * @param angle The angle, in radians, to turn for. Positive angles are counter-clockwise.

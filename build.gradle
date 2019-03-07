@@ -87,7 +87,7 @@ jar {
     archiveName 'RobotPathfinder-' + project.version + '.jar'
 }
 
-def visualizerMainClass = 'robot.pathfinder.tools.TrajectoryVisualizationTool'
+def visualizerMainClass = 'com.arctos6135.robotpathfinder.tools.TrajectoryVisualizationTool'
 // This task assembles the trajecotry visualizer jar
 // This jar is a fat jar
 task visualizerJar(type: Jar, group: 'Build', description: 'Assembles a runnable jar that runs the visualizer.') {

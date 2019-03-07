@@ -7,8 +7,8 @@ import com.arctos6135.robotpathfinder.math.Vec2D;
  * (direction the robot is travelling in). All angles are in <em>radians</em>. Used to construct paths and trajectories.
  * This class is immutable.
  * <p>
- * The {@code WaypointEx} adds additional velocity information in addition to the {@link robot.pathfinder.core.Waypoint Waypoint}'s 
- * position and heading. Since it inherits from a regular {@link robot.pathfinder.core.Waypoint Waypoint},
+ * The {@code WaypointEx} adds additional velocity information in addition to the {@link com.arctos6135.robotpathfinder.core.Waypoint Waypoint}'s 
+ * position and heading. Since it inherits from a regular {@link com.arctos6135.robotpathfinder.core.Waypoint Waypoint},
  * you can use it in the place of one to accomplish things such as creating a trajectory that is a continuation of some other
  * trajectory, or make the robot slow down in certain places along the path.
  * </p>

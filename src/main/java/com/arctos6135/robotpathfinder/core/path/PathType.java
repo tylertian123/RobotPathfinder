@@ -17,7 +17,7 @@ public enum PathType {
 	 * The path spline consists of segments of quintic (fifth order) hermite polynomials. Trajectories using these
 	 * paths are relatively slower to generate because of their complexity, but realistically this will make a
 	 * very small difference. These paths are smoother than other types, and thus it is the recommended type for
-	 * trajectory generation (as well as the default for {@link robot.pathfinder.core.TrajectoryParams TrajectoryParams}.
+	 * trajectory generation (as well as the default for {@link com.arctos6135.robotpathfinder.core.TrajectoryParams TrajectoryParams}.
 	 */
 	QUINTIC_HERMITE,
 	/**

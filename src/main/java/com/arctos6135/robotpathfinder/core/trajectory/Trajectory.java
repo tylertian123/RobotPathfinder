@@ -49,13 +49,13 @@ public interface Trajectory {
 	public double totalTime();
 	
 	/**
-	 * Retrieves the {@link robot.pathfinder.core.RobotSpecs RobotSpecs} object used to generate the trajectory.
-	 * @return The {@link robot.pathfinder.core.RobotSpecs RobotSpecs} object used to generate the trajectory
+	 * Retrieves the {@link com.arctos6135.robotpathfinder.core.RobotSpecs RobotSpecs} object used to generate the trajectory.
+	 * @return The {@link com.arctos6135.robotpathfinder.core.RobotSpecs RobotSpecs} object used to generate the trajectory
 	 */
 	public RobotSpecs getRobotSpecs();
 	/**
-	 * Retrieves the {@link robot.pathfinder.core.TrajectoryParams TrajectoryParams} object used to generate the trajectory.
-	 * @return The {@link robot.pathfinder.core.TrajectoryParams TrajectoryParams} object used to generate the trajectory
+	 * Retrieves the {@link com.arctos6135.robotpathfinder.core.TrajectoryParams TrajectoryParams} object used to generate the trajectory.
+	 * @return The {@link com.arctos6135.robotpathfinder.core.TrajectoryParams TrajectoryParams} object used to generate the trajectory
 	 */
 	public TrajectoryParams getGenerationParams();
 	

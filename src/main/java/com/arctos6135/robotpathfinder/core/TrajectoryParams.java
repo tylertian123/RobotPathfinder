@@ -3,7 +3,7 @@ package com.arctos6135.robotpathfinder.core;
 import com.arctos6135.robotpathfinder.core.path.PathType;
 
 /**
- * A collection of parameters for trajectory generation. Used in the construction of {@link robot.pathfinder.core.trajectory.BasicTrajectory BasicTrajectory}.
+ * A collection of parameters for trajectory generation. Used in the construction of {@link com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory BasicTrajectory}.
  * @author Tyler Tian
  *
  */
@@ -45,10 +45,10 @@ public class TrajectoryParams implements Cloneable {
     @Deprecated
 	public double roundingLimit = 1.0e-6;
 	/**
-	 * Whether the trajectory is to be used as the base for a {@link robot.pathfinder.core.trajectory.TankDriveTrajectory TankDriveTrajectory}. Setting this value to
-	 * {@code true} will result in extra processing to prepare for the generation of a {@link robot.pathfinder.core.trajectory.TankDriveTrajectory TankDriveTrajectory}.
+	 * Whether the trajectory is to be used as the base for a {@link com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory TankDriveTrajectory}. Setting this value to
+	 * {@code true} will result in extra processing to prepare for the generation of a {@link com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory TankDriveTrajectory}.
 	 * If a trajectory is generated with this field set to {@code false}, and passed into the constructor of a 
-	 * {@link robot.pathfinder.core.trajectory.TankDriveTrajectory TankDriveTrajectory}, an {@link IllegalArgumentException} will be thrown. Default value is {@code false}.
+	 * {@link com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory TankDriveTrajectory}, an {@link IllegalArgumentException} will be thrown. Default value is {@code false}.
 	 */
 	public boolean isTank = false;
 	/**

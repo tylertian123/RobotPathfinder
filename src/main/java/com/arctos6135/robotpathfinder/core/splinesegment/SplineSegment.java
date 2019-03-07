@@ -5,7 +5,7 @@ import com.arctos6135.robotpathfinder.math.Vec2D;
 /**
  * An interface that defines the requirements for a spline segment. All spline segment classes implement this interface.
  * <p>
- * A spline is a function defined piecewise by polynomials. Splines are what's used to fit the {@link robot.pathfinder.core.Waypoint Waypoint}s 
+ * A spline is a function defined piecewise by polynomials. Splines are what's used to fit the {@link com.arctos6135.robotpathfinder.core.Waypoint Waypoint}s 
  * and construct paths. They're made of many segments, and each segment is defined by a parametric curve.
  * </p>
  * @author Tyler Tian

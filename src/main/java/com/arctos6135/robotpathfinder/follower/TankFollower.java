@@ -41,7 +41,7 @@ public class TankFollower extends Follower {
 	 * @param traj The trajectory to follow
 	 * @param lMotor The left side motor
 	 * @param rMotor The right side motor
-	 * @param timer A {@link robot.pathfinder.follower.Follower.TimestampSource TimestampSource} to grab timestamps from
+	 * @param timer A {@link com.arctos6135.robotpathfinder.follower.Follower.TimestampSource TimestampSource} to grab timestamps from
 	 * @param kV The velocity feedforward 
 	 * @param kA The acceleration feedforward
 	 */
@@ -62,9 +62,9 @@ public class TankFollower extends Follower {
 	 * @param traj The trajectory to follow
 	 * @param lMotor The left side motor
 	 * @param rMotor The right side motor
-	 * @param lDistSrc A {@link robot.pathfinder.follower.Follower.DistanceSource DistanceSource} for the left motor
-	 * @param rDistSrc A {@link robot.pathfinder.follower.Follower.DistanceSource DistanceSource} for the right motor
-	 * @param timer A {@link robot.pathfinder.follower.Follower.TimestampSource TimestampSource} to grab timestamps from
+	 * @param lDistSrc A {@link com.arctos6135.robotpathfinder.follower.Follower.DistanceSource DistanceSource} for the left motor
+	 * @param rDistSrc A {@link com.arctos6135.robotpathfinder.follower.Follower.DistanceSource DistanceSource} for the right motor
+	 * @param timer A {@link com.arctos6135.robotpathfinder.follower.Follower.TimestampSource TimestampSource} to grab timestamps from
 	 * @param kV The velocity feedforward 
 	 * @param kA The acceleration feedforward
 	 * @param kP The proportional gain
@@ -88,8 +88,8 @@ public class TankFollower extends Follower {
 	 * @param traj The trajectory to follow
 	 * @param lMotor The left side motor
 	 * @param rMotor The right side motor
-	 * @param timer A {@link robot.pathfinder.follower.Follower.TimestampSource TimestampSource} to grab timestamps from
-	 * @param dirSrc A {@link robot.pathfinder.follower.Follower.DirectionSource DirectionSource} to get angle data from
+	 * @param timer A {@link com.arctos6135.robotpathfinder.follower.Follower.TimestampSource TimestampSource} to grab timestamps from
+	 * @param dirSrc A {@link com.arctos6135.robotpathfinder.follower.Follower.DirectionSource DirectionSource} to get angle data from
 	 * @param kV The velocity feedforward 
 	 * @param kA The acceleration feedforward
 	 * @param kDP The directional-proportional gain; for more information, see {@link #setDP(double)}
@@ -110,10 +110,10 @@ public class TankFollower extends Follower {
 	 * @param traj The trajectory to follow
 	 * @param lMotor The left side motor
 	 * @param rMotor The right side motor
-	 * @param lDistSrc A {@link robot.pathfinder.follower.Follower.DistanceSource DistanceSource} for the left motor
-	 * @param rDistSrc A {@link robot.pathfinder.follower.Follower.DistanceSource DistanceSource} for the right motor
-	 * @param timer A {@link robot.pathfinder.follower.Follower.TimestampSource TimestampSource} to grab timestamps from
-	 * @param dirSrc A {@link robot.pathfinder.follower.Follower.DirectionSource DirectionSource} to get angle data from
+	 * @param lDistSrc A {@link com.arctos6135.robotpathfinder.follower.Follower.DistanceSource DistanceSource} for the left motor
+	 * @param rDistSrc A {@link com.arctos6135.robotpathfinder.follower.Follower.DistanceSource DistanceSource} for the right motor
+	 * @param timer A {@link com.arctos6135.robotpathfinder.follower.Follower.TimestampSource TimestampSource} to grab timestamps from
+	 * @param dirSrc A {@link com.arctos6135.robotpathfinder.follower.Follower.DirectionSource DirectionSource} to get angle data from
 	 * @param kV The velocity feedforward 
 	 * @param kA The acceleration feedforward
 	 * @param kP The proportional gain

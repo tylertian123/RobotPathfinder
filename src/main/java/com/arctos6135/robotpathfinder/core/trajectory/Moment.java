@@ -26,7 +26,7 @@ package com.arctos6135.robotpathfinder.core.trajectory;
  * <h2>Units</h2>
  * <p>
  * The units used for these moment objects are completely decided by which units are used in a trajectory's
- * {@link robot.pathfinder.core.RobotSpecs RobotSpecs} during generation. For example, if the unit for max velocity was in m/s, then the unit used
+ * {@link com.arctos6135.robotpathfinder.core.RobotSpecs RobotSpecs} during generation. For example, if the unit for max velocity was in m/s, then the unit used
  * here for velocity would also be m/s. All angles are in radians and are in the range (-&pi;, &pi;].
  * </p>
  * @author Tyler Tian

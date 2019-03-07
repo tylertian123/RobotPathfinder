@@ -8,7 +8,7 @@ import com.arctos6135.robotpathfinder.follower.Follower;
 import com.arctos6135.robotpathfinder.follower.TankFollower;
 
 /**
- * 	Makes the Robot follow the trajectory of a {@link robot.pathfinder.core.trajectory.TankDriveTrajectory TankDriveTrajectory}.<br>
+ * 	Makes the Robot follow the trajectory of a {@link com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory TankDriveTrajectory}.<br>
  * 	<br>
  * 	Note: For this command to function correctly, the unit of length used in the trajectory must be <em>inches</em>,
  * 	and the unit for time must be <em>seconds</em>.

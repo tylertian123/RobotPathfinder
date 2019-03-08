@@ -1,5 +1,7 @@
 #pragma once
 
+#include "vec2d.h"
+
 namespace rpf {
     /* RobotPathfinder Math */
 
@@ -9,6 +11,9 @@ namespace rpf {
     double rangle(double);
     // Mirror Angle
     double mangle(double, double);
+    // Linearly interpolates between angles
+    double langle(double, double, double);
+    double langle(Vec2D, Vec2D, double);
     // Computes curvature
     double curvature(double, double, double, double);
     // The constant pi

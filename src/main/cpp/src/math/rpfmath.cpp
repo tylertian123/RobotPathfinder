@@ -26,6 +26,14 @@ namespace rpf {
         return rangle(angle - 2 * (angle - ref));
     }
 
+    double langle(double a, double b, double f) {
+        return langle(Vec2D(std::cos(a), std::sin(a)), Vec2D(std::cos(b), std::sin(b)), f);
+    }
+    double langle(Vec2D a, Vec2D b, double f) {
+        auto angle = Vec2D::lerp(a, b, f);
+        return std::atan2(angle.y, angle.x);
+    }
+
     double curvature(double dx, double ddx, double dy, double ddy) {
         return (dx * ddy - dy * ddx) / std::pow(dx * dx + dy * dy, 3.0 / 2.0);
     }

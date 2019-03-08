@@ -29,4 +29,11 @@ namespace rpf {
     const TrajectoryParams& BasicTrajectory::get_params() const {
         return params;
     }
+
+    double BasicTrajectory::total_time() const {
+        return moments[moments.size() - 1].time;
+    }
+    bool BasicTrajectory::is_tank() const {
+        return params.is_tank;
+    }
 }

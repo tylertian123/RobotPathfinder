@@ -178,6 +178,9 @@ namespace rpf {
         TrajectoryParams& get_params();
         const TrajectoryParams& get_params() const;
 
+        double total_time() const;
+        bool is_tank() const;
+
     protected:
         std::shared_ptr<Path> path = nullptr;
         std::vector<BasicMoment> moments;

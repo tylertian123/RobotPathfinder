@@ -33,8 +33,7 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_path_JNIPath__1d
     auto ptr = rpf::get_obj_ptr<rpf::Path>(env, obj);
     rpf::set_obj_ptr<rpf::Path>(env, obj, nullptr);
     // Remove an entry from the instances list
-    std::shared_ptr<rpf::Path> p(ptr);
-    auto it = std::find(instances.begin(), instances.end(), p);
+    auto it = std::find_if(instances.begin(), instances.end(), [&](const auto &p){ return p.get() == ptr; });
     
     if(it != instances.end()) {
         instances.erase(it);

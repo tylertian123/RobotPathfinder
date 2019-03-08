@@ -1,15 +1,6 @@
 
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GraphicsEnvironment;
-import java.awt.Rectangle;
-import java.lang.reflect.InvocationTargetException;
-
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-
-import org.math.plot.Plot2DPanel;
 
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.TrajectoryParams;
@@ -20,7 +11,6 @@ import com.arctos6135.robotpathfinder.core.path.PathType;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.TrajectoryGenerator;
-import com.arctos6135.robotpathfinder.math.Vec2D;
 import com.arctos6135.robotpathfinder.tools.Grapher;
 
 public class DebugTests {

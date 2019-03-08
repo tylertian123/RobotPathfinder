@@ -2,25 +2,46 @@
 #include "paths.h"
 #include "jni/jniutil.h"
 #include <vector>
+#include <memory>
+#include <algorithm>
+
+// This is a list of all the existing instances of Path (Java side)
+// With each instance created an entry will be added
+// With each instance destoryed an entry will be deleted
+// This ensures that when there are no more Java instances of a Path object, the C++ object is also deleted
+std::vector<std::shared_ptr<rpf::Path>> instances;
+// TODO: CHANGE THIS TO LIST
 
 JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_path_JNIPath__1construct
         (JNIEnv *env, jobject obj, jobjectArray waypoints, jdouble alpha, jint type) {
     std::vector<rpf::Waypoint> wp;
-
+    // Translate the waypoints into C++ ones
     for(int i = 0; i < env->GetArrayLength(waypoints); i ++) {
         auto waypoint = env->GetObjectArrayElement(waypoints, i);
         wp.push_back(rpf::Waypoint(rpf::get_field<double>(env, waypoint, "x"), rpf::get_field<double>(env, waypoint, "y"),
                 rpf::get_field<double>(env, waypoint, "heading")));
     }
     
-    rpf::set_obj_ptr(env, obj, rpf::construct_path(wp, alpha, static_cast<rpf::PathType>(type)));
+    rpf::Path *path = new rpf::Path(wp, alpha, static_cast<rpf::PathType>(type));
+    // Add the newly created path to the instances list
+    instances.push_back(std::shared_ptr<rpf::Path>(path));
+    rpf::set_obj_ptr(env, obj, path);
 }
 
 JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_path_JNIPath__1destroy(JNIEnv *env, jobject obj) {
+    // Retrieve the pointer and set it to null
     auto ptr = rpf::get_obj_ptr<rpf::Path>(env, obj);
-    if(ptr) {
-        delete ptr;
-        rpf::set_obj_ptr<rpf::Path>(env, obj, nullptr);
+    rpf::set_obj_ptr<rpf::Path>(env, obj, nullptr);
+    // Remove an entry from the instances list
+    std::shared_ptr<rpf::Path> p(ptr);
+    auto it = std::find(instances.begin(), instances.end(), p);
+    
+    if(it != instances.end()) {
+        instances.erase(it);
+    }
+    else {
+        jclass exclass = env->FindClass("com/arctos6135/robotpathfinder/core/JNIException");
+        env->ThrowNew(exclass, "This instance of Path was not found in the instances list");
     }
 }
 
@@ -81,13 +102,16 @@ JNIEXPORT jdouble JNICALL Java_com_arctos6135_robotpathfinder_core_path_JNIPath_
 
 JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_path_JNIPath__1mirrorLeftRight(JNIEnv *env, jobject obj) {
     auto ptr = rpf::get_obj_ptr<rpf::Path>(env, obj)->mirror_lr();
-    return reinterpret_cast<jlong>(ptr);
+    instances.push_back(ptr);
+    return reinterpret_cast<jlong>(ptr.get());
 }
 JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_path_JNIPath__1mirrorFrontBack(JNIEnv *env, jobject obj) {
     auto ptr = rpf::get_obj_ptr<rpf::Path>(env, obj)->mirror_fb();
-    return reinterpret_cast<jlong>(ptr);
+    instances.push_back(ptr);
+    return reinterpret_cast<jlong>(ptr.get());
 }
 JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_path_JNIPath__1retrace(JNIEnv *env, jobject obj) {
     auto ptr = rpf::get_obj_ptr<rpf::Path>(env, obj)->retrace();
-    return reinterpret_cast<jlong>(ptr);
+    instances.push_back(ptr);
+    return reinterpret_cast<jlong>(ptr.get());
 }

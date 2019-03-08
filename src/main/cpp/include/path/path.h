@@ -75,9 +75,9 @@ namespace rpf {
         bool get_backwards() const;
         void set_backwards(bool);
 
-        Path* mirror_fb() const;
-        Path* mirror_lr() const;
-        Path* retrace() const;
+        std::shared_ptr<Path> mirror_fb() const;
+        std::shared_ptr<Path> mirror_lr() const;
+        std::shared_ptr<Path> retrace() const;
 
     protected:
         std::vector<Waypoint> waypoints;
@@ -91,6 +91,4 @@ namespace rpf {
         bool backwards = false;
         double base_radius;
     };
-
-    Path* construct_path(const std::vector<Waypoint> &, double, PathType);
 }

@@ -170,44 +170,40 @@ namespace rpf {
         this->backwards = backwards;
     }
 
-    Path* Path::mirror_lr() const {
+    std::shared_ptr<Path> Path::mirror_lr() const {
         Vec2D ref(std::cos(waypoints[0].heading), std::sin(waypoints[0].heading));
         std::vector<Waypoint> w;
 
         for(auto wp : waypoints) {
             w.push_back(Waypoint(static_cast<Vec2D>(wp).reflect(ref), rpf::mangle(wp.heading, waypoints[0].heading)));
         }
-        auto p = construct_path(w, alpha, type);
+        auto p = std::make_shared<Path>(w, alpha, type);
         p->set_base(base_radius);
         return p;
     }
-    Path* Path::mirror_fb() const {
+    std::shared_ptr<Path> Path::mirror_fb() const {
         Vec2D ref(-std::sin(waypoints[0].heading), std::cos(waypoints[0].heading));
         std::vector<Waypoint> w;
 
         for(auto wp : waypoints) {
             w.push_back(Waypoint(static_cast<Vec2D>(wp).reflect(ref), rpf::mangle(wp.heading, waypoints[0].heading + rpf::pi / 2)));
         }
-        auto p = construct_path(w, alpha, type);
+        auto p = std::make_shared<Path>(w, alpha, type);
         p->set_base(base_radius);
         p->set_backwards(!backwards);
         return p;
     }
-    Path* Path::retrace() const {
+    std::shared_ptr<Path> Path::retrace() const {
         std::vector<Waypoint> w;
 
         for(auto rit = waypoints.rbegin(); rit != waypoints.rend(); ++rit) {
             Waypoint wp = *rit;
             w.push_back(Waypoint(wp.x, wp.y, rpf::rangle(wp.heading + rpf::pi)));
         }
-        auto p = construct_path(w, alpha, type);
+        auto p = std::make_shared<Path>(w, alpha, type);
         p->set_base(base_radius);
         p->set_backwards(!backwards);
         return p;
-    }
-
-    Path* construct_path(const std::vector<Waypoint> &waypoints, double alpha, PathType type) {
-        return new Path(waypoints, alpha, type);
     }
 }
 

@@ -16,7 +16,7 @@ namespace rpf {
     class BasicTrajectory {
     public:
         BasicTrajectory(const RobotSpecs &specs, const TrajectoryParams &params) : specs(specs), params(params) {
-            path = std::shared_ptr<Path>(construct_path(params.waypoints, params.alpha, params.type));
+            path = std::make_shared<Path>(params.waypoints, params.alpha, params.type);
             auto &waypoints = params.waypoints;
 
             if(params.is_tank) {

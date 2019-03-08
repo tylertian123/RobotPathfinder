@@ -10,7 +10,6 @@
 // With each instance destoryed an entry will be deleted
 // This ensures that when there are no more Java instances of a Path object, the C++ object is also deleted
 std::vector<std::shared_ptr<rpf::Path>> instances;
-// TODO: CHANGE THIS TO LIST
 
 JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_path_JNIPath__1construct
         (JNIEnv *env, jobject obj, jobjectArray waypoints, jdouble alpha, jint type) {

@@ -167,19 +167,21 @@ namespace rpf {
             }
         }
 
-        std::shared_ptr<Path> get_path();
-        std::shared_ptr<const Path> get_path() const;
-        std::vector<BasicMoment>& get_moments();
-        const std::vector<BasicMoment>& get_moments() const;
-        double get_init_facing() const;
+        inline std::shared_ptr<Path> get_path();
+        inline std::shared_ptr<const Path> get_path() const;
+        inline std::vector<BasicMoment>& get_moments();
+        inline const std::vector<BasicMoment>& get_moments() const;
+        inline double get_init_facing() const;
 
-        RobotSpecs& get_specs();
-        const RobotSpecs& get_specs() const;
-        TrajectoryParams& get_params();
-        const TrajectoryParams& get_params() const;
+        inline RobotSpecs& get_specs();
+        inline const RobotSpecs& get_specs() const;
+        inline TrajectoryParams& get_params();
+        inline const TrajectoryParams& get_params() const;
 
-        double total_time() const;
-        bool is_tank() const;
+        inline double total_time() const;
+        inline bool is_tank() const;
+
+        BasicMoment get(double) const;
 
     protected:
         std::shared_ptr<Path> path = nullptr;

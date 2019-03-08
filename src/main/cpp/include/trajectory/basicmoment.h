@@ -8,6 +8,8 @@ namespace rpf {
 
         BasicMoment() {}
         BasicMoment(double d, double v, double a, double h, double initf) : dist(d), vel(v), accel(a), init_facing(initf) {}
+        BasicMoment(double d, double v, double a, double h, double t, double initf) : dist(d), vel(v), accel(a), time(t),
+                init_facing(initf) {}
         BasicMoment(double d, double v, double a, double h) : dist(d), vel(v), accel(a), init_facing(std::numeric_limits<double>::quiet_NaN()) {}
         
         double dist;

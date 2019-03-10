@@ -83,7 +83,7 @@ namespace rpf {
         for(int i = 0; i < moments.size(); i ++) {
             BasicMoment moment(moments[i]);
             moment.heading = rpf::mangle(moment.heading, ref);
-            moment.init_facing = moments[0].heading;
+            moment.init_facing = params.waypoints[0].heading;
             m.push_back(moment);
         }
         return std::shared_ptr<BasicTrajectory>(new BasicTrajectory(p, std::move(m), false, specs, params));
@@ -97,7 +97,24 @@ namespace rpf {
         for(int i = 0; i < moments.size(); i ++) {
             BasicMoment moment(-moments[i].dist, -moments[i].vel, moments[i].accel, 
                     rpf::mangle(moments[i].heading, ref), moments[i].time);
-            moment.init_facing = moments[0].heading;
+            moment.init_facing = params.waypoints[0].heading;
+            moment.backwards = true;
+            m.push_back(moment);
+        }
+
+        return std::shared_ptr<BasicTrajectory>(new BasicTrajectory(p, std::move(m), true, specs, params));
+    }
+    std::shared_ptr<BasicTrajectory> BasicTrajectory::retrace() const {
+        auto p = path->retrace();
+        
+        std::vector<BasicMoment> m;
+        m.reserve(moments.size());
+        auto &last = moments[moments.size() - 1];
+        for(int i = 0; i < moments.size(); i ++) {
+            auto &current = moments[moments.size() - 1 - i];
+
+            BasicMoment moment(-(last.dist - current.dist), -current.vel, current.accel, -current.heading, last.time - current.time);
+            moment.init_facing = params.waypoints[params.waypoints.size() - 1].heading;
             moment.backwards = true;
             m.push_back(moment);
         }

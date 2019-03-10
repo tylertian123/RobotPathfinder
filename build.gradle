@@ -80,6 +80,16 @@ model {
             }
         }
     }
+    binaries {
+        all {
+            if (targetPlatform.name == wpi.platforms.roborio) {
+                cppCompiler.args << '-Wall' << '-Wextra' << '-ffast-math'
+            }
+            else if (targetPlatform.name == wpi.platforms.desktop) {
+                cppCompiler.args << '-Wall' << '-Wextra'
+            }
+        }
+    }
 }
 
 task updateJNIHeaders(type: Copy, group: 'Development', description: 'Copies JNI generated headers into the JNI headers directory.') {

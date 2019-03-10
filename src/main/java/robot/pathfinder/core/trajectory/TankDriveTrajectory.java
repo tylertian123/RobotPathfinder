@@ -40,6 +40,8 @@ public class TankDriveTrajectory implements Trajectory {
 	TrajectoryParams params;
 	
 	double initialFacing;
+
+	boolean backwards = false;
 	
 	/**
 	 * Generates a new {@link TankDriveTrajectory} based on the {@link BasicTrajectory} provided.
@@ -161,12 +163,13 @@ public class TankDriveTrajectory implements Trajectory {
 	 * This constructor is used internally by the mirrorLeftRight, mirrorFrontBack and retrace methods.
 	 * It requires pre-generated moments so it's not visible to the world.
 	 */
-	protected TankDriveTrajectory(TankDriveMoment[] moments, Path path, RobotSpecs specs, TrajectoryParams params) {
+	protected TankDriveTrajectory(TankDriveMoment[] moments, Path path, RobotSpecs specs, TrajectoryParams params, boolean backwards) {
 		this.moments = moments;
 		this.path = path;
 		this.specs = specs;
 		this.params = params;
 		this.initialFacing = moments[0].getInitialFacing();
+		this.backwards = backwards;
 		
 		headingVectors = new Vec2D[moments.length];
 		for(int i = 0; i < moments.length; i ++) {
@@ -244,13 +247,15 @@ public class TankDriveTrajectory implements Trajectory {
 			// If t is sandwiched between 2 existing times, the return the closest one
 			if(midTime <= t && nextTime >= t) {
 				double f = (t - midTime) / (nextTime - midTime);
-				return new TankDriveMoment(MathUtils.lerp(moments[mid].getLeftPosition(), moments[mid + 1].getLeftPosition(), f), 
+				TankDriveMoment m = new TankDriveMoment(MathUtils.lerp(moments[mid].getLeftPosition(), moments[mid + 1].getLeftPosition(), f), 
 						MathUtils.lerp(moments[mid].getRightPosition(), moments[mid + 1].getRightPosition(), f),
 						MathUtils.lerp(moments[mid].getLeftVelocity(), moments[mid + 1].getLeftVelocity(), f), 
 						MathUtils.lerp(moments[mid].getRightVelocity(), moments[mid + 1].getRightVelocity(), f),
 						MathUtils.lerp(moments[mid].getLeftAcceleration(), moments[mid + 1].getLeftAcceleration(), f), 
 						MathUtils.lerp(moments[mid].getRightAcceleration(), moments[mid + 1].getRightAcceleration(), f),
 						MathUtils.lerpAngle(headingVectors[mid], headingVectors[mid + 1], f), t, initialFacing);
+				m.setBackwards(backwards);
+				return m;
 			}
 			// Continue the binary search if not found
 			if(midTime < t) {
@@ -285,7 +290,7 @@ public class TankDriveTrajectory implements Trajectory {
 		
 		TrajectoryParams newParams = params.clone();
 		newParams.waypoints = newPath.getWaypoints();
-		return new TankDriveTrajectory(newMoments, newPath, specs, newParams);
+		return new TankDriveTrajectory(newMoments, newPath, specs, newParams, false);
 	}
 	/**
 	 * {@inheritDoc}
@@ -307,7 +312,7 @@ public class TankDriveTrajectory implements Trajectory {
 		
 		TrajectoryParams newParams = params.clone();
 		newParams.waypoints = newPath.getWaypoints();
-		return new TankDriveTrajectory(newMoments, newPath, specs, newParams);
+		return new TankDriveTrajectory(newMoments, newPath, specs, newParams, true);
 	}
 	/**
 	 * {@inheritDoc}
@@ -346,7 +351,7 @@ public class TankDriveTrajectory implements Trajectory {
 
 		TrajectoryParams newParams = params.clone();
 		newParams.waypoints = newPath.getWaypoints();
-		return new TankDriveTrajectory(newMoments, newPath, specs, newParams);
+		return new TankDriveTrajectory(newMoments, newPath, specs, newParams, true);
     }
     
     /**

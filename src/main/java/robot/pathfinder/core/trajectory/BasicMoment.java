@@ -33,7 +33,7 @@ import robot.pathfinder.math.MathUtils;
  * @author Tyler Tian
  *
  */
-public class BasicMoment implements Moment {
+public class BasicMoment extends Moment {
 	
 	double d, v, a;
 	double t;
@@ -150,20 +150,6 @@ public class BasicMoment implements Moment {
 		return a;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setHeading(double heading) {
-		this.heading = heading;
-	}
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public double getHeading() {
-		return heading;
-	}
 	/**
 	 * {@inheritDoc}
 	 */

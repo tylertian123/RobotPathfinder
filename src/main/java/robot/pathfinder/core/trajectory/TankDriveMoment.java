@@ -33,11 +33,10 @@ import robot.pathfinder.math.MathUtils;
  * @author Tyler Tian
  *
  */
-public class TankDriveMoment implements Moment {
+public class TankDriveMoment extends Moment {
 	
 	double ld, lv, la, rd, rv, ra;
 	double t;
-	double heading;
 	
 	double initialFacing = 0;
 	
@@ -217,20 +216,6 @@ public class TankDriveMoment implements Moment {
 		this.t = t;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public double getHeading() {
-		return heading;
-	}
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setHeading(double heading) {
-		this.heading = heading;
-	}
 	/**
 	 * {@inheritDoc}
 	 */

@@ -32,43 +32,49 @@ package robot.pathfinder.core.trajectory;
  * @author Tyler Tian
  *
  */
-public interface Moment extends Cloneable {
+public abstract class Moment implements Cloneable {
 	
+	double heading;
+
 	/**
 	 * Retrieves the direction the robot is moving in. 
 	 * For more information, see the class JavaDoc.
 	 * @return The heading of the robot
 	 */
-	public double getHeading();
+	public double getHeading() {
+		return heading;
+	}
 	/**
 	 * Sets the direction the robot is moving in.
 	 * For more information, see the class JavaDoc.
 	 * @param heading The new heading of the robot
 	 */
-	public void setHeading(double heading);
+	public void setHeading(double heading) {
+		this.heading = heading;
+	}
 	
 	/**
 	 * Retrieves the <em>initial</em> direction the robot is <em>facing</em>. This value is used to calculate
 	 * the result of {@link #getFacingRelative()}. For more information, see the class JavaDoc.
 	 * @return The initial direction the robot is facing
 	 */
-	public double getInitialFacing();
+	abstract public double getInitialFacing();
 	/**
 	 * Sets the <em>initial</em> direction the robot is <em>facing</em>. This value is used to calculate
 	 * the result of {@link #getFacingRelative()}. For more information, see the class JavaDoc.
 	 * @param initialFacing The initial direction the robot is facing
 	 */
-	public void setInitialFacing(double initialFacing);
+	abstract public void setInitialFacing(double initialFacing);
 	/**
 	 * Retrieves the direction the robot is facing, relative to the starting position of the robot.
 	 * For more information, see the class JavaDoc.
 	 * @return The relative facing direction of the robot
 	 */
-	public double getFacingRelative();
+	abstract public double getFacingRelative();
 	/**
 	 * Retrieves the direction the robot is facing, relative to the positive x-axis.
 	 * For more information, see the class JavaDoc.
 	 * @return The absolute facing direction of the robot
 	 */
-	public double getFacingAbsolute();
+	abstract public double getFacingAbsolute();
 }

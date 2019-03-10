@@ -237,3 +237,12 @@ task allArchives(group: 'Archive', description: 'Builds the project, generates t
     dependsOn copyJars
     dependsOn zipDoc
 }
+
+task cleanAll(type: Exec, group: 'Clean', description: 'Removes all compiled artifacts.') {
+    if(Os.isFamily(Os.FAMILY_UNIX)) {
+        commandLine 'rm', '-rf', 'bin', 'build', 'output'
+    }
+    else {
+        commandLine 'del', 'bin', 'build', 'output'
+    }
+}

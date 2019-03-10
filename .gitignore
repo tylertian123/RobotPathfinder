@@ -9,3 +9,13 @@
 # Visual studio code
 .settings
 .vscode
+
+# Native Libraries
+*.so 
+*.lib
+*.a
+*.dll
+*.dylib
+
+# VM Crash Logs
+hs_err_pid*.log

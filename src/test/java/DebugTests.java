@@ -48,11 +48,21 @@ public class DebugTests {
 
 	public static void main(String[] args) throws Exception {
 		RobotSpecs specs = new RobotSpecs(10.0, 7.5, 1.5);
-        TankDriveTrajectory traj1 = TrajectoryGenerator.generateRotationTank(specs, Math.PI / 2);
-        TankDriveTrajectory traj2 = TrajectoryGenerator.generateRotationTank(specs, -Math.PI);
+        TrajectoryParams params = new TrajectoryParams();
+        params.waypoints = new Waypoint[] {
+            new Waypoint(0, 0, Math.PI / 2),
+            new Waypoint(10, 10, Math.PI / 2),
+        };
+        params.alpha = 20;
+        params.isTank = true;
+        
+        TankDriveTrajectory traj = new TankDriveTrajectory(specs, params).mirrorLeftRight();
+        JFrame f = Grapher.graphTrajectory(traj, 0.01, true);
+        f.setVisible(true);
+        JFrame f2 = Grapher.graphPath(traj.getPath(), 0.01);
+        f2.setVisible(true);
 
-        JFrame f1 = Grapher.graphTrajectory(traj1, 0.001, true);
-        f1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f1.setVisible(true);
+        System.out.println(traj.get(traj.totalTime()).getInitialFacing());
+        System.out.println(traj.get(traj.totalTime()).getFacingAbsolute());
 	}
 }

@@ -269,27 +269,6 @@ public class TankDriveMoment implements Moment {
 			return MathUtils.restrictAngle(la >= 0 || ra >= 0 ? heading : heading + Math.PI);
 		}
 	}
-	/**
-	 * Retrieves the direction the robot is <em>facing</em> at this moment in time. <em>Not to be confused with
-	 * {@link #getHeading()}.</em>
-	 * <p>
-	 * The angles are in radians and follow the unit circle, that is, increasing counterclockwise. <em><b>They're
-	 * relative to the positive x axis, not the initial direction of the robot</b></em>. For example, if the
-	 * first waypoint used to generate a trajectory has a heading of pi/2, then the angle that represents "forwards"
-	 * is also pi/2.
-	 * </p>
-	 * <p>
-	 * This value is calculated from the heading of the robot and cannot be set directly. It is implemented by
-	 * returning the heading when at least one wheel's velocity is positive, returning the negative of the heading
-	 * when both wheels have negative velocities.
-	 * </p>
-	 * @deprecated Use {@link #getFacingRelative()} or {@link #getFacingAbsolute()} instead.
-	 * @return The direction the robot is facing
-	 */
-    @Deprecated
-	public double getFacing() {
-		return lv >= 0 || rv >= 0 ? heading : -heading;
-	}
 	
 	/**
 	 * Retrieves information about the left wheel, heading and time, stored in a {@link BasicMoment} object.

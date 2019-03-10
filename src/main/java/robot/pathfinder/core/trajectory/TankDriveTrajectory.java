@@ -280,7 +280,7 @@ public class TankDriveTrajectory implements Trajectory {
 			newMoments[i] = TankDriveMoment.fromComponents(moments[i].rightComponent(), moments[i].leftComponent());
 			// See BasicTrajectory.mirrorLeftRight()
 			newMoments[i].setHeading(MathUtils.mirrorAngle(moments[i].getHeading(), refAngle));
-			newMoments[i].setInitialFacing(newMoments[0].getFacingAbsolute());
+			newMoments[i].setInitialFacing(params.waypoints[0].getHeading());
 		}
 		
 		TrajectoryParams newParams = params.clone();
@@ -303,7 +303,7 @@ public class TankDriveTrajectory implements Trajectory {
 					-moments[i].getRightAcceleration(), MathUtils.mirrorAngle(moments[i].getHeading(), refAngle), moments[i].getTime());
 		}
 		for(int i = 0; i < newMoments.length; i ++) {
-			newMoments[i].setInitialFacing(newMoments[0].getFacingAbsolute());
+			newMoments[i].setInitialFacing(params.waypoints[0].getHeading());
 		}
 		
 		TrajectoryParams newParams = params.clone();
@@ -343,7 +343,7 @@ public class TankDriveTrajectory implements Trajectory {
 					(current.getHeading() + Math.PI) % (2 * Math.PI), lastMoment.getTime() - current.getTime());
 		}
 		for(int i = 0; i < newMoments.length; i ++) {
-			newMoments[i].setInitialFacing(newMoments[0].getFacingAbsolute());
+			newMoments[i].setInitialFacing(params.waypoints[params.waypoints.length - 1].getHeading());
 		}
 
 		TrajectoryParams newParams = params.clone();

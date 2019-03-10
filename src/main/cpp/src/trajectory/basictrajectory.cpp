@@ -38,9 +38,9 @@ namespace rpf {
     }
 
     BasicMoment BasicTrajectory::get(double time) const {
-        int start = 0;
-        int end = moments.size() - 1;
-        int mid;
+        size_t start = 0;
+        size_t end = moments.size() - 1;
+        size_t mid;
 
         if(time >= total_time()) {
             return moments[moments.size() - 1];

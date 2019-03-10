@@ -44,7 +44,7 @@ namespace rpf {
             moments.reserve(params.seg_count);
 
             if(params.is_tank) {
-                for(size_t i = 0; i < params.seg_count; i ++) {
+                for(int i = 0; i < params.seg_count; i ++) {
                     double t = path->s2t(ds * i);
                     patht.push_back(t);
                     
@@ -59,7 +59,7 @@ namespace rpf {
                 }
             }
             else {
-                for(size_t i = 0; i < params.seg_count; i ++) {
+                for(int i = 0; i < params.seg_count; i ++) {
                     mv.push_back(specs.max_v);
 
                     double t = path->s2t(ds * i);
@@ -78,7 +78,7 @@ namespace rpf {
             std::vector<double> time_diff(params.seg_count - 1, std::numeric_limits<double>::quiet_NaN());
             std::unordered_set<int> constrained;
 
-            for(size_t i = 1; i < params.seg_count; i ++) {
+            for(int i = 1; i < params.seg_count; i ++) {
                 double dist = i * dpi;
 
                 if(!constraints.empty() && dist >= constraints.front().first) {
@@ -128,7 +128,7 @@ namespace rpf {
             moments[moments.size() - 1].accel = 0;
             moments[moments.size() - 1].vel = std::isnan(waypoints[waypoints.size() - 1].velocity) ? 0 : waypoints[waypoints.size() - 1].velocity;
 
-            for(size_t i = moments.size() - 2; i >= 0; i --) {
+            for(size_t i = moments.size() - 1; i --> 0; ) {
                 if(moments[i].vel > moments[i + 1].vel) {
                     double maxv = std::sqrt(moments[i + 1].vel * moments[i + 1].vel + 2 * specs.max_a * dpi);
 

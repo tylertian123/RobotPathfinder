@@ -1,5 +1,7 @@
 # RobotPathfinder
-[![Build Status](https://travis-ci.com/Arctos6135/RobotPathfinder.svg?branch=master)](https://travis-ci.com/Arctos6135/RobotPathfinder)
+[![Build Status](https://travis-ci.com/Arctos6135/RobotPathfinder.svg?branch=dev%2Fjni)](https://travis-ci.com/Arctos6135/RobotPathfinder)
+
+## RobotPathfinder is currently undergoing a massive refactoring process to convert everything into JNI to improve performance. This branch is being actively worked on.
 
 Robot motion profiler/path planner for tank drive robots. Used and developed by <a href="https://github.com/Arctos6135">FRC Team 6135 (Arctos)</a>!<br>
 Inspired by and partially based on <a href="https://github.com/JacisNonsense/Pathfinder">Pathfinder by Jaci Brunning</a>. <em>This project is in no way intended to be a copy or replacement for Pathfinder! Though a lot of it is based on Pathfinder, the two generators have their own pros and cons.</em><br>

@@ -179,7 +179,17 @@ namespace rpf {
 
         BasicMoment get(double) const;
 
+        std::shared_ptr<BasicTrajectory> mirror_lr() const;
+        std::shared_ptr<BasicTrajectory> mirror_fb() const;
+        std::shared_ptr<BasicTrajectory> retrace() const;
+
     protected:
+        
+        BasicTrajectory(std::shared_ptr<Path> path, std::vector<BasicMoment> &&moments, bool backwards, RobotSpecs specs, TrajectoryParams params)
+                : path(path), moments(moments), backwards(backwards), specs(specs), params(params) {
+            init_facing = moments[0].init_facing;
+        }
+
         std::shared_ptr<Path> path = nullptr;
         std::vector<BasicMoment> moments;
         std::vector<double> patht;

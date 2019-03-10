@@ -1,5 +1,7 @@
 package robot.pathfinder.core.trajectory;
 
+import robot.pathfinder.math.MathUtils;
+
 /**
  * A class that holds information about a robot at a moment in time. 
  * <p>
@@ -35,6 +37,8 @@ package robot.pathfinder.core.trajectory;
 public abstract class Moment implements Cloneable {
 	
 	double heading;
+	double initialFacing;
+	boolean backwards = false;
 
 	/**
 	 * Retrieves the direction the robot is moving in. 
@@ -58,23 +62,51 @@ public abstract class Moment implements Cloneable {
 	 * the result of {@link #getFacingRelative()}. For more information, see the class JavaDoc.
 	 * @return The initial direction the robot is facing
 	 */
-	abstract public double getInitialFacing();
+	public double getInitialFacing() {
+		return initialFacing;
+	}
 	/**
 	 * Sets the <em>initial</em> direction the robot is <em>facing</em>. This value is used to calculate
 	 * the result of {@link #getFacingRelative()}. For more information, see the class JavaDoc.
 	 * @param initialFacing The initial direction the robot is facing
 	 */
-	abstract public void setInitialFacing(double initialFacing);
+	public void setInitialFacing(double initialFacing) {
+		this.initialFacing = initialFacing;
+	}
+
+	/**
+	 * Retrieves whether the robot is driving backwards in this moment. Used to determine the value of
+	 * {@link #getFacingRelative()} and {@link #getFacingAbsolute()}.
+	 * 
+	 * @return Whether the robot is driving backwards in this moment
+	 */
+	public boolean getBackwards() {
+		return backwards;
+	}
+	/**
+	 * Sets whether the robot is driving backwards in this moment. Used to determine the value of
+	 * {@link #getFacingRelative()} and {@link #getFacingAbsolute()}.
+	 * 
+	 * @param backwards Whether the robot is driving backwards in this moment
+	 */
+	public void setBackwards(Boolean backwards) {
+		this.backwards = backwards;
+	}
+
 	/**
 	 * Retrieves the direction the robot is facing, relative to the starting position of the robot.
 	 * For more information, see the class JavaDoc.
 	 * @return The relative facing direction of the robot
 	 */
-	abstract public double getFacingRelative();
+	public double getFacingRelative() {
+		return MathUtils.restrictAngle(getFacingAbsolute() - initialFacing);
+	}
 	/**
 	 * Retrieves the direction the robot is facing, relative to the positive x-axis.
 	 * For more information, see the class JavaDoc.
 	 * @return The absolute facing direction of the robot
 	 */
-	abstract public double getFacingAbsolute();
+	public double getFacingAbsolute() {
+		return backwards ? -heading : heading;
+	}
 }

@@ -19,17 +19,10 @@ namespace rpf {
         double time;
 
         double init_facing;
+        bool backwards = false;
 
         double get_afacing() {
-            if(vel > 0) {
-                return rangle(heading);
-            }
-            else if(vel < 0) {
-                return rangle(heading + rpf::pi);
-            }
-            else {
-                return rangle(accel >= 0 ? heading : heading + rpf::pi);
-            }
+            return backwards ? -heading : heading;
         }
         double get_rfacing() {
             return rangle(get_afacing() - init_facing);

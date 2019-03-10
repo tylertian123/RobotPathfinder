@@ -40,6 +40,8 @@ public class TankDriveTrajectory implements Trajectory {
 	TrajectoryParams params;
 	
 	double initialFacing;
+
+	boolean backwards = false;
 	
 	/**
 	 * Generates a new {@link TankDriveTrajectory} based on the {@link BasicTrajectory} provided.
@@ -161,12 +163,13 @@ public class TankDriveTrajectory implements Trajectory {
 	 * This constructor is used internally by the mirrorLeftRight, mirrorFrontBack and retrace methods.
 	 * It requires pre-generated moments so it's not visible to the world.
 	 */
-	protected TankDriveTrajectory(TankDriveMoment[] moments, Path path, RobotSpecs specs, TrajectoryParams params) {
+	protected TankDriveTrajectory(TankDriveMoment[] moments, Path path, RobotSpecs specs, TrajectoryParams params, boolean backwards) {
 		this.moments = moments;
 		this.path = path;
 		this.specs = specs;
 		this.params = params;
 		this.initialFacing = moments[0].getInitialFacing();
+		this.backwards = backwards;
 		
 		headingVectors = new Vec2D[moments.length];
 		for(int i = 0; i < moments.length; i ++) {
@@ -244,13 +247,15 @@ public class TankDriveTrajectory implements Trajectory {
 			// If t is sandwiched between 2 existing times, the return the closest one
 			if(midTime <= t && nextTime >= t) {
 				double f = (t - midTime) / (nextTime - midTime);
-				return new TankDriveMoment(MathUtils.lerp(moments[mid].getLeftPosition(), moments[mid + 1].getLeftPosition(), f), 
+				TankDriveMoment m = new TankDriveMoment(MathUtils.lerp(moments[mid].getLeftPosition(), moments[mid + 1].getLeftPosition(), f), 
 						MathUtils.lerp(moments[mid].getRightPosition(), moments[mid + 1].getRightPosition(), f),
 						MathUtils.lerp(moments[mid].getLeftVelocity(), moments[mid + 1].getLeftVelocity(), f), 
 						MathUtils.lerp(moments[mid].getRightVelocity(), moments[mid + 1].getRightVelocity(), f),
 						MathUtils.lerp(moments[mid].getLeftAcceleration(), moments[mid + 1].getLeftAcceleration(), f), 
 						MathUtils.lerp(moments[mid].getRightAcceleration(), moments[mid + 1].getRightAcceleration(), f),
 						MathUtils.lerpAngle(headingVectors[mid], headingVectors[mid + 1], f), t, initialFacing);
+				m.setBackwards(backwards);
+				return m;
 			}
 			// Continue the binary search if not found
 			if(midTime < t) {
@@ -280,12 +285,12 @@ public class TankDriveTrajectory implements Trajectory {
 			newMoments[i] = TankDriveMoment.fromComponents(moments[i].rightComponent(), moments[i].leftComponent());
 			// See BasicTrajectory.mirrorLeftRight()
 			newMoments[i].setHeading(MathUtils.mirrorAngle(moments[i].getHeading(), refAngle));
-			newMoments[i].setInitialFacing(newMoments[0].getFacingAbsolute());
+			newMoments[i].setInitialFacing(params.waypoints[0].getHeading());
 		}
 		
 		TrajectoryParams newParams = params.clone();
 		newParams.waypoints = newPath.getWaypoints();
-		return new TankDriveTrajectory(newMoments, newPath, specs, newParams);
+		return new TankDriveTrajectory(newMoments, newPath, specs, newParams, false);
 	}
 	/**
 	 * {@inheritDoc}
@@ -301,14 +306,13 @@ public class TankDriveTrajectory implements Trajectory {
 			newMoments[i] = new TankDriveMoment(-moments[i].getLeftPosition(), -moments[i].getRightPosition(),
 					-moments[i].getLeftVelocity(), -moments[i].getRightVelocity(), -moments[i].getLeftAcceleration(),
 					-moments[i].getRightAcceleration(), MathUtils.mirrorAngle(moments[i].getHeading(), refAngle), moments[i].getTime());
-		}
-		for(int i = 0; i < newMoments.length; i ++) {
-			newMoments[i].setInitialFacing(newMoments[0].getFacingAbsolute());
+			newMoments[i].setInitialFacing(params.waypoints[0].getHeading());
+			newMoments[i].setBackwards(true);
 		}
 		
 		TrajectoryParams newParams = params.clone();
 		newParams.waypoints = newPath.getWaypoints();
-		return new TankDriveTrajectory(newMoments, newPath, specs, newParams);
+		return new TankDriveTrajectory(newMoments, newPath, specs, newParams, true);
 	}
 	/**
 	 * {@inheritDoc}
@@ -340,15 +344,14 @@ public class TankDriveTrajectory implements Trajectory {
 			newMoments[i] = new TankDriveMoment(-(lastMoment.getLeftPosition() - current.getLeftPosition()),
 					-(lastMoment.getRightPosition() - current.getRightPosition()), -current.getLeftVelocity(),
 					-current.getRightVelocity(), current.getLeftAcceleration(), current.getRightAcceleration(),
-					(current.getHeading() + Math.PI) % (2 * Math.PI), lastMoment.getTime() - current.getTime());
-		}
-		for(int i = 0; i < newMoments.length; i ++) {
-			newMoments[i].setInitialFacing(newMoments[0].getFacingAbsolute());
+					-current.getHeading(), lastMoment.getTime() - current.getTime());
+			newMoments[i].setInitialFacing(params.waypoints[params.waypoints.length - 1].getHeading());
+			newMoments[i].setBackwards(true);
 		}
 
 		TrajectoryParams newParams = params.clone();
 		newParams.waypoints = newPath.getWaypoints();
-		return new TankDriveTrajectory(newMoments, newPath, specs, newParams);
+		return new TankDriveTrajectory(newMoments, newPath, specs, newParams, true);
     }
     
     /**

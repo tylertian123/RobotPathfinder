@@ -75,6 +75,8 @@ public class BasicTrajectory implements Trajectory {
 	double[] pathRadius = null;
 	// Stores the initial facing direction; used to construct moments later
 	double initialFacing;
+
+	boolean backwards = false;
 	
 	/**
 	 * Creates a basic trajectory with the specified robot properties and generation parameters.
@@ -385,7 +387,7 @@ public class BasicTrajectory implements Trajectory {
 	 * This constructor is used internally by the mirrorLeftRight, mirrorFrontBack and retrace methods.
 	 * It requires pre-generated moments so it's not visible to the world.
 	 */
-	protected BasicTrajectory(BasicMoment[] moments, Path path, RobotSpecs specs, TrajectoryParams params, double[] pathT, double[] pathRadius) {
+	protected BasicTrajectory(BasicMoment[] moments, Path path, RobotSpecs specs, TrajectoryParams params, double[] pathT, double[] pathRadius, boolean backwards) {
 		this.moments = moments;
 		this.path = path;
 		this.isTank = params.isTank;
@@ -394,6 +396,7 @@ public class BasicTrajectory implements Trajectory {
 		this.robotSpecs = specs;
 		this.params = params;
 		this.initialFacing = moments[0].getInitialFacing();
+		this.backwards = backwards;
 		
 		headingVectors = new Vec2D[moments.length];
 		for(int i = 0; i < moments.length; i ++) {
@@ -482,11 +485,13 @@ public class BasicTrajectory implements Trajectory {
 			if(midTime <= t && nextTime >= t) {
 				// If yes then interpolate to get approximation
 				double f = (t - midTime) / (nextTime - midTime);
-				return new BasicMoment(MathUtils.lerp(moments[mid].getPosition(), moments[mid + 1].getPosition(), f),
+				BasicMoment m = new BasicMoment(MathUtils.lerp(moments[mid].getPosition(), moments[mid + 1].getPosition(), f),
 						MathUtils.lerp(moments[mid].getVelocity(), moments[mid + 1].getVelocity(), f),
 						MathUtils.lerp(moments[mid].getAcceleration(), moments[mid + 1].getAcceleration(), f),
 						// Use lerpAngle to avoid buggy behavior around 180 degrees
 						MathUtils.lerpAngle(headingVectors[mid], headingVectors[mid + 1], f), t, initialFacing);
+				m.setBackwards(backwards);
+				return m;
 			}
 			// Continue the binary search if not found
 			if(midTime < t) {
@@ -517,7 +522,7 @@ public class BasicTrajectory implements Trajectory {
 		for(int i = 0; i < newMoments.length; i ++) {
 			newMoments[i] = moments[i].clone();
 			newMoments[i].setHeading(MathUtils.mirrorAngle(moments[i].getHeading(), refAngle));
-			newMoments[i].setInitialFacing(newMoments[0].getFacingAbsolute());
+			newMoments[i].setInitialFacing(params.waypoints[0].getHeading());
 		}
 		
 		// The params have to be updated since the waypoints are changed
@@ -535,7 +540,7 @@ public class BasicTrajectory implements Trajectory {
 			}
 		}
 		
-		return new BasicTrajectory(newMoments, newPath, robotSpecs, newParams, pathT, newPathRadius);
+		return new BasicTrajectory(newMoments, newPath, robotSpecs, newParams, pathT, newPathRadius, false);
 	}
 	/**
 	 * {@inheritDoc}
@@ -553,15 +558,16 @@ public class BasicTrajectory implements Trajectory {
 			newMoments[i] = new BasicMoment(-moments[i].getPosition(), -moments[i].getVelocity(), 
 					-moments[i].getAcceleration(), MathUtils.mirrorAngle(moments[i].getHeading(), refAngle),
 					moments[i].getTime());
+			newMoments[i].setInitialFacing(params.waypoints[0].getHeading());
+			newMoments[i].setBackwards(true);
 		}
 		for(int i = 0; i < newMoments.length; i ++) {
-			newMoments[i].setInitialFacing(newMoments[0].getFacingAbsolute());
 		}
 		
 		TrajectoryParams newParams = params.clone();
 		newParams.waypoints = newPath.getWaypoints();
 		
-		return new BasicTrajectory(newMoments, newPath, robotSpecs, newParams, pathT, pathRadius != null ? pathRadius.clone() : null);
+		return new BasicTrajectory(newMoments, newPath, robotSpecs, newParams, pathT, pathRadius != null ? pathRadius.clone() : null, true);
 	}
 	/**
 	 * {@inheritDoc}
@@ -589,11 +595,10 @@ public class BasicTrajectory implements Trajectory {
 			 */
 			newMoments[i] = new BasicMoment(-(lastMoment.getPosition() - currentMoment.getPosition()), 
 					-currentMoment.getVelocity(), currentMoment.getAcceleration(), 
-					(currentMoment.getHeading() + Math.PI) % (2 * Math.PI), 
+					-currentMoment.getHeading(), 
 					lastMoment.getTime() - currentMoment.getTime());
-		}
-		for(int i = 0; i < newMoments.length; i ++) {
-			newMoments[i].setInitialFacing(newMoments[0].getFacingAbsolute());
+			newMoments[i].setInitialFacing(params.waypoints[params.waypoints.length - 1].getHeading());
+			newMoments[i].setBackwards(true);
 		}
 		
 		TrajectoryParams newParams = params.clone();
@@ -613,7 +618,7 @@ public class BasicTrajectory implements Trajectory {
 			}
 		}
 		
-		return new BasicTrajectory(newMoments, newPath, robotSpecs, newParams, newPathT, newPathRadius);
+		return new BasicTrajectory(newMoments, newPath, robotSpecs, newParams, newPathT, newPathRadius, true);
 	}
 }
 

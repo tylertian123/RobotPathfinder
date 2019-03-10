@@ -59,8 +59,10 @@ namespace rpf {
                 double f = (time - mid_time) / (next_time - mid_time);
                 auto &current = moments[mid];
                 auto &next = moments[mid + 1];
-                return BasicMoment(rpf::lerp(current.dist, next.dist, f), rpf::lerp(current.vel, next.vel, f),
+                BasicMoment m(rpf::lerp(current.dist, next.dist, f), rpf::lerp(current.vel, next.vel, f),
                         rpf::lerp(current.accel, next.accel, f), rpf::langle(current.heading, next.heading, f), time, init_facing);
+                m.backwards = backwards;
+                return m;
             }
             if(mid_time < time) {
                 start = mid;

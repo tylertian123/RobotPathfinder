@@ -185,6 +185,8 @@ namespace rpf {
         std::vector<double> patht;
         std::vector<double> pathr;
         double init_facing;
+        
+        bool backwards = false;
 
         RobotSpecs specs;
         TrajectoryParams params;

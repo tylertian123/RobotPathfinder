@@ -60,7 +60,7 @@ namespace rpf {
                 auto &current = moments[mid];
                 auto &next = moments[mid + 1];
                 return BasicMoment(rpf::lerp(current.dist, next.dist, f), rpf::lerp(current.vel, next.vel, f),
-                        rpf::lerp(current.accel, next.accel, f), rpf::langle(hvecs[mid], hvecs[mid + 1], f), time, init_facing);
+                        rpf::lerp(current.accel, next.accel, f), rpf::langle(current.heading, next.heading, f), time, init_facing);
             }
             if(mid_time < time) {
                 start = mid;

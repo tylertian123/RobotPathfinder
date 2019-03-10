@@ -48,8 +48,6 @@ namespace rpf {
                     double curvature = rpf::curvature(d.x, dd.x, d.y, dd.y);
 
                     headings.push_back(std::atan2(d.x, d.y));
-                    hvecs.push_back(Vec2D(d.x, d.y));
-                    hvecs[i].normalize();
                     
                     pathr.push_back(1 / curvature);
                     mv.push_back(specs.max_v / (1 + specs.base_width / (2 * std::abs(pathr[i]))));
@@ -62,8 +60,6 @@ namespace rpf {
                     double t = path->s2t(ds * i);
                     Vec2D d = path->deriv_at(t);
                     headings.push_back(std::atan2(d.x, d.y));
-                    hvecs.push_back(Vec2D(d.x, d.y));
-                    hvecs[i].normalize();
                 }
             }
 
@@ -186,7 +182,6 @@ namespace rpf {
     protected:
         std::shared_ptr<Path> path = nullptr;
         std::vector<BasicMoment> moments;
-        std::vector<Vec2D> hvecs;
         std::vector<double> patht;
         std::vector<double> pathr;
         double init_facing;

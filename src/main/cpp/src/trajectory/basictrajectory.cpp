@@ -80,10 +80,26 @@ namespace rpf {
         std::vector<BasicMoment> m;
 
         for(int i = 0; i < moments.size(); i ++) {
-            m.push_back(moments[i]);
-            m[i].heading = rpf::mangle(moments[i].heading, ref);
-            m[i].init_facing = moments[0].heading;
+            BasicMoment moment(moments[i]);
+            moment.heading = rpf::mangle(moment.heading, ref);
+            moment.init_facing = moments[0].heading;
+            m.push_back(moment);
         }
         return std::shared_ptr<BasicTrajectory>(new BasicTrajectory(p, std::move(m), false, specs, params));
+    }
+    std::shared_ptr<BasicTrajectory> BasicTrajectory::mirror_fb() const {
+        auto p = path->mirror_fb();
+        double ref = params.waypoints[0].heading + rpf::pi / 2;
+
+        std::vector<BasicMoment> m;
+        for(int i = 0; i < moments.size(); i ++) {
+            BasicMoment moment(-moments[i].dist, -moments[i].vel, moments[i].accel, 
+                    rpf::mangle(moments[i].heading, ref), moments[i].time);
+            moment.init_facing = moments[0].heading;
+            moment.backwards = true;
+            m.push_back(moment);
+        }
+
+        return std::shared_ptr<BasicTrajectory>(new BasicTrajectory(p, std::move(m), true, specs, params));
     }
 }

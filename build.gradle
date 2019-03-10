@@ -1,3 +1,5 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
 plugins {
     id 'base'
     id 'java-library'
@@ -26,7 +28,7 @@ repositories {
     jcenter()
 }
 
-project.version = '2.2.0-alpha'
+project.version = '2.2.0-beta'
 
 // Add sources to the jar
 jar {
@@ -69,12 +71,19 @@ task fatJar(type: Jar, group: 'Build', description: 'Assembles a jar of the libr
     with jar
 }
 
+task markVisualizerJarExecutable(type: Exec, group: 'Archive', description: 'Sets the Trajectory Visualizer jar to be executable.') {
+    commandLine 'chmod', '+x', 'output/Trajectory-Visualizer-' + project.version + '.jar'
+}
 task copyJars(type: Copy, group: 'Archive', description: 'Copies all generated jars to the output directory.') {
     dependsOn jar
     dependsOn fatJar
     dependsOn visualizerJar
     from 'build/libs'
     into 'output'
+    // If the OS is part of the UNIX family, also chmod the visualizer jar to be executable
+    if(Os.isFamily(Os.FAMILY_UNIX)) {
+        finalizedBy markVisualizerJarExecutable
+    }
 }
 
 task zipDoc(type: Zip, group: 'Archive', description: 'Zips the generated JavaDoc and puts it in the output directory.') {
@@ -90,4 +99,13 @@ task allArchives(group: 'Archive', description: 'Builds the project, generates t
     dependsOn fatJar
     dependsOn copyJars
     dependsOn zipDoc
+}
+
+task cleanAll(type: Exec, group: 'Clean', description: 'Removes all compiled artifacts.') {
+    if(Os.isFamily(Os.FAMILY_UNIX)) {
+        commandLine 'rm', '-rf', 'bin', 'build', 'output'
+    }
+    else {
+        commandLine 'del', 'bin', 'build', 'output'
+    }
 }

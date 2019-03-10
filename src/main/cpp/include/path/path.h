@@ -26,7 +26,7 @@ namespace rpf {
             segments.reserve(waypoints.size() - 1);
             switch(type) {
             case PathType::BEZIER:
-                for(int i = 0; i < waypoints.size() - 1; i ++) {
+                for(size_t i = 0; i < waypoints.size() - 1; i ++) {
                     segments.push_back(std::make_unique<BezierSegment>(BezierSegment::from_hermite(
                         static_cast<Vec2D>(waypoints[i]), static_cast<Vec2D>(waypoints[i + 1]),
                         Vec2D(std::cos(waypoints[i].heading) * alpha, std::sin(waypoints[i].heading) * alpha),
@@ -35,7 +35,7 @@ namespace rpf {
                 }
                 break;
             case PathType::CUBIC_HERMITE:
-                for(int i = 0; i < waypoints.size() - 1; i ++) {
+                for(size_t i = 0; i < waypoints.size() - 1; i ++) {
                     segments.push_back(std::make_unique<CubicSegment>(
                         static_cast<Vec2D>(waypoints[i]), static_cast<Vec2D>(waypoints[i + 1]),
                         Vec2D(std::cos(waypoints[i].heading) * alpha, std::sin(waypoints[i].heading) * alpha),
@@ -44,7 +44,7 @@ namespace rpf {
                 }
                 break;
             case PathType::QUINTIC_HERMITE:
-                for(int i = 0; i < waypoints.size() - 1; i ++) {
+                for(size_t i = 0; i < waypoints.size() - 1; i ++) {
                     segments.push_back(std::make_unique<QuinticSegment>(
                         static_cast<Vec2D>(waypoints[i]), static_cast<Vec2D>(waypoints[i + 1]),
                         Vec2D(std::cos(waypoints[i].heading) * alpha, std::sin(waypoints[i].heading) * alpha),

@@ -78,9 +78,9 @@ namespace rpf {
         }
         
         double dist = s * total_len;
-        int start = 0;
-        int end = s2t_table.size() - 1;
-        int mid;
+        size_t start = 0;
+        size_t end = s2t_table.size() - 1;
+        size_t mid;
 
         if(dist > s2t_table[end - 1].first) {
             return 1;
@@ -118,9 +118,9 @@ namespace rpf {
             throw std::runtime_error("Lookup table not generated");
         }
         
-        int start = 0;
-        int end = s2t_table.size() - 1;
-        int mid;
+        size_t start = 0;
+        size_t end = s2t_table.size() - 1;
+        size_t mid;
 
         if(t >= 1) {
             return 1;

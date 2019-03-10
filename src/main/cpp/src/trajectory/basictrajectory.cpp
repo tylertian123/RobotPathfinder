@@ -80,7 +80,7 @@ namespace rpf {
         std::vector<BasicMoment> m;
         m.reserve(moments.size());
 
-        for(int i = 0; i < moments.size(); i ++) {
+        for(size_t i = 0; i < moments.size(); i ++) {
             BasicMoment moment(moments[i]);
             moment.heading = rpf::mangle(moment.heading, ref);
             moment.init_facing = params.waypoints[0].heading;
@@ -94,7 +94,7 @@ namespace rpf {
 
         std::vector<BasicMoment> m;
         m.reserve(moments.size());
-        for(int i = 0; i < moments.size(); i ++) {
+        for(size_t i = 0; i < moments.size(); i ++) {
             BasicMoment moment(-moments[i].dist, -moments[i].vel, moments[i].accel, 
                     rpf::mangle(moments[i].heading, ref), moments[i].time);
             moment.init_facing = params.waypoints[0].heading;
@@ -110,7 +110,7 @@ namespace rpf {
         std::vector<BasicMoment> m;
         m.reserve(moments.size());
         auto &last = moments[moments.size() - 1];
-        for(int i = 0; i < moments.size(); i ++) {
+        for(size_t i = 0; i < moments.size(); i ++) {
             auto &current = moments[moments.size() - 1 - i];
 
             BasicMoment moment(-(last.dist - current.dist), -current.vel, current.accel, -current.heading, last.time - current.time);

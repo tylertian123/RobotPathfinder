@@ -27,6 +27,7 @@ namespace rpf {
             double dpi = total / params.seg_count;
             
             std::vector<double> mv;
+            mv.reserve(params.seg_count);
             std::list<std::pair<double, double>> constraints;
 
             double wpdt = 1.0 / (waypoints.size() - 1);
@@ -37,6 +38,10 @@ namespace rpf {
             }
             
             std::vector<double> headings;
+            headings.reserve(params.seg_count);
+            patht.reserve(params.seg_count);
+            pathr.reserve(params.seg_count);
+            moments.reserve(params.seg_count);
 
             if(params.is_tank) {
                 for(int i = 0; i < params.seg_count; i ++) {

@@ -78,6 +78,7 @@ namespace rpf {
         double ref = params.waypoints[0].heading;
         
         std::vector<BasicMoment> m;
+        m.reserve(moments.size());
 
         for(int i = 0; i < moments.size(); i ++) {
             BasicMoment moment(moments[i]);
@@ -92,6 +93,7 @@ namespace rpf {
         double ref = params.waypoints[0].heading + rpf::pi / 2;
 
         std::vector<BasicMoment> m;
+        m.reserve(moments.size());
         for(int i = 0; i < moments.size(); i ++) {
             BasicMoment moment(-moments[i].dist, -moments[i].vel, moments[i].accel, 
                     rpf::mangle(moments[i].heading, ref), moments[i].time);

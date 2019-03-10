@@ -23,6 +23,7 @@ namespace rpf {
             if(waypoints.size() < 2) {
                 throw std::invalid_argument("Not enough waypoints");
             }
+            segments.reserve(waypoints.size() - 1);
             switch(type) {
             case PathType::BEZIER:
                 for(int i = 0; i < waypoints.size() - 1; i ++) {

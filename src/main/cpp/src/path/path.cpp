@@ -173,6 +173,7 @@ namespace rpf {
     std::shared_ptr<Path> Path::mirror_lr() const {
         Vec2D ref(std::cos(waypoints[0].heading), std::sin(waypoints[0].heading));
         std::vector<Waypoint> w;
+        w.reserve(waypoints.size());
 
         for(auto wp : waypoints) {
             w.push_back(Waypoint(static_cast<Vec2D>(wp).reflect(ref), rpf::mangle(wp.heading, waypoints[0].heading)));
@@ -184,6 +185,7 @@ namespace rpf {
     std::shared_ptr<Path> Path::mirror_fb() const {
         Vec2D ref(-std::sin(waypoints[0].heading), std::cos(waypoints[0].heading));
         std::vector<Waypoint> w;
+        w.reserve(waypoints.size());
 
         for(auto wp : waypoints) {
             w.push_back(Waypoint(static_cast<Vec2D>(wp).reflect(ref), rpf::mangle(wp.heading, waypoints[0].heading + rpf::pi / 2)));
@@ -195,6 +197,7 @@ namespace rpf {
     }
     std::shared_ptr<Path> Path::retrace() const {
         std::vector<Waypoint> w;
+        w.reserve(waypoints.size());
 
         for(auto rit = waypoints.rbegin(); rit != waypoints.rend(); ++rit) {
             Waypoint wp = *rit;

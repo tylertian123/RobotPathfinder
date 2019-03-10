@@ -89,7 +89,7 @@ public abstract class Moment implements Cloneable {
 	 * 
 	 * @param backwards Whether the robot is driving backwards in this moment
 	 */
-	public void setBackwards(Boolean backwards) {
+	public void setBackwards(boolean backwards) {
 		this.backwards = backwards;
 	}
 

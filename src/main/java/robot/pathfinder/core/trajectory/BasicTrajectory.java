@@ -517,7 +517,7 @@ public class BasicTrajectory implements Trajectory {
 		for(int i = 0; i < newMoments.length; i ++) {
 			newMoments[i] = moments[i].clone();
 			newMoments[i].setHeading(MathUtils.mirrorAngle(moments[i].getHeading(), refAngle));
-			newMoments[i].setInitialFacing(newMoments[0].getFacingAbsolute());
+			newMoments[i].setInitialFacing(params.waypoints[0].getHeading());
 		}
 		
 		// The params have to be updated since the waypoints are changed
@@ -553,9 +553,10 @@ public class BasicTrajectory implements Trajectory {
 			newMoments[i] = new BasicMoment(-moments[i].getPosition(), -moments[i].getVelocity(), 
 					-moments[i].getAcceleration(), MathUtils.mirrorAngle(moments[i].getHeading(), refAngle),
 					moments[i].getTime());
+			newMoments[i].setInitialFacing(params.waypoints[0].getHeading());
+			newMoments[i].setBackwards(true);
 		}
 		for(int i = 0; i < newMoments.length; i ++) {
-			newMoments[i].setInitialFacing(newMoments[0].getFacingAbsolute());
 		}
 		
 		TrajectoryParams newParams = params.clone();
@@ -589,11 +590,10 @@ public class BasicTrajectory implements Trajectory {
 			 */
 			newMoments[i] = new BasicMoment(-(lastMoment.getPosition() - currentMoment.getPosition()), 
 					-currentMoment.getVelocity(), currentMoment.getAcceleration(), 
-					(currentMoment.getHeading() + Math.PI) % (2 * Math.PI), 
+					-currentMoment.getHeading(), 
 					lastMoment.getTime() - currentMoment.getTime());
-		}
-		for(int i = 0; i < newMoments.length; i ++) {
-			newMoments[i].setInitialFacing(newMoments[0].getFacingAbsolute());
+			newMoments[i].setInitialFacing(params.waypoints[params.waypoints.length - 1].getHeading());
+			newMoments[i].setBackwards(true);
 		}
 		
 		TrajectoryParams newParams = params.clone();

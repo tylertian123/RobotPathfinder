@@ -56,13 +56,13 @@ public class DebugTests {
         params.alpha = 20;
         params.isTank = true;
         
-        TankDriveTrajectory traj = new TankDriveTrajectory(specs, params).mirrorLeftRight();
+        TankDriveTrajectory traj = new TankDriveTrajectory(specs, params).retrace();
         JFrame f = Grapher.graphTrajectory(traj, 0.01, true);
-        f.setVisible(true);
+        //f.setVisible(true);
         JFrame f2 = Grapher.graphPath(traj.getPath(), 0.01);
-        f2.setVisible(true);
+        //f2.setVisible(true);
 
-        System.out.println(traj.get(traj.totalTime()).getInitialFacing());
-        System.out.println(traj.get(traj.totalTime()).getFacingAbsolute());
+        System.out.println(traj.get(0).getInitialFacing());
+        System.out.println(traj.get(0).getBackwards());
 	}
 }

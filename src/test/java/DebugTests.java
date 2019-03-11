@@ -55,7 +55,7 @@ public class DebugTests {
         System.out.println(path.computeLen(1000));
         System.out.println(path.s2T(0));
         System.out.println(path.t2S(1));
-        path.free();
+        path.close();
         System.out.println("I AM ALIVE!");
 	}
 }

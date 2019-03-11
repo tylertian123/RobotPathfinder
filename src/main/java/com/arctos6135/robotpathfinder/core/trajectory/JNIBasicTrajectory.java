@@ -4,18 +4,12 @@ import com.arctos6135.robotpathfinder.core.GlobalLibraryLoader;
 import com.arctos6135.robotpathfinder.core.JNITrajectoryParams;
 import com.arctos6135.robotpathfinder.core.JNIWaypoint;
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
-import com.arctos6135.robotpathfinder.core.path.JNIPath;
 
 public class JNIBasicTrajectory extends JNITrajectory {
 
     static {
         GlobalLibraryLoader.load();
     }
-
-    RobotSpecs specs;
-    JNITrajectoryParams params;
-
-    private long _nativePtr;
 
     private native void _construct(double maxV, double maxA, double baseWidth, boolean isTank, JNIWaypoint[] waypoints, 
             double alpha, int segmentCount, int type);
@@ -52,76 +46,28 @@ public class JNIBasicTrajectory extends JNITrajectory {
         _nativePtr = ptr;
     }
 
+    @Override
     protected native void _destroy();
-    @Override
-    public void free() {
-        super.free();
-        momentsCache = null;
-        pathCache = null;
-    }
-    @Override
-    public void finalize() {
-        super.finalize();
-        momentsCache = null;
-        pathCache = null;
-    }
-    @Override
-    public void close() {
-        super.close();
-        momentsCache = null;
-        pathCache = null;
-    }
 
-    private native void _getMoments();
-    protected BasicMoment[] momentsCache;
+    @Override
+    protected native void _getMoments();
     @Override
     public BasicMoment[] getMoments() {
-        if(momentsCache == null) {
-            momentsCache = new BasicMoment[params.segmentCount];
-            _getMoments();
-        }
-        return momentsCache;
-    }
-    @Override
-    public void clearMomentsCache() {
-        momentsCache = null;
+        return (BasicMoment[]) super.getMoments();
     }
 
-    private native BasicMoment _get(double t);
+    @Override
+    protected native BasicMoment _get(double t);
     @Override
     public BasicMoment get(double t) {
-        if(Double.isNaN(t) || !Double.isFinite(t)) {
-            throw new IllegalArgumentException("Time must be finite and not NaN");
-        }
-        return _get(t);
+        return (BasicMoment) super.get(t);
     }
 
-    private native long _getPath();
-    protected JNIPath pathCache;
     @Override
-    public JNIPath getPath() {
-        if(pathCache == null) {
-            pathCache = new JNIPath(params.waypoints, params.alpha, params.pathType, _getPath());
-        }
-        return pathCache;
-    }
-    @Override
-    public void clearPathCache() {
-        pathCache = null;
-    }
+    protected native long _getPath();
 
     @Override
     public native double totalTime();
-
-    @Override
-    public RobotSpecs getRobotSpecs() {
-        return specs;
-    }
-
-    @Override
-    public JNITrajectoryParams getGenerationParams() {
-        return params;
-    }
 
     private native long _mirrorLeftRight();
     @Override

@@ -15,6 +15,14 @@ extern "C" {
 JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1construct
   (JNIEnv *, jobject, jdouble, jdouble, jdouble, jboolean, jobjectArray, jdouble, jint, jint);
 
+/*
+ * Class:     com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory
+ * Method:    _destroy
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1destroy
+  (JNIEnv *, jobject);
+
 #ifdef __cplusplus
 }
 #endif

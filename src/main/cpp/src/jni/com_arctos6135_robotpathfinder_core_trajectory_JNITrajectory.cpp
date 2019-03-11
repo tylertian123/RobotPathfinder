@@ -29,3 +29,18 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBa
     btinstances.push_back(std::shared_ptr<rpf::BasicTrajectory>(t));
     rpf::set_obj_ptr(env, obj, t);
 }
+
+JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1destroy(JNIEnv *env, jobject obj) {
+    auto ptr = rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj);
+    rpf::set_obj_ptr<rpf::BasicTrajectory>(env, obj, nullptr);
+    // Remove an entry from the instances list
+    auto it = std::find_if(btinstances.begin(), btinstances.end(), [&](const auto &p){ return p.get() == ptr; });
+    
+    if(it != btinstances.end()) {
+        btinstances.erase(it);
+    }
+    else {
+        jclass exclass = env->FindClass("com/arctos6135/robotpathfinder/core/JNIException");
+        env->ThrowNew(exclass, "This instance of BasicTrajectory was not found in the instances list");
+    }
+}

@@ -7,7 +7,7 @@ import com.arctos6135.robotpathfinder.core.TrajectoryParams;
 import com.arctos6135.robotpathfinder.core.WaypointEx;
 import com.arctos6135.robotpathfinder.core.path.Path;
 
-public class JNIBasicTrajectory implements Trajectory {
+public class JNIBasicTrajectory implements Trajectory, AutoCloseable {
 
     static {
         GlobalLibraryLoader.load();
@@ -50,6 +50,19 @@ public class JNIBasicTrajectory implements Trajectory {
 
         _construct(specs.getMaxVelocity(), specs.getMaxAcceleration(), specs.getBaseWidth(), params.isTank, jniWaypoints, 
                 params.alpha, params.segmentCount, params.pathType.getJNIID());
+    }
+
+    private native void _destroy();
+    public void free() {
+        _destroy();
+    }
+    @Override
+    public void finalize() {
+        _destroy();
+    }
+    @Override
+    public void close() {
+        _destroy();
     }
 
     @Override

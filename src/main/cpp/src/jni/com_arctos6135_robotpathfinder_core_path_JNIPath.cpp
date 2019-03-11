@@ -40,7 +40,7 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_path_JNIPath__1d
     }
     else {
         jclass exclass = env->FindClass("com/arctos6135/robotpathfinder/core/JNIException");
-        env->ThrowNew(exclass, "This instance of Path was not found in the pinstances list");
+        env->ThrowNew(exclass, "This instance of Path was not found in the instances list");
     }
 }
 

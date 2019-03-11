@@ -45,6 +45,9 @@ public class DebugTests {
         System.out.println("Java\t" + (nanos3 - nanos2) / 1000 + "us");
     }
 	public static void main(String[] args) throws Exception {
+        System.out.println("Press enter to continue execution");
+        System.out.println("PID: " + ProcessHandle.current().pid());
+        System.in.read();
         RobotSpecs specs = new RobotSpecs(5, 3, 1);
         JNITrajectoryParams params = new JNITrajectoryParams();
         params.waypoints = new JNIWaypoint[] {

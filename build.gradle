@@ -86,10 +86,10 @@ model {
     binaries {
         all {
             if (targetPlatform.name == wpi.platforms.roborio) {
-                cppCompiler.args << '-Wall' << '-Wextra' << '-ffast-math'
+                cppCompiler.args << '-Wall' << '-Wextra' << '-ffast-math' << '-fno-finite-math-only'
             }
             else if (targetPlatform.name == wpi.platforms.desktop) {
-                cppCompiler.args << '-Wall' << '-Wextra' << '-ffast-math'
+                cppCompiler.args << '-Wall' << '-Wextra' << '-ffast-math' << '-fno-finite-math-only'
             }
         }
     }

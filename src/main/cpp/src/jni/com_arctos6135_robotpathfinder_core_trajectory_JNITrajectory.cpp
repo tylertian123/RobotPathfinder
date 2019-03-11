@@ -25,6 +25,7 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBa
     params.is_tank = is_tank;
     params.seg_count = segment_count;
     params.type = static_cast<rpf::PathType>(type);
+    params.alpha = alpha;
 
     rpf::BasicTrajectory *t = new rpf::BasicTrajectory(specs, params);
     btinstances.push_back(std::shared_ptr<rpf::BasicTrajectory>(t));

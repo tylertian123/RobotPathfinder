@@ -117,16 +117,15 @@ JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_path_JNIPath__1
 
 JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_path_JNIPath__1updateWaypoints(JNIEnv *env, jobject obj) {
     auto &wp = rpf::get_obj_ptr<rpf::Path>(env, obj)->get_waypoints();
-
     jclass clazz = env->GetObjectClass(obj);
-    jfieldID fid = env->GetFieldID(clazz, "waypoints", "[Lcom/arctos6135/robotpathfinder/core/JNIWaypoint");
+    jclass wpclass = env->FindClass("com/arctos6135/robotpathfinder/core/JNIWaypoint");
+    jfieldID fid = env->GetFieldID(clazz, "waypoints", "[Lcom/arctos6135/robotpathfinder/core/JNIWaypoint;");
     jobject objf = env->GetObjectField(obj, fid);
     jobjectArray *arr = reinterpret_cast<jobjectArray *>(&objf);
 
-    jmethodID constructor_mid = env->GetMethodID(clazz, "<init>", "(DDDD)V");
-    
+    jmethodID constructor_mid = env->GetMethodID(wpclass, "<init>", "(DDDD)V");
     for(size_t i = 0; i < wp.size(); i ++) {
-        jobject w = env->NewObject(clazz, constructor_mid, wp[i].x, wp[i].y, wp[i].heading, wp[i].velocity);
+        jobject w = env->NewObject(wpclass, constructor_mid, wp[i].x, wp[i].y, wp[i].heading, wp[i].velocity);
         env->SetObjectArrayElement(*arr, i, w);
     }
 }

@@ -117,6 +117,7 @@ public class JNIPath implements AutoCloseable {
         JNIPath p = new JNIPath(waypoints, alpha, type, _mirrorLeftRight());
         p.backwards = backwards;
         p.radius = radius;
+        p.waypoints = new JNIWaypoint[waypoints.length];
         p._updateWaypoints();
         return p;
     }
@@ -124,6 +125,7 @@ public class JNIPath implements AutoCloseable {
         JNIPath p = new JNIPath(waypoints, alpha, type, _mirrorFrontBack());
         p.backwards = !backwards;
         p.radius = radius;
+        p.waypoints = new JNIWaypoint[waypoints.length];
         p._updateWaypoints();
         return p;
     }
@@ -131,6 +133,7 @@ public class JNIPath implements AutoCloseable {
         JNIPath p = new JNIPath(waypoints, alpha, type, _retrace());
         p.backwards = !backwards;
         p.radius = radius;
+        p.waypoints = new JNIWaypoint[waypoints.length];
         p._updateWaypoints();
         return p;
     }

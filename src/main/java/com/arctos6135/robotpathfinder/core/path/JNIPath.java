@@ -2,8 +2,6 @@ package com.arctos6135.robotpathfinder.core.path;
 
 import com.arctos6135.robotpathfinder.core.GlobalLibraryLoader;
 import com.arctos6135.robotpathfinder.core.JNIWaypoint;
-import com.arctos6135.robotpathfinder.core.Waypoint;
-import com.arctos6135.robotpathfinder.core.WaypointEx;
 import com.arctos6135.robotpathfinder.math.Vec2D;
 import com.arctos6135.robotpathfinder.util.Pair;
 
@@ -18,29 +16,19 @@ public class JNIPath implements AutoCloseable {
     private native void _construct(JNIWaypoint[] waypoints, double alpha, int type);
 
     protected PathType type;
-    protected Waypoint[] waypoints;
+    protected JNIWaypoint[] waypoints;
     protected double alpha;
-    public JNIPath(Waypoint[] waypoints, double alpha, PathType type) {
+    public JNIPath(JNIWaypoint[] waypoints, double alpha, PathType type) {
         this.type = type;
         this.waypoints = waypoints;
         this.alpha = alpha;
         if(waypoints.length < 2) {
             throw new IllegalArgumentException("Not enough waypoints");
         }
-
-        JNIWaypoint[] jniWaypoints = new JNIWaypoint[waypoints.length];
-        for(int i = 0; i < waypoints.length; i ++) {
-            if(waypoints[i] instanceof WaypointEx) {
-                jniWaypoints[i] = new JNIWaypoint(waypoints[i].getX(), waypoints[i].getY(), waypoints[i].getHeading(), ((WaypointEx) waypoints[i]).getVelocity());
-            }
-            else {
-                jniWaypoints[i] = new JNIWaypoint(waypoints[i].getX(), waypoints[i].getY(), waypoints[i].getHeading());
-            }
-        }
         
-        _construct(jniWaypoints, alpha, type.getJNIID());
+        _construct(waypoints, alpha, type.getJNIID());
     }
-    private JNIPath(Waypoint[] waypoints, double alpha, PathType type, long ptr) {
+    private JNIPath(JNIWaypoint[] waypoints, double alpha, PathType type, long ptr) {
         this.waypoints = waypoints;
         this.alpha = alpha;
         this.type = type;
@@ -80,7 +68,7 @@ public class JNIPath implements AutoCloseable {
         return backwards;
     }
     
-    public Waypoint[] getWaypoints() {
+    public JNIWaypoint[] getWaypoints() {
         return waypoints;
     }
     public double getAlpha() {

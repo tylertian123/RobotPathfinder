@@ -1,13 +1,12 @@
 package com.arctos6135.robotpathfinder.core.trajectory;
 
 import com.arctos6135.robotpathfinder.core.GlobalLibraryLoader;
+import com.arctos6135.robotpathfinder.core.JNITrajectoryParams;
 import com.arctos6135.robotpathfinder.core.JNIWaypoint;
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
-import com.arctos6135.robotpathfinder.core.TrajectoryParams;
-import com.arctos6135.robotpathfinder.core.WaypointEx;
 import com.arctos6135.robotpathfinder.core.path.Path;
 
-public class JNIBasicTrajectory implements Trajectory, AutoCloseable {
+public class JNIBasicTrajectory implements JNITrajectory, AutoCloseable {
 
     static {
         GlobalLibraryLoader.load();
@@ -18,7 +17,7 @@ public class JNIBasicTrajectory implements Trajectory, AutoCloseable {
     private native void _construct(double maxV, double maxA, double baseWidth, boolean isTank, JNIWaypoint[] waypoints, 
             double alpha, int segmentCount, int type);
 
-    public JNIBasicTrajectory(RobotSpecs specs, TrajectoryParams params) {
+    public JNIBasicTrajectory(RobotSpecs specs, JNITrajectoryParams params) {
         if(Double.isNaN(specs.getMaxVelocity())) {
             throw new IllegalArgumentException("Max velocity cannot be NaN");
         }
@@ -38,17 +37,7 @@ public class JNIBasicTrajectory implements Trajectory, AutoCloseable {
             throw new IllegalArgumentException("Segment count must be greater than zero");
         }
 
-        JNIWaypoint[] jniWaypoints = new JNIWaypoint[params.waypoints.length];
-        for(int i = 0; i < params.waypoints.length; i ++) {
-            if(params.waypoints[i] instanceof WaypointEx) {
-                jniWaypoints[i] = new JNIWaypoint(params.waypoints[i].getX(), params.waypoints[i].getY(), params.waypoints[i].getHeading(), ((WaypointEx) params.waypoints[i]).getVelocity());
-            }
-            else {
-                jniWaypoints[i] = new JNIWaypoint(params.waypoints[i].getX(), params.waypoints[i].getY(), params.waypoints[i].getHeading());
-            }
-        }
-
-        _construct(specs.getMaxVelocity(), specs.getMaxAcceleration(), specs.getBaseWidth(), params.isTank, jniWaypoints, 
+        _construct(specs.getMaxVelocity(), specs.getMaxAcceleration(), specs.getBaseWidth(), params.isTank, params.waypoints, 
                 params.alpha, params.segmentCount, params.pathType.getJNIID());
     }
 
@@ -91,22 +80,22 @@ public class JNIBasicTrajectory implements Trajectory, AutoCloseable {
     }
 
     @Override
-    public TrajectoryParams getGenerationParams() {
+    public JNITrajectoryParams getGenerationParams() {
         return null;
     }
 
     @Override
-    public Trajectory mirrorLeftRight() {
+    public JNITrajectory mirrorLeftRight() {
         return null;
     }
 
     @Override
-    public Trajectory mirrorFrontBack() {
+    public JNITrajectory mirrorFrontBack() {
         return null;
     }
 
     @Override
-    public Trajectory retrace() {
+    public JNITrajectory retrace() {
         return null;
     }
 

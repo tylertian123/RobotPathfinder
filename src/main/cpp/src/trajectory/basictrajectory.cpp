@@ -50,7 +50,7 @@ namespace rpf {
             mid = (start + end) / 2;
             double mid_time = moments[mid].time;
 
-            if(mid_time == time || mid == moments.size() - 1 || mid == 0) {
+            if(mid_time == time || mid == moments.size() - 1) {
                 return moments[mid];
             }
             
@@ -63,6 +63,9 @@ namespace rpf {
                         rpf::lerp(current.accel, next.accel, f), rpf::langle(current.heading, next.heading, f), time, init_facing);
                 m.backwards = backwards;
                 return m;
+            }
+            if(mid == 0) {
+                return moments[mid];
             }
             if(mid_time < time) {
                 start = mid;

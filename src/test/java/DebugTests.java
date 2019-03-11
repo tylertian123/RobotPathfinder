@@ -52,15 +52,16 @@ public class DebugTests {
         JNITrajectoryParams params = new JNITrajectoryParams();
         params.waypoints = new JNIWaypoint[] {
             new JNIWaypoint(0, 0, Math.PI / 2),
-            new JNIWaypoint(0, 10, Math.PI / 2),
+            new JNIWaypoint(10, 10, Math.PI / 2),
         };
-        params.alpha = 2;
+        params.alpha = 20;
         params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
         params.segmentCount = 1000;
         
         JNIBasicTrajectory traj = new JNIBasicTrajectory(specs, params);
         System.out.println(traj.totalTime());
+        System.out.println(traj.get(0.01).getVelocity());
         JFrame f = Grapher.graphTrajectory(traj, 0.001);
         traj.close();
         f.setVisible(true);

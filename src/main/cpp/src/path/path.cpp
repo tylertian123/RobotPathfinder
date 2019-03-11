@@ -95,14 +95,14 @@ namespace rpf {
             if(mid == s2t_table.size() - 1) {
                 return 1;
             }
-            if(mid == 0) {
-                return 0;
-            }
 
             double next = s2t_table[mid + 1].first;
             if(mid_dist <= dist && dist <= next) {
                 double f = (dist - mid_dist) / (next - mid_dist);
                 return rpf::lerp(s2t_table[mid].second, s2t_table[mid + 1].second, f);
+            }
+            if(mid == 0) {
+                return 0;
             }
             
             if(mid_dist < dist) {
@@ -135,14 +135,14 @@ namespace rpf {
             if(mid == s2t_table.size() - 1) {
                 return 1;
             }
-            if(mid == 0) {
-                return 0;
-            }
             
             double next = s2t_table[mid + 1].second;
             if(mid_t <= t && t <= next) {
                 double f = (t - mid_t) / (next - mid_t);
                 return rpf::lerp(s2t_table[mid].first, s2t_table[mid + 1].first, f) / total_len;
+            }
+            if(mid == 0) {
+                return 0;
             }
 
             if(mid_t < t) {

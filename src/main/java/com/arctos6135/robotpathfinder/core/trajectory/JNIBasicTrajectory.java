@@ -89,7 +89,7 @@ public class JNIBasicTrajectory implements JNITrajectory {
 
     private native BasicMoment _get(double t);
     @Override
-    public Moment get(double t) {
+    public BasicMoment get(double t) {
         if(Double.isNaN(t) || !Double.isFinite(t)) {
             throw new IllegalArgumentException("Time must be finite and not NaN");
         }

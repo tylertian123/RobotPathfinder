@@ -45,13 +45,21 @@ public class DebugTests {
         System.out.println("Java\t" + (nanos3 - nanos2) / 1000 + "us");
     }
 	public static void main(String[] args) throws Exception {
-		JNIPath path = new JNIPath(new JNIWaypoint[] {
+        RobotSpecs specs = new RobotSpecs(5, 3, 1);
+        JNITrajectoryParams params = new JNITrajectoryParams();
+        params.waypoints = new JNIWaypoint[] {
             new JNIWaypoint(0, 0, Math.PI / 2),
-            new JNIWaypoint(10, 10, Math.PI / 2),
-        }, 20, PathType.QUINTIC_HERMITE);
-        path.setBaseRadius(0.5);
-        JFrame f = Grapher.graphPath(path.mirrorFrontBack(), 0.001);
+            new JNIWaypoint(0, 10, Math.PI / 2),
+        };
+        params.alpha = 2;
+        params.isTank = true;
+        params.pathType = PathType.QUINTIC_HERMITE;
+        params.segmentCount = 1000;
+        
+        JNIBasicTrajectory traj = new JNIBasicTrajectory(specs, params);
+        System.out.println(traj.totalTime());
+        JFrame f = Grapher.graphTrajectory(traj, 0.01);
+        traj.close();
         f.setVisible(true);
-        path.close();
 	}
 }

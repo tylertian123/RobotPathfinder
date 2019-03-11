@@ -233,7 +233,7 @@ public final class Grapher {
 		// Add 1 for the last sample (see below)
 		int elemCount = (int) Math.ceil(1.0 / dt) + 1;
 		
-		boolean graphWheels = path.getBaseRadius() != 0;
+		boolean graphWheels = path.getBaseRadius() != 0 && !Double.isNaN(path.getBaseRadius());
 		
 		// Create arrays to hold samples
 		double[] x = new double[elemCount];

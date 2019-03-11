@@ -7,18 +7,16 @@ import com.arctos6135.robotpathfinder.core.JNIWaypoint;
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.TrajectoryParams;
 import com.arctos6135.robotpathfinder.core.Waypoint;
-import com.arctos6135.robotpathfinder.core.WaypointEx;
+import com.arctos6135.robotpathfinder.core.path.JNIPath;
 import com.arctos6135.robotpathfinder.core.path.PathType;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.JNIBasicTrajectory;
-import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
-import com.arctos6135.robotpathfinder.core.trajectory.TrajectoryGenerator;
 import com.arctos6135.robotpathfinder.tools.Grapher;
 
 public class DebugTests {
 
-	public static void main(String[] args) throws Exception {
-		RobotSpecs robotSpecs = new RobotSpecs(5.0, 3.5, 2.0);
+    public static void test20() {
+        RobotSpecs robotSpecs = new RobotSpecs(5.0, 3.5, 2.0);
         TrajectoryParams params = new TrajectoryParams();
         JNITrajectoryParams jniParams = new JNITrajectoryParams();
         params.waypoints = new Waypoint[] {
@@ -45,5 +43,15 @@ public class DebugTests {
 
         System.out.println("Native\t" + (nanos2 - nanos1) / 1000 + "us");
         System.out.println("Java\t" + (nanos3 - nanos2) / 1000 + "us");
+    }
+	public static void main(String[] args) throws Exception {
+		JNIPath path = new JNIPath(new JNIWaypoint[] {
+            new JNIWaypoint(0, 0, Math.PI / 2),
+            new JNIWaypoint(10, 10, Math.PI / 2),
+        }, 20, PathType.QUINTIC_HERMITE);
+        path.setBaseRadius(0.5);
+        JFrame f = Grapher.graphPath(path, 0.001);
+        f.setVisible(true);
+        path.close();
 	}
 }

@@ -47,7 +47,7 @@ namespace rpf {
         std::pair<Vec2D, Vec2D> wheels;
         wheels.first = Vec2D(pos.x - (!backwards ? base_radius * s : -base_radius * s),
                 pos.y + (!backwards ? base_radius * c : -base_radius * c));
-        wheels.second = Vec2D(pos.y + (!backwards ? base_radius * s : -base_radius * s),
+        wheels.second = Vec2D(pos.x + (!backwards ? base_radius * s : -base_radius * s),
                 pos.y - (!backwards ? base_radius * c : -base_radius * c));
         return wheels;
     }

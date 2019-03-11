@@ -86,7 +86,7 @@ model {
                 cppCompiler.args << '-Wall' << '-Wextra' << '-ffast-math'
             }
             else if (targetPlatform.name == wpi.platforms.desktop) {
-                cppCompiler.args << '-Wall' << '-Wextra'
+                cppCompiler.args << '-Wall' << '-Wextra' << '-ffast-math'
             }
         }
     }

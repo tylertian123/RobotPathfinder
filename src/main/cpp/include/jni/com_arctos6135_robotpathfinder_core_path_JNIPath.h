@@ -119,6 +119,14 @@ JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_path_JNIPath__1
 JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_path_JNIPath__1retrace
   (JNIEnv *, jobject);
 
+/*
+ * Class:     com_arctos6135_robotpathfinder_core_path_JNIPath
+ * Method:    _updateWaypoints
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_path_JNIPath__1updateWaypoints
+  (JNIEnv *, jobject);
+
 #ifdef __cplusplus
 }
 #endif

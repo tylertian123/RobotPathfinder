@@ -56,6 +56,7 @@ namespace rpf {
             }
         }
 
+        // TODO: INLINE ALL THESE GETTERS!
         void set_base(double);
         double get_base() const;
 

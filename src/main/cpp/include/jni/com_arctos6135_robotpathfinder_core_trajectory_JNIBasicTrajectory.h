@@ -47,6 +47,38 @@ JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JN
 JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1getPath
   (JNIEnv *, jobject);
 
+/*
+ * Class:     com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory
+ * Method:    totalTime
+ * Signature: ()D
+ */
+JNIEXPORT jdouble JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory_totalTime
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory
+ * Method:    _mirrorLeftRight
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1mirrorLeftRight
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory
+ * Method:    _mirrorFrontBack
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1mirrorFrontBack
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory
+ * Method:    _retrace
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1retrace
+  (JNIEnv *, jobject);
+
 #ifdef __cplusplus
 }
 #endif

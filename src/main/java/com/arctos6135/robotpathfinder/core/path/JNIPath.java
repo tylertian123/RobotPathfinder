@@ -112,22 +112,26 @@ public class JNIPath implements AutoCloseable {
     private native long _mirrorFrontBack();
     private native long _retrace();
 
+    private native void _updateWaypoints();
     public JNIPath mirrorLeftRight() {
         JNIPath p = new JNIPath(waypoints, alpha, type, _mirrorLeftRight());
         p.backwards = backwards;
         p.radius = radius;
+        p._updateWaypoints();
         return p;
     }
     public JNIPath mirrorFrontBack() {
         JNIPath p = new JNIPath(waypoints, alpha, type, _mirrorFrontBack());
         p.backwards = !backwards;
         p.radius = radius;
+        p._updateWaypoints();
         return p;
     }
     public JNIPath retrace() {
         JNIPath p = new JNIPath(waypoints, alpha, type, _retrace());
         p.backwards = !backwards;
         p.radius = radius;
+        p._updateWaypoints();
         return p;
     }
 }

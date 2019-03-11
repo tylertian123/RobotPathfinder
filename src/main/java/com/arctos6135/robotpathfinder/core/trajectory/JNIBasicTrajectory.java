@@ -6,7 +6,7 @@ import com.arctos6135.robotpathfinder.core.JNIWaypoint;
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.path.JNIPath;
 
-public class JNIBasicTrajectory implements JNITrajectory, AutoCloseable {
+public class JNIBasicTrajectory implements JNITrajectory {
 
     static {
         GlobalLibraryLoader.load();
@@ -42,29 +42,40 @@ public class JNIBasicTrajectory implements JNITrajectory, AutoCloseable {
     }
 
     private native void _destroy();
+    @Override
     public void free() {
+        momentsCache = null;
+        pathCache = null;
         _destroy();
     }
     @Override
     public void finalize() {
+        momentsCache = null;
+        pathCache = null;
         _destroy();
     }
     @Override
     public void close() {
+        momentsCache = null;
+        pathCache = null;
         _destroy();
     }
 
-    private native TankDriveMoment[] _getMoments();
-    protected TankDriveMoment[] momentsCache;
+    private native BasicMoment[] _getMoments();
+    protected BasicMoment[] momentsCache;
     @Override
-    public TankDriveMoment[] getMoments() {
+    public BasicMoment[] getMoments() {
         if(momentsCache == null) {
             momentsCache = _getMoments();
         }
         return momentsCache;
     }
+    @Override
+    public void clearMomentsCache() {
+        momentsCache = null;
+    }
 
-    private native TankDriveMoment _get(double t);
+    private native BasicMoment _get(double t);
     @Override
     public Moment get(double t) {
         if(Double.isNaN(t) || !Double.isFinite(t)) {
@@ -81,6 +92,10 @@ public class JNIBasicTrajectory implements JNITrajectory, AutoCloseable {
             pathCache = _getPath();
         }
         return pathCache;
+    }
+    @Override
+    public void clearPathCache() {
+        pathCache = null;
     }
 
     @Override

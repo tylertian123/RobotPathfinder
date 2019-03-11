@@ -9,15 +9,16 @@ import java.lang.reflect.InvocationTargetException;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import org.math.plot.Plot2DPanel;
-
-import com.arctos6135.robotpathfinder.core.Waypoint;
-import com.arctos6135.robotpathfinder.core.path.Path;
+import com.arctos6135.robotpathfinder.core.JNIWaypoint;
+import com.arctos6135.robotpathfinder.core.path.JNIPath;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicMoment;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
 import com.arctos6135.robotpathfinder.math.Vec2D;
+import com.arctos6135.robotpathfinder.util.Pair;
+
+import org.math.plot.Plot2DPanel;
 
 /**
  * A class that provides convenient methods for graphing paths and trajectories.
@@ -215,7 +216,7 @@ public final class Grapher {
 	}
 	
 	/**
-	 * Graphs a {@link Path} in a {@link JFrame}.
+	 * Graphs a {@link JNIPath} in a {@link JFrame}.
 	 * <p>
 	 * In addition to graphing, this method also sets the {@link JFrame}'s default close operation to be
 	 * {@link JFrame#DISPOSE_ON_CLOSE}, disables resizing and resizes it to show the entire path. It is
@@ -227,7 +228,7 @@ public final class Grapher {
 	 * @param dt The time increment between samples
 	 * @return The graphed path in a {@link JFrame}
 	 */
-	public static JFrame graphPath(Path path, double dt) {
+	public static JFrame graphPath(JNIPath path, double dt) {
 		// Divide and round up to get the number of samples
 		// Add 1 for the last sample (see below)
 		int elemCount = (int) Math.ceil(1.0 / dt) + 1;
@@ -254,11 +255,11 @@ public final class Grapher {
 			y[i] = v.getY();
 			
 			if(graphWheels) {
-				Vec2D[] v2 = path.wheelsAt(t);
-				leftX[i] = v2[0].getX();
-				leftY[i] = v2[0].getY();
-				rightX[i] = v2[1].getX();
-				rightY[i] = v2[1].getY();
+				Pair<Vec2D, Vec2D> v2 = path.wheelsAt(t);
+				leftX[i] = v2.getElem1().getX();
+				leftY[i] = v2.getElem1().getY();
+				rightX[i] = v2.getElem2().getX();
+				rightY[i] = v2.getElem2().getY();
 			}
 			
 			// Update min and max x and y values
@@ -276,11 +277,11 @@ public final class Grapher {
 		x[x.length - 1] = v.getX();
 		y[y.length - 1] = v.getY();
 		if(graphWheels) {
-			Vec2D[] v2 = path.wheelsAt(1);
-			leftX[leftX.length - 1] = v2[0].getX();
-			leftY[leftY.length - 1] = v2[0].getY();
-			rightX[rightY.length - 1] = v2[1].getX();
-			rightY[rightY.length - 1] = v2[1].getY();
+			Pair<Vec2D, Vec2D> v2 = path.wheelsAt(1);
+			leftX[leftX.length - 1] = v2.getElem1().getX();
+			leftY[leftY.length - 1] = v2.getElem1().getY();
+			rightX[rightY.length - 1] = v2.getElem2().getX();
+			rightY[rightY.length - 1] = v2.getElem2().getY();
 		}
 		minX = Math.min(minX, v.getX());
 		minY = Math.min(minY, v.getY());
@@ -298,7 +299,7 @@ public final class Grapher {
 				plot.addLinePlot("Right Wheel", rightX, rightY);
 			}
 			
-			Waypoint[] waypoints = path.getWaypoints();
+			JNIWaypoint[] waypoints = path.getWaypoints();
 			// Fixes a bug with JMathPlot
 			double[][] xy = new double[2][waypoints.length > 2 ? waypoints.length : 3];
 			for(int j = 0; j < path.getWaypoints().length; j ++) {

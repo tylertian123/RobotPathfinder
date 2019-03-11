@@ -80,3 +80,25 @@ JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIB
     // Return the raw address
     return reinterpret_cast<jlong>(ptr.get());
 }
+
+JNIEXPORT jdouble JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory_totalTime(JNIEnv *env, jobject obj) {
+    return rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj)->total_time();
+}
+
+JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1mirrorLeftRight(JNIEnv *env, jobject obj) {
+    auto ptr = rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj)->mirror_lr();
+    btinstances.push_back(ptr);
+    return reinterpret_cast<jlong>(ptr.get());
+}
+
+JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1mirrorFrontBack(JNIEnv *env, jobject obj) {
+    auto ptr = rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj)->mirror_fb();
+    btinstances.push_back(ptr);
+    return reinterpret_cast<jlong>(ptr.get());
+}
+
+JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1retrace(JNIEnv *env, jobject obj) {
+    auto ptr = rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj)->retrace();
+    btinstances.push_back(ptr);
+    return reinterpret_cast<jlong>(ptr.get());
+}

@@ -93,6 +93,10 @@ public class BasicMoment extends Moment {
 		this.t = t;
 		this.initialFacing = initialFacing;
 	}
+	public BasicMoment(double position, double velocity, double acceleration, double heading, double t, double initialFacing, boolean backwards) {
+		this(position, velocity, acceleration, heading, t, initialFacing);
+		this.backwards = backwards;
+	}
 	
 	/**
 	 * Sets the time of the moment.

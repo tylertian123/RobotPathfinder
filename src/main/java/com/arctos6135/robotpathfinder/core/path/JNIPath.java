@@ -113,12 +113,21 @@ public class JNIPath implements AutoCloseable {
     private native long _retrace();
 
     public JNIPath mirrorLeftRight() {
-        return new JNIPath(waypoints, alpha, type, _mirrorLeftRight());
+        JNIPath p = new JNIPath(waypoints, alpha, type, _mirrorLeftRight());
+        p.backwards = backwards;
+        p.radius = radius;
+        return p;
     }
     public JNIPath mirrorFrontBack() {
-        return new JNIPath(waypoints, alpha, type, _mirrorFrontBack());
+        JNIPath p = new JNIPath(waypoints, alpha, type, _mirrorFrontBack());
+        p.backwards = !backwards;
+        p.radius = radius;
+        return p;
     }
     public JNIPath retrace() {
-        return new JNIPath(waypoints, alpha, type, _retrace());
+        JNIPath p = new JNIPath(waypoints, alpha, type, _retrace());
+        p.backwards = !backwards;
+        p.radius = radius;
+        return p;
     }
 }

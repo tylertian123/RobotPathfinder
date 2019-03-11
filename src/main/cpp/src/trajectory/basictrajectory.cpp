@@ -86,7 +86,7 @@ namespace rpf {
             moment.init_facing = params.waypoints[0].heading;
             m.push_back(moment);
         }
-        return std::shared_ptr<BasicTrajectory>(new BasicTrajectory(p, std::move(m), false, specs, params));
+        return std::shared_ptr<BasicTrajectory>(new BasicTrajectory(p, std::move(m), backwards, specs, params));
     }
     std::shared_ptr<BasicTrajectory> BasicTrajectory::mirror_fb() const {
         auto p = path->mirror_fb();
@@ -102,7 +102,7 @@ namespace rpf {
             m.push_back(moment);
         }
 
-        return std::shared_ptr<BasicTrajectory>(new BasicTrajectory(p, std::move(m), true, specs, params));
+        return std::shared_ptr<BasicTrajectory>(new BasicTrajectory(p, std::move(m), !backwards, specs, params));
     }
     std::shared_ptr<BasicTrajectory> BasicTrajectory::retrace() const {
         auto p = path->retrace();
@@ -119,6 +119,6 @@ namespace rpf {
             m.push_back(moment);
         }
 
-        return std::shared_ptr<BasicTrajectory>(new BasicTrajectory(p, std::move(m), true, specs, params));
+        return std::shared_ptr<BasicTrajectory>(new BasicTrajectory(p, std::move(m), !backwards, specs, params));
     }
 }

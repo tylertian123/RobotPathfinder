@@ -50,7 +50,7 @@ public class DebugTests {
             new JNIWaypoint(10, 10, Math.PI / 2),
         }, 20, PathType.QUINTIC_HERMITE);
         path.setBaseRadius(0.5);
-        JFrame f = Grapher.graphPath(path, 0.001);
+        JFrame f = Grapher.graphPath(path.mirrorLeftRight(), 0.001);
         f.setVisible(true);
         path.close();
 	}

@@ -106,9 +106,7 @@ public class JNIBasicTrajectory implements JNITrajectory {
     }
 
     @Override
-    public double totalTime() {
-        return 0;
-    }
+    public native double totalTime();
 
     @Override
     public RobotSpecs getRobotSpecs() {
@@ -120,16 +118,19 @@ public class JNIBasicTrajectory implements JNITrajectory {
         return params;
     }
 
+    private native long _mirrorLeftRight();
     @Override
     public JNITrajectory mirrorLeftRight() {
         return null;
     }
 
+    private native long _mirrorFrontBack();
     @Override
     public JNITrajectory mirrorFrontBack() {
         return null;
     }
 
+    private native long _retrace();
     @Override
     public JNITrajectory retrace() {
         return null;

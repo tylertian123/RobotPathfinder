@@ -28,7 +28,7 @@ public class JNIPath implements AutoCloseable {
         
         _construct(waypoints, alpha, type.getJNIID());
     }
-    private JNIPath(JNIWaypoint[] waypoints, double alpha, PathType type, long ptr) {
+    public JNIPath(JNIWaypoint[] waypoints, double alpha, PathType type, long ptr) {
         this.waypoints = waypoints;
         this.alpha = alpha;
         this.type = type;

@@ -42,9 +42,9 @@ JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JN
 /*
  * Class:     com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory
  * Method:    _getPath
- * Signature: ()Lcom/arctos6135/robotpathfinder/core/path/JNIPath;
+ * Signature: ()J
  */
-JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1getPath
+JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1getPath
   (JNIEnv *, jobject);
 
 #ifdef __cplusplus

@@ -91,12 +91,12 @@ public class JNIBasicTrajectory implements JNITrajectory {
         return _get(t);
     }
 
-    private native JNIPath _getPath();
+    private native long _getPath();
     protected JNIPath pathCache;
     @Override
     public JNIPath getPath() {
         if(pathCache == null) {
-            pathCache = _getPath();
+            pathCache = new JNIPath(params.waypoints, params.alpha, params.pathType, _getPath());
         }
         return pathCache;
     }

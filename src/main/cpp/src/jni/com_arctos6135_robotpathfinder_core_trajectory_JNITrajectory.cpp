@@ -6,6 +6,7 @@
 #include <algorithm>
 
 std::vector<std::shared_ptr<rpf::BasicTrajectory>> btinstances;
+extern std::vector<std::shared_ptr<rpf::Path>> pinstances;
 
 JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1construct
         (JNIEnv *env, jobject obj, jdouble maxv, jdouble maxa, jdouble base_width, jboolean is_tank, jobjectArray waypoints, jdouble alpha, jint segment_count, jint type) {
@@ -67,4 +68,14 @@ JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JN
     jmethodID constructor_mid = env->GetMethodID(env->GetObjectClass(obj), "<init>", "(DDDDDDZ)V");
 
     return env->NewObject(env->GetObjectClass(obj), constructor_mid, m.dist, m.vel, m.accel, m.heading, m.time, m.init_facing, m.backwards);
+}
+
+JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1getPath(JNIEnv *env, jobject obj) {
+    // Since the shared_ptr that came from get_path is a copy of the trajectory's shared_ptr,
+    // the reference counting still works
+    auto ptr = rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj)->get_path();
+    // Add to the instances list
+    pinstances.push_back(ptr);
+    // Return the raw address
+    return reinterpret_cast<jlong>(ptr.get());
 }

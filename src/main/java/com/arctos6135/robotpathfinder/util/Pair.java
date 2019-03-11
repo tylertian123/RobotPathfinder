@@ -1,7 +1,7 @@
 package com.arctos6135.robotpathfinder.util;
 
 /**
- * A class that holds a pair of related values.
+ * A class that holds a pair of values.
  * @author Tyler Tian
  *
  * @param <T> The type of the first element
@@ -9,15 +9,15 @@ package com.arctos6135.robotpathfinder.util;
  */
 public class Pair<T, U> {
 	
-	private T elem1;
-	private U elem2;
+	protected T first;
+	protected U second;
 	
 	/**
 	 * Creates a new {@link Pair} object with both elements {@code null}.
 	 */
 	public Pair() {
-		elem1 = null;
-		elem2 = null;
+		first = null;
+		second = null;
 	}
 	/**
 	 * Creates a new {@link Pair} object with the specified elements.
@@ -25,36 +25,36 @@ public class Pair<T, U> {
 	 * @param e2 The second element
 	 */
 	public Pair(T e1, U e2) {
-		elem1 = e1;
-		elem2 = e2;
+		first = e1;
+		second = e2;
 	}
 	
 	/**
 	 * Retrieves the first element of the pair.
 	 * @return The first element
 	 */
-	public T getElem1() {
-		return elem1;
+	public T getFirst() {
+		return first;
 	}
 	/**
 	 * Retrieves the second element of the pair.
 	 * @return The second element
 	 */
-	public U getElem2() {
-		return elem2;
+	public U getSecond() {
+		return second;
 	}
 	/**
 	 * Sets the first element of the pair.
 	 * @param e1 The new value for the first element
 	 */
-	public void setElem1(T e1) {
-		elem1 = e1;
+	public void setFirst(T e1) {
+		first = e1;
 	}
 	/**
 	 * Sets the second element of the pair.
 	 * @param e2 The new value for the second element
 	 */
-	public void setElem2(U e2) {
-		elem2 = e2;
+	public void setSecond(U e2) {
+		second = e2;
 	}
 }

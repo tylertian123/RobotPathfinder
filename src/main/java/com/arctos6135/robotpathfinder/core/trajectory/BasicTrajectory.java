@@ -254,28 +254,28 @@ public class BasicTrajectory implements Trajectory {
             
             // Since the additional velocity constraints are sorted from shortest path length to longest, we can check if
             // we just surpassed one to determine whether we're on the point. Then, remove it so the process still works.
-            if(additionalConstraints.size() > 0 && accumulatedDist >= additionalConstraints.getFirst().getElem1()) {
+            if(additionalConstraints.size() > 0 && accumulatedDist >= additionalConstraints.getFirst().getFirst()) {
                 Pair<Double, Double> constraint = additionalConstraints.getFirst();
                 additionalConstraints.remove();
 
                 // If the velocity is higher than the current, perform some extra checks and computations
-                if(constraint.getElem2() > moments[i - 1].getVelocity()) {
+                if(constraint.getSecond() > moments[i - 1].getVelocity()) {
                     // First calculate the acceleration needed and throw an exception if it's impossible
-                    double accel = (Math.pow(constraint.getElem2(), 2) - Math.pow(moments[i - 1].getVelocity(), 2)) / (2 * distPerIteration);
+                    double accel = (Math.pow(constraint.getSecond(), 2) - Math.pow(moments[i - 1].getVelocity(), 2)) / (2 * distPerIteration);
                     if(accel > maxAcceleration) {
-                        throw new TrajectoryGenerationException("Error: Waypoint velocity constraint (" + constraint.getElem2() + ") is impossible");
+                        throw new TrajectoryGenerationException("Error: Waypoint velocity constraint (" + constraint.getSecond() + ") is impossible");
                     }
                     // Otherwise set the accel
                     moments[i - 1].setAcceleration(accel);
                     // Set precomputed time diff
-                    precomputedTimeDiff[i - 1] = (constraint.getElem2() - moments[i - 1].getVelocity()) / accel;
+                    precomputedTimeDiff[i - 1] = (constraint.getSecond() - moments[i - 1].getVelocity()) / accel;
                 }
                 else {
                     // Set the accel to 0 to be handled by the backwards pass
                     moments[i - 1].setAcceleration(0);
                 }
                 // Set the velocity equal to the constraint
-                moments[i] = new BasicMoment(accumulatedDist, constraint.getElem2(), 0, headings[i]);
+                moments[i] = new BasicMoment(accumulatedDist, constraint.getSecond(), 0, headings[i]);
 
                 unchangeableIndices.add(i);
 

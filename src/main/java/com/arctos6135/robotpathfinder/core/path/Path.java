@@ -230,16 +230,16 @@ abstract public class Path {
 		int mid;
 		
 		// Return 1 if the distance is greater than the maximum distance
-		if(dist > s2tLookupTable.get(s2tLookupTable.size() - 1).getElem1()) {
+		if(dist > s2tLookupTable.get(s2tLookupTable.size() - 1).getFirst()) {
 			return 1;
 		}
 		while(true) {
 			mid = (start + end) / 2;
-			double midDist = s2tLookupTable.get(mid).getElem1();
+			double midDist = s2tLookupTable.get(mid).getFirst();
 			
 			// Check if we have a match
 			if(midDist == dist) {
-				return s2tLookupTable.get(mid).getElem2();
+				return s2tLookupTable.get(mid).getSecond();
 			}
 			// Or, check if we are at the end of the lookup table
 			if(mid == s2tLookupTable.size() - 1) {
@@ -247,12 +247,12 @@ abstract public class Path {
 			}
 			
 			// Check if our distance is in between two distances
-			double nextDist = s2tLookupTable.get(mid + 1).getElem1();
+			double nextDist = s2tLookupTable.get(mid + 1).getFirst();
 			if(midDist <= dist && dist <= nextDist) {
 				// Lerp them to get an approximation
 				double f = (dist - midDist) / (nextDist - midDist);
-				return MathUtils.lerp(s2tLookupTable.get(mid).getElem2(), 
-						s2tLookupTable.get(mid + 1).getElem2(), f);
+				return MathUtils.lerp(s2tLookupTable.get(mid).getSecond(), 
+						s2tLookupTable.get(mid + 1).getSecond(), f);
 			}
 			// Check if we are at the first element after checking if we are between two elements
 			// Otherwise, in the case of a value between the first and second, the lerp will not happen
@@ -289,17 +289,17 @@ abstract public class Path {
         int mid;
 
         // Return 1 if the time is greater than 1
-        if(t > s2tLookupTable.get(s2tLookupTable.size() - 1).getElem2()) {
+        if(t > s2tLookupTable.get(s2tLookupTable.size() - 1).getSecond()) {
             return 1;
         }
         while(true) {
             mid = (start + end) / 2;
-            double midTime = s2tLookupTable.get(mid).getElem2();
+            double midTime = s2tLookupTable.get(mid).getSecond();
 
             // Check if we have a match
             if(midTime == t) {
                 // Divide the value found by the total length to get a fraction
-                return s2tLookupTable.get(mid).getElem1() / totalLen;
+                return s2tLookupTable.get(mid).getFirst() / totalLen;
             }
             // Or, check if we are at the end of the lookup table
             if(mid == s2tLookupTable.size() - 1) {
@@ -307,12 +307,12 @@ abstract public class Path {
             }
 
             // Check if our time is in between two times
-            double nextTime = s2tLookupTable.get(mid + 1).getElem2();
+            double nextTime = s2tLookupTable.get(mid + 1).getSecond();
             if(midTime <= t && t <= nextTime) {
                 // Lerp them to get an approximation
                 double f = (t - midTime) / (nextTime - midTime);
-                return MathUtils.lerp(s2tLookupTable.get(mid).getElem1(), 
-                        s2tLookupTable.get(mid + 1).getElem1(), f) / totalLen;
+                return MathUtils.lerp(s2tLookupTable.get(mid).getFirst(), 
+                        s2tLookupTable.get(mid + 1).getFirst(), f) / totalLen;
             }
             // Check if we are at the first element after checking if we are between two elements
             // Otherwise, in the case of a value between the first and second, the lerp will not happen

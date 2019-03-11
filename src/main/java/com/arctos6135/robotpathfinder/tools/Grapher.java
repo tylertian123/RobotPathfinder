@@ -256,10 +256,10 @@ public final class Grapher {
 			
 			if(graphWheels) {
 				Pair<Vec2D, Vec2D> v2 = path.wheelsAt(t);
-				leftX[i] = v2.getElem1().getX();
-				leftY[i] = v2.getElem1().getY();
-				rightX[i] = v2.getElem2().getX();
-				rightY[i] = v2.getElem2().getY();
+				leftX[i] = v2.getFirst().getX();
+				leftY[i] = v2.getFirst().getY();
+				rightX[i] = v2.getSecond().getX();
+				rightY[i] = v2.getSecond().getY();
 			}
 			
 			// Update min and max x and y values
@@ -278,10 +278,10 @@ public final class Grapher {
 		y[y.length - 1] = v.getY();
 		if(graphWheels) {
 			Pair<Vec2D, Vec2D> v2 = path.wheelsAt(1);
-			leftX[leftX.length - 1] = v2.getElem1().getX();
-			leftY[leftY.length - 1] = v2.getElem1().getY();
-			rightX[rightY.length - 1] = v2.getElem2().getX();
-			rightY[rightY.length - 1] = v2.getElem2().getY();
+			leftX[leftX.length - 1] = v2.getFirst().getX();
+			leftY[leftY.length - 1] = v2.getFirst().getY();
+			rightX[rightY.length - 1] = v2.getSecond().getX();
+			rightY[rightY.length - 1] = v2.getSecond().getY();
 		}
 		minX = Math.min(minX, v.getX());
 		minY = Math.min(minY, v.getY());

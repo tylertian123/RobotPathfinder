@@ -17,43 +17,19 @@ namespace rpf {
     template <typename T>
     T get_field(JNIEnv *env, jobject obj, const char *fname);
     template <>
-    jboolean get_field<jboolean>(JNIEnv *env, jobject obj, const char *fname) {
-        jfieldID fid = env->GetFieldID(env->GetObjectClass(obj), fname, "Z");
-        return env->GetBooleanField(obj, fid);
-    }
+    jboolean get_field<jboolean>(JNIEnv *env, jobject obj, const char *fname);
     template <>
-    jbyte get_field<jbyte>(JNIEnv *env, jobject obj, const char *fname) {
-        jfieldID fid = env->GetFieldID(env->GetObjectClass(obj), fname, "B");
-        return env->GetByteField(obj, fid);
-    }
+    jbyte get_field<jbyte>(JNIEnv *env, jobject obj, const char *fname);
     template <>
-    jchar get_field<jchar>(JNIEnv *env, jobject obj, const char *fname) {
-        jfieldID fid = env->GetFieldID(env->GetObjectClass(obj), fname, "C");
-        return env->GetCharField(obj, fid);
-    }
+    jchar get_field<jchar>(JNIEnv *env, jobject obj, const char *fname);
     template <>
-    jshort get_field<jshort>(JNIEnv *env, jobject obj, const char *fname) {
-        jfieldID fid = env->GetFieldID(env->GetObjectClass(obj), fname, "S");
-        return env->GetShortField(obj, fid);
-    }
+    jshort get_field<jshort>(JNIEnv *env, jobject obj, const char *fname);
     template <>
-    jint get_field<jint>(JNIEnv *env, jobject obj, const char *fname) {
-        jfieldID fid = env->GetFieldID(env->GetObjectClass(obj), fname, "I");
-        return env->GetIntField(obj, fid);
-    }
+    jint get_field<jint>(JNIEnv *env, jobject obj, const char *fname);
     template <>
-    jlong get_field<jlong>(JNIEnv *env, jobject obj, const char *fname) {
-        jfieldID fid = env->GetFieldID(env->GetObjectClass(obj), fname, "J");
-        return env->GetLongField(obj, fid);
-    }
+    jlong get_field<jlong>(JNIEnv *env, jobject obj, const char *fname);
     template <>
-    jfloat get_field<jfloat>(JNIEnv *env, jobject obj, const char *fname) {
-        jfieldID fid = env->GetFieldID(env->GetObjectClass(obj), fname, "F");
-        return env->GetFloatField(obj, fid);
-    }
+    jfloat get_field<jfloat>(JNIEnv *env, jobject obj, const char *fname);
     template <>
-    jdouble get_field<jdouble>(JNIEnv *env, jobject obj, const char *fname) {
-        jfieldID fid = env->GetFieldID(env->GetObjectClass(obj), fname, "D");
-        return env->GetDoubleField(obj, fid);
-    }
+    jdouble get_field<jdouble>(JNIEnv *env, jobject obj, const char *fname);
 }

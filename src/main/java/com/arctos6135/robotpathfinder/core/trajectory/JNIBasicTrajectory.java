@@ -46,6 +46,11 @@ public class JNIBasicTrajectory implements JNITrajectory {
         _construct(specs.getMaxVelocity(), specs.getMaxAcceleration(), specs.getBaseWidth(), params.isTank, params.waypoints, 
                 params.alpha, params.segmentCount, params.pathType.getJNIID());
     }
+    public JNIBasicTrajectory(RobotSpecs specs, JNITrajectoryParams params, long ptr) {
+        this.specs = specs;
+        this.params = params;
+        _nativePtr = ptr;
+    }
 
     private native void _destroy();
     @Override
@@ -121,19 +126,19 @@ public class JNIBasicTrajectory implements JNITrajectory {
     private native long _mirrorLeftRight();
     @Override
     public JNITrajectory mirrorLeftRight() {
-        return null;
+        return new JNIBasicTrajectory(specs, params, _mirrorLeftRight());
     }
 
     private native long _mirrorFrontBack();
     @Override
     public JNITrajectory mirrorFrontBack() {
-        return null;
+        return new JNIBasicTrajectory(specs, params, _mirrorFrontBack());
     }
 
     private native long _retrace();
     @Override
     public JNITrajectory retrace() {
-        return null;
+        return new JNIBasicTrajectory(specs, params, _retrace());
     }
 
 }

@@ -62,7 +62,7 @@ public class DebugTests {
         JNIBasicTrajectory traj = new JNIBasicTrajectory(specs, params);
         System.out.println(traj.totalTime());
         System.out.println(traj.get(0.01).getVelocity());
-        JFrame f = Grapher.graphTrajectory(traj, 0.001);
+        JFrame f = Grapher.graphTrajectory(traj, 0.001, true);
         traj.close();
         f.setVisible(true);
 	}

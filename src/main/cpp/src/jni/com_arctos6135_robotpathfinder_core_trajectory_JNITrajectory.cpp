@@ -61,3 +61,10 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBa
         env->SetObjectArrayElement(*arr, i, m);
     }
 }
+
+JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1get(JNIEnv *env, jobject obj, jdouble t) {
+    auto m = rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj)->get(t);
+    jmethodID constructor_mid = env->GetMethodID(env->GetObjectClass(obj), "<init>", "(DDDDDDZ)V");
+
+    return env->NewObject(env->GetObjectClass(obj), constructor_mid, m.dist, m.vel, m.accel, m.heading, m.time, m.init_facing, m.backwards);
+}

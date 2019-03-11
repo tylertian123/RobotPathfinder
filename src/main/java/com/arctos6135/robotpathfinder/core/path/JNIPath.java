@@ -1,17 +1,11 @@
 package com.arctos6135.robotpathfinder.core.path;
 
-import com.arctos6135.robotpathfinder.core.GlobalLibraryLoader;
+import com.arctos6135.robotpathfinder.core.JNIObject;
 import com.arctos6135.robotpathfinder.core.JNIWaypoint;
 import com.arctos6135.robotpathfinder.math.Vec2D;
 import com.arctos6135.robotpathfinder.util.Pair;
 
-public class JNIPath implements AutoCloseable {
-
-    static {
-        GlobalLibraryLoader.load();
-    }
-
-    private long _nativePtr;
+public class JNIPath extends JNIObject {
 
     private native void _construct(JNIWaypoint[] waypoints, double alpha, int type);
 
@@ -35,18 +29,7 @@ public class JNIPath implements AutoCloseable {
         _nativePtr = ptr;
     }
     
-    private native void _destroy();
-    public void free() {
-        _destroy();
-    }
-    @Override
-    public void finalize() {
-        _destroy();
-    }
-    @Override
-    public void close() {
-        _destroy();
-    }
+    protected native void _destroy();
 
     private native void _setBaseRadius(double radius);
     private native void _setBackwards(boolean backwards);

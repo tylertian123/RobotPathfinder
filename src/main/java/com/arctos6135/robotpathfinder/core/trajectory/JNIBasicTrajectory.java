@@ -4,7 +4,7 @@ import com.arctos6135.robotpathfinder.core.GlobalLibraryLoader;
 import com.arctos6135.robotpathfinder.core.JNITrajectoryParams;
 import com.arctos6135.robotpathfinder.core.JNIWaypoint;
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
-import com.arctos6135.robotpathfinder.core.path.Path;
+import com.arctos6135.robotpathfinder.core.path.JNIPath;
 
 public class JNIBasicTrajectory implements JNITrajectory, AutoCloseable {
 
@@ -55,19 +55,19 @@ public class JNIBasicTrajectory implements JNITrajectory, AutoCloseable {
     }
 
     @Override
-    public Moment[] getMoments() {
-        return null;
-    }
+    public native TankDriveMoment[] getMoments();
 
+    private native TankDriveMoment _get(double t);
     @Override
     public Moment get(double t) {
-        return null;
+        if(Double.isNaN(t) || !Double.isFinite(t)) {
+            throw new IllegalArgumentException("Time must be finite and not NaN");
+        }
+        return _get(t);
     }
 
     @Override
-    public Path getPath() {
-        return null;
-    }
+    public native JNIPath getPath();
 
     @Override
     public double totalTime() {

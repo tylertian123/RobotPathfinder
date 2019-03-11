@@ -2,7 +2,7 @@ package com.arctos6135.robotpathfinder.core.trajectory;
 
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.JNITrajectoryParams;
-import com.arctos6135.robotpathfinder.core.path.Path;
+import com.arctos6135.robotpathfinder.core.path.JNIPath;
 
 /**
  * A class that represents a trajectory (motion profile).
@@ -41,7 +41,7 @@ public interface JNITrajectory {
 	 * Retrieves the path of this trajectory.
 	 * @return The path of the trajectory
 	 */
-	public Path getPath();
+	public JNIPath getPath();
 	/**
 	 * Retrieves the total amount of time it would take for a robot to finish this trajectory.
 	 * @return The total time for the robot to finish the trajectory

@@ -6,7 +6,7 @@ import com.arctos6135.robotpathfinder.core.JNIWaypoint;
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.path.JNIPath;
 
-public class JNIBasicTrajectory implements JNITrajectory {
+public class JNIBasicTrajectory extends JNITrajectory {
 
     static {
         GlobalLibraryLoader.load();
@@ -52,24 +52,24 @@ public class JNIBasicTrajectory implements JNITrajectory {
         _nativePtr = ptr;
     }
 
-    private native void _destroy();
+    protected native void _destroy();
     @Override
     public void free() {
+        super.free();
         momentsCache = null;
         pathCache = null;
-        _destroy();
     }
     @Override
     public void finalize() {
+        super.finalize();
         momentsCache = null;
         pathCache = null;
-        _destroy();
     }
     @Override
     public void close() {
+        super.close();
         momentsCache = null;
         pathCache = null;
-        _destroy();
     }
 
     private native void _getMoments();

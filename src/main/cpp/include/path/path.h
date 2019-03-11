@@ -56,9 +56,12 @@ namespace rpf {
             }
         }
 
-        // TODO: INLINE ALL THESE GETTERS!
-        void set_base(double);
-        double get_base() const;
+        inline void set_base(double base_radius) {
+            this->base_radius = base_radius;
+        }
+        inline double get_base() const {
+            return base_radius;
+        }
 
         Vec2D at(double) const;
         Vec2D deriv_at(double) const;
@@ -66,17 +69,32 @@ namespace rpf {
         std::pair<Vec2D, Vec2D> wheels_at(double) const;
         
         double compute_len(int);
-        double get_len() const;
+
+        inline double get_len() const {
+            return total_len;
+        }
 
         double s2t(double) const;
         double t2s(double) const;
 
-        double get_alpha() const;
-        PathType get_type() const;
-        std::vector<Waypoint>& get_waypoints();
-        const std::vector<Waypoint>& get_waypoints() const;
-        bool get_backwards() const;
-        void set_backwards(bool);
+        inline double get_alpha() const {
+            return alpha;
+        }
+        inline PathType get_type() const {
+            return type;
+        }
+        inline std::vector<Waypoint>& get_waypoints() {
+            return waypoints;
+        }
+        inline const std::vector<Waypoint>& get_waypoints() const {
+            return waypoints;
+        }
+        inline bool get_backwards() const {
+            return backwards;
+        }
+        inline void set_backwards(bool backwards) {
+            this->backwards = backwards;
+        }
 
         std::shared_ptr<Path> mirror_fb() const;
         std::shared_ptr<Path> mirror_lr() const;

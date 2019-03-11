@@ -5,12 +5,6 @@
 #include <stdexcept>
 
 namespace rpf {
-    void Path::set_base(double base_radius) {
-        this->base_radius = base_radius;
-    }
-    double Path::get_base() const {
-        return base_radius;
-    }
 
     Vec2D Path::at(double t) const {
         if(t >= 1) {
@@ -66,9 +60,6 @@ namespace rpf {
             s2t_table.push_back(std::pair<double, double>(total_len, i * dt));
             last = current;
         }
-        return total_len;
-    }
-    double Path::get_len() const {
         return total_len;
     }
 
@@ -152,25 +143,6 @@ namespace rpf {
                 end = mid;
             }
         }
-    }
-
-    double Path::get_alpha() const {
-        return alpha;
-    }
-    PathType Path::get_type() const {
-        return type;
-    }
-    std::vector<Waypoint>& Path::get_waypoints() {
-        return waypoints;
-    }
-    const std::vector<Waypoint>& Path::get_waypoints() const {
-        return waypoints;
-    }
-    bool Path::get_backwards() const {
-        return backwards;
-    }
-    void Path::set_backwards(bool backwards) {
-        this->backwards = backwards;
     }
 
     std::shared_ptr<Path> Path::mirror_lr() const {

@@ -1,39 +1,39 @@
 #include "trajectory/basictrajectory.h"
 
 namespace rpf {
-    inline std::shared_ptr<Path> BasicTrajectory::get_path() {
+    std::shared_ptr<Path> BasicTrajectory::get_path() {
         return path;
     }
-    inline std::shared_ptr<const Path> BasicTrajectory::get_path() const {
+    std::shared_ptr<const Path> BasicTrajectory::get_path() const {
         return path;
     }
-    inline std::vector<BasicMoment>& BasicTrajectory::get_moments() {
+    std::vector<BasicMoment>& BasicTrajectory::get_moments() {
         return moments;
     }
-    inline const std::vector<BasicMoment>& BasicTrajectory::get_moments() const {
+    const std::vector<BasicMoment>& BasicTrajectory::get_moments() const {
         return moments;
     }
-    inline double BasicTrajectory::get_init_facing() const {
+    double BasicTrajectory::get_init_facing() const {
         return init_facing;
     }
 
-    inline RobotSpecs& BasicTrajectory::get_specs() {
+    RobotSpecs& BasicTrajectory::get_specs() {
         return specs;
     }
-    inline const RobotSpecs& BasicTrajectory::get_specs() const {
+    const RobotSpecs& BasicTrajectory::get_specs() const {
         return specs;
     }
-    inline TrajectoryParams& BasicTrajectory::get_params() {
+    TrajectoryParams& BasicTrajectory::get_params() {
         return params;
     }
-    inline const TrajectoryParams& BasicTrajectory::get_params() const {
+    const TrajectoryParams& BasicTrajectory::get_params() const {
         return params;
     }
 
-    inline double BasicTrajectory::total_time() const {
+    double BasicTrajectory::total_time() const {
         return moments[moments.size() - 1].time;
     }
-    inline bool BasicTrajectory::is_tank() const {
+    bool BasicTrajectory::is_tank() const {
         return params.is_tank;
     }
 

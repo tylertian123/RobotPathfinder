@@ -23,6 +23,30 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBa
 JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1destroy
   (JNIEnv *, jobject);
 
+/*
+ * Class:     com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory
+ * Method:    _getMoments
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1getMoments
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory
+ * Method:    _get
+ * Signature: (D)Lcom/arctos6135/robotpathfinder/core/trajectory/BasicMoment;
+ */
+JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1get
+  (JNIEnv *, jobject, jdouble);
+
+/*
+ * Class:     com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory
+ * Method:    _getPath
+ * Signature: ()Lcom/arctos6135/robotpathfinder/core/path/JNIPath;
+ */
+JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1getPath
+  (JNIEnv *, jobject);
+
 #ifdef __cplusplus
 }
 #endif

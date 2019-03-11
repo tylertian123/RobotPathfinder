@@ -44,3 +44,7 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBa
         env->ThrowNew(exclass, "This instance of BasicTrajectory was not found in the instances list");
     }
 }
+
+JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1getMoments(JNIEnv *env, jobject obj) {
+    auto &moments = rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj)->get_moments();
+}

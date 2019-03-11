@@ -61,12 +61,12 @@ public class JNIBasicTrajectory implements JNITrajectory {
         _destroy();
     }
 
-    private native BasicMoment[] _getMoments();
+    private native void _getMoments();
     protected BasicMoment[] momentsCache;
     @Override
     public BasicMoment[] getMoments() {
         if(momentsCache == null) {
-            momentsCache = _getMoments();
+            _getMoments();
         }
         return momentsCache;
     }

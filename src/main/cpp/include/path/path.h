@@ -72,7 +72,8 @@ namespace rpf {
 
         double get_alpha() const;
         PathType get_type() const;
-        std::vector<Waypoint> get_waypoints() const;
+        std::vector<Waypoint>& get_waypoints();
+        const std::vector<Waypoint>& get_waypoints() const;
         bool get_backwards() const;
         void set_backwards(bool);
 

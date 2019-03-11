@@ -160,7 +160,10 @@ namespace rpf {
     PathType Path::get_type() const {
         return type;
     }
-    std::vector<Waypoint> Path::get_waypoints() const {
+    std::vector<Waypoint>& Path::get_waypoints() {
+        return waypoints;
+    }
+    const std::vector<Waypoint>& Path::get_waypoints() const {
         return waypoints;
     }
     bool Path::get_backwards() const {

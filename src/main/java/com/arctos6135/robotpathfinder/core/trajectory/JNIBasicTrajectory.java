@@ -12,6 +12,9 @@ public class JNIBasicTrajectory implements JNITrajectory {
         GlobalLibraryLoader.load();
     }
 
+    RobotSpecs specs;
+    JNITrajectoryParams params;
+
     private long _nativePtr;
 
     private native void _construct(double maxV, double maxA, double baseWidth, boolean isTank, JNIWaypoint[] waypoints, 
@@ -36,6 +39,9 @@ public class JNIBasicTrajectory implements JNITrajectory {
         if(params.segmentCount < 1) {
             throw new IllegalArgumentException("Segment count must be greater than zero");
         }
+
+        this.specs = specs;
+        this.params = params;
 
         _construct(specs.getMaxVelocity(), specs.getMaxAcceleration(), specs.getBaseWidth(), params.isTank, params.waypoints, 
                 params.alpha, params.segmentCount, params.pathType.getJNIID());
@@ -66,6 +72,7 @@ public class JNIBasicTrajectory implements JNITrajectory {
     @Override
     public BasicMoment[] getMoments() {
         if(momentsCache == null) {
+            momentsCache = new BasicMoment[params.segmentCount];
             _getMoments();
         }
         return momentsCache;
@@ -105,12 +112,12 @@ public class JNIBasicTrajectory implements JNITrajectory {
 
     @Override
     public RobotSpecs getRobotSpecs() {
-        return null;
+        return specs;
     }
 
     @Override
     public JNITrajectoryParams getGenerationParams() {
-        return null;
+        return params;
     }
 
     @Override

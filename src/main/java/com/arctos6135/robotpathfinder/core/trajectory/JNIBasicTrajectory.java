@@ -54,8 +54,15 @@ public class JNIBasicTrajectory implements JNITrajectory, AutoCloseable {
         _destroy();
     }
 
+    private native TankDriveMoment[] _getMoments();
+    protected TankDriveMoment[] momentsCache;
     @Override
-    public native TankDriveMoment[] getMoments();
+    public TankDriveMoment[] getMoments() {
+        if(momentsCache == null) {
+            momentsCache = _getMoments();
+        }
+        return momentsCache;
+    }
 
     private native TankDriveMoment _get(double t);
     @Override
@@ -66,8 +73,15 @@ public class JNIBasicTrajectory implements JNITrajectory, AutoCloseable {
         return _get(t);
     }
 
+    private native JNIPath _getPath();
+    protected JNIPath pathCache;
     @Override
-    public native JNIPath getPath();
+    public JNIPath getPath() {
+        if(pathCache == null) {
+            pathCache = _getPath();
+        }
+        return pathCache;
+    }
 
     @Override
     public double totalTime() {

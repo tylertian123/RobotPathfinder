@@ -51,11 +51,11 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBa
     auto &moments = rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj)->get_moments();
     
     jclass clazz = env->GetObjectClass(obj);
-    jfieldID fid = env->GetFieldID(clazz, "momentsCache", "[Lcom/arctos6135/robotpathfinder/core/BasicMoment;");
+    jfieldID fid = env->GetFieldID(clazz, "momentsCache", "[Lcom/arctos6135/robotpathfinder/core/trajectory/BasicMoment;");
     jobject objf = env->GetObjectField(obj, fid);
     jobjectArray *arr = reinterpret_cast<jobjectArray *>(&objf);
 
-    jclass mclass = env->FindClass("com/arctos6135/robotpathfinder/core/BasicMoment");
+    jclass mclass = env->FindClass("com/arctos6135/robotpathfinder/core/trajectory/BasicMoment");
     jmethodID constructor_mid = env->GetMethodID(mclass, "<init>", "(DDDDDDZ)V");
     
     for(size_t i = 0; i < moments.size(); i ++) {
@@ -67,9 +67,10 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBa
 
 JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1get(JNIEnv *env, jobject obj, jdouble t) {
     auto m = rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj)->get(t);
-    jmethodID constructor_mid = env->GetMethodID(env->GetObjectClass(obj), "<init>", "(DDDDDDZ)V");
+    jclass mclass = env->FindClass("com/arctos6135/robotpathfinder/core/trajectory/BasicMoment");
+    jmethodID constructor_mid = env->GetMethodID(mclass, "<init>", "(DDDDDDZ)V");
 
-    return env->NewObject(env->GetObjectClass(obj), constructor_mid, m.dist, m.vel, m.accel, m.heading, m.time, m.init_facing, m.backwards);
+    return env->NewObject(mclass, constructor_mid, m.dist, m.vel, m.accel, m.heading, m.time, m.init_facing, m.backwards);
 }
 
 JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1getPath(JNIEnv *env, jobject obj) {

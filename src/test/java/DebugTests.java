@@ -13,6 +13,7 @@ import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.JNIBasicTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.JNITankDriveTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
+import com.arctos6135.robotpathfinder.core.trajectory.TrajectoryGenerator;
 import com.arctos6135.robotpathfinder.tools.Grapher;
 
 public class DebugTests {
@@ -96,7 +97,7 @@ public class DebugTests {
         f.setVisible(true);
         f1.setVisible(true);
     }
-	public static void main(String[] args) throws Exception {
+    public static void test23() {
         RobotSpecs robotSpecs = new RobotSpecs(5.0, 3.5, 2.0);
         TrajectoryParams params = new TrajectoryParams();
         JNITrajectoryParams jniParams = new JNITrajectoryParams();
@@ -124,5 +125,12 @@ public class DebugTests {
 
         System.out.println("Native\t" + (nanos2 - nanos1) / 1000 + "us");
         System.out.println("Java\t" + (nanos3 - nanos2) / 1000 + "us");
+    }
+	public static void main(String[] args) throws Exception {
+        RobotSpecs specs = new RobotSpecs(5.0, 3.5, 2.0);
+        var traj = TrajectoryGenerator.generateRotationTank(specs, Math.PI);
+        JFrame f = Grapher.graphTrajectory(traj, 0.001, true);
+        f.setVisible(true);
+        traj.close();
 	}
 }

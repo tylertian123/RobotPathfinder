@@ -56,49 +56,8 @@ final public class TrajectoryGenerator {
 		return distance >= 0 ? new JNITankDriveTrajectory(specs, params) : new JNITankDriveTrajectory(specs, params).mirrorFrontBack();
     }
 
-    
-    // /**
-    //  * Generates a {@link JNITankDriveTrajectory} that represents a rotation.
-    //  * <p>
-    //  * <em>Note: The resulting trajectory will not have an underlying path or generation parameters. Therefore, attempting to use
-    //  * methods such as {@link com.arctos6135.robotpathfinder.core.trajectory.Trajectory#mirrorLeftRight() mirrorLeftRight()}, 
-    //  * {@link com.arctos6135.robotpathfinder.core.trajectory.Trajectory#mirrorFrontBack() mirrorFrontBack()}
-    //  * or {@link com.arctos6135.robotpathfinder.core.trajectory.Trajectory#retrace() retrace()} will result in an error.</em>
-    //  * </p>
-    //  * @param specs The specifications of the robot
-    //  * @param angle The angle, in radians, to turn for. Positive angles are counter-clockwise.
-    //  * @return The generated trajectory
-    //  */
-    // public static JNITankDriveTrajectory generateRotationTank(RobotSpecs specs, double angle) {
-    //     double distPerRadian = specs.getBaseWidth() / 2;
-        
-    //     JNITankDriveTrajectory raw = generateStraightTank(specs, Math.abs(angle) * distPerRadian);
-    //     raw.path = null;
-    //     raw.params = null;
-
-    //     for(int i = 0; i < raw.moments.length; i ++) {
-    //         if(angle > 0) {
-    //             // Negate the position, velocity and acceleration of a side
-    //             raw.moments[i].setLeftPosition(-raw.moments[i].getLeftPosition());
-    //             raw.moments[i].setLeftVelocity(-raw.moments[i].getLeftVelocity());
-    //             raw.moments[i].setLeftAcceleration(-raw.moments[i].getLeftAcceleration());
-    //             // Use the unchanged right side position and divide it by the distance per radian to get the angle offset
-    //             // Add it to the initial facing to get the heading
-    //             double heading = MathUtils.restrictAngle(raw.moments[i].getRightPosition() / distPerRadian + raw.moments[i].getInitialFacing());
-    //             raw.moments[i].setHeading(heading);
-    //             raw.headingVectors[i] = new Vec2D(Math.cos(heading), Math.sin(heading));
-    //         }
-    //         else {
-    //             raw.moments[i].setRightPosition(-raw.moments[i].getRightPosition());
-    //             raw.moments[i].setRightVelocity(-raw.moments[i].getRightVelocity());
-    //             raw.moments[i].setRightAcceleration(-raw.moments[i].getRightAcceleration());
-    //             // Negate it this time since turning to the right reduces the angle
-    //             double heading = MathUtils.restrictAngle(-raw.moments[i].getLeftPosition() / distPerRadian + raw.moments[i].getInitialFacing());
-    //             raw.moments[i].setHeading(heading);
-    //             raw.headingVectors[i] = new Vec2D(Math.cos(heading), Math.sin(heading));
-    //         }
-    //     }
-
-    //     return raw;
-    // }
+    private static native JNITankDriveTrajectory _generateRotationTank(double maxV, double maxA, double baseWidth, double angle);
+    public static JNITankDriveTrajectory generateRotationTank(RobotSpecs specs, double angle) {
+        return _generateRotationTank(specs.getMaxVelocity(), specs.getMaxAcceleration(), specs.getBaseWidth(), angle);
+    }
 }

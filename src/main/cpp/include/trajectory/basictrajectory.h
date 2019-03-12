@@ -210,6 +210,8 @@ namespace rpf {
         std::shared_ptr<BasicTrajectory> mirror_fb() const;
         std::shared_ptr<BasicTrajectory> retrace() const;
 
+        friend class TankDriveTrajectory;
+
     protected:
         
         BasicTrajectory(std::shared_ptr<Path> path, std::vector<BasicMoment> &&moments, bool backwards, RobotSpecs specs, TrajectoryParams params)

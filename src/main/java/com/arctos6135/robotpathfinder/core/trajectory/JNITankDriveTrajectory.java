@@ -5,7 +5,7 @@ import com.arctos6135.robotpathfinder.core.JNITrajectoryParams;
 import com.arctos6135.robotpathfinder.core.JNIWaypoint;
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 
-public class JNIBasicTrajectory extends JNITrajectory {
+public class JNITankDriveTrajectory extends JNITrajectory {
 
     static {
         GlobalLibraryLoader.load();
@@ -14,7 +14,7 @@ public class JNIBasicTrajectory extends JNITrajectory {
     private native void _construct(double maxV, double maxA, double baseWidth, boolean isTank, JNIWaypoint[] waypoints, 
             double alpha, int segmentCount, int type);
 
-    public JNIBasicTrajectory(RobotSpecs specs, JNITrajectoryParams params) {
+    public JNITankDriveTrajectory(RobotSpecs specs, JNITrajectoryParams params) {
         if(Double.isNaN(specs.getMaxVelocity())) {
             throw new IllegalArgumentException("Max velocity cannot be NaN");
         }
@@ -33,6 +33,9 @@ public class JNIBasicTrajectory extends JNITrajectory {
         if(params.segmentCount < 1) {
             throw new IllegalArgumentException("Segment count must be greater than zero");
         }
+        if(!params.isTank) {
+            throw new IllegalArgumentException("Params.isTank must be set to true");
+        }
 
         this.specs = specs;
         this.params = params;
@@ -40,7 +43,7 @@ public class JNIBasicTrajectory extends JNITrajectory {
         _construct(specs.getMaxVelocity(), specs.getMaxAcceleration(), specs.getBaseWidth(), params.isTank, params.waypoints, 
                 params.alpha, params.segmentCount, params.pathType.getJNIID());
     }
-    public JNIBasicTrajectory(RobotSpecs specs, JNITrajectoryParams params, long ptr) {
+    public JNITankDriveTrajectory(RobotSpecs specs, JNITrajectoryParams params, long ptr) {
         this.specs = specs;
         this.params = params;
         _nativePtr = ptr;
@@ -49,18 +52,19 @@ public class JNIBasicTrajectory extends JNITrajectory {
     @Override
     protected native void _destroy();
 
+
     @Override
     protected native void _getMoments();
     @Override
-    public BasicMoment[] getMoments() {
-        return (BasicMoment[]) super.getMoments();
+    public TankDriveMoment[] getMoments() {
+        return (TankDriveMoment[]) super.getMoments();
     }
 
     @Override
-    protected native BasicMoment _get(double t);
+    protected native TankDriveMoment _get(double t);
     @Override
-    public BasicMoment get(double t) {
-        return (BasicMoment) super.get(t);
+    public TankDriveMoment get(double t) {
+        return (TankDriveMoment) super.get(t);
     }
 
     @Override
@@ -71,20 +75,19 @@ public class JNIBasicTrajectory extends JNITrajectory {
 
     private native long _mirrorLeftRight();
     @Override
-    public JNIBasicTrajectory mirrorLeftRight() {
-        return new JNIBasicTrajectory(specs, params, _mirrorLeftRight());
+    public JNITankDriveTrajectory mirrorLeftRight() {
+        return new JNITankDriveTrajectory(specs, params, _mirrorLeftRight());
     }
 
     private native long _mirrorFrontBack();
     @Override
-    public JNIBasicTrajectory mirrorFrontBack() {
-        return new JNIBasicTrajectory(specs, params, _mirrorFrontBack());
+    public JNITankDriveTrajectory mirrorFrontBack() {
+        return new JNITankDriveTrajectory(specs, params, _mirrorFrontBack());
     }
 
     private native long _retrace();
     @Override
-    public JNIBasicTrajectory retrace() {
-        return new JNIBasicTrajectory(specs, params, _retrace());
+    public JNITankDriveTrajectory retrace() {
+        return new JNITankDriveTrajectory(specs, params, _retrace());
     }
-
 }

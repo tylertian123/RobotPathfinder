@@ -33,12 +33,6 @@ public abstract class JNITrajectory extends JNIObject {
         clearMomentsCache();
     }
     @Override
-    public void finalize() {
-        super.finalize();
-        clearPathCache();
-        clearMomentsCache();
-    }
-    @Override
     public void close() {
         super.close();
         clearPathCache();

@@ -17,10 +17,6 @@ public abstract class JNIObject implements AutoCloseable {
         _destroy();
     }
     @Override
-    public void finalize() {
-        _destroy();
-    }
-    @Override
     public void close() {
         _destroy();
     }

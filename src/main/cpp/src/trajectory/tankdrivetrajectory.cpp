@@ -59,4 +59,17 @@ namespace rpf {
 
         return std::shared_ptr<TankDriveTrajectory>(new TankDriveTrajectory(p, std::move(m), backwards, specs, params));
     }
+    std::shared_ptr<TankDriveTrajectory> TankDriveTrajectory::mirror_fb() const {
+        auto p = path->mirror_fb();
+        double ref = rpf::rangle(params.waypoints[0].heading + rpf::pi / 2);
+
+        std::vector<TankDriveMoment> m;
+        m.reserve(moments.size());
+        for(auto moment : moments) {
+            TankDriveMoment nm(-moment.l_dist, -moment.r_dist, -moment.l_vel, -moment.r_vel, -moment.l_accel, -moment.r_accel,
+                    rpf::mangle(moment.heading, ref), moment.time, moment.init_facing);
+            nm.backwards = !backwards;
+        }
+        return std::shared_ptr<TankDriveTrajectory>(new TankDriveTrajectory(p, std::move(m), !backwards, specs, params));
+    }
 }

@@ -22,12 +22,12 @@ namespace rpf {
             if(params.is_tank) {
                 path->set_base(specs.base_width / 2);
             }
-            double ds = 1.0 / (params.seg_count - 1);
-            double total = path->compute_len(params.seg_count);
-            double dpi = total / (params.seg_count - 1);
+            double ds = 1.0 / (params.sample_count - 1);
+            double total = path->compute_len(params.sample_count);
+            double dpi = total / (params.sample_count - 1);
             
             std::vector<double> mv;
-            mv.reserve(params.seg_count);
+            mv.reserve(params.sample_count);
             std::list<std::pair<double, double>> constraints;
 
             double wpdt = 1.0 / (waypoints.size() - 1);
@@ -38,13 +38,13 @@ namespace rpf {
             }
             
             std::vector<double> headings;
-            headings.reserve(params.seg_count);
-            patht.reserve(params.seg_count);
-            pathr.reserve(params.seg_count);
-            moments.reserve(params.seg_count);
+            headings.reserve(params.sample_count);
+            patht.reserve(params.sample_count);
+            pathr.reserve(params.sample_count);
+            moments.reserve(params.sample_count);
 
             if(params.is_tank) {
-                for(int i = 0; i < params.seg_count; i ++) {
+                for(int i = 0; i < params.sample_count; i ++) {
                     double t = path->s2t(ds * i);
                     patht.push_back(t);
                     
@@ -59,7 +59,7 @@ namespace rpf {
                 }
             }
             else {
-                for(int i = 0; i < params.seg_count; i ++) {
+                for(int i = 0; i < params.sample_count; i ++) {
                     mv.push_back(specs.max_v);
 
                     double t = path->s2t(ds * i);
@@ -75,10 +75,10 @@ namespace rpf {
                 moments.push_back(BasicMoment(0, 0, 0, headings[0]));
             }
 
-            std::vector<double> time_diff(params.seg_count - 1, std::numeric_limits<double>::quiet_NaN());
+            std::vector<double> time_diff(params.sample_count - 1, std::numeric_limits<double>::quiet_NaN());
             std::unordered_set<int> constrained;
 
-            for(int i = 1; i < params.seg_count; i ++) {
+            for(int i = 1; i < params.sample_count; i ++) {
                 double dist = i * dpi;
 
                 if(!constraints.empty() && dist >= constraints.front().first) {

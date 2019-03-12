@@ -10,7 +10,7 @@ std::vector<std::shared_ptr<rpf::TankDriveTrajectory>> ttinstances;
 extern std::vector<std::shared_ptr<rpf::Path>> pinstances;
 
 JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNITankDriveTrajectory__1construct
-        (JNIEnv *env, jobject obj, jdouble maxv, jdouble maxa, jdouble base_width, jboolean is_tank, jobjectArray waypoints, jdouble alpha, jint segment_count, jint type) {
+        (JNIEnv *env, jobject obj, jdouble maxv, jdouble maxa, jdouble base_width, jboolean is_tank, jobjectArray waypoints, jdouble alpha, jint sample_count, jint type) {
     std::vector<rpf::Waypoint> wp;
     wp.reserve(env->GetArrayLength(waypoints));
     // Translate the waypoints into C++ ones
@@ -24,7 +24,7 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNITa
     rpf::TrajectoryParams params;
     params.waypoints = std::move(wp);
     params.is_tank = is_tank;
-    params.seg_count = segment_count;
+    params.sample_count = sample_count;
     params.type = static_cast<rpf::PathType>(type);
     params.alpha = alpha;
 

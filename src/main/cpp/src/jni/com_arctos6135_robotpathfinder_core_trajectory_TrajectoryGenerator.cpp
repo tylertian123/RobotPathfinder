@@ -18,7 +18,7 @@ JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_Tr
     rpf::TrajectoryParams params;
     params.is_tank = true;
     params.type = rpf::PathType::BEZIER;
-    params.seg_count = 100;
+    params.sample_count = 100;
     params.waypoints.push_back(rpf::Waypoint(0, 0, rpf::pi / 2));
     params.waypoints.push_back(rpf::Waypoint(0, std::abs(distance), rpf::pi / 2));
     params.alpha = std::abs(distance) / 2;

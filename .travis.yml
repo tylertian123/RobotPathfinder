@@ -19,7 +19,6 @@ matrix:
             - g++-7
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
-    - jdk: oraclejdk11
 
 install: 
   # chmod the wrapper to be executable

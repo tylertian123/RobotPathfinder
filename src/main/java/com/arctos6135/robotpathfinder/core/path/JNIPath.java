@@ -1,7 +1,7 @@
 package com.arctos6135.robotpathfinder.core.path;
 
-import com.arctos6135.robotpathfinder.core.JNIObject;
 import com.arctos6135.robotpathfinder.core.JNIWaypoint;
+import com.arctos6135.robotpathfinder.core.lifecycle.JNIObject;
 import com.arctos6135.robotpathfinder.math.Vec2D;
 import com.arctos6135.robotpathfinder.util.Pair;
 

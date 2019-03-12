@@ -1,8 +1,8 @@
 package com.arctos6135.robotpathfinder.core.trajectory;
 
-import com.arctos6135.robotpathfinder.core.RobotSpecs;
-import com.arctos6135.robotpathfinder.core.JNIObject;
 import com.arctos6135.robotpathfinder.core.JNITrajectoryParams;
+import com.arctos6135.robotpathfinder.core.RobotSpecs;
+import com.arctos6135.robotpathfinder.core.lifecycle.JNIObject;
 import com.arctos6135.robotpathfinder.core.path.JNIPath;
 
 /**

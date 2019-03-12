@@ -1,4 +1,6 @@
-package com.arctos6135.robotpathfinder.core;
+package com.arctos6135.robotpathfinder.core.lifecycle;
+
+import com.arctos6135.robotpathfinder.core.GlobalLibraryLoader;
 
 public abstract class JNIObject implements AutoCloseable {
 

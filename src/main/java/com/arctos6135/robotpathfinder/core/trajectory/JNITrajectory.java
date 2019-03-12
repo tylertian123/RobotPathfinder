@@ -3,7 +3,7 @@ package com.arctos6135.robotpathfinder.core.trajectory;
 import com.arctos6135.robotpathfinder.core.TrajectoryParams;
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.lifecycle.JNIObject;
-import com.arctos6135.robotpathfinder.core.path.JNIPath;
+import com.arctos6135.robotpathfinder.core.path.Path;
 
 /**
  * A class that represents a trajectory (motion profile).
@@ -56,10 +56,10 @@ public abstract class JNITrajectory extends JNIObject {
 	
 	// Native
 	abstract protected long _getPath();
-	protected JNIPath pathCache;
-    public JNIPath getPath() {
+	protected Path pathCache;
+    public Path getPath() {
         if(pathCache == null) {
-            pathCache = new JNIPath(params.waypoints, params.alpha, params.pathType, _getPath());
+            pathCache = new Path(params.waypoints, params.alpha, params.pathType, _getPath());
             pathCache.setBaseRadius(specs.getBaseWidth() / 2);
             pathCache._updateWaypoints();
         }

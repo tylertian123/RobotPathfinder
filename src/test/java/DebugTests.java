@@ -4,10 +4,10 @@ import java.io.IOException;
 
 import javax.swing.JFrame;
 
+import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.TrajectoryParams;
 import com.arctos6135.robotpathfinder.core.Waypoint;
-import com.arctos6135.robotpathfinder.core.RobotSpecs;
-import com.arctos6135.robotpathfinder.core.path.JNIPath;
+import com.arctos6135.robotpathfinder.core.path.Path;
 import com.arctos6135.robotpathfinder.core.path.PathType;
 import com.arctos6135.robotpathfinder.core.trajectory.JNIBasicTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.JNITankDriveTrajectory;
@@ -71,7 +71,7 @@ public class DebugTests {
 
         for(int i = 0; i < 800000; i ++) {
             @SuppressWarnings("unused")
-            JNIPath path = new JNIPath(new Waypoint[] {
+            Path path = new Path(new Waypoint[] {
                 new Waypoint(0, 0, Math.PI / 2),
                 new Waypoint(0, 10, Math.PI / 2),
             }, 2.0, PathType.QUINTIC_HERMITE);

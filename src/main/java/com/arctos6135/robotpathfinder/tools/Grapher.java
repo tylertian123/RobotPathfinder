@@ -10,7 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import com.arctos6135.robotpathfinder.core.Waypoint;
-import com.arctos6135.robotpathfinder.core.path.JNIPath;
+import com.arctos6135.robotpathfinder.core.path.Path;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicMoment;
 import com.arctos6135.robotpathfinder.core.trajectory.JNIBasicTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
@@ -216,7 +216,7 @@ public final class Grapher {
 	}
 	
 	/**
-	 * Graphs a {@link JNIPath} in a {@link JFrame}.
+	 * Graphs a {@link Path} in a {@link JFrame}.
 	 * <p>
 	 * In addition to graphing, this method also sets the {@link JFrame}'s default close operation to be
 	 * {@link JFrame#DISPOSE_ON_CLOSE}, disables resizing and resizes it to show the entire path. It is
@@ -228,7 +228,7 @@ public final class Grapher {
 	 * @param dt The time increment between samples
 	 * @return The graphed path in a {@link JFrame}
 	 */
-	public static JFrame graphPath(JNIPath path, double dt) {
+	public static JFrame graphPath(Path path, double dt) {
 		// Divide and round up to get the number of samples
 		// Add 1 for the last sample (see below)
 		int elemCount = (int) Math.ceil(1.0 / dt) + 1;

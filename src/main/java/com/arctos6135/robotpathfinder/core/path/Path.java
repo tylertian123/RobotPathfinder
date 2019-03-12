@@ -6,7 +6,7 @@ import com.arctos6135.robotpathfinder.core.lifecycle.JNIObject;
 import com.arctos6135.robotpathfinder.math.Vec2D;
 import com.arctos6135.robotpathfinder.util.Pair;
 
-public class JNIPath extends JNIObject {
+public class Path extends JNIObject {
 
     static {
         GlobalLifeCycleManager.initialize();
@@ -17,7 +17,7 @@ public class JNIPath extends JNIObject {
     protected PathType type;
     protected Waypoint[] waypoints;
     protected double alpha;
-    public JNIPath(Waypoint[] waypoints, double alpha, PathType type) {
+    public Path(Waypoint[] waypoints, double alpha, PathType type) {
         this.type = type;
         this.waypoints = waypoints;
         this.alpha = alpha;
@@ -28,7 +28,7 @@ public class JNIPath extends JNIObject {
         _construct(waypoints, alpha, type.getJNIID());
         GlobalLifeCycleManager.register(this);
     }
-    public JNIPath(Waypoint[] waypoints, double alpha, PathType type, long ptr) {
+    public Path(Waypoint[] waypoints, double alpha, PathType type, long ptr) {
         this.waypoints = waypoints;
         this.alpha = alpha;
         this.type = type;
@@ -103,24 +103,24 @@ public class JNIPath extends JNIObject {
     private native long _retrace();
 
     public native void _updateWaypoints();
-    public JNIPath mirrorLeftRight() {
-        JNIPath p = new JNIPath(waypoints, alpha, type, _mirrorLeftRight());
+    public Path mirrorLeftRight() {
+        Path p = new Path(waypoints, alpha, type, _mirrorLeftRight());
         p.backwards = backwards;
         p.radius = radius;
         p.waypoints = new Waypoint[waypoints.length];
         p._updateWaypoints();
         return p;
     }
-    public JNIPath mirrorFrontBack() {
-        JNIPath p = new JNIPath(waypoints, alpha, type, _mirrorFrontBack());
+    public Path mirrorFrontBack() {
+        Path p = new Path(waypoints, alpha, type, _mirrorFrontBack());
         p.backwards = !backwards;
         p.radius = radius;
         p.waypoints = new Waypoint[waypoints.length];
         p._updateWaypoints();
         return p;
     }
-    public JNIPath retrace() {
-        JNIPath p = new JNIPath(waypoints, alpha, type, _retrace());
+    public Path retrace() {
+        Path p = new Path(waypoints, alpha, type, _retrace());
         p.backwards = !backwards;
         p.radius = radius;
         p.waypoints = new Waypoint[waypoints.length];

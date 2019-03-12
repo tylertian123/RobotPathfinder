@@ -92,14 +92,24 @@ namespace rpf {
 
         TankDriveMoment get(double) const;
 
+        std::shared_ptr<TankDriveTrajectory> mirror_lr() const;
+        std::shared_ptr<TankDriveTrajectory> mirror_fb() const;
+        std::shared_ptr<TankDriveTrajectory> retrace() const;
+
     protected:
+
+        TankDriveTrajectory(std::shared_ptr<Path> path, std::vector<TankDriveMoment> &&moments, 
+                bool backwards, const RobotSpecs &specs, const TrajectoryParams &params)
+                : path(path), moments(moments), backwards(backwards), specs(specs), params(params), init_facing(moments[0].init_facing) {}
+
+        std::shared_ptr<Path> path;
+        std::vector<TankDriveMoment> moments;
+
+        bool backwards = false;
+
         RobotSpecs specs;
         TrajectoryParams params;
 
         double init_facing;
-        bool backwards = false;
-
-        std::shared_ptr<Path> path;
-        std::vector<TankDriveMoment> moments;
     };
 }

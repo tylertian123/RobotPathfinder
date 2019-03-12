@@ -14,6 +14,8 @@ namespace rpf {
     // Linearly interpolates between angles
     double langle(double, double, double);
     double langle(Vec2D, Vec2D, double);
+    // Restrict absolute value
+    double rabs(double, double);
     // Computes curvature
     double curvature(double, double, double, double);
     // The constant pi

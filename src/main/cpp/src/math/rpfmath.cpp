@@ -34,6 +34,10 @@ namespace rpf {
         return std::atan2(angle.y, angle.x);
     }
 
+    double rabs(double x, double m) {
+        return std::abs(x) <= m ? x : std::copysign(m, x);
+    }
+
     double curvature(double dx, double ddx, double dy, double ddy) {
         return (dx * ddy - dy * ddx) / std::pow(dx * dx + dy * dy, 3.0 / 2.0);
     }

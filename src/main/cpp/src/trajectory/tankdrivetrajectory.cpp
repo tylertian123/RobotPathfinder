@@ -50,7 +50,7 @@ namespace rpf {
 
         std::vector<TankDriveMoment> m;
         m.reserve(moments.size());
-        for(auto moment : moments) {
+        for(const auto &moment : moments) {
             TankDriveMoment nm(moment.r_dist, moment.l_dist, moment.r_vel, moment.l_vel, moment.r_accel, moment.l_accel, 
                     rpf::mangle(moment.heading, ref), moment.time, moment.init_facing);
             nm.backwards = backwards;
@@ -65,10 +65,28 @@ namespace rpf {
 
         std::vector<TankDriveMoment> m;
         m.reserve(moments.size());
-        for(auto moment : moments) {
+        for(const auto &moment : moments) {
             TankDriveMoment nm(-moment.l_dist, -moment.r_dist, -moment.l_vel, -moment.r_vel, -moment.l_accel, -moment.r_accel,
                     rpf::mangle(moment.heading, ref), moment.time, moment.init_facing);
             nm.backwards = !backwards;
+            m.push_back(nm);
+        }
+        return std::shared_ptr<TankDriveTrajectory>(new TankDriveTrajectory(p, std::move(m), !backwards, specs, params));
+    }
+    std::shared_ptr<TankDriveTrajectory> TankDriveTrajectory::retrace() const {
+        auto p = path->retrace();
+
+        std::vector<TankDriveMoment> m;
+        m.reserve(moments.size());
+        auto &last = moments[moments.size() - 1];
+        for(auto rit = moments.rbegin(); rit != moments.rend(); ++rit) {
+            const auto &moment = *rit;
+
+            TankDriveMoment nm(-(last.l_dist - moment.l_dist), -(last.r_dist - moment.r_dist), 
+                    -moment.l_vel, -moment.r_vel, moment.l_accel, moment.r_accel, -moment.heading, 
+                    last.time - moment.time, moment.init_facing);
+            nm.backwards = !backwards;
+            m.push_back(nm);
         }
         return std::shared_ptr<TankDriveTrajectory>(new TankDriveTrajectory(p, std::move(m), !backwards, specs, params));
     }

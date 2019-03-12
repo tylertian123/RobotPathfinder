@@ -14,7 +14,7 @@
 namespace rpf {
     class TankDriveTrajectory {
     public:
-        TankDriveTrajectory(const BasicTrajectory &traj) : specs(traj.specs), params(traj.params), path(traj.path), init_facing(traj.init_facing) {
+        TankDriveTrajectory(const BasicTrajectory &traj) : path(traj.path), specs(traj.specs), params(traj.params), init_facing(traj.init_facing) {
             if(!params.is_tank) {
                 throw std::invalid_argument("Base trajectory must be tank");
             }

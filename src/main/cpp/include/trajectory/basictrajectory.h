@@ -218,16 +218,18 @@ namespace rpf {
                 const RobotSpecs &specs, const TrajectoryParams &params) 
                 : path(path), moments(moments), backwards(backwards), specs(specs), params(params), init_facing(moments[0].init_facing) {}
 
-        bool backwards = false;
 
         std::shared_ptr<Path> path = nullptr;
         std::vector<BasicMoment> moments;
-        std::vector<double> patht;
-        std::vector<double> pathr;
+
+        bool backwards = false;
 
         RobotSpecs specs;
         TrajectoryParams params;
 
         double init_facing;
+
+        std::vector<double> patht;
+        std::vector<double> pathr;
     };
 }

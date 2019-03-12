@@ -22,9 +22,9 @@ namespace rpf {
             if(params.is_tank) {
                 path->set_base(specs.base_width / 2);
             }
-            double ds = 1.0 / params.seg_count;
-            double total = path->compute_len(params.seg_count + 1);
-            double dpi = total / params.seg_count;
+            double ds = 1.0 / (params.seg_count - 1);
+            double total = path->compute_len(params.seg_count);
+            double dpi = total / (params.seg_count - 1);
             
             std::vector<double> mv;
             mv.reserve(params.seg_count);

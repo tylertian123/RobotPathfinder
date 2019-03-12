@@ -103,7 +103,7 @@ task updateJNIHeaders(type: Copy, group: 'Development', description: 'Copies JNI
 }
 
 task copyLibLinuxx8664Debug(type: Copy, group: 'Development', description: 'Copies the dynamic library for linux x86-64 debug to the root of the project.') {
-    dependsOn build
+    dependsOn assemble
 
     from 'build/libs/jniLibrary/shared/linuxx86-64/debug'
     into '.'
@@ -112,7 +112,7 @@ task copyLibLinuxx8664Debug(type: Copy, group: 'Development', description: 'Copi
     }
 }
 task copyLibLinuxx8664Release(type: Copy, group: 'Development', description: 'Copies the dynamic library for linux x86-64 release to the root of the project.') {
-    dependsOn build
+    dependsOn assemble
 
     from 'build/libs/jniLibrary/shared/linuxx86-64/release'
     into '.'
@@ -121,7 +121,7 @@ task copyLibLinuxx8664Release(type: Copy, group: 'Development', description: 'Co
     }
 }
 task copyLibWindowsx8664Debug(type: Copy, group: 'Development', description: 'Copies the dynamic library for windows x86-64 debug to the root of the project.') {
-    dependsOn build
+    dependsOn assemble
 
     from rootProject.file("build/libs/jniLibrary/shared/windowsx86-64/debug")
     into '.'
@@ -130,7 +130,7 @@ task copyLibWindowsx8664Debug(type: Copy, group: 'Development', description: 'Co
     }
 }
 task copyLibWindowsx8664Release(type: Copy, group: 'Development', description: 'Copies the dynamic library for windows x86-64 release to the root of the project.') {
-    dependsOn build
+    dependsOn assemble
 
     from 'build/libs/jniLibrary/shared/windowsx86-64/release'
     into '.'

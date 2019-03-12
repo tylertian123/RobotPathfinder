@@ -6,7 +6,7 @@ import com.arctos6135.robotpathfinder.core.Waypoint;
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.lifecycle.GlobalLifeCycleManager;
 
-public class TankDriveTrajectory extends JNITrajectory {
+public class TankDriveTrajectory extends Trajectory {
 
     static {
         GlobalLibraryLoader.load();

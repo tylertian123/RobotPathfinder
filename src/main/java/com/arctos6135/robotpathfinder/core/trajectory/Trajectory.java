@@ -21,7 +21,7 @@ import com.arctos6135.robotpathfinder.core.path.Path;
  * @author Tyler Tian
  *
  */
-public abstract class JNITrajectory extends JNIObject {
+public abstract class Trajectory extends JNIObject {
 
 	RobotSpecs specs;
 	TrajectoryParams params;
@@ -79,7 +79,7 @@ public abstract class JNITrajectory extends JNIObject {
 	// Native
 	public abstract double totalTime();
 	
-	abstract public JNITrajectory mirrorLeftRight();
-	abstract public JNITrajectory mirrorFrontBack();
-	abstract public JNITrajectory retrace();
+	abstract public Trajectory mirrorLeftRight();
+	abstract public Trajectory mirrorFrontBack();
+	abstract public Trajectory retrace();
 }

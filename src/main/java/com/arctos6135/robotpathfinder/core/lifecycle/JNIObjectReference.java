@@ -3,7 +3,13 @@ package com.arctos6135.robotpathfinder.core.lifecycle;
 import java.lang.ref.PhantomReference;
 import java.lang.ref.ReferenceQueue;
 
+import com.arctos6135.robotpathfinder.core.GlobalLibraryLoader;
+
 public class JNIObjectReference extends PhantomReference<JNIObject> {
+
+    static {
+        GlobalLibraryLoader.load();
+    }
 
     protected long objNativePtr;
 

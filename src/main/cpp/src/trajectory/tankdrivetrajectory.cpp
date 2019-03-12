@@ -84,7 +84,7 @@ namespace rpf {
 
             TankDriveMoment nm(-(last.l_dist - moment.l_dist), -(last.r_dist - moment.r_dist), 
                     -moment.l_vel, -moment.r_vel, moment.l_accel, moment.r_accel, -moment.heading, 
-                    last.time - moment.time, moment.init_facing);
+                    last.time - moment.time, params.waypoints[params.waypoints.size() - 1].heading);
             nm.backwards = !backwards;
             m.push_back(nm);
         }

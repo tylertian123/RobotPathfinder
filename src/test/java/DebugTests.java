@@ -77,6 +77,7 @@ public class DebugTests {
         params.waypoints = new JNIWaypoint[] {
             new JNIWaypoint(0, 0, Math.PI / 2),
             new JNIWaypoint(10, 10, Math.PI / 2),
+            new JNIWaypoint(0, 20, Math.PI),
         };
         params.alpha = 20;
         params.isTank = true;
@@ -84,7 +85,7 @@ public class DebugTests {
         params.segmentCount = 1000;
         
         var traj1 = new JNITankDriveTrajectory(specs, params);
-        var traj = traj1.mirrorLeftRight();
+        var traj = traj1.retrace();
         System.out.println(traj.totalTime());
         JFrame f1 = Grapher.graphPath(traj.getPath(), 0.001);
         JFrame f = Grapher.graphTrajectory(traj, 0.001, true);

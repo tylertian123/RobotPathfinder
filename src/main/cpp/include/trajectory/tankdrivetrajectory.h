@@ -52,8 +52,9 @@ namespace rpf {
                 }
 
                 moments.push_back(TankDriveMoment(moments[i - 1].l_dist + dl, moments[i - 1].r_dist + dr, lv, rv, 
-                        (lv - moments[i - 1].l_vel) / dt, (rv - moments[i - 1].r_vel) / dt, traj.moments[i].time, 
-                        traj.moments[i].heading, traj.init_facing));
+                        0, 0, traj.moments[i].heading, traj.moments[i].time, traj.init_facing));
+                moments[i - 1].l_accel = (lv - moments[i - 1].l_vel) / dt;
+                moments[i - 1].r_accel = (rv - moments[i - 1].r_vel) / dt;
             }
         }
 

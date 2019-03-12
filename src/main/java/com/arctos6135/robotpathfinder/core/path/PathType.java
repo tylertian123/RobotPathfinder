@@ -26,27 +26,6 @@ public enum PathType {
 	 * second derivatives constrained, these paths may have small jumps in acceleration where two segments meet.
 	 */
 	CUBIC_HERMITE;
-	
-	/**
-	 * Retrieves the specific class of a path generated with this path type.
-	 * <ul>
-	 * <li>For {@link #BEZIER}, it is {@link BezierPath}{@code .class};</li>
-	 * <li>For {@link #QUINTIC_HERMITE}, it is {@link QuinticHermitePath}{@code .class};</li>
-	 * <li>For {@link #CUBIC_HERMITE}, it is {@link CubicHermitePath}{@code .class};</li>
-	 * </ul>
-	 * @return The specific class of a path generated with this type
-	 */
-	public Class<?> getPathClass() {
-		switch(this) {
-		case BEZIER:
-			return BezierPath.class;
-		case CUBIC_HERMITE:
-			return CubicHermitePath.class;
-		case QUINTIC_HERMITE:
-			return QuinticHermitePath.class;
-		default: return null;
-		}
-	}
 
 	private static final int PT_BEZIER = 1;
     private static final int PT_CUBIC_HERMITE = 2;

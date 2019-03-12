@@ -1,6 +1,6 @@
 package com.arctos6135.robotpathfinder.math;
 
-import com.arctos6135.robotpathfinder.core.Waypoint;
+import com.arctos6135.robotpathfinder.core.JNIWaypoint;
 
 /**
  * A class that represents a vector in 2D space.
@@ -34,7 +34,7 @@ public class Vec2D {
 	 * Constructs a new vector with the location of the waypoint. The heading is ignored.
 	 * @param w The waypoint whose location will be taken
 	 */
-	public Vec2D(Waypoint w) {
+	public Vec2D(JNIWaypoint w) {
 		this.x = w.getX();
 		this.y = w.getY();
 	}

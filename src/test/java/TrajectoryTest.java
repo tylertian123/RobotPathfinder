@@ -1,18 +1,8 @@
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertThat;
-import static org.hamcrest.core.Is.is;
+// import static org.junit.Assert.fail;
+// import static org.junit.Assert.assertThat;
+// import static org.hamcrest.core.Is.is;
 
-import org.junit.Test;
-
-import com.arctos6135.robotpathfinder.core.RobotSpecs;
-import com.arctos6135.robotpathfinder.core.TrajectoryParams;
-import com.arctos6135.robotpathfinder.core.Waypoint;
-import com.arctos6135.robotpathfinder.core.WaypointEx;
-import com.arctos6135.robotpathfinder.core.path.PathType;
-import com.arctos6135.robotpathfinder.core.trajectory.BasicMoment;
-import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
-import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
-import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
+// import org.junit.Test;
 
 public class TrajectoryTest {
     

@@ -28,7 +28,7 @@ install:
   - ./gradlew installRoboRioToolchain
 
 script:
-  - ./gradlew build --scan -s
+  - ./gradlew build --scan -s --rerun-tasks
 
 # Enable gradle cache
 before_cache:
@@ -45,7 +45,7 @@ after_success:
   - >
     curl --request 'POST' 
     --header 'Content-Type: text/plain; charset=utf-8' 
-    --data "&#9989; The latest commit pushed to **RobotPathfinder** (commit *$SHORT_COMMIT* on branch *$TRAVIS_BRANCH*) has **passed** CI checks on **$TRAVIS_JDK_VERSION**!"
+    --data "&#9989;**SUCCESS**&#9989; The latest commit pushed to **RobotPathfinder** (commit *$SHORT_COMMIT* on branch *$TRAVIS_BRANCH*) has **passed** CI checks!"
     $WEBHOOK_URL
 
 after_failure:
@@ -53,5 +53,5 @@ after_failure:
   - >
     curl --request 'POST' 
     --header 'Content-Type: text/plain; charset=utf-8' 
-    --data "&#10060; The latest commit pushed to **RobotPathfinder** (commit *$SHORT_COMMIT* on branch *$TRAVIS_BRANCH*) has **failed** CI checks on **$TRAVIS_JDK_VERSION**!" 
+    --data "&#10060;**ERROR**&#10060; The latest commit pushed to **RobotPathfinder** (commit *$SHORT_COMMIT* on branch *$TRAVIS_BRANCH*) has **failed** CI checks!" 
     $WEBHOOK_URL

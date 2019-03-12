@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import javax.swing.JFrame;
 
-import com.arctos6135.robotpathfinder.core.JNITrajectoryParams;
+import com.arctos6135.robotpathfinder.core.TrajectoryParams;
 import com.arctos6135.robotpathfinder.core.JNIWaypoint;
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.path.JNIPath;
@@ -24,7 +24,7 @@ public class DebugTests {
 
     public static void test21() throws Exception {
         RobotSpecs specs = new RobotSpecs(5, 3, 1);
-        JNITrajectoryParams params = new JNITrajectoryParams();
+        TrajectoryParams params = new TrajectoryParams();
         params.waypoints = new JNIWaypoint[] {
             new JNIWaypoint(0, 0, Math.PI / 2),
             new JNIWaypoint(10, 10, Math.PI / 2),
@@ -45,7 +45,7 @@ public class DebugTests {
     public static void test22() throws Exception {
         System.in.read();
         RobotSpecs specs = new RobotSpecs(5, 3, 1);
-        JNITrajectoryParams params = new JNITrajectoryParams();
+        TrajectoryParams params = new TrajectoryParams();
         params.waypoints = new JNIWaypoint[] {
             new JNIWaypoint(0, 0, Math.PI / 2),
             new JNIWaypoint(10, 10, Math.PI / 2),

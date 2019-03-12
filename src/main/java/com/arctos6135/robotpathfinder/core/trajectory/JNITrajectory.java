@@ -1,6 +1,6 @@
 package com.arctos6135.robotpathfinder.core.trajectory;
 
-import com.arctos6135.robotpathfinder.core.JNITrajectoryParams;
+import com.arctos6135.robotpathfinder.core.TrajectoryParams;
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.lifecycle.JNIObject;
 import com.arctos6135.robotpathfinder.core.path.JNIPath;
@@ -24,7 +24,7 @@ import com.arctos6135.robotpathfinder.core.path.JNIPath;
 public abstract class JNITrajectory extends JNIObject {
 
 	RobotSpecs specs;
-	JNITrajectoryParams params;
+	TrajectoryParams params;
 
 	@Override
     public void free() {
@@ -72,7 +72,7 @@ public abstract class JNITrajectory extends JNIObject {
 	public RobotSpecs getRobotSpecs() {
 		return specs;
 	}
-	public JNITrajectoryParams getGenerationParams() {
+	public TrajectoryParams getGenerationParams() {
 		return params;
 	}
 

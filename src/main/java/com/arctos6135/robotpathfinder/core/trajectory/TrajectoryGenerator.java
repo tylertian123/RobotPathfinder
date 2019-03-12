@@ -1,7 +1,7 @@
 package com.arctos6135.robotpathfinder.core.trajectory;
 
 import com.arctos6135.robotpathfinder.core.GlobalLibraryLoader;
-import com.arctos6135.robotpathfinder.core.JNITrajectoryParams;
+import com.arctos6135.robotpathfinder.core.TrajectoryParams;
 import com.arctos6135.robotpathfinder.core.JNIWaypoint;
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.path.PathType;
@@ -26,7 +26,7 @@ final public class TrajectoryGenerator {
 	 * @return The generated trajectory
 	 */
 	public static JNIBasicTrajectory generateStraightBasic(RobotSpecs specs, double distance) {
-		JNITrajectoryParams params = new JNITrajectoryParams();
+		TrajectoryParams params = new TrajectoryParams();
 		params.isTank = false;
 		// Use Bezier type since we only have one segment and it doesn't really matter
 		params.pathType = PathType.BEZIER;
@@ -48,7 +48,7 @@ final public class TrajectoryGenerator {
 	 * @return The generated trajectory
 	 */
 	public static JNITankDriveTrajectory generateStraightTank(RobotSpecs specs, double distance) {
-		JNITrajectoryParams params = new JNITrajectoryParams();
+		TrajectoryParams params = new TrajectoryParams();
 		params.isTank = true;
 		params.pathType = PathType.BEZIER;
 		params.sampleCount = 100;

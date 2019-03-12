@@ -2,7 +2,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-import com.arctos6135.robotpathfinder.core.JNITrajectoryParams;
+import com.arctos6135.robotpathfinder.core.TrajectoryParams;
 import com.arctos6135.robotpathfinder.core.JNIWaypoint;
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.path.PathType;
@@ -18,7 +18,7 @@ public class TrajectoryTest {
     @Test
     public void testVelocityAndAccelerationLimitBasic() {
         RobotSpecs robotSpecs = new RobotSpecs(5.0, 3.5, 2.0);
-        JNITrajectoryParams params = new JNITrajectoryParams();
+        TrajectoryParams params = new TrajectoryParams();
         params.waypoints = new JNIWaypoint[] {
             new JNIWaypoint(0.0, 0.0, Math.PI / 2),
             new JNIWaypoint(0.0, 100.0, Math.PI / 2),
@@ -43,7 +43,7 @@ public class TrajectoryTest {
     @Test
     public void testVelocityLimitTank() {
         RobotSpecs robotSpecs = new RobotSpecs(5.0, 3.5, 2.0);
-        JNITrajectoryParams params = new JNITrajectoryParams();
+        TrajectoryParams params = new TrajectoryParams();
         params.waypoints = new JNIWaypoint[] {
             new JNIWaypoint(0.0, 0.0, Math.PI / 2),
             new JNIWaypoint(0.0, 100.0, Math.PI / 2),
@@ -68,7 +68,7 @@ public class TrajectoryTest {
     @Test
     public void testBeginningAndEndWaypointEx() {
         RobotSpecs robotSpecs = new RobotSpecs(5.0, 3.5, 2.0);
-        JNITrajectoryParams params = new JNITrajectoryParams();
+        TrajectoryParams params = new TrajectoryParams();
         params.waypoints = new JNIWaypoint[] {
             new JNIWaypoint(0.0, 0.0, Math.PI / 2, 1.23),
             new JNIWaypoint(0.0, 100.0, Math.PI / 2, 3.45),

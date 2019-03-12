@@ -7,7 +7,7 @@ import com.arctos6135.robotpathfinder.core.path.PathType;
  * @author Tyler Tian
  *
  */
-public class JNITrajectoryParams implements Cloneable {
+public class TrajectoryParams implements Cloneable {
 	
 	/**
 	 * The {@link JNIWaypoint}s that this trajectory's path has to pass through. Default value is {@code null}.
@@ -46,8 +46,8 @@ public class JNITrajectoryParams implements Cloneable {
 	public PathType pathType = PathType.QUINTIC_HERMITE;
 	
 	@Override
-	public JNITrajectoryParams clone() {
-		JNITrajectoryParams tp = new JNITrajectoryParams();
+	public TrajectoryParams clone() {
+		TrajectoryParams tp = new TrajectoryParams();
 		tp.waypoints = this.waypoints;
 		tp.alpha = this.alpha;
 		tp.sampleCount = this.sampleCount;
@@ -59,8 +59,8 @@ public class JNITrajectoryParams implements Cloneable {
 	}
 	
 	/**
-	 * Constructs a new {@link JNITrajectoryParams} object with all fields set to their default values.
+	 * Constructs a new {@link TrajectoryParams} object with all fields set to their default values.
 	 */
-	public JNITrajectoryParams() {
+	public TrajectoryParams() {
 	}
 }

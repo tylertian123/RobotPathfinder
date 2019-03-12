@@ -37,6 +37,7 @@ public class TrajectoryTest {
                 fail("The JNIBasicTrajectory exceeded the acceleration limit at time " + m.getTime());
             }
         }
+        trajectory.free();
     }
 
     @Test
@@ -61,6 +62,7 @@ public class TrajectoryTest {
                 fail("The right wheel of the TankDriveTrajectory exceeded the velocity limit at time " + m.getTime());
             }
         }
+        trajectory.free();
     }
 
     @Test
@@ -79,5 +81,6 @@ public class TrajectoryTest {
 
         assertThat(trajectory.get(0).getVelocity(), is(1.23));
         assertThat(trajectory.get(trajectory.totalTime()).getVelocity(), is(3.45));
+        trajectory.free();
     }
 }

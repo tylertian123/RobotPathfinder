@@ -105,6 +105,10 @@ public class TankDriveMoment extends Moment {
 		t = time;
 		this.initialFacing = initialFacing;
 	}
+	public TankDriveMoment(double leftPos, double rightPos, double leftVel, double rightVel, double leftAcl, double rightAcl, double heading, double time, double initialFacing, boolean backwards) {
+		this(leftPos, rightPos, leftVel, rightVel, leftAcl, rightAcl, heading, time, initialFacing);
+		this.backwards = backwards;
+	}
 
 	/**
 	 * Retrieves the distance the left wheel has traveled.

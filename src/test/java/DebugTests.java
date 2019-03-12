@@ -81,6 +81,6 @@ public class DebugTests {
         params.segmentCount = 1000;
         JNITankDriveTrajectory traj = new JNITankDriveTrajectory(specs, params);
         traj.free();
-        System.out.println("\033[32;5mI AM ALIVE!!!!");
+        System.out.println("\033[1;5;32mI AM ALIVE!!!!");
 	}
 }

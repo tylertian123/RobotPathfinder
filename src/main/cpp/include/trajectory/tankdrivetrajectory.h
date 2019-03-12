@@ -14,7 +14,7 @@
 namespace rpf {
     class TankDriveTrajectory {
     public:
-        TankDriveTrajectory(const BasicTrajectory &traj) : specs(traj.specs), params(traj.params), path(traj.path) {
+        TankDriveTrajectory(const BasicTrajectory &traj) : specs(traj.specs), params(traj.params), path(traj.path), init_facing(traj.init_facing) {
             if(!params.is_tank) {
                 throw std::invalid_argument("Base trajectory must be tank");
             }
@@ -55,6 +55,39 @@ namespace rpf {
                         (lv - moments[i - 1].l_vel) / dt, (rv - moments[i - 1].r_vel) / dt, traj.moments[i].time, 
                         traj.moments[i].heading, traj.init_facing));
             }
+        }
+
+        inline std::shared_ptr<Path> get_path() {
+            return path;
+        }
+        inline std::shared_ptr<const Path> get_path() const {
+            return path;
+        }
+        inline std::vector<TankDriveMoment>& get_moments() {
+            return moments;
+        }
+        inline const std::vector<TankDriveMoment>& get_moments() const {
+            return moments;
+        }
+        inline double get_init_facing() const {
+            return init_facing;
+        }
+
+        inline RobotSpecs& get_specs() {
+            return specs;
+        }
+        inline const RobotSpecs& get_specs() const {
+            return specs;
+        }
+        inline TrajectoryParams& get_params() {
+            return params;
+        }
+        inline const TrajectoryParams& get_params() const {
+            return params;
+        }
+        
+        inline double total_time() const {
+            return moments[moments.size() - 1].time;
         }
 
     protected:

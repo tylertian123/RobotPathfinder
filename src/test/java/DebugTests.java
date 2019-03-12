@@ -11,6 +11,7 @@ import com.arctos6135.robotpathfinder.core.path.JNIPath;
 import com.arctos6135.robotpathfinder.core.path.PathType;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.JNIBasicTrajectory;
+import com.arctos6135.robotpathfinder.core.trajectory.JNITankDriveTrajectory;
 import com.arctos6135.robotpathfinder.tools.Grapher;
 
 public class DebugTests {
@@ -44,7 +45,8 @@ public class DebugTests {
         System.out.println("Native\t" + (nanos2 - nanos1) / 1000 + "us");
         System.out.println("Java\t" + (nanos3 - nanos2) / 1000 + "us");
     }
-	public static void main(String[] args) throws Exception {
+
+    public static void test21() throws Exception {
         System.out.println("Press enter to continue execution");
         System.out.println("PID: " + ProcessHandle.current().pid());
         System.in.read();
@@ -65,5 +67,20 @@ public class DebugTests {
         JFrame f = Grapher.graphTrajectory(traj, 0.001, true);
         traj.close();
         f.setVisible(true);
+    }
+	public static void main(String[] args) throws Exception {
+        RobotSpecs specs = new RobotSpecs(5, 3, 1);
+        JNITrajectoryParams params = new JNITrajectoryParams();
+        params.waypoints = new JNIWaypoint[] {
+            new JNIWaypoint(0, 0, Math.PI / 2),
+            new JNIWaypoint(10, 10, Math.PI / 2),
+        };
+        params.alpha = 20;
+        params.isTank = true;
+        params.pathType = PathType.QUINTIC_HERMITE;
+        params.segmentCount = 1000;
+        JNITankDriveTrajectory traj = new JNITankDriveTrajectory(specs, params);
+        traj.free();
+        System.out.println("\033[32;5mI AM ALIVE!!!!");
 	}
 }

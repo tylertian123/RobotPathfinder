@@ -14,7 +14,7 @@ import com.arctos6135.robotpathfinder.core.path.JNIPath;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicMoment;
 import com.arctos6135.robotpathfinder.core.trajectory.JNIBasicTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
-import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
+import com.arctos6135.robotpathfinder.core.trajectory.JNITankDriveTrajectory;
 import com.arctos6135.robotpathfinder.math.Vec2D;
 import com.arctos6135.robotpathfinder.util.Pair;
 
@@ -122,7 +122,7 @@ public final class Grapher {
 	}
 	
 	/**
-	 * Graphs a {@link TankDriveTrajectory} in a {@link JFrame}. The heading will not be graphed.
+	 * Graphs a {@link JNITankDriveTrajectory} in a {@link JFrame}. The heading will not be graphed.
 	 * <p>
 	 * In addition to graphing, this method also sets the {@link JFrame}'s default close operation to be
 	 * {@link JFrame#DISPOSE_ON_CLOSE}. Note that this method does not show the window; 
@@ -132,11 +132,11 @@ public final class Grapher {
 	 * @param dt The time increment between samples
 	 * @return The graphed trajectory in a {@link JFrame}
 	 */
-    public static JFrame graphTrajectory(TankDriveTrajectory trajectory, double dt) {
+    public static JFrame graphTrajectory(JNITankDriveTrajectory trajectory, double dt) {
         return graphTrajectory(trajectory, dt, false);
     }
     /**
-	 * Graphs a {@link TankDriveTrajectory} in a {@link JFrame}.
+	 * Graphs a {@link JNITankDriveTrajectory} in a {@link JFrame}.
 	 * <p>
 	 * In addition to graphing, this method also sets the {@link JFrame}'s default close operation to be
 	 * {@link JFrame#DISPOSE_ON_CLOSE}. Note that this method does not show the window; 
@@ -147,7 +147,7 @@ public final class Grapher {
      * @param graphHeading Whether or not to graph the relative facing.
 	 * @return The graphed trajectory in a {@link JFrame}
 	 */
-	public static JFrame graphTrajectory(TankDriveTrajectory trajectory, double dt, boolean graphHeading) {
+	public static JFrame graphTrajectory(JNITankDriveTrajectory trajectory, double dt, boolean graphHeading) {
 		int elemCount = (int) Math.ceil(trajectory.totalTime() / dt);
 		
 		// Create arrays to store data

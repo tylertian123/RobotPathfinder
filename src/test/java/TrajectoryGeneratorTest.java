@@ -18,7 +18,7 @@ public class TrajectoryGeneratorTest {
         JNIBasicTrajectory traj = TrajectoryGenerator.generateStraightBasic(specs, 20);
 
         assertThat(traj.get(traj.totalTime()).getPosition(), is(20.0));
-        traj.free();
+        traj.close();
     }
 
     @Test
@@ -28,7 +28,7 @@ public class TrajectoryGeneratorTest {
 
         assertThat(traj.get(traj.totalTime()).getLeftPosition(), is(20.0));
         assertThat(traj.get(traj.totalTime()).getRightPosition(), is(20.0));
-        traj.free();
+        traj.close();
     }
 
     @Test
@@ -41,7 +41,7 @@ public class TrajectoryGeneratorTest {
                 lessThan(1e-7));
         assertThat(Math.abs(MathUtils.angleDiff(traj2.get(traj2.totalTime()).getFacingRelative(), MathUtils.restrictAngle(-Math.PI))),
                 lessThan(1e-7));
-        traj1.free();
-        traj2.free();
+        traj1.close();
+        traj2.close();
     }
 }

@@ -48,7 +48,7 @@ repositories {
     jcenter()
 }
 
-project.version = '2.2.0-alpha'
+project.version = '3.0.0-dev'
 
 // Setup for Gradle-JNI
 // Thanks to @ThadHouse
@@ -175,6 +175,10 @@ task copyLibRelease(group: 'Development', description: 'Copies the correct relea
     else {
         throw new GradleException('OS not supported')
     }
+}
+
+test {
+    dependsOn copyLibRelease
 }
 
 // Add sources to the jar

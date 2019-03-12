@@ -1,19 +1,19 @@
 package com.arctos6135.robotpathfinder.core;
 
-public class JNIWaypoint {
+public class Waypoint {
 
     protected double x;
     protected double y;
     protected double heading;
     protected double velocity = Double.NaN;
 
-    public JNIWaypoint() {}
-    public JNIWaypoint(double x, double y, double heading) {
+    public Waypoint() {}
+    public Waypoint(double x, double y, double heading) {
         this.x = x;
         this.y = y;
         this.heading = heading;
     }
-    public JNIWaypoint(double x, double y, double heading, double velocity) {
+    public Waypoint(double x, double y, double heading, double velocity) {
         this.x = x;
         this.y = y;
         this.heading = heading;

@@ -10,7 +10,7 @@ extern "C" {
 /*
  * Class:     com_arctos6135_robotpathfinder_core_trajectory_JNITankDriveTrajectory
  * Method:    _construct
- * Signature: (DDDZ[Lcom/arctos6135/robotpathfinder/core/JNIWaypoint;DII)V
+ * Signature: (DDDZ[Lcom/arctos6135/robotpathfinder/core/Waypoint;DII)V
  */
 JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNITankDriveTrajectory__1construct
   (JNIEnv *, jobject, jdouble, jdouble, jdouble, jboolean, jobjectArray, jdouble, jint, jint);

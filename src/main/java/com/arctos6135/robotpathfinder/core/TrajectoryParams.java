@@ -10,14 +10,14 @@ import com.arctos6135.robotpathfinder.core.path.PathType;
 public class TrajectoryParams implements Cloneable {
 	
 	/**
-	 * The {@link JNIWaypoint}s that this trajectory's path has to pass through. Default value is {@code null}.
+	 * The {@link Waypoint}s that this trajectory's path has to pass through. Default value is {@code null}.
 	 * <p>
 	 * Note that it does not matter what specific unit is used for distance; however, the unit must match with 
 	 * the units in the {@link RobotSpecs} object used to construct the trajectory. For example, if the unit
 	 * for max velocity in the {@link RobotSpecs} object was m/s, the unit used for distance must be m.
 	 * </p>
 	 */
-	public JNIWaypoint[] waypoints = null;
+	public Waypoint[] waypoints = null;
 	/**
 	 * The turn smoothness constant. A lower value will result in a relatively shorter path with sharper turns
 	 * <em>at the waypoints</em>, and a higher value will result in a relatively longer path with smoother turns

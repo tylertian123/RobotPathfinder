@@ -9,7 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import com.arctos6135.robotpathfinder.core.JNIWaypoint;
+import com.arctos6135.robotpathfinder.core.Waypoint;
 import com.arctos6135.robotpathfinder.core.path.JNIPath;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicMoment;
 import com.arctos6135.robotpathfinder.core.trajectory.JNIBasicTrajectory;
@@ -299,7 +299,7 @@ public final class Grapher {
 				plot.addLinePlot("Right Wheel", rightX, rightY);
 			}
 			
-			JNIWaypoint[] waypoints = path.getWaypoints();
+			Waypoint[] waypoints = path.getWaypoints();
 			// Fixes a bug with JMathPlot
 			double[][] xy = new double[2][waypoints.length > 2 ? waypoints.length : 3];
 			for(int j = 0; j < path.getWaypoints().length; j ++) {

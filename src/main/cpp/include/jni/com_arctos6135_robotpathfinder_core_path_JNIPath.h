@@ -10,7 +10,7 @@ extern "C" {
 /*
  * Class:     com_arctos6135_robotpathfinder_core_path_JNIPath
  * Method:    _construct
- * Signature: ([Lcom/arctos6135/robotpathfinder/core/JNIWaypoint;DI)V
+ * Signature: ([Lcom/arctos6135/robotpathfinder/core/Waypoint;DI)V
  */
 JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_path_JNIPath__1construct
   (JNIEnv *, jobject, jobjectArray, jdouble, jint);

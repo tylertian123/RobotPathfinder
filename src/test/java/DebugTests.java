@@ -5,7 +5,7 @@ import java.io.IOException;
 import javax.swing.JFrame;
 
 import com.arctos6135.robotpathfinder.core.TrajectoryParams;
-import com.arctos6135.robotpathfinder.core.JNIWaypoint;
+import com.arctos6135.robotpathfinder.core.Waypoint;
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.path.JNIPath;
 import com.arctos6135.robotpathfinder.core.path.PathType;
@@ -25,9 +25,9 @@ public class DebugTests {
     public static void test21() throws Exception {
         RobotSpecs specs = new RobotSpecs(5, 3, 1);
         TrajectoryParams params = new TrajectoryParams();
-        params.waypoints = new JNIWaypoint[] {
-            new JNIWaypoint(0, 0, Math.PI / 2),
-            new JNIWaypoint(10, 10, Math.PI / 2),
+        params.waypoints = new Waypoint[] {
+            new Waypoint(0, 0, Math.PI / 2),
+            new Waypoint(10, 10, Math.PI / 2),
         };
         params.alpha = 20;
         params.isTank = true;
@@ -46,10 +46,10 @@ public class DebugTests {
         System.in.read();
         RobotSpecs specs = new RobotSpecs(5, 3, 1);
         TrajectoryParams params = new TrajectoryParams();
-        params.waypoints = new JNIWaypoint[] {
-            new JNIWaypoint(0, 0, Math.PI / 2),
-            new JNIWaypoint(10, 10, Math.PI / 2),
-            new JNIWaypoint(0, 20, Math.PI),
+        params.waypoints = new Waypoint[] {
+            new Waypoint(0, 0, Math.PI / 2),
+            new Waypoint(10, 10, Math.PI / 2),
+            new Waypoint(0, 20, Math.PI),
         };
         params.alpha = 20;
         params.isTank = true;
@@ -71,9 +71,9 @@ public class DebugTests {
 
         for(int i = 0; i < 800000; i ++) {
             @SuppressWarnings("unused")
-            JNIPath path = new JNIPath(new JNIWaypoint[] {
-                new JNIWaypoint(0, 0, Math.PI / 2),
-                new JNIWaypoint(0, 10, Math.PI / 2),
+            JNIPath path = new JNIPath(new Waypoint[] {
+                new Waypoint(0, 0, Math.PI / 2),
+                new Waypoint(0, 10, Math.PI / 2),
             }, 2.0, PathType.QUINTIC_HERMITE);
         }
         System.out.println("-- do some memory intensive work --");

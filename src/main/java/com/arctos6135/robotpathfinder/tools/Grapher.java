@@ -12,7 +12,7 @@ import javax.swing.SwingUtilities;
 import com.arctos6135.robotpathfinder.core.Waypoint;
 import com.arctos6135.robotpathfinder.core.path.Path;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicMoment;
-import com.arctos6135.robotpathfinder.core.trajectory.JNIBasicTrajectory;
+import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
 import com.arctos6135.robotpathfinder.core.trajectory.JNITankDriveTrajectory;
 import com.arctos6135.robotpathfinder.math.Vec2D;
@@ -34,7 +34,7 @@ public final class Grapher {
 	private static double maxX, maxY, minX, minY;
 	
 	/**
-	 * Graphs a {@link JNIBasicTrajectory} in a {@link JFrame}. The heading will not be graphed.
+	 * Graphs a {@link BasicTrajectory} in a {@link JFrame}. The heading will not be graphed.
 	 * <p>
 	 * In addition to graphing, this method also sets the {@link JFrame}'s default close operation to be
 	 * {@link JFrame#DISPOSE_ON_CLOSE}. Note that this method does not show the window; 
@@ -44,11 +44,11 @@ public final class Grapher {
 	 * @param dt The time increment between samples
 	 * @return The graphed trajectory in a {@link JFrame}
 	 */
-    public static JFrame graphTrajectory(JNIBasicTrajectory trajectory, double dt) {
+    public static JFrame graphTrajectory(BasicTrajectory trajectory, double dt) {
         return graphTrajectory(trajectory, dt, false);
     }
     /**
-	 * Graphs a {@link JNIBasicTrajectory} in a {@link JFrame}.
+	 * Graphs a {@link BasicTrajectory} in a {@link JFrame}.
 	 * <p>
 	 * In addition to graphing, this method also sets the {@link JFrame}'s default close operation to be
 	 * {@link JFrame#DISPOSE_ON_CLOSE}. Note that this method does not show the window; 
@@ -59,7 +59,7 @@ public final class Grapher {
      * @param graphHeading Whether or not to graph the heading
 	 * @return The graphed trajectory in a {@link JFrame}
 	 */
-	public static JFrame graphTrajectory(JNIBasicTrajectory trajectory, double dt, boolean graphHeading) {
+	public static JFrame graphTrajectory(BasicTrajectory trajectory, double dt, boolean graphHeading) {
 		int elemCount = (int) Math.ceil(trajectory.totalTime() / dt);
 		
 		// Create arrays to store data

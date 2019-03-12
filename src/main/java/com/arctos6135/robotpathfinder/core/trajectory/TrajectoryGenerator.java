@@ -20,12 +20,12 @@ final public class TrajectoryGenerator {
 	private TrajectoryGenerator() {}
 	
 	/**
-	 * Generates a {@link JNIBasicTrajectory} that will drive straight forward for the specified distance.
+	 * Generates a {@link BasicTrajectory} that will drive straight forward for the specified distance.
 	 * @param specs The specifications of the robot
 	 * @param distance The distance to drive forward for
 	 * @return The generated trajectory
 	 */
-	public static JNIBasicTrajectory generateStraightBasic(RobotSpecs specs, double distance) {
+	public static BasicTrajectory generateStraightBasic(RobotSpecs specs, double distance) {
 		TrajectoryParams params = new TrajectoryParams();
 		params.isTank = false;
 		// Use Bezier type since we only have one segment and it doesn't really matter
@@ -39,7 +39,7 @@ final public class TrajectoryGenerator {
 		};
 		params.alpha = Math.abs(distance) / 2;
 		// Now check if our distance is negative, and if yes just reverse the trajectory
-		return distance >= 0 ? new JNIBasicTrajectory(specs, params) : new JNIBasicTrajectory(specs, params).mirrorFrontBack();
+		return distance >= 0 ? new BasicTrajectory(specs, params) : new BasicTrajectory(specs, params).mirrorFrontBack();
 	}
 	/**
 	 * Generates a {@link JNITankDriveTrajectory} that will drive straight forward for the specified distance.

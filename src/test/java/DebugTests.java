@@ -9,7 +9,7 @@ import com.arctos6135.robotpathfinder.core.TrajectoryParams;
 import com.arctos6135.robotpathfinder.core.Waypoint;
 import com.arctos6135.robotpathfinder.core.path.Path;
 import com.arctos6135.robotpathfinder.core.path.PathType;
-import com.arctos6135.robotpathfinder.core.trajectory.JNIBasicTrajectory;
+import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.JNITankDriveTrajectory;
 import com.arctos6135.robotpathfinder.tools.Grapher;
 
@@ -34,7 +34,7 @@ public class DebugTests {
         params.pathType = PathType.QUINTIC_HERMITE;
         params.sampleCount = 1000;
         
-        JNIBasicTrajectory traj = new JNIBasicTrajectory(specs, params);
+        BasicTrajectory traj = new BasicTrajectory(specs, params);
         System.out.println(traj.totalTime());
         System.out.println(traj.get(0.01).getVelocity());
         JFrame f = Grapher.graphTrajectory(traj, 0.001, true);

@@ -3,7 +3,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
-import com.arctos6135.robotpathfinder.core.trajectory.JNIBasicTrajectory;
+import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.JNITankDriveTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.TrajectoryGenerator;
 import com.arctos6135.robotpathfinder.math.MathUtils;
@@ -15,7 +15,7 @@ public class TrajectoryGeneratorTest {
     @Test
     public void testGenerateStraightBasic() {
         RobotSpecs specs = new RobotSpecs(10.0, 7.5, 2.0);
-        JNIBasicTrajectory traj = TrajectoryGenerator.generateStraightBasic(specs, 20);
+        BasicTrajectory traj = TrajectoryGenerator.generateStraightBasic(specs, 20);
 
         assertThat(traj.get(traj.totalTime()).getPosition(), is(20.0));
         traj.close();

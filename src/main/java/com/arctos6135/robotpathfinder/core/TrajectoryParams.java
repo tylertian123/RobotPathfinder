@@ -3,7 +3,7 @@ package com.arctos6135.robotpathfinder.core;
 import com.arctos6135.robotpathfinder.core.path.PathType;
 
 /**
- * A collection of parameters for trajectory generation. Used in the construction of {@link com.arctos6135.robotpathfinder.core.trajectory.JNIBasicTrajectory JNIBasicTrajectory}.
+ * A collection of parameters for trajectory generation. Used in the construction of {@link com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory BasicTrajectory}.
  * @author Tyler Tian
  *
  */

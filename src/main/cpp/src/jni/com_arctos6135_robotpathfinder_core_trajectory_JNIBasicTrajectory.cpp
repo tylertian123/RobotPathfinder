@@ -1,4 +1,4 @@
-#include "jni/com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory.h"
+#include "jni/com_arctos6135_robotpathfinder_core_trajectory_BasicTrajectory.h"
 #include "jni/jniutil.h"
 #include "trajectory/basictrajectory.h"
 #include <vector>
@@ -9,7 +9,7 @@
 std::list<std::shared_ptr<rpf::BasicTrajectory>> btinstances;
 extern std::list<std::shared_ptr<rpf::Path>> pinstances;
 
-JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1construct
+JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_BasicTrajectory__1construct
         (JNIEnv *env, jobject obj, jdouble maxv, jdouble maxa, jdouble base_width, jboolean is_tank, jobjectArray waypoints, jdouble alpha, jint sample_count, jint type) {
     std::vector<rpf::Waypoint> wp;
     wp.reserve(env->GetArrayLength(waypoints));
@@ -33,7 +33,7 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBa
     rpf::set_obj_ptr(env, obj, t);
 }
 
-JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1destroy(JNIEnv *env, jobject obj) {
+JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_BasicTrajectory__1destroy(JNIEnv *env, jobject obj) {
     auto ptr = rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj);
     rpf::set_obj_ptr<rpf::BasicTrajectory>(env, obj, nullptr);
     // Remove an entry from the instances list
@@ -44,7 +44,7 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBa
     }
 }
 
-JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1getMoments(JNIEnv *env, jobject obj) {
+JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_BasicTrajectory__1getMoments(JNIEnv *env, jobject obj) {
     auto &moments = rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj)->get_moments();
     
     jclass clazz = env->GetObjectClass(obj);
@@ -62,7 +62,7 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBa
     }
 }
 
-JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1get(JNIEnv *env, jobject obj, jdouble t) {
+JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_BasicTrajectory__1get(JNIEnv *env, jobject obj, jdouble t) {
     auto m = rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj)->get(t);
     jclass mclass = env->FindClass("com/arctos6135/robotpathfinder/core/trajectory/BasicMoment");
     jmethodID constructor_mid = env->GetMethodID(mclass, "<init>", "(DDDDDDZ)V");
@@ -70,7 +70,7 @@ JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JN
     return env->NewObject(mclass, constructor_mid, m.dist, m.vel, m.accel, m.heading, m.time, m.init_facing, m.backwards);
 }
 
-JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1getPath(JNIEnv *env, jobject obj) {
+JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_BasicTrajectory__1getPath(JNIEnv *env, jobject obj) {
     // Since the shared_ptr that came from get_path is a copy of the trajectory's shared_ptr,
     // the reference counting still works
     auto ptr = rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj)->get_path();
@@ -80,29 +80,29 @@ JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIB
     return reinterpret_cast<jlong>(ptr.get());
 }
 
-JNIEXPORT jdouble JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory_totalTime(JNIEnv *env, jobject obj) {
+JNIEXPORT jdouble JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_BasicTrajectory_totalTime(JNIEnv *env, jobject obj) {
     return rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj)->total_time();
 }
 
-JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1mirrorLeftRight(JNIEnv *env, jobject obj) {
+JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_BasicTrajectory__1mirrorLeftRight(JNIEnv *env, jobject obj) {
     auto ptr = rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj)->mirror_lr();
     btinstances.push_back(ptr);
     return reinterpret_cast<jlong>(ptr.get());
 }
 
-JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1mirrorFrontBack(JNIEnv *env, jobject obj) {
+JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_BasicTrajectory__1mirrorFrontBack(JNIEnv *env, jobject obj) {
     auto ptr = rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj)->mirror_fb();
     btinstances.push_back(ptr);
     return reinterpret_cast<jlong>(ptr.get());
 }
 
-JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1retrace(JNIEnv *env, jobject obj) {
+JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_BasicTrajectory__1retrace(JNIEnv *env, jobject obj) {
     auto ptr = rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj)->retrace();
     btinstances.push_back(ptr);
     return reinterpret_cast<jlong>(ptr.get());
 }
 
-JNIEXPORT jint JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1getMomentCount(JNIEnv *env, jobject obj) {
+JNIEXPORT jint JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_BasicTrajectory__1getMomentCount(JNIEnv *env, jobject obj) {
     return rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj)->get_moments().size();
 }
 

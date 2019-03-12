@@ -6,7 +6,7 @@ import com.arctos6135.robotpathfinder.core.Waypoint;
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.lifecycle.GlobalLifeCycleManager;
 
-public class JNIBasicTrajectory extends JNITrajectory {
+public class BasicTrajectory extends JNITrajectory {
 
     static {
         GlobalLibraryLoader.load();
@@ -16,7 +16,7 @@ public class JNIBasicTrajectory extends JNITrajectory {
     private native void _construct(double maxV, double maxA, double baseWidth, boolean isTank, Waypoint[] waypoints, 
             double alpha, int sampleCount, int type);
 
-    public JNIBasicTrajectory(RobotSpecs specs, TrajectoryParams params) {
+    public BasicTrajectory(RobotSpecs specs, TrajectoryParams params) {
         if(Double.isNaN(specs.getMaxVelocity())) {
             throw new IllegalArgumentException("Max velocity cannot be NaN");
         }
@@ -43,7 +43,7 @@ public class JNIBasicTrajectory extends JNITrajectory {
                 params.alpha, params.sampleCount, params.pathType.getJNIID());
         GlobalLifeCycleManager.register(this);
     }
-    public JNIBasicTrajectory(RobotSpecs specs, TrajectoryParams params, long ptr) {
+    public BasicTrajectory(RobotSpecs specs, TrajectoryParams params, long ptr) {
         this.specs = specs;
         this.params = params;
         _nativePtr = ptr;
@@ -86,20 +86,20 @@ public class JNIBasicTrajectory extends JNITrajectory {
 
     private native long _mirrorLeftRight();
     @Override
-    public JNIBasicTrajectory mirrorLeftRight() {
-        return new JNIBasicTrajectory(specs, params, _mirrorLeftRight());
+    public BasicTrajectory mirrorLeftRight() {
+        return new BasicTrajectory(specs, params, _mirrorLeftRight());
     }
 
     private native long _mirrorFrontBack();
     @Override
-    public JNIBasicTrajectory mirrorFrontBack() {
-        return new JNIBasicTrajectory(specs, params, _mirrorFrontBack());
+    public BasicTrajectory mirrorFrontBack() {
+        return new BasicTrajectory(specs, params, _mirrorFrontBack());
     }
 
     private native long _retrace();
     @Override
-    public JNIBasicTrajectory retrace() {
-        return new JNIBasicTrajectory(specs, params, _retrace());
+    public BasicTrajectory retrace() {
+        return new BasicTrajectory(specs, params, _retrace());
     }
 
 }

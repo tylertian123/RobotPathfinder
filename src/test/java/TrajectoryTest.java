@@ -7,7 +7,7 @@ import com.arctos6135.robotpathfinder.core.Waypoint;
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.path.PathType;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicMoment;
-import com.arctos6135.robotpathfinder.core.trajectory.JNIBasicTrajectory;
+import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.JNITankDriveTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
 
@@ -27,14 +27,14 @@ public class TrajectoryTest {
         params.sampleCount = 1000;
         params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
-        JNIBasicTrajectory trajectory = new JNIBasicTrajectory(robotSpecs, params);
+        BasicTrajectory trajectory = new BasicTrajectory(robotSpecs, params);
 
         for(BasicMoment m : trajectory.getMoments()) {
             if(Math.abs(m.getVelocity()) > 5.0) {
-                fail("The JNIBasicTrajectory exceeded the velocity limit at time " + m.getTime());
+                fail("The BasicTrajectory exceeded the velocity limit at time " + m.getTime());
             }
             if(Math.abs(m.getAcceleration()) > 3.5) {
-                fail("The JNIBasicTrajectory exceeded the acceleration limit at time " + m.getTime());
+                fail("The BasicTrajectory exceeded the acceleration limit at time " + m.getTime());
             }
         }
         trajectory.close();
@@ -77,7 +77,7 @@ public class TrajectoryTest {
         params.sampleCount = 1000;
         params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
-        JNIBasicTrajectory trajectory = new JNIBasicTrajectory(robotSpecs, params);
+        BasicTrajectory trajectory = new BasicTrajectory(robotSpecs, params);
 
         assertThat(trajectory.get(0).getVelocity(), is(1.23));
         assertThat(trajectory.get(trajectory.totalTime()).getVelocity(), is(3.45));

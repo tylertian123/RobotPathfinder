@@ -31,7 +31,7 @@ final public class TrajectoryGenerator {
 		// Use Bezier type since we only have one segment and it doesn't really matter
 		params.pathType = PathType.BEZIER;
 		// Since we're going in a straight line, we don't need much precision
-		params.segmentCount = 100;
+		params.sampleCount = 100;
 		params.waypoints = new JNIWaypoint[] {
             new JNIWaypoint(0, 0, Math.PI / 2),
             // Take the absolute value; negative values aren't handled so well
@@ -51,7 +51,7 @@ final public class TrajectoryGenerator {
 		JNITrajectoryParams params = new JNITrajectoryParams();
 		params.isTank = true;
 		params.pathType = PathType.BEZIER;
-		params.segmentCount = 100;
+		params.sampleCount = 100;
 		params.waypoints = new JNIWaypoint[] {
             new JNIWaypoint(0, 0, Math.PI / 2),
             new JNIWaypoint(0, Math.abs(distance), Math.PI / 2)

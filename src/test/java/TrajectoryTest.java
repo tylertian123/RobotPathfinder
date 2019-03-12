@@ -24,7 +24,7 @@ public class TrajectoryTest {
             new JNIWaypoint(0.0, 100.0, Math.PI / 2),
         };
         params.alpha = 40.0;
-        params.segmentCount = 1000;
+        params.sampleCount = 1000;
         params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
         JNIBasicTrajectory trajectory = new JNIBasicTrajectory(robotSpecs, params);
@@ -49,7 +49,7 @@ public class TrajectoryTest {
             new JNIWaypoint(0.0, 100.0, Math.PI / 2),
         };
         params.alpha = 40.0;
-        params.segmentCount = 1000;
+        params.sampleCount = 1000;
         params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
         JNITankDriveTrajectory trajectory = new JNITankDriveTrajectory(robotSpecs, params);
@@ -74,7 +74,7 @@ public class TrajectoryTest {
             new JNIWaypoint(0.0, 100.0, Math.PI / 2, 3.45),
         };
         params.alpha = 40.0;
-        params.segmentCount = 1000;
+        params.sampleCount = 1000;
         params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
         JNIBasicTrajectory trajectory = new JNIBasicTrajectory(robotSpecs, params);

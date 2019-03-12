@@ -29,21 +29,9 @@ public class JNITrajectoryParams implements Cloneable {
 	 * </p>
 	 */
 	public double alpha = Double.NaN;
-	/**
-	 * The number of segments to split the path into when calculating. Because trajectory generation uses numerical
-	 * integration, a higher segment count will result in a better approximation of the theoretical perfect trajectory,
-	 * but will increase the generation time. Default value is {@code 1000}.
-	 */
-	public int segmentCount = 1000;
-	/**
-	 * The rounding limit for small floating-point numbers when solving equations. During calculations, 
-	 * floating-point rounding errors can stack up, resulting in unsolvable equations. Any number smaller in
-	 * magnitude than this value will be rounded down to 0. This field can usually be ignored. Default value is
-	 * {@code 1.0e-6}.
-	 * @deprecated This field is no longer needed in the current implementation. It is only kept for compatibility.
-	 */
-    @Deprecated
-	public double roundingLimit = 1.0e-6;
+	
+	public int sampleCount = 1000;
+	
 	/**
 	 * Whether the trajectory is to be used as the base for a {@link com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory TankDriveTrajectory}. Setting this value to
 	 * {@code true} will result in extra processing to prepare for the generation of a {@link com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory TankDriveTrajectory}.
@@ -62,8 +50,7 @@ public class JNITrajectoryParams implements Cloneable {
 		JNITrajectoryParams tp = new JNITrajectoryParams();
 		tp.waypoints = this.waypoints;
 		tp.alpha = this.alpha;
-		tp.segmentCount = this.segmentCount;
-		tp.roundingLimit = this.roundingLimit;
+		tp.sampleCount = this.sampleCount;
 		
 		tp.isTank = this.isTank;
 		

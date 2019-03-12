@@ -32,7 +32,7 @@ public class DebugTests {
         params.alpha = 20;
         params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
-        params.segmentCount = 1000;
+        params.sampleCount = 1000;
         
         JNIBasicTrajectory traj = new JNIBasicTrajectory(specs, params);
         System.out.println(traj.totalTime());
@@ -54,7 +54,7 @@ public class DebugTests {
         params.alpha = 20;
         params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
-        params.segmentCount = 1000;
+        params.sampleCount = 1000;
         
         var traj1 = new JNITankDriveTrajectory(specs, params);
         var traj = traj1.retrace();
@@ -69,7 +69,7 @@ public class DebugTests {
 	public static void main(String[] args) throws Exception {
         prompt();
         RobotSpecs specs = new RobotSpecs(5.0, 3.5, 2.0);
-        var traj = TrajectoryGenerator.generateStraightTank(specs, -2 * Math.PI);
+        var traj = TrajectoryGenerator.generateStraightBasic(specs, -2 * Math.PI);
         traj.getMoments();
         //JFrame f = Grapher.graphTrajectory(traj, 0.001, true);
         //f.setVisible(true);

@@ -12,7 +12,7 @@ public class JNITankDriveTrajectory extends JNITrajectory {
     }
 
     private native void _construct(double maxV, double maxA, double baseWidth, boolean isTank, JNIWaypoint[] waypoints, 
-            double alpha, int segmentCount, int type);
+            double alpha, int sampleCount, int type);
 
     public JNITankDriveTrajectory(RobotSpecs specs, JNITrajectoryParams params) {
         if(Double.isNaN(specs.getMaxVelocity())) {
@@ -30,7 +30,7 @@ public class JNITankDriveTrajectory extends JNITrajectory {
         if(Double.isNaN(params.alpha)) {
             throw new IllegalArgumentException("Alpha cannot be NaN");
         }
-        if(params.segmentCount < 1) {
+        if(params.sampleCount < 1) {
             throw new IllegalArgumentException("Segment count must be greater than zero");
         }
         if(!params.isTank) {
@@ -41,7 +41,7 @@ public class JNITankDriveTrajectory extends JNITrajectory {
         this.params = params;
 
         _construct(specs.getMaxVelocity(), specs.getMaxAcceleration(), specs.getBaseWidth(), params.isTank, params.waypoints, 
-                params.alpha, params.segmentCount, params.pathType.getJNIID());
+                params.alpha, params.sampleCount, params.pathType.getJNIID());
     }
     public JNITankDriveTrajectory(RobotSpecs specs, JNITrajectoryParams params, long ptr) {
         this.specs = specs;

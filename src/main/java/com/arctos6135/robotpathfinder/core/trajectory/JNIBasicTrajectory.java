@@ -51,9 +51,18 @@ public class JNIBasicTrajectory extends JNITrajectory {
 
     @Override
     protected native void _getMoments();
+    protected BasicMoment[] momentsCache;
     @Override
     public BasicMoment[] getMoments() {
-        return (BasicMoment[]) super.getMoments();
+        if(momentsCache == null) {
+            momentsCache = new BasicMoment[params.segmentCount];
+            _getMoments();
+        }
+        return momentsCache;
+    }
+    @Override
+    public void clearMomentsCache() {
+        momentsCache = null;
     }
 
     @Override

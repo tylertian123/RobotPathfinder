@@ -1,5 +1,7 @@
 
 
+import java.io.IOException;
+
 import javax.swing.JFrame;
 
 import com.arctos6135.robotpathfinder.core.JNITrajectoryParams;
@@ -13,10 +15,14 @@ import com.arctos6135.robotpathfinder.tools.Grapher;
 
 public class DebugTests {
 
-    public static void test21() throws Exception {
+    public static void prompt() throws IOException {
         System.out.println("Press enter to continue execution");
         System.out.println("PID: " + ProcessHandle.current().pid());
+        System.out.println("To Debug:\ngdb -p " + ProcessHandle.current().pid());
         System.in.read();
+    }
+
+    public static void test21() throws Exception {
         RobotSpecs specs = new RobotSpecs(5, 3, 1);
         JNITrajectoryParams params = new JNITrajectoryParams();
         params.waypoints = new JNIWaypoint[] {
@@ -37,8 +43,6 @@ public class DebugTests {
     }
 
     public static void test22() throws Exception {
-        System.out.println("Press enter to continue execution");
-        System.out.println("PID: " + ProcessHandle.current().pid());
         System.in.read();
         RobotSpecs specs = new RobotSpecs(5, 3, 1);
         JNITrajectoryParams params = new JNITrajectoryParams();
@@ -63,10 +67,12 @@ public class DebugTests {
         f1.setVisible(true);
     }
 	public static void main(String[] args) throws Exception {
+        prompt();
         RobotSpecs specs = new RobotSpecs(5.0, 3.5, 2.0);
-        var traj = TrajectoryGenerator.generateRotationTank(specs, -2 * Math.PI);
-        JFrame f = Grapher.graphTrajectory(traj, 0.001, true);
-        f.setVisible(true);
+        var traj = TrajectoryGenerator.generateStraightTank(specs, -2 * Math.PI);
+        traj.getMoments();
+        //JFrame f = Grapher.graphTrajectory(traj, 0.001, true);
+        //f.setVisible(true);
         traj.close();
 	}
 }

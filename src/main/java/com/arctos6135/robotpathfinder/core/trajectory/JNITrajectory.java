@@ -29,35 +29,26 @@ public abstract class JNITrajectory extends JNIObject {
 	@Override
     public void free() {
         super.free();
-        momentsCache = null;
-        pathCache = null;
+        clearPathCache();
+        clearMomentsCache();
     }
     @Override
     public void finalize() {
         super.finalize();
-        momentsCache = null;
-        pathCache = null;
+        clearPathCache();
+        clearMomentsCache();
     }
     @Override
     public void close() {
         super.close();
-        momentsCache = null;
-        pathCache = null;
+        clearPathCache();
+        clearMomentsCache();
     }
 
 	// Native
 	abstract protected void _getMoments();
-	protected Moment[] momentsCache;
-    public Moment[] getMoments() {
-        if(momentsCache == null) {
-            momentsCache = new BasicMoment[params.segmentCount];
-            _getMoments();
-        }
-        return momentsCache;
-    }
-    public void clearMomentsCache() {
-        momentsCache = null;
-    }
+    abstract public Moment[] getMoments();
+    abstract public void clearMomentsCache();
 	
 	// Native
 	abstract protected Moment _get(double t);

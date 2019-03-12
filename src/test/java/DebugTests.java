@@ -69,18 +69,24 @@ public class DebugTests {
         f.setVisible(true);
     }
 	public static void main(String[] args) throws Exception {
+        System.out.println("Press enter to continue execution");
+        System.out.println("PID: " + ProcessHandle.current().pid());
+        System.in.read();
         RobotSpecs specs = new RobotSpecs(5, 3, 1);
         JNITrajectoryParams params = new JNITrajectoryParams();
         params.waypoints = new JNIWaypoint[] {
             new JNIWaypoint(0, 0, Math.PI / 2),
-            new JNIWaypoint(10, 10, Math.PI / 2),
+            new JNIWaypoint(0, 10, Math.PI / 2),
         };
         params.alpha = 20;
         params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
         params.segmentCount = 1000;
-        JNITankDriveTrajectory traj = new JNITankDriveTrajectory(specs, params);
-        traj.free();
-        System.out.println("\033[1;5;32mI AM ALIVE!!!!");
+        
+        JNIBasicTrajectory traj = new JNIBasicTrajectory(specs, params);
+        System.out.println(traj.totalTime());
+        JFrame f = Grapher.graphTrajectory(traj, 0.001);
+        traj.close();
+        f.setVisible(true);
 	}
 }

@@ -52,7 +52,7 @@ namespace rpf {
                     auto dd = path->second_deriv_at(t);
                     double curvature = rpf::curvature(d.x, dd.x, d.y, dd.y);
 
-                    headings.push_back(std::atan2(d.x, d.y));
+                    headings.push_back(std::atan2(d.y, d.x));
                     
                     pathr.push_back(1 / curvature);
                     mv.push_back(specs.max_v / (1 + specs.base_width / (2 * std::abs(pathr[i]))));
@@ -64,7 +64,7 @@ namespace rpf {
 
                     double t = path->s2t(ds * i);
                     Vec2D d = path->deriv_at(t);
-                    headings.push_back(std::atan2(d.x, d.y));
+                    headings.push_back(std::atan2(d.y, d.x));
                 }
             }
 

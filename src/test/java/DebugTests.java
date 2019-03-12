@@ -128,7 +128,7 @@ public class DebugTests {
     }
 	public static void main(String[] args) throws Exception {
         RobotSpecs specs = new RobotSpecs(5.0, 3.5, 2.0);
-        var traj = TrajectoryGenerator.generateRotationTank(specs, Math.PI);
+        var traj = TrajectoryGenerator.generateRotationTank(specs, -2 * Math.PI);
         JFrame f = Grapher.graphTrajectory(traj, 0.001, true);
         f.setVisible(true);
         traj.close();

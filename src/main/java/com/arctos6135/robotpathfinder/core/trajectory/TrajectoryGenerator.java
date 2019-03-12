@@ -1,5 +1,6 @@
 package com.arctos6135.robotpathfinder.core.trajectory;
 
+import com.arctos6135.robotpathfinder.core.GlobalLibraryLoader;
 import com.arctos6135.robotpathfinder.core.JNITrajectoryParams;
 import com.arctos6135.robotpathfinder.core.JNIWaypoint;
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
@@ -11,6 +12,10 @@ import com.arctos6135.robotpathfinder.core.path.PathType;
  *
  */
 final public class TrajectoryGenerator {
+
+    static {
+        GlobalLibraryLoader.load();
+    }
 	
 	private TrajectoryGenerator() {}
 	

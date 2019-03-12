@@ -10,7 +10,7 @@ import com.arctos6135.robotpathfinder.core.Waypoint;
 import com.arctos6135.robotpathfinder.core.path.Path;
 import com.arctos6135.robotpathfinder.core.path.PathType;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
-import com.arctos6135.robotpathfinder.core.trajectory.JNITankDriveTrajectory;
+import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
 import com.arctos6135.robotpathfinder.tools.Grapher;
 
 public class DebugTests {
@@ -56,7 +56,7 @@ public class DebugTests {
         params.pathType = PathType.QUINTIC_HERMITE;
         params.sampleCount = 1000;
         
-        var traj1 = new JNITankDriveTrajectory(specs, params);
+        var traj1 = new TankDriveTrajectory(specs, params);
         var traj = traj1.retrace();
         System.out.println(traj.totalTime());
         JFrame f1 = Grapher.graphPath(traj.getPath(), 0.001);

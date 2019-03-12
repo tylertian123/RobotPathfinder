@@ -42,12 +42,12 @@ final public class TrajectoryGenerator {
 		return distance >= 0 ? new BasicTrajectory(specs, params) : new BasicTrajectory(specs, params).mirrorFrontBack();
 	}
 	/**
-	 * Generates a {@link JNITankDriveTrajectory} that will drive straight forward for the specified distance.
+	 * Generates a {@link TankDriveTrajectory} that will drive straight forward for the specified distance.
 	 * @param specs The specifications of the robot
 	 * @param distance The distance to drive forward for
 	 * @return The generated trajectory
 	 */
-	public static JNITankDriveTrajectory generateStraightTank(RobotSpecs specs, double distance) {
+	public static TankDriveTrajectory generateStraightTank(RobotSpecs specs, double distance) {
 		TrajectoryParams params = new TrajectoryParams();
 		params.isTank = true;
 		params.pathType = PathType.BEZIER;
@@ -58,11 +58,11 @@ final public class TrajectoryGenerator {
 		};
 		params.alpha = Math.abs(distance) / 2;
 		
-		return distance >= 0 ? new JNITankDriveTrajectory(specs, params) : new JNITankDriveTrajectory(specs, params).mirrorFrontBack();
+		return distance >= 0 ? new TankDriveTrajectory(specs, params) : new TankDriveTrajectory(specs, params).mirrorFrontBack();
     }
 
-    private static native JNITankDriveTrajectory _generateRotationTank(double maxV, double maxA, double baseWidth, double angle);
-    public static JNITankDriveTrajectory generateRotationTank(RobotSpecs specs, double angle) {
+    private static native TankDriveTrajectory _generateRotationTank(double maxV, double maxA, double baseWidth, double angle);
+    public static TankDriveTrajectory generateRotationTank(RobotSpecs specs, double angle) {
         return _generateRotationTank(specs.getMaxVelocity(), specs.getMaxAcceleration(), specs.getBaseWidth(), angle);
     }
 }

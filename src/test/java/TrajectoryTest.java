@@ -8,7 +8,7 @@ import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.path.PathType;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicMoment;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
-import com.arctos6135.robotpathfinder.core.trajectory.JNITankDriveTrajectory;
+import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
 
 import org.junit.Test;
@@ -52,7 +52,7 @@ public class TrajectoryTest {
         params.sampleCount = 1000;
         params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
-        JNITankDriveTrajectory trajectory = new JNITankDriveTrajectory(robotSpecs, params);
+        TankDriveTrajectory trajectory = new TankDriveTrajectory(robotSpecs, params);
 
         for(TankDriveMoment m : trajectory.getMoments()) {
             if(Math.abs(m.getLeftVelocity()) > 5.0) {

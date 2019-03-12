@@ -46,7 +46,7 @@ JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_Tr
         }
     }
 
-    jclass tclass = env->FindClass("com/arctos6135/robotpathfinder/core/trajectory/JNITankDriveTrajectory");
+    jclass tclass = env->FindClass("com/arctos6135/robotpathfinder/core/trajectory/TankDriveTrajectory");
     jmethodID mid = env->GetMethodID(tclass, "<init>", "(Lcom/arctos6135/robotpathfinder/core/RobotSpecs;Lcom/arctos6135/robotpathfinder/core/TrajectoryParams;J)V");
     return env->NewObject(tclass, mid, NULL, NULL, reinterpret_cast<jlong>(t));
 }

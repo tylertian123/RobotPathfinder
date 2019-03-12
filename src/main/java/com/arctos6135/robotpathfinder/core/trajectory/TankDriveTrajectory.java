@@ -6,7 +6,7 @@ import com.arctos6135.robotpathfinder.core.Waypoint;
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.lifecycle.GlobalLifeCycleManager;
 
-public class JNITankDriveTrajectory extends JNITrajectory {
+public class TankDriveTrajectory extends JNITrajectory {
 
     static {
         GlobalLibraryLoader.load();
@@ -16,7 +16,7 @@ public class JNITankDriveTrajectory extends JNITrajectory {
     private native void _construct(double maxV, double maxA, double baseWidth, boolean isTank, Waypoint[] waypoints, 
             double alpha, int sampleCount, int type);
 
-    public JNITankDriveTrajectory(RobotSpecs specs, TrajectoryParams params) {
+    public TankDriveTrajectory(RobotSpecs specs, TrajectoryParams params) {
         if(Double.isNaN(specs.getMaxVelocity())) {
             throw new IllegalArgumentException("Max velocity cannot be NaN");
         }
@@ -46,7 +46,7 @@ public class JNITankDriveTrajectory extends JNITrajectory {
                 params.alpha, params.sampleCount, params.pathType.getJNIID());
         GlobalLifeCycleManager.register(this);
     }
-    public JNITankDriveTrajectory(RobotSpecs specs, TrajectoryParams params, long ptr) {
+    public TankDriveTrajectory(RobotSpecs specs, TrajectoryParams params, long ptr) {
         this.specs = specs;
         this.params = params;
         _nativePtr = ptr;
@@ -89,19 +89,19 @@ public class JNITankDriveTrajectory extends JNITrajectory {
 
     private native long _mirrorLeftRight();
     @Override
-    public JNITankDriveTrajectory mirrorLeftRight() {
-        return new JNITankDriveTrajectory(specs, params, _mirrorLeftRight());
+    public TankDriveTrajectory mirrorLeftRight() {
+        return new TankDriveTrajectory(specs, params, _mirrorLeftRight());
     }
 
     private native long _mirrorFrontBack();
     @Override
-    public JNITankDriveTrajectory mirrorFrontBack() {
-        return new JNITankDriveTrajectory(specs, params, _mirrorFrontBack());
+    public TankDriveTrajectory mirrorFrontBack() {
+        return new TankDriveTrajectory(specs, params, _mirrorFrontBack());
     }
 
     private native long _retrace();
     @Override
-    public JNITankDriveTrajectory retrace() {
-        return new JNITankDriveTrajectory(specs, params, _retrace());
+    public TankDriveTrajectory retrace() {
+        return new TankDriveTrajectory(specs, params, _retrace());
     }
 }

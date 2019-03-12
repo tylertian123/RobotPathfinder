@@ -83,10 +83,14 @@ public class DebugTests {
         params.pathType = PathType.QUINTIC_HERMITE;
         params.segmentCount = 1000;
         
-        var traj = new JNITankDriveTrajectory(specs, params);
+        var traj1 = new JNITankDriveTrajectory(specs, params);
+        var traj = traj1.mirrorLeftRight();
         System.out.println(traj.totalTime());
-        JFrame f = Grapher.graphTrajectory(traj, 0.001);
+        JFrame f1 = Grapher.graphPath(traj.getPath(), 0.001);
+        JFrame f = Grapher.graphTrajectory(traj, 0.001, true);
         traj.close();
+        traj1.close();
         f.setVisible(true);
+        f1.setVisible(true);
 	}
 }

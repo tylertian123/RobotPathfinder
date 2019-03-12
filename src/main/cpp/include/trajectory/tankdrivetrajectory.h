@@ -18,7 +18,8 @@ namespace rpf {
             if(!params.is_tank) {
                 throw std::invalid_argument("Base trajectory must be tank");
             }
-
+            
+            path->set_base(specs.base_width / 2);
             moments.reserve(traj.moments.size());
             if(!std::isnan(params.waypoints[0].velocity)) {
                 double v = traj.moments[0].vel;

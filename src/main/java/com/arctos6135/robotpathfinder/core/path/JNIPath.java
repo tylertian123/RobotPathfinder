@@ -95,7 +95,7 @@ public class JNIPath extends JNIObject {
     private native long _mirrorFrontBack();
     private native long _retrace();
 
-    private native void _updateWaypoints();
+    public native void _updateWaypoints();
     public JNIPath mirrorLeftRight() {
         JNIPath p = new JNIPath(waypoints, alpha, type, _mirrorLeftRight());
         p.backwards = backwards;

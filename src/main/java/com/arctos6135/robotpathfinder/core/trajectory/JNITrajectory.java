@@ -74,6 +74,8 @@ public abstract class JNITrajectory extends JNIObject {
     public JNIPath getPath() {
         if(pathCache == null) {
             pathCache = new JNIPath(params.waypoints, params.alpha, params.pathType, _getPath());
+            pathCache.setBaseRadius(specs.getBaseWidth() / 2);
+            pathCache._updateWaypoints();
         }
         return pathCache;
     }

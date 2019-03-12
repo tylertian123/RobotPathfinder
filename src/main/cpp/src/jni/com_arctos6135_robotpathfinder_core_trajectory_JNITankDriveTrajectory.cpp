@@ -72,3 +72,31 @@ JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JN
     return env->NewObject(mclass, constructor_mid, m.l_dist, m.r_dist, m.l_vel, m.r_vel, m.l_accel, m.r_accel, 
             m.heading, m.time, m.init_facing, m.backwards);
 }
+
+JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNITankDriveTrajectory__1getPath(JNIEnv *env, jobject obj) {
+    auto ptr = rpf::get_obj_ptr<rpf::TankDriveTrajectory>(env, obj)->get_path();
+    pinstances.push_back(ptr);
+    return reinterpret_cast<jlong>(ptr.get());
+}
+
+JNIEXPORT jdouble JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNITankDriveTrajectory_totalTime(JNIEnv *env, jobject obj) {
+    return rpf::get_obj_ptr<rpf::TankDriveTrajectory>(env, obj)->total_time();
+}
+
+JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNITankDriveTrajectory__1mirrorLeftRight(JNIEnv *env, jobject obj) {
+    auto ptr = rpf::get_obj_ptr<rpf::TankDriveTrajectory>(env, obj)->mirror_lr();
+    ttinstances.push_back(ptr);
+    return reinterpret_cast<jlong>(ptr.get());
+}
+
+JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNITankDriveTrajectory__1mirrorFrontBack(JNIEnv *env, jobject obj) {
+    auto ptr = rpf::get_obj_ptr<rpf::TankDriveTrajectory>(env, obj)->mirror_fb();
+    ttinstances.push_back(ptr);
+    return reinterpret_cast<jlong>(ptr.get());
+}
+
+JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNITankDriveTrajectory__1retrace(JNIEnv *env, jobject obj) {
+    auto ptr = rpf::get_obj_ptr<rpf::TankDriveTrajectory>(env, obj)->retrace();
+    ttinstances.push_back(ptr);
+    return reinterpret_cast<jlong>(ptr.get());
+}

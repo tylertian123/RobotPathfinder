@@ -1,7 +1,7 @@
 package com.arctos6135.robotpathfinder.follower;
 
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
-import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
+import com.arctos6135.robotpathfinder.core.trajectory.JNITankDriveTrajectory;
 import com.arctos6135.robotpathfinder.math.MathUtils;
 
 /**
@@ -15,9 +15,9 @@ import com.arctos6135.robotpathfinder.math.MathUtils;
  * @author Tyler Tian
  *
  */
-public class TankFollower extends Follower {
+public class TankDriveFollower extends Follower {
 
-	TankDriveTrajectory traj;
+	JNITankDriveTrajectory traj;
 	TimestampSource timer;
 	DistanceSource lDistSrc, rDistSrc;
 	DirectionSource directionSrc;
@@ -45,7 +45,7 @@ public class TankFollower extends Follower {
 	 * @param kV The velocity feedforward 
 	 * @param kA The acceleration feedforward
 	 */
-	public TankFollower(TankDriveTrajectory traj, Motor lMotor, Motor rMotor, TimestampSource timer,
+	public TankDriveFollower(JNITankDriveTrajectory traj, Motor lMotor, Motor rMotor, TimestampSource timer,
 			double kV, double kA) {
 		setGains(kV, kA, 0, 0, 0);
 		this.traj = traj;
@@ -70,7 +70,7 @@ public class TankFollower extends Follower {
 	 * @param kP The proportional gain
 	 * @param kD The derivative gain
 	 */
-	public TankFollower(TankDriveTrajectory traj, Motor lMotor, Motor rMotor, 
+	public TankDriveFollower(JNITankDriveTrajectory traj, Motor lMotor, Motor rMotor, 
 			DistanceSource lDistSrc, DistanceSource rDistSrc, TimestampSource timer,
 			double kV, double kA, double kP, double kD) {
 		setGains(kV, kA, kP, kD, 0);
@@ -94,7 +94,7 @@ public class TankFollower extends Follower {
 	 * @param kA The acceleration feedforward
 	 * @param kDP The directional-proportional gain; for more information, see {@link #setDP(double)}
 	 */
-	public TankFollower(TankDriveTrajectory traj, Motor lMotor, Motor rMotor, TimestampSource timer, 
+	public TankDriveFollower(JNITankDriveTrajectory traj, Motor lMotor, Motor rMotor, TimestampSource timer, 
 			DirectionSource dirSrc, double kV, double kA, double kDP) {
 		setGains(kV, kA, 0, 0, kDP);
 		this.traj = traj;
@@ -120,7 +120,7 @@ public class TankFollower extends Follower {
 	 * @param kD The derivative gain
 	 * @param kDP The directional-proportional gain; for more information, see {@link #setDP(double)}
 	 */
-	public TankFollower(TankDriveTrajectory traj, Motor lMotor, Motor rMotor, DistanceSource lDistSrc,
+	public TankDriveFollower(JNITankDriveTrajectory traj, Motor lMotor, Motor rMotor, DistanceSource lDistSrc,
 			DistanceSource rDistSrc, TimestampSource timer, DirectionSource dirSrc, 
 			double kV, double kA, double kP, double kD, double kDP) {
 		setGains(kV, kA, kP, kD, kDP);
@@ -172,7 +172,7 @@ public class TankFollower extends Follower {
 	 * @param traj The new trajectory to follow
 	 * @throws RuntimeException If the follower is running
 	 */
-	public void setTrajectory(TankDriveTrajectory traj) {
+	public void setTrajectory(JNITankDriveTrajectory traj) {
 		if(running) {
 			throw new RuntimeException("Trajectory cannot be changed when follower is running");
 		}

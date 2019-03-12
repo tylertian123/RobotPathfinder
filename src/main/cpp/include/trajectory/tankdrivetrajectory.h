@@ -90,6 +90,8 @@ namespace rpf {
             return moments[moments.size() - 1].time;
         }
 
+        TankDriveMoment get(double) const;
+
     protected:
         RobotSpecs specs;
         TrajectoryParams params;

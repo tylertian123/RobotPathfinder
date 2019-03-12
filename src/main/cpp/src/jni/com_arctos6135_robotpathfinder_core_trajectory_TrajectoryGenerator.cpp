@@ -5,9 +5,10 @@
 #include "trajectoryparams.h"
 #include "math/rpfmath.h"
 #include <vector>
+#include <list>
 #include <memory>
 
-extern std::vector<std::shared_ptr<rpf::TankDriveTrajectory>> ttinstances;
+extern std::list<std::shared_ptr<rpf::TankDriveTrajectory>> ttinstances;
 
 JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_TrajectoryGenerator__1generateRotationTank
         (JNIEnv *env, jclass clazz, jdouble maxv, jdouble maxa, jdouble base_width, jdouble angle) {

@@ -2,6 +2,7 @@
 #include "paths.h"
 #include "jni/jniutil.h"
 #include <vector>
+#include <list>
 #include <memory>
 #include <algorithm>
 
@@ -9,7 +10,7 @@
 // With each instance created an entry will be added
 // With each instance destroyed an entry will be deleted
 // This ensures that when there are no more Java instances of a Path object, the C++ object is also deleted
-std::vector<std::shared_ptr<rpf::Path>> pinstances;
+std::list<std::shared_ptr<rpf::Path>> pinstances;
 
 JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_path_JNIPath__1construct
         (JNIEnv *env, jobject obj, jobjectArray waypoints, jdouble alpha, jint type) {

@@ -1,11 +1,16 @@
 package com.arctos6135.robotpathfinder.core.path;
 
 import com.arctos6135.robotpathfinder.core.JNIWaypoint;
+import com.arctos6135.robotpathfinder.core.lifecycle.GlobalLifeCycleManager;
 import com.arctos6135.robotpathfinder.core.lifecycle.JNIObject;
 import com.arctos6135.robotpathfinder.math.Vec2D;
 import com.arctos6135.robotpathfinder.util.Pair;
 
 public class JNIPath extends JNIObject {
+
+    static {
+        GlobalLifeCycleManager.initialize();
+    }
 
     private native void _construct(JNIWaypoint[] waypoints, double alpha, int type);
 
@@ -21,12 +26,14 @@ public class JNIPath extends JNIObject {
         }
         
         _construct(waypoints, alpha, type.getJNIID());
+        GlobalLifeCycleManager.register(this);
     }
     public JNIPath(JNIWaypoint[] waypoints, double alpha, PathType type, long ptr) {
         this.waypoints = waypoints;
         this.alpha = alpha;
         this.type = type;
         _nativePtr = ptr;
+        GlobalLifeCycleManager.register(this);
     }
     
     protected native void _destroy();

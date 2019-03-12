@@ -7,10 +7,10 @@ import javax.swing.JFrame;
 import com.arctos6135.robotpathfinder.core.JNITrajectoryParams;
 import com.arctos6135.robotpathfinder.core.JNIWaypoint;
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
+import com.arctos6135.robotpathfinder.core.path.JNIPath;
 import com.arctos6135.robotpathfinder.core.path.PathType;
 import com.arctos6135.robotpathfinder.core.trajectory.JNIBasicTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.JNITankDriveTrajectory;
-import com.arctos6135.robotpathfinder.core.trajectory.TrajectoryGenerator;
 import com.arctos6135.robotpathfinder.tools.Grapher;
 
 public class DebugTests {
@@ -68,11 +68,23 @@ public class DebugTests {
     }
 	public static void main(String[] args) throws Exception {
         prompt();
-        RobotSpecs specs = new RobotSpecs(5.0, 3.5, 2.0);
-        var traj = TrajectoryGenerator.generateStraightBasic(specs, -2 * Math.PI);
-        traj.getMoments();
-        //JFrame f = Grapher.graphTrajectory(traj, 0.001, true);
-        //f.setVisible(true);
-        traj.close();
+
+        for(int i = 0; i < 800000; i ++) {
+            @SuppressWarnings("unused")
+            JNIPath path = new JNIPath(new JNIWaypoint[] {
+                new JNIWaypoint(0, 0, Math.PI / 2),
+                new JNIWaypoint(0, 10, Math.PI / 2),
+            }, 2.0, PathType.QUINTIC_HERMITE);
+        }
+        System.out.println("-- do some memory intensive work --");
+        for (int i = 0; i < 10; i++) {
+            int[] ints = new int[1000000];
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+            }
+        }
+        System.gc();
+        System.out.println("-- heavy work finished --");
 	}
 }

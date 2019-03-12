@@ -4,11 +4,13 @@ import com.arctos6135.robotpathfinder.core.GlobalLibraryLoader;
 import com.arctos6135.robotpathfinder.core.JNITrajectoryParams;
 import com.arctos6135.robotpathfinder.core.JNIWaypoint;
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
+import com.arctos6135.robotpathfinder.core.lifecycle.GlobalLifeCycleManager;
 
 public class JNIBasicTrajectory extends JNITrajectory {
 
     static {
         GlobalLibraryLoader.load();
+        GlobalLifeCycleManager.initialize();
     }
 
     private native void _construct(double maxV, double maxA, double baseWidth, boolean isTank, JNIWaypoint[] waypoints, 
@@ -39,11 +41,13 @@ public class JNIBasicTrajectory extends JNITrajectory {
 
         _construct(specs.getMaxVelocity(), specs.getMaxAcceleration(), specs.getBaseWidth(), params.isTank, params.waypoints, 
                 params.alpha, params.sampleCount, params.pathType.getJNIID());
+        GlobalLifeCycleManager.register(this);
     }
     public JNIBasicTrajectory(RobotSpecs specs, JNITrajectoryParams params, long ptr) {
         this.specs = specs;
         this.params = params;
         _nativePtr = ptr;
+        GlobalLifeCycleManager.register(this);
     }
 
     @Override

@@ -1,12 +1,15 @@
 package com.arctos6135.robotpathfinder.core.lifecycle;
 
 import java.lang.ref.ReferenceQueue;
+import java.util.LinkedList;
+import java.util.List;
 
 public final class GlobalLifeCycleManager {
     
     private GlobalLifeCycleManager() {}
 
     protected static ReferenceQueue<JNIObject> referenceQueue = new ReferenceQueue<JNIObject>();
+    protected static List<JNIObjectReference> references = new LinkedList<>();
     protected static ResourceDisposalThread resourceDisposalThread;
     protected static boolean initialized = false;
 
@@ -22,6 +25,7 @@ public final class GlobalLifeCycleManager {
                 try {
                     JNIObjectReference ref = (JNIObjectReference) GlobalLifeCycleManager.referenceQueue.remove();
                     ref.freeResources();
+                    references.remove(ref);
                     ref.clear();
                 }
                 catch(InterruptedException e) {
@@ -41,8 +45,8 @@ public final class GlobalLifeCycleManager {
     }
 
     public static void register(JNIObject obj) {
-        @SuppressWarnings("unused")
         JNIObjectReference ref = new JNIObjectReference(obj, referenceQueue);
+        references.add(ref);
     }
 }
 

@@ -100,3 +100,8 @@ JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIB
     btinstances.push_back(ptr);
     return reinterpret_cast<jlong>(ptr.get());
 }
+
+JNIEXPORT jint JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1getMomentCount(JNIEnv *env, jobject obj) {
+    return rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj)->get_moments().size();
+}
+

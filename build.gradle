@@ -96,7 +96,7 @@ model {
 }
 
 task updateJNIHeaders(type: Copy, group: 'Development', description: 'Copies JNI generated headers into the JNI headers directory.') {
-    dependsOn build
+    dependsOn assemble
 
     from 'build/jniinclude/compileJava'
     into 'src/main/cpp/include/jni'

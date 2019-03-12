@@ -52,14 +52,15 @@ public class JNITankDriveTrajectory extends JNITrajectory {
     @Override
     protected native void _destroy();
 
-
+    @Override
+    protected native int _getMomentCount();
     @Override
     protected native void _getMoments();
     protected TankDriveMoment[] momentsCache;
     @Override
     public TankDriveMoment[] getMoments() {
         if(momentsCache == null) {
-            momentsCache = new TankDriveMoment[params.segmentCount];
+            momentsCache = new TankDriveMoment[_getMomentCount()];
             _getMoments();
         }
         return momentsCache;

@@ -25,6 +25,14 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBa
 
 /*
  * Class:     com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory
+ * Method:    _getMomentCount
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory__1getMomentCount
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_arctos6135_robotpathfinder_core_trajectory_JNIBasicTrajectory
  * Method:    _getMoments
  * Signature: ()V
  */

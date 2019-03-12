@@ -45,7 +45,8 @@ public abstract class JNITrajectory extends JNIObject {
         clearMomentsCache();
     }
 
-	// Native
+    // Native
+    abstract protected int _getMomentCount();
 	abstract protected void _getMoments();
     abstract public Moment[] getMoments();
     abstract public void clearMomentsCache();

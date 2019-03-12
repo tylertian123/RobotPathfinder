@@ -147,11 +147,11 @@ task copyLibDebug(group: 'Development', description: 'Copies the correct debug d
     println('Detected architeture: ' + System.getProperty('os.arch'))
     if(Os.isFamily(Os.FAMILY_UNIX)) {
         println('Detected OS: UNIX')
-        finalizedBy copyLibLinuxx8664Debug
+        dependsOn copyLibLinuxx8664Debug
     }
     else if(Os.isFamily(Os.FAMILY_WINDOWS)) {
         println('Detected OS: Windows')
-        finalizedBy copyLibWindowsx8664Debug
+        dependsOn copyLibWindowsx8664Debug
     }
     else {
         throw new GradleException('OS not supported')
@@ -166,11 +166,11 @@ task copyLibRelease(group: 'Development', description: 'Copies the correct relea
     println('Detected architeture: ' + System.getProperty('os.arch'))
     if(Os.isFamily(Os.FAMILY_UNIX)) {
         println('Detected OS: UNIX')
-        finalizedBy copyLibLinuxx8664Release
+        dependsOn copyLibLinuxx8664Release
     }
     else if(Os.isFamily(Os.FAMILY_WINDOWS)) {
         println('Detected OS: Windows')
-        finalizedBy copyLibWindowsx8664Release
+        dependsOn copyLibWindowsx8664Release
     }
     else {
         throw new GradleException('OS not supported')

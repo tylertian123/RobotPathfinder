@@ -208,7 +208,9 @@ task visualizerJar(type: Jar, group: 'Build', description: 'Assembles a runnable
 
     // Include all dependencies in this jar
     classifier = 'all'
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    from { 
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
 
 task fatJar(type: Jar, group: 'Build', description: 'Assembles a jar of the library, including the libraries for the Grapher class.') {

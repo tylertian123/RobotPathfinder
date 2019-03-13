@@ -27,10 +27,16 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_Basic
     params.sample_count = sample_count;
     params.type = static_cast<rpf::PathType>(type);
     params.alpha = alpha;
-
-    rpf::BasicTrajectory *t = new rpf::BasicTrajectory(specs, params);
-    btinstances.push_back(std::shared_ptr<rpf::BasicTrajectory>(t));
-    rpf::set_obj_ptr(env, obj, t);
+    
+    try {
+        rpf::BasicTrajectory *t = new rpf::BasicTrajectory(specs, params);
+        btinstances.push_back(std::shared_ptr<rpf::BasicTrajectory>(t));
+        rpf::set_obj_ptr(env, obj, t);
+    }
+    catch(const std::exception &e) {
+        jclass exclass = env->FindClass("com/arctos6135/robotpathfinder/core/trajectory/TrajectoryGenerationException");
+        env->ThrowNew(exclass, e.what());
+    }
 }
 
 JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_BasicTrajectory__1destroy(JNIEnv *env, jobject obj) {

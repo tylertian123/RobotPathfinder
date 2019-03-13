@@ -28,11 +28,17 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_TankD
     params.sample_count = sample_count;
     params.type = static_cast<rpf::PathType>(type);
     params.alpha = alpha;
-
-    rpf::BasicTrajectory bt(specs, params);
-    auto *t = new rpf::TankDriveTrajectory(bt);
-    ttinstances.push_back(std::shared_ptr<rpf::TankDriveTrajectory>(t));
-    rpf::set_obj_ptr(env, obj, t);
+    
+    try {
+        rpf::BasicTrajectory bt(specs, params);
+        auto *t = new rpf::TankDriveTrajectory(bt);
+        ttinstances.push_back(std::shared_ptr<rpf::TankDriveTrajectory>(t));
+        rpf::set_obj_ptr(env, obj, t);
+    }
+    catch(const std::exception &e) {
+        jclass exclass = env->FindClass("com/arctos6135/robotpathfinder/core/trajectory/TrajectoryGenerationException");
+        env->ThrowNew(exclass, e.what());
+    }
 }
 
 JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_TankDriveTrajectory__1destroy(JNIEnv *env, jobject obj) {

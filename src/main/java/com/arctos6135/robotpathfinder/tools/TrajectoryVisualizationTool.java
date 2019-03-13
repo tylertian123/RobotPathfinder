@@ -1041,7 +1041,16 @@ public class TrajectoryVisualizationTool {
 			WaypointTableModel tableModel = (WaypointTableModel) table.getModel();
 			tableModel.setRowCount(0);
 		});
+		clearWaypointsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, ActionEvent.CTRL_MASK));
 		waypointMenu.add(clearWaypointsMenuItem);
+		
+		JMenuItem deselectWaypointMenuItem = new JMenuItem("Deselect");
+		deselectWaypointMenuItem.addActionListener(e -> {
+			table.clearSelection();
+		});
+		deselectWaypointMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
+		waypointMenu.add(deselectWaypointMenuItem);
+
 		menuBar.add(waypointMenu);
 		
 		JMenu settingsMenu = new JMenu("Settings");

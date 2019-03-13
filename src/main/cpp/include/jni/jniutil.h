@@ -1,6 +1,9 @@
 #pragma once
 
 #include <jni.h>
+#include <list>
+#include <memory>
+#include <algorithm>
 
 namespace rpf {
     template <typename T>
@@ -32,4 +35,16 @@ namespace rpf {
     jfloat get_field<jfloat>(JNIEnv *env, jobject obj, const char *fname);
     template <>
     jdouble get_field<jdouble>(JNIEnv *env, jobject obj, const char *fname);
+
+    template <typename T>
+    bool remove_instance(std::list<std::shared_ptr<T>> &instances, T *ptr) {
+        auto it = std::find_if(instances.begin(), instances.end(), [&](const auto &p){ return p.get() == ptr; });
+        if(it != instances.end()) {
+            instances.erase(it);
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 }

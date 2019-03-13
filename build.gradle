@@ -83,13 +83,31 @@ model {
             }
         }
     }
-    binaries {
-        all {
-            if (targetPlatform.name == wpi.platforms.roborio) {
-                cppCompiler.args << '-Wall' << '-Wextra' << '-ffast-math' << '-fno-finite-math-only'
+}
+if(Os.isFamily(Os.FAMILY_WINDOWS)) {
+    model {
+        binaries {
+            all {
+                if (targetPlatform.name == wpi.platforms.roborio) {
+                    cppCompiler.args << '-Wall' << '-Wextra' << '-ffast-math' << '-fno-finite-math-only'
+                }
+                else if (targetPlatform.name == wpi.platforms.desktop) {
+                    cppCompiler.args << '/W3'
+                }
             }
-            else if (targetPlatform.name == wpi.platforms.desktop) {
-                cppCompiler.args << '-Wall' << '-Wextra' << '-ffast-math' << '-fno-finite-math-only'
+        }
+    }
+}
+else {
+    model {
+        binaries {
+            all {
+                if (targetPlatform.name == wpi.platforms.roborio) {
+                    cppCompiler.args << '-Wall' << '-Wextra' << '-ffast-math' << '-fno-finite-math-only'
+                }
+                else if (targetPlatform.name == wpi.platforms.desktop) {
+                    cppCompiler.args << '-Wall' << '-Wextra' << '-ffast-math' << '-fno-finite-math-only'
+                }
             }
         }
     }
@@ -120,23 +138,15 @@ task copyLibLinuxx8664Release(type: Copy, group: 'Development', description: 'Co
         fileName.replace('JniLibrary', 'RobotPathfinder')
     }
 }
-task copyLibWindowsx8664Debug(type: Copy, group: 'Development', description: 'Copies the dynamic library for windows x86-64 debug to the root of the project.') {
+task copyLibWindowsx8664Debug(type: Exec, group: 'Development', description: 'Copies the dynamic library for windows x86-64 debug to the root of the project.') {
     dependsOn assemble
-
-    from rootProject.file("build/libs/jniLibrary/shared/windowsx86-64/debug")
-    into '.'
-    rename { String fileName ->
-        fileName.replace('JniLibrary', 'RobotPathfinder')
-    }
+    
+    commandLine 'cmd', '/c', '\"copy build\\libs\\jniLibrary\\shared\\windowsx86-64\\debug\\JniLibrary.dll RobotPathfinder.dll\"'
 }
-task copyLibWindowsx8664Release(type: Copy, group: 'Development', description: 'Copies the dynamic library for windows x86-64 release to the root of the project.') {
+task copyLibWindowsx8664Release(type: Exec, group: 'Development', description: 'Copies the dynamic library for windows x86-64 release to the root of the project.') {
     dependsOn assemble
 
-    from 'build/libs/jniLibrary/shared/windowsx86-64/release'
-    into '.'
-    rename { String fileName ->
-        fileName.replace('JniLibrary', 'RobotPathfinder')
-    }
+    commandLine 'cmd', '/c', '\"copy build\\libs\\jniLibrary\\shared\\windowsx86-64\\release\\JniLibrary.dll RobotPathfinder.dll\"'
 }
 
 task copyLibDebug(group: 'Development', description: 'Copies the correct debug dynamic library to the root of the project.') {

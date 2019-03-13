@@ -86,7 +86,7 @@ JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path_whe
     return p;
 }
 
-JNIEXPORT jdouble JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1computeLen(JNIEnv *env, jobject obj, int points) {
+JNIEXPORT jdouble JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1computeLen(JNIEnv *env, jobject obj, jint points) {
     return rpf::get_obj_ptr<rpf::Path>(env, obj)->compute_len(points);
 }
 JNIEXPORT jdouble JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1s2T(JNIEnv *env, jobject obj, jdouble s) {

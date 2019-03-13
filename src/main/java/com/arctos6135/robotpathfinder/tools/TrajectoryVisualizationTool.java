@@ -55,6 +55,7 @@ import com.arctos6135.robotpathfinder.core.path.Path;
 import com.arctos6135.robotpathfinder.core.path.PathType;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
+import com.arctos6135.robotpathfinder.core.trajectory.TrajectoryGenerationException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
@@ -793,18 +794,26 @@ public class TrajectoryVisualizationTool {
 			JFrame movementFrame;
 			double totalTime;
             
-            // Generate the correct trajectory based on options and graph it
-			if(isTank.isSelected()) {
-				TankDriveTrajectory traj = new TankDriveTrajectory(specs, params);
-				pathFrame = Grapher.graphPath(traj.getPath(), 1.0 / pathSamples);
-				movementFrame = Grapher.graphTrajectory(traj, traj.totalTime() / trajSamples);
-				totalTime = traj.totalTime();
+			// Generate the correct trajectory based on options and graph it
+			try {
+				if(isTank.isSelected()) {
+					TankDriveTrajectory traj = new TankDriveTrajectory(specs, params);
+					pathFrame = Grapher.graphPath(traj.getPath(), 1.0 / pathSamples);
+					movementFrame = Grapher.graphTrajectory(traj, traj.totalTime() / trajSamples);
+					totalTime = traj.totalTime();
+				}
+				else {
+					BasicTrajectory traj = new BasicTrajectory(specs, params);
+					pathFrame = Grapher.graphPath(traj.getPath(), 1.0 / pathSamples);
+					movementFrame = Grapher.graphTrajectory(traj, traj.totalTime() / trajSamples);
+					totalTime = traj.totalTime();
+				}
 			}
-			else {
-				BasicTrajectory traj = new BasicTrajectory(specs, params);
-				pathFrame = Grapher.graphPath(traj.getPath(), 1.0 / pathSamples);
-				movementFrame = Grapher.graphTrajectory(traj, traj.totalTime() / trajSamples);
-				totalTime = traj.totalTime();
+			catch(TrajectoryGenerationException e1) {
+				JOptionPane.showMessageDialog(mainFrame, "An error occurred during trajectory generation:\n"
+						+ e1.getMessage() + "\nPlease adjust the constraints and try again.", "Error", 
+						JOptionPane.ERROR_MESSAGE);
+				return;
 			}
             
             // Add the window close hook that shows the main window back

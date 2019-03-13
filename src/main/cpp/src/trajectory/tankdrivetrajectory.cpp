@@ -81,7 +81,16 @@ namespace rpf {
         auto &last = moments[moments.size() - 1];
         for(auto rit = moments.rbegin(); rit != moments.rend(); ++rit) {
             const auto &moment = *rit;
-
+            /*
+			 * To generate the new moments, first the order of the moments has to be reversed, since we
+			 * are now starting from the end. The first moments should have less distance than the later moments,
+			 * so when iterating backwards, the position of the moment is subtracted from the total distance,
+			 * then negated since we're driving backwards. Velocity is also negated, but since it's not accumulative,
+			 * it does not need to be subtracted from the total. Finally, acceleration is negated once for driving
+			 * backwards, and negated again because the direction of time is reversed, and together they cancel
+			 * out, resulting in no change. The heading is flipped 180 degrees, and the time is subtracted
+			 * from the total.
+			 */
             TankDriveMoment nm(-(last.l_dist - moment.l_dist), -(last.r_dist - moment.r_dist), 
                     -moment.l_vel, -moment.r_vel, moment.l_accel, moment.r_accel, -moment.heading, 
                     last.time - moment.time, params.waypoints[params.waypoints.size() - 1].heading);

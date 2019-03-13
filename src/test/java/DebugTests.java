@@ -29,7 +29,6 @@ public class DebugTests {
             new Waypoint(10, 10, Math.PI / 2),
         };
         params.alpha = 20;
-        params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
         params.sampleCount = 1000;
         
@@ -51,7 +50,6 @@ public class DebugTests {
             new Waypoint(0, 20, Math.PI),
         };
         params.alpha = 20;
-        params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
         params.sampleCount = 1000;
         

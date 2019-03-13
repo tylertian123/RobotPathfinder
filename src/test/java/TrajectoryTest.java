@@ -27,7 +27,6 @@ public class TrajectoryTest {
         };
         params.alpha = 40.0;
         params.sampleCount = 1000;
-        params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
         BasicTrajectory trajectory = new BasicTrajectory(robotSpecs, params);
 
@@ -52,7 +51,6 @@ public class TrajectoryTest {
         };
         params.alpha = 40.0;
         params.sampleCount = 1000;
-        params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
         TankDriveTrajectory trajectory = new TankDriveTrajectory(robotSpecs, params);
 
@@ -77,7 +75,6 @@ public class TrajectoryTest {
         };
         params.alpha = 40.0;
         params.sampleCount = 1000;
-        params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
         BasicTrajectory trajectory = new BasicTrajectory(robotSpecs, params);
 
@@ -96,7 +93,6 @@ public class TrajectoryTest {
         };
         params.alpha = 40.0;
         params.sampleCount = 1000;
-        params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
         TankDriveTrajectory original = new TankDriveTrajectory(specs, params);
         TankDriveTrajectory t = original.mirrorLeftRight();
@@ -131,7 +127,6 @@ public class TrajectoryTest {
         };
         params.alpha = 40.0;
         params.sampleCount = 1000;
-        params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
         TankDriveTrajectory original = new TankDriveTrajectory(specs, params);
         TankDriveTrajectory t = original.mirrorFrontBack();
@@ -166,7 +161,6 @@ public class TrajectoryTest {
         };
         params.alpha = 40.0;
         params.sampleCount = 1000;
-        params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
         TankDriveTrajectory original = new TankDriveTrajectory(specs, params);
         TankDriveTrajectory t = original.retrace();
@@ -201,7 +195,6 @@ public class TrajectoryTest {
         };
         params.alpha = 40.0;
         params.sampleCount = 1000;
-        params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
         BasicTrajectory original = new BasicTrajectory(specs, params);
         BasicTrajectory t = original.mirrorLeftRight();
@@ -233,7 +226,6 @@ public class TrajectoryTest {
         };
         params.alpha = 40.0;
         params.sampleCount = 1000;
-        params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
         BasicTrajectory original = new BasicTrajectory(specs, params);
         BasicTrajectory t = original.mirrorFrontBack();
@@ -265,7 +257,6 @@ public class TrajectoryTest {
         };
         params.alpha = 40.0;
         params.sampleCount = 1000;
-        params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
         BasicTrajectory original = new BasicTrajectory(specs, params);
         BasicTrajectory t = original.retrace();
@@ -297,7 +288,6 @@ public class TrajectoryTest {
             new Waypoint(0, 20, Math.PI),
         };
         params.alpha = 20;
-        params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
         params.sampleCount = 1000;
         
@@ -323,7 +313,6 @@ public class TrajectoryTest {
             new Waypoint(0, 20, Math.PI),
         };
         params.alpha = 20;
-        params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
         params.sampleCount = 1000;
         

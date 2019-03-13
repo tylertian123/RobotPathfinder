@@ -54,7 +54,6 @@ public class BasicTest {
             new Waypoint(0, 20, Math.PI),
         };
         params.alpha = 20;
-        params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
         params.sampleCount = 1000;
 
@@ -78,7 +77,6 @@ public class BasicTest {
             new Waypoint(0, 20, Math.PI),
         };
         params.alpha = 20;
-        params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
         params.sampleCount = 1000;
 

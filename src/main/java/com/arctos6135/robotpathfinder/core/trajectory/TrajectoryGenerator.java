@@ -27,7 +27,6 @@ final public class TrajectoryGenerator {
 	 */
 	public static BasicTrajectory generateStraightBasic(RobotSpecs specs, double distance) {
 		TrajectoryParams params = new TrajectoryParams();
-		params.isTank = false;
 		// Use Bezier type since we only have one segment and it doesn't really matter
 		params.pathType = PathType.BEZIER;
 		// Since we're going in a straight line, we don't need much precision
@@ -49,7 +48,6 @@ final public class TrajectoryGenerator {
 	 */
 	public static TankDriveTrajectory generateStraightTank(RobotSpecs specs, double distance) {
 		TrajectoryParams params = new TrajectoryParams();
-		params.isTank = true;
 		params.pathType = PathType.BEZIER;
 		params.sampleCount = 100;
 		params.waypoints = new Waypoint[] {

@@ -23,9 +23,6 @@ public class BasicTrajectory extends Trajectory {
         if(Double.isNaN(specs.getMaxAcceleration())) {
             throw new IllegalArgumentException("Max acceleration cannot be NaN");
         }
-        if(params.isTank && Double.isNaN(specs.getBaseWidth())) {
-            throw new IllegalArgumentException("Base width cannot be NaN if trajectory is tank drive");
-        }
         if(params.waypoints == null) {
             throw new IllegalArgumentException("Waypoints not set");
         }
@@ -39,7 +36,7 @@ public class BasicTrajectory extends Trajectory {
         this.specs = specs;
         this.params = params;
 
-        _construct(specs.getMaxVelocity(), specs.getMaxAcceleration(), specs.getBaseWidth(), params.isTank, params.waypoints, 
+        _construct(specs.getMaxVelocity(), specs.getMaxAcceleration(), specs.getBaseWidth(), false, params.waypoints, 
                 params.alpha, params.sampleCount, params.pathType.getJNIID());
         GlobalLifeCycleManager.register(this);
     }

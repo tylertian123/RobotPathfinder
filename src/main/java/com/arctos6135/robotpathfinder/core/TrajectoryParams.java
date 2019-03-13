@@ -31,14 +31,6 @@ public class TrajectoryParams implements Cloneable {
 	public double alpha = Double.NaN;
 	
 	public int sampleCount = 1000;
-	
-	/**
-	 * Whether the trajectory is to be used as the base for a {@link com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory TankDriveTrajectory}. Setting this value to
-	 * {@code true} will result in extra processing to prepare for the generation of a {@link com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory TankDriveTrajectory}.
-	 * If a trajectory is generated with this field set to {@code false}, and passed into the constructor of a 
-	 * {@link com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory TankDriveTrajectory}, an {@link IllegalArgumentException} will be thrown. Default value is {@code false}.
-	 */
-	public boolean isTank = false;
 	/**
 	 * The type of path to be used by the trajectory. For more information, see {@link PathType}. Default value is
 	 * {@link PathType#QUINTIC_HERMITE}.
@@ -51,8 +43,6 @@ public class TrajectoryParams implements Cloneable {
 		tp.waypoints = this.waypoints;
 		tp.alpha = this.alpha;
 		tp.sampleCount = this.sampleCount;
-		
-		tp.isTank = this.isTank;
 		
 		tp.pathType = this.pathType;
 		return tp;

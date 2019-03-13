@@ -785,7 +785,6 @@ public class TrajectoryVisualizationTool {
 			RobotSpecs specs = new RobotSpecs(maxVel, maxAccel, base);
 			TrajectoryParams params = new TrajectoryParams();
 			params.alpha = a;
-			params.isTank = isTank.isSelected();
 			params.pathType = selectedType;
 			params.sampleCount = sampleCount;
 			params.waypoints = waypointArray;
@@ -894,7 +893,6 @@ public class TrajectoryVisualizationTool {
 			generatedCode.append("};\n");
 			generatedCode.append("params.alpha = " + a + ";\n");
 			generatedCode.append("params.sampleCount = " + sampleCount + ";\n");
-			generatedCode.append("params.isTank = " + isTank.isSelected() + ";\n");
 			generatedCode.append("params.pathType = PathType." + selectedType.name() + ";\n");
 			if(isTank.isSelected()) {
 				generatedCode.append("TankDriveTrajectory trajectory = new TankDriveTrajectory(robotSpecs, params);");
@@ -904,8 +902,8 @@ public class TrajectoryVisualizationTool {
 			}
 			
 			String[] options = {
-					"Copy to Clipboard",
-					"Close",
+				"Copy to Clipboard",
+				"Close",
 			};
 			generatedCodeTextArea.setText(generatedCode.toString());
 			int ret = JOptionPane.showOptionDialog(mainFrame, generatedCodePanel, "Code", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);

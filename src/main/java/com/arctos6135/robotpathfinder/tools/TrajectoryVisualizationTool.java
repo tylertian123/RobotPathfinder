@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.regex.Pattern;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -46,6 +47,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 
+import com.arctos6135.robotpathfinder.core.GlobalLibraryLoader;
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.TrajectoryParams;
 import com.arctos6135.robotpathfinder.core.Waypoint;
@@ -1080,9 +1082,30 @@ public class TrajectoryVisualizationTool {
 
 	
 	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> {
-			@SuppressWarnings("unused")
-			TrajectoryVisualizationTool t = new TrajectoryVisualizationTool();
-		});
+		try {
+			GlobalLibraryLoader.load();
+		}
+		catch(UnsatisfiedLinkError ule) {
+		}
+
+		if(!GlobalLibraryLoader.libraryLoaded()) {
+			StringBuilder str = new StringBuilder("Failed to load dynamic library '"
+					+ System.mapLibraryName("RobotPathfinder") + "'!'\nPlease ensure that the library is in the same"
+					+ "directory as this jar file, or present in one of the following locations:\n");
+				
+			for(String path : System.getProperty("java.library.path").split(Pattern.quote(File.pathSeparator))) {
+				str.append(path);
+				str.append('\n');
+			}
+			SwingUtilities.invokeLater(() -> {
+				JOptionPane.showMessageDialog(null, str.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+			});
+		}
+		else {
+			SwingUtilities.invokeLater(() -> {
+				@SuppressWarnings("unused")
+				TrajectoryVisualizationTool t = new TrajectoryVisualizationTool();
+			});
+		}
 	}
 }

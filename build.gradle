@@ -83,13 +83,31 @@ model {
             }
         }
     }
-    binaries {
-        all {
-            if (targetPlatform.name == wpi.platforms.roborio) {
-                cppCompiler.args << '-Wall' << '-Wextra' << '-ffast-math' << '-fno-finite-math-only'
+}
+if(Os.isFamily(Os.FAMILY_WINDOWS)) {
+    model {
+        binaries {
+            all {
+                if (targetPlatform.name == wpi.platforms.roborio) {
+                    cppCompiler.args << '-Wall' << '-Wextra' << '-ffast-math' << '-fno-finite-math-only'
+                }
+                else if (targetPlatform.name == wpi.platforms.desktop) {
+                    cppCompiler.args << '/W3'
+                }
             }
-            else if (targetPlatform.name == wpi.platforms.desktop) {
-                cppCompiler.args << '-Wall' << '-Wextra' << '-ffast-math' << '-fno-finite-math-only'
+        }
+    }
+}
+else {
+    model {
+        binaries {
+            all {
+                if (targetPlatform.name == wpi.platforms.roborio) {
+                    cppCompiler.args << '-Wall' << '-Wextra' << '-ffast-math' << '-fno-finite-math-only'
+                }
+                else if (targetPlatform.name == wpi.platforms.desktop) {
+                    cppCompiler.args << '-Wall' << '-Wextra' << '-ffast-math' << '-fno-finite-math-only'
+                }
             }
         }
     }

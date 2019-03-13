@@ -778,6 +778,9 @@ public class TrajectoryVisualizationTool {
 				JOptionPane.showMessageDialog(mainFrame, "Error: Not enough waypoints.", "Error", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
+			if(sampleCount < 1) {
+				JOptionPane.showMessageDialog(mainFrame, "Error: Sample count cannot be zero.", "Error", JOptionPane.ERROR_MESSAGE);
+			}
 			
 			Waypoint[] waypointArray = new Waypoint[waypoints.size()];
 			waypointArray = waypoints.toArray(waypointArray);

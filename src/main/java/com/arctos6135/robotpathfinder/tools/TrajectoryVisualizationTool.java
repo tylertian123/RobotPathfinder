@@ -1088,7 +1088,7 @@ public class TrajectoryVisualizationTool {
 		if(!GlobalLibraryLoader.libraryLoaded()) {
 			StringBuilder str = new StringBuilder("Failed to load dynamic library '"
 					+ System.mapLibraryName("RobotPathfinder") + "'!'\nPlease ensure that the library is in the same"
-					+ " directory as where this program was launched (" +  System.getProperty("user.dir") 
+					+ " directory as where this program was launched\n(" +  System.getProperty("user.dir") 
 					+ File.separator + System.mapLibraryName("RobotPathfinder") + ") or present in one of the"
 					+ " following locations:\n");
 				
@@ -1097,6 +1097,12 @@ public class TrajectoryVisualizationTool {
 				str.append('\n');
 			}
 			SwingUtilities.invokeLater(() -> {
+				try {
+					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+						| UnsupportedLookAndFeelException e) {
+					e.printStackTrace();
+				}
 				JOptionPane.showMessageDialog(null, str.toString(), "Error", JOptionPane.ERROR_MESSAGE);
 			});
 		}

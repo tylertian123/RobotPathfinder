@@ -89,4 +89,25 @@ public class BasicTest {
         assertNotNull(traj.retrace());
         traj.close();
     }
+
+    @Test
+    public void testPathIllegalStateException() {
+        Waypoint[] waypoints = new Waypoint[] {
+            new Waypoint(0, 0, 0),
+            new Waypoint(10, 10, 0),
+            new Waypoint(12.34, 5.67, Math.PI),
+        };
+        Path path = new Path(waypoints, 30, PathType.BEZIER);
+        Path p = path;
+        path.close();
+
+        boolean exception = false;
+        try {
+            p.at(0);
+        }
+        catch(IllegalStateException e) {
+            exception = true;
+        }
+        assertThat(exception, is(true));
+    }
 }

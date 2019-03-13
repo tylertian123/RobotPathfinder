@@ -1,5 +1,6 @@
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.fail;
 
 import com.arctos6135.robotpathfinder.core.TrajectoryParams;
@@ -85,7 +86,7 @@ public class TrajectoryTest {
     }
 
     @Test
-    public void testTankDriveTrajectoryMirrorFrontBack() {
+    public void testTankDriveTrajectoryMirrorLeftRight() {
         RobotSpecs specs = new RobotSpecs(5.0, 3.5, 2.0);
         TrajectoryParams params = new TrajectoryParams();
         params.waypoints = new Waypoint[] {
@@ -97,7 +98,7 @@ public class TrajectoryTest {
         params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
         TankDriveTrajectory original = new TankDriveTrajectory(specs, params);
-        TankDriveTrajectory mirrored = original.mirrorLeftRight();
+        TankDriveTrajectory mirrored = original.mirrorLeftRight().mirrorLeftRight();
 
         double dt = original.totalTime() / 100;
         for(int i = 0; i < dt; i ++) {
@@ -111,6 +112,72 @@ public class TrajectoryTest {
             assertThat(m0.getLeftAcceleration(), is(m1.getLeftAcceleration()));
             assertThat(m0.getRightAcceleration(), is(m1.getRightAcceleration()));
             assertThat(m0.getHeading(), is(m1.getHeading()));
+        }
+
+        original.close();
+        mirrored.close();
+    }
+
+    @Test
+    public void testTankDriveTrajectoryMirrorFrontBack() {
+        RobotSpecs specs = new RobotSpecs(5.0, 3.5, 2.0);
+        TrajectoryParams params = new TrajectoryParams();
+        params.waypoints = new Waypoint[] {
+            new Waypoint(0.0, 0.0, Math.PI / 2, 1.23),
+            new Waypoint(0.0, 100.0, Math.PI / 2, 3.45),
+        };
+        params.alpha = 40.0;
+        params.sampleCount = 1000;
+        params.isTank = true;
+        params.pathType = PathType.QUINTIC_HERMITE;
+        TankDriveTrajectory original = new TankDriveTrajectory(specs, params);
+        TankDriveTrajectory mirrored = original.mirrorFrontBack().mirrorFrontBack();
+
+        double dt = original.totalTime() / 100;
+        for(int i = 0; i < dt; i ++) {
+            TankDriveMoment m0 = original.get(dt * i);
+            TankDriveMoment m1 = mirrored.get(dt * i);
+
+            assertThat(Math.abs(m0.getLeftPosition() - m1.getLeftPosition()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getRightPosition() - m1.getRightPosition()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getLeftVelocity() - m1.getLeftVelocity()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getRightVelocity() - m1.getRightVelocity()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getLeftAcceleration() - m1.getLeftAcceleration()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getRightAcceleration() - m1.getRightAcceleration()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getHeading() - m1.getHeading()), lessThan(1e-7));
+        }
+
+        original.close();
+        mirrored.close();
+    }
+
+    @Test
+    public void testTankDriveTrajectoryRetrace() {
+        RobotSpecs specs = new RobotSpecs(5.0, 3.5, 2.0);
+        TrajectoryParams params = new TrajectoryParams();
+        params.waypoints = new Waypoint[] {
+            new Waypoint(0.0, 0.0, Math.PI / 2, 1.23),
+            new Waypoint(0.0, 100.0, Math.PI / 2, 3.45),
+        };
+        params.alpha = 40.0;
+        params.sampleCount = 1000;
+        params.isTank = true;
+        params.pathType = PathType.QUINTIC_HERMITE;
+        TankDriveTrajectory original = new TankDriveTrajectory(specs, params);
+        TankDriveTrajectory mirrored = original.retrace().retrace();
+
+        double dt = original.totalTime() / 100;
+        for(int i = 0; i < dt; i ++) {
+            TankDriveMoment m0 = original.get(dt * i);
+            TankDriveMoment m1 = mirrored.get(dt * i);
+
+            assertThat(Math.abs(m0.getLeftPosition() - m1.getLeftPosition()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getRightPosition() - m1.getRightPosition()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getLeftVelocity() - m1.getLeftVelocity()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getRightVelocity() - m1.getRightVelocity()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getLeftAcceleration() - m1.getLeftAcceleration()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getRightAcceleration() - m1.getRightAcceleration()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getHeading() - m1.getHeading()), lessThan(1e-7));
         }
 
         original.close();

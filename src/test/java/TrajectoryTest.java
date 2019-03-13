@@ -189,4 +189,100 @@ public class TrajectoryTest {
         original.close();
         mirrored.close();
     }
+
+    @Test
+    public void testBasicTrajectoryMirrorLeftRight() {
+        RobotSpecs specs = new RobotSpecs(5.0, 3.5, 2.0);
+        TrajectoryParams params = new TrajectoryParams();
+        params.waypoints = new Waypoint[] {
+            new Waypoint(0.0, 0.0, Math.PI / 2, 1.23),
+            new Waypoint(0.0, 100.0, Math.PI / 2, 3.45),
+        };
+        params.alpha = 40.0;
+        params.sampleCount = 1000;
+        params.isTank = true;
+        params.pathType = PathType.QUINTIC_HERMITE;
+        BasicTrajectory original = new BasicTrajectory(specs, params);
+        BasicTrajectory t = original.mirrorLeftRight();
+        BasicTrajectory mirrored = t.mirrorLeftRight();
+        t.close();
+
+        double dt = original.totalTime() / 100;
+        for(int i = 0; i < dt; i ++) {
+            BasicMoment m0 = original.get(dt * i);
+            BasicMoment m1 = mirrored.get(dt * i);
+
+            assertThat(Math.abs(m0.getPosition() - m1.getPosition()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getVelocity() - m1.getVelocity()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getAcceleration() - m1.getAcceleration()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getHeading() - m1.getHeading()), lessThan(1e-7));
+        }
+
+        original.close();
+        mirrored.close();
+    }
+
+    @Test
+    public void testBasicTrajectoryMirrorFrontBack() {
+        RobotSpecs specs = new RobotSpecs(5.0, 3.5, 2.0);
+        TrajectoryParams params = new TrajectoryParams();
+        params.waypoints = new Waypoint[] {
+            new Waypoint(0.0, 0.0, Math.PI / 2, 1.23),
+            new Waypoint(0.0, 100.0, Math.PI / 2, 3.45),
+        };
+        params.alpha = 40.0;
+        params.sampleCount = 1000;
+        params.isTank = true;
+        params.pathType = PathType.QUINTIC_HERMITE;
+        BasicTrajectory original = new BasicTrajectory(specs, params);
+        BasicTrajectory t = original.mirrorFrontBack();
+        BasicTrajectory mirrored = t.mirrorFrontBack();
+        t.close();
+
+        double dt = original.totalTime() / 100;
+        for(int i = 0; i < dt; i ++) {
+            BasicMoment m0 = original.get(dt * i);
+            BasicMoment m1 = mirrored.get(dt * i);
+
+            assertThat(Math.abs(m0.getPosition() - m1.getPosition()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getVelocity() - m1.getVelocity()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getAcceleration() - m1.getAcceleration()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getHeading() - m1.getHeading()), lessThan(1e-7));
+        }
+
+        original.close();
+        mirrored.close();
+    }
+
+    @Test
+    public void testBasicTrajectoryRetrace() {
+        RobotSpecs specs = new RobotSpecs(5.0, 3.5, 2.0);
+        TrajectoryParams params = new TrajectoryParams();
+        params.waypoints = new Waypoint[] {
+            new Waypoint(0.0, 0.0, Math.PI / 2, 1.23),
+            new Waypoint(0.0, 100.0, Math.PI / 2, 3.45),
+        };
+        params.alpha = 40.0;
+        params.sampleCount = 1000;
+        params.isTank = true;
+        params.pathType = PathType.QUINTIC_HERMITE;
+        BasicTrajectory original = new BasicTrajectory(specs, params);
+        BasicTrajectory t = original.retrace();
+        BasicTrajectory mirrored = t.retrace();
+        t.close();
+
+        double dt = original.totalTime() / 100;
+        for(int i = 0; i < dt; i ++) {
+            BasicMoment m0 = original.get(dt * i);
+            BasicMoment m1 = mirrored.get(dt * i);
+
+            assertThat(Math.abs(m0.getPosition() - m1.getPosition()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getVelocity() - m1.getVelocity()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getAcceleration() - m1.getAcceleration()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getHeading() - m1.getHeading()), lessThan(1e-7));
+        }
+
+        original.close();
+        mirrored.close();
+    }
 }

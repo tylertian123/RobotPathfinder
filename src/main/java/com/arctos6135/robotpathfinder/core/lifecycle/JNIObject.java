@@ -12,6 +12,25 @@ import com.arctos6135.robotpathfinder.core.GlobalLibraryLoader;
  * or {@link #close()} method must be called to free the native resource when the object is
  * no longer needed.
  * </p>
+ * <p><em>
+ * Note: Almost all RobotPathfinder JNI classes have some kind of reference counting. 
+ * However, this reference count is only increased when an object is created or copied 
+ * by a method, and not when the reference is copied through assignment. <br>
+ * For example:
+ * <pre>{@code
+ * Path p0 = someTrajectory.getPath();
+ * Path p1 = someTrajectory.getPath();
+ * p0.free();
+ * p1.at(0); // This is valid, because the native resource was never freed due to reference counting
+ * }</pre>
+ * But:
+ * <pre>{@code
+ * Path p0 = someTrajectory.getPath();
+ * Path p1 = p0;
+ * p0.free();
+ * p1.at(0); // This will throw an IllegalStateException, since the native resource has already been freed
+ * }</pre>
+ * </em></p>
  */
 public abstract class JNIObject implements AutoCloseable {
 
@@ -21,23 +40,21 @@ public abstract class JNIObject implements AutoCloseable {
 
     protected long _nativePtr;
 
-    // Native method
+    /**
+     * This should be implemented as a native method that frees the resources associated with this object.
+     */
     protected abstract void _destroy();
     
     /**
      * Frees the native resources aquired by this object. 
-     * Calling this method multiple times will have no effect.
-     * <p>
-     * </p>
+     * Calling this method multiple times should have no effect, but the specifics depend on the implementation.
      */
     public void free() {
         _destroy();
     }
     /**
      * Frees the native resources aquired by this object. 
-     * Calling this method multiple times will have no effect.
-     * <p>
-     * </p>
+     * Calling this method multiple times should have no effect, but the specifics depend on the implementation.
      */
     @Override
     public void close() {

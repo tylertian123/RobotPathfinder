@@ -279,7 +279,7 @@ public class TrajectoryVisualizationTool {
             waypoints.toArray(paramsWaypoints);
             params.waypoints = paramsWaypoints;
 
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            Gson gson = new GsonBuilder().setPrettyPrinting().serializeSpecialFloatingPointValues().create();
             out.write(gson.toJson(params));
         }
         catch (IOException e) {
@@ -289,7 +289,7 @@ public class TrajectoryVisualizationTool {
     static void loadJson(File file) throws IOException {
         try(BufferedReader in = new BufferedReader(new FileReader(file))) {
             // Read in the JSON
-            Gson gson = new Gson();
+            Gson gson = new GsonBuilder().serializeSpecialFloatingPointValues().create();
             StringBuilder jsonBuilder = new StringBuilder();
             String line;
             while((line = in.readLine()) != null) {

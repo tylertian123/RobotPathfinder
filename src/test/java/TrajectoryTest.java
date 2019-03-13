@@ -83,4 +83,37 @@ public class TrajectoryTest {
         assertThat(trajectory.get(trajectory.totalTime()).getVelocity(), is(3.45));
         trajectory.close();
     }
+
+    @Test
+    public void testTankDriveTrajectoryMirrorFrontBack() {
+        RobotSpecs specs = new RobotSpecs(5.0, 3.5, 2.0);
+        TrajectoryParams params = new TrajectoryParams();
+        params.waypoints = new Waypoint[] {
+            new Waypoint(0.0, 0.0, Math.PI / 2, 1.23),
+            new Waypoint(0.0, 100.0, Math.PI / 2, 3.45),
+        };
+        params.alpha = 40.0;
+        params.sampleCount = 1000;
+        params.isTank = true;
+        params.pathType = PathType.QUINTIC_HERMITE;
+        TankDriveTrajectory original = new TankDriveTrajectory(specs, params);
+        TankDriveTrajectory mirrored = original.mirrorLeftRight();
+
+        double dt = original.totalTime() / 100;
+        for(int i = 0; i < dt; i ++) {
+            TankDriveMoment m0 = original.get(dt * i);
+            TankDriveMoment m1 = mirrored.get(dt * i);
+
+            assertThat(m0.getLeftPosition(), is(m1.getLeftPosition()));
+            assertThat(m0.getRightPosition(), is(m1.getRightPosition()));
+            assertThat(m0.getLeftVelocity(), is(m1.getLeftVelocity()));
+            assertThat(m0.getRightVelocity(), is(m1.getRightVelocity()));
+            assertThat(m0.getLeftAcceleration(), is(m1.getLeftAcceleration()));
+            assertThat(m0.getRightAcceleration(), is(m1.getRightAcceleration()));
+            assertThat(m0.getHeading(), is(m1.getHeading()));
+        }
+
+        original.close();
+        mirrored.close();
+    }
 }

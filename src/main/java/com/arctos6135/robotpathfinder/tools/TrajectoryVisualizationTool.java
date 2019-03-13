@@ -587,7 +587,7 @@ public class TrajectoryVisualizationTool {
         
         // Set up buttons
 		Dimension buttonSize = new Dimension(120, 30);
-        JButton addWaypointButton = new JButton("Add Waypoint");
+        JButton addWaypointButton = new JButton("New Waypoint");
         // Add waypoint button action listener
 		ActionListener addWaypointAction = e -> {
 			boolean error = false;
@@ -1016,16 +1016,19 @@ public class TrajectoryVisualizationTool {
 		
 		JMenu waypointMenu = new JMenu("Waypoint");
 		
-		JMenuItem addWaypointMenuItem = new JMenuItem("Add...");
+		JMenuItem addWaypointMenuItem = new JMenuItem("New...");
 		addWaypointMenuItem.addActionListener(addWaypointAction);
+		addWaypointMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
 		waypointMenu.add(addWaypointMenuItem);
 		
 		JMenuItem editWaypointMenuItem = new JMenuItem("Edit...");
 		editWaypointMenuItem.addActionListener(editWaypointAction);
+		editWaypointMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK));
 		waypointMenu.add(editWaypointMenuItem);
 		
 		JMenuItem deleteWaypointMenuItem = new JMenuItem("Delete");
 		deleteWaypointMenuItem.addActionListener(deleteWaypointAction);
+		deleteWaypointMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
 		waypointMenu.add(deleteWaypointMenuItem);
 		
 		JMenuItem clearWaypointsMenuItem = new JMenuItem("Clear All");

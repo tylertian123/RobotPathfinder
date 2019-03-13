@@ -137,4 +137,31 @@ public class BasicTest {
         }
         assertThat(exception, is(true));
     }
+
+    @Test
+    public void testTankDriveTrajectoryIllegalStateException() {
+        RobotSpecs specs = new RobotSpecs(5, 3, 1);
+        TrajectoryParams params = new TrajectoryParams();
+        params.waypoints = new Waypoint[] {
+            new Waypoint(0, 0, Math.PI / 2),
+            new Waypoint(10, 10, Math.PI / 2),
+            new Waypoint(0, 20, Math.PI),
+        };
+        params.alpha = 20;
+        params.pathType = PathType.QUINTIC_HERMITE;
+        params.sampleCount = 1000;
+
+        TankDriveTrajectory traj = new TankDriveTrajectory(specs, params);
+        TankDriveTrajectory t = traj;
+        traj.close();
+
+        boolean exception = false;
+        try {
+            t.get(0);
+        }
+        catch(IllegalStateException e) {
+            exception = true;
+        }
+        assertThat(exception, is(true));
+    }
 }

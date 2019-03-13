@@ -53,62 +53,117 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_TankD
 }
 
 JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_TankDriveTrajectory__1getMoments(JNIEnv *env, jobject obj) {
-    auto &moments = rpf::get_obj_ptr<rpf::TankDriveTrajectory>(env, obj)->get_moments();
+    auto ptr = rpf::get_obj_ptr<rpf::TankDriveTrajectory>(env, obj);
+    if(!rpf::check_instance(ttinstances, ptr)) {
+        rpf::throw_IllegalStateException(env, "This object has already been freed");
+    }
+    else {
+        auto &moments = ptr->get_moments();
 
-    jclass clazz = env->GetObjectClass(obj);
-    jfieldID fid = env->GetFieldID(clazz, "momentsCache", "[Lcom/arctos6135/robotpathfinder/core/trajectory/TankDriveMoment;");
-    jobject objf = env->GetObjectField(obj, fid);
-    jobjectArray *arr = reinterpret_cast<jobjectArray *>(&objf);
+        jclass clazz = env->GetObjectClass(obj);
+        jfieldID fid = env->GetFieldID(clazz, "momentsCache", "[Lcom/arctos6135/robotpathfinder/core/trajectory/TankDriveMoment;");
+        jobject objf = env->GetObjectField(obj, fid);
+        jobjectArray *arr = reinterpret_cast<jobjectArray *>(&objf);
 
-    jclass mclass = env->FindClass("com/arctos6135/robotpathfinder/core/trajectory/TankDriveMoment");
-    jmethodID constructor_mid = env->GetMethodID(mclass, "<init>", "(DDDDDDDDDZ)V");
-    
-    for(size_t i = 0; i < moments.size(); i ++) {
-        jobject m = env->NewObject(mclass, constructor_mid, moments[i].l_dist, moments[i].r_dist, moments[i].l_vel,
-                moments[i].r_vel, moments[i].l_accel, moments[i].r_accel, moments[i].heading, moments[i].time,
-                moments[i].init_facing, moments[i].backwards);
-        env->SetObjectArrayElement(*arr, i, m);
+        jclass mclass = env->FindClass("com/arctos6135/robotpathfinder/core/trajectory/TankDriveMoment");
+        jmethodID constructor_mid = env->GetMethodID(mclass, "<init>", "(DDDDDDDDDZ)V");
+        
+        for(size_t i = 0; i < moments.size(); i ++) {
+            jobject m = env->NewObject(mclass, constructor_mid, moments[i].l_dist, moments[i].r_dist, moments[i].l_vel,
+                    moments[i].r_vel, moments[i].l_accel, moments[i].r_accel, moments[i].heading, moments[i].time,
+                    moments[i].init_facing, moments[i].backwards);
+            env->SetObjectArrayElement(*arr, i, m);
+        }
     }
 }
 
 JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_TankDriveTrajectory__1get(JNIEnv *env, jobject obj, jdouble t) {
-    auto m = rpf::get_obj_ptr<rpf::TankDriveTrajectory>(env, obj)->get(t);
-    jclass mclass = env->FindClass("com/arctos6135/robotpathfinder/core/trajectory/TankDriveMoment");
-    jmethodID constructor_mid = env->GetMethodID(mclass, "<init>", "(DDDDDDDDDZ)V");
+    auto ptr = rpf::get_obj_ptr<rpf::TankDriveTrajectory>(env, obj);
+    if(!rpf::check_instance(ttinstances, ptr)) {
+        rpf::throw_IllegalStateException(env, "This object has already been freed");
+        return NULL;
+    }
+    else {
+        auto m = ptr->get(t);
+        jclass mclass = env->FindClass("com/arctos6135/robotpathfinder/core/trajectory/TankDriveMoment");
+        jmethodID constructor_mid = env->GetMethodID(mclass, "<init>", "(DDDDDDDDDZ)V");
 
-    return env->NewObject(mclass, constructor_mid, m.l_dist, m.r_dist, m.l_vel, m.r_vel, m.l_accel, m.r_accel, 
-            m.heading, m.time, m.init_facing, m.backwards);
+        return env->NewObject(mclass, constructor_mid, m.l_dist, m.r_dist, m.l_vel, m.r_vel, m.l_accel, m.r_accel, 
+                m.heading, m.time, m.init_facing, m.backwards);
+    }
 }
 
 JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_TankDriveTrajectory__1getPath(JNIEnv *env, jobject obj) {
-    auto ptr = rpf::get_obj_ptr<rpf::TankDriveTrajectory>(env, obj)->get_path();
-    pinstances.push_back(ptr);
-    return reinterpret_cast<jlong>(ptr.get());
+    auto p = rpf::get_obj_ptr<rpf::TankDriveTrajectory>(env, obj);
+    if(!rpf::check_instance(ttinstances, p)) {
+        rpf::throw_IllegalStateException(env, "This object has already been freed");
+        return 0;
+    }
+    else {
+        auto ptr = p->get_path();
+        pinstances.push_back(ptr);
+        return reinterpret_cast<jlong>(ptr.get());
+    }
 }
 
 JNIEXPORT jdouble JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_TankDriveTrajectory_totalTime(JNIEnv *env, jobject obj) {
-    return rpf::get_obj_ptr<rpf::TankDriveTrajectory>(env, obj)->total_time();
+    auto ptr = rpf::get_obj_ptr<rpf::TankDriveTrajectory>(env, obj);
+    if(!rpf::check_instance(ttinstances, ptr)) {
+        rpf::throw_IllegalStateException(env, "This object has already been freed");
+        return 0;
+    }
+    else {
+        return ptr->total_time();
+    }
 }
 
 JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_TankDriveTrajectory__1mirrorLeftRight(JNIEnv *env, jobject obj) {
-    auto ptr = rpf::get_obj_ptr<rpf::TankDriveTrajectory>(env, obj)->mirror_lr();
-    ttinstances.push_back(ptr);
-    return reinterpret_cast<jlong>(ptr.get());
+    auto p = rpf::get_obj_ptr<rpf::TankDriveTrajectory>(env, obj);
+    if(!rpf::check_instance(ttinstances, p)) {
+        rpf::throw_IllegalStateException(env, "This object has already been freed");
+        return 0;
+    }
+    else {
+        auto ptr = p->mirror_lr();
+        ttinstances.push_back(ptr);
+        return reinterpret_cast<jlong>(ptr.get());
+    }
 }
 
 JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_TankDriveTrajectory__1mirrorFrontBack(JNIEnv *env, jobject obj) {
-    auto ptr = rpf::get_obj_ptr<rpf::TankDriveTrajectory>(env, obj)->mirror_fb();
-    ttinstances.push_back(ptr);
-    return reinterpret_cast<jlong>(ptr.get());
+    auto p = rpf::get_obj_ptr<rpf::TankDriveTrajectory>(env, obj);
+    if(!rpf::check_instance(ttinstances, p)) {
+        rpf::throw_IllegalStateException(env, "This object has already been freed");
+        return 0;
+    }
+    else {
+        auto ptr = p->mirror_fb();
+        ttinstances.push_back(ptr);
+        return reinterpret_cast<jlong>(ptr.get());
+    }
 }
 
 JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_TankDriveTrajectory__1retrace(JNIEnv *env, jobject obj) {
-    auto ptr = rpf::get_obj_ptr<rpf::TankDriveTrajectory>(env, obj)->retrace();
-    ttinstances.push_back(ptr);
-    return reinterpret_cast<jlong>(ptr.get());
+    auto p = rpf::get_obj_ptr<rpf::TankDriveTrajectory>(env, obj);
+    if(!rpf::check_instance(ttinstances, p)) {
+        rpf::throw_IllegalStateException(env, "This object has already been freed");
+        return 0;
+    }
+    else {
+        auto ptr = p->retrace();
+        ttinstances.push_back(ptr);
+        return reinterpret_cast<jlong>(ptr.get());
+    }
 }
 
 JNIEXPORT jint JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_TankDriveTrajectory__1getMomentCount(JNIEnv *env, jobject obj) {
-    return rpf::get_obj_ptr<rpf::TankDriveTrajectory>(env, obj)->get_moments().size();
+    auto ptr = rpf::get_obj_ptr<rpf::TankDriveTrajectory>(env, obj);
+    if(!rpf::check_instance(ttinstances, ptr)) {
+        rpf::throw_IllegalStateException(env, "This object has already been freed");
+        return 0;
+    }
+    else {
+        return ptr->get_moments().size();
+    }
 }
 

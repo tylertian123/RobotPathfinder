@@ -41,4 +41,9 @@ namespace rpf {
         jfieldID fid = env->GetFieldID(env->GetObjectClass(obj), fname, "D");
         return env->GetDoubleField(obj, fid);
     }
+
+    void throw_IllegalStateException(JNIEnv *env, const char *msg) {
+        jclass clazz = env->FindClass("java/lang/IllegalStateException");
+        env->ThrowNew(clazz, msg);
+    }
 }

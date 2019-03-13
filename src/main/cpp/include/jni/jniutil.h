@@ -47,4 +47,12 @@ namespace rpf {
             return false;
         }
     }
+    template <typename T>
+    bool check_instance(std::list<std::shared_ptr<T>> &instances, T *ptr) {
+        auto it = std::find_if(instances.begin(), instances.end(), [&](const auto &p){ return p.get() == ptr; });
+        return it != instances.end();
+    }
+    
+    void throw_IllegalStateException(JNIEnv *, const char *);
 }
+

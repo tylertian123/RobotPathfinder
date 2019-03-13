@@ -98,7 +98,9 @@ public class TrajectoryTest {
         params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
         TankDriveTrajectory original = new TankDriveTrajectory(specs, params);
-        TankDriveTrajectory mirrored = original.mirrorLeftRight().mirrorLeftRight();
+        TankDriveTrajectory t = original.mirrorLeftRight();
+        TankDriveTrajectory mirrored = t.mirrorLeftRight();
+        t.close();
 
         double dt = original.totalTime() / 100;
         for(int i = 0; i < dt; i ++) {
@@ -131,7 +133,9 @@ public class TrajectoryTest {
         params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
         TankDriveTrajectory original = new TankDriveTrajectory(specs, params);
-        TankDriveTrajectory mirrored = original.mirrorFrontBack().mirrorFrontBack();
+        TankDriveTrajectory t = original.mirrorFrontBack();
+        TankDriveTrajectory mirrored = t.mirrorFrontBack();
+        t.close();
 
         double dt = original.totalTime() / 100;
         for(int i = 0; i < dt; i ++) {
@@ -164,7 +168,9 @@ public class TrajectoryTest {
         params.isTank = true;
         params.pathType = PathType.QUINTIC_HERMITE;
         TankDriveTrajectory original = new TankDriveTrajectory(specs, params);
-        TankDriveTrajectory mirrored = original.retrace().retrace();
+        TankDriveTrajectory t = original.retrace();
+        TankDriveTrajectory mirrored = t.retrace();
+        t.close();
 
         double dt = original.totalTime() / 100;
         for(int i = 0; i < dt; i ++) {

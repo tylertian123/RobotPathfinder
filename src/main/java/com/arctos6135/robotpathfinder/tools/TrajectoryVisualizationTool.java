@@ -58,77 +58,76 @@ import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+
 /**
- * A GUI tool built with Swing to help visualize trajectories. 
+ * A GUI tool built with Swing to help visualize trajectories.
+ * 
  * @author Tyler Tian
  *
  */
 public class TrajectoryVisualizationTool {
-    /*
-     * This generates the most beautiful UI you've ever seen.
-     * It is also the biggest mess of code you've ever seen.
-     */
+	/*
+	 * This generates the most beautiful UI you've ever seen. It is also the biggest
+	 * mess of code you've ever seen.
+	 */
 
-    // The main window frame
-    static JFrame mainFrame;
-    // The main window's panel
-    static JPanel mainPanel;
-    // The panel at the bottom of the main window's panel that holds all the buttons
+	// The main window frame
+	static JFrame mainFrame;
+	// The main window's panel
+	static JPanel mainPanel;
+	// The panel at the bottom of the main window's panel that holds all the buttons
 	static JPanel buttonsPanel;
-    
-    // The text boxes in the add/edit waypoint dialog panel
+
+	// The text boxes in the add/edit waypoint dialog panel
 	static JTextField waypointX = new JTextField();
 	static JTextField waypointY = new JTextField();
-    static JTextField waypointHeading = new JTextField();
-    static JTextField waypointVelocity = new JTextField();
-    // The add/edit waypoint dialog panel
-    static JPanel waypointPanel;
+	static JTextField waypointHeading = new JTextField();
+	static JTextField waypointVelocity = new JTextField();
+	// The add/edit waypoint dialog panel
+	static JPanel waypointPanel;
 
-    // The table that holds the waypoints
-    static JTable table;
-    
-    // The number of samples for graphing paths and trajectories
+	// The table that holds the waypoints
+	static JTable table;
+
+	// The number of samples for graphing paths and trajectories
 	static int pathSamples = 200;
-    static int trajSamples = 500;
-    // Text boxes and panel for the change sample count dialog
+	static int trajSamples = 500;
+	// Text boxes and panel for the change sample count dialog
 	static JTextField pathSamplesField = new JTextField(String.valueOf(pathSamples));
 	static JTextField trajSamplesField = new JTextField(String.valueOf(trajSamples));
 	static JPanel sampleCountPanel;
-    
-    // Text boxes on the main screen
+
+	// Text boxes on the main screen
 	static JTextField baseWidth = new JTextField("0");
 	static JTextField alpha = new JTextField();
 	static JTextField segments = new JTextField("1000");
 	static JTextField maxVelocity = new JTextField();
-    static JTextField maxAcceleration = new JTextField();
-    // The JPanel that holds all the parameter textboxes above
+	static JTextField maxAcceleration = new JTextField();
+	// The JPanel that holds all the parameter textboxes above
 	static JPanel argumentsPanel;
-	
+
 	static JMenuBar menuBar;
 	static JMenu fileMenu;
-    
-    // Waypoints used for generation
+
+	// Waypoints used for generation
 	static ArrayList<Waypoint> waypoints = new ArrayList<Waypoint>();
-    
-    // Action commands for the radio buttons
+
+	// Action commands for the radio buttons
 	static final String QHERMITE = "quinticHermite";
 	static final String CHERMITE = "cubicHermite";
 	static final String BEZIER = "bezier";
 	static JRadioButton quinticHermiteButton, cubicHermiteButton, bezierButton;
 	static PathType selectedType = PathType.QUINTIC_HERMITE;
-	
+
 	static JCheckBox isTank;
-    
-    // Column names for the waypoint table
-	static final String[] COLUMN_NAMES = new String[] {
-			"X Position",
-			"Y Position",
-            "Robot Direction (Degrees)",
-            "Velocity",
-	};
-    
-    // This maps special angles in degrees to string representations of those angles in radians
-    // Used for codegen
+
+	// Column names for the waypoint table
+	static final String[] COLUMN_NAMES = new String[] { "X Position", "Y Position", "Robot Direction (Degrees)",
+			"Velocity", };
+
+	// This maps special angles in degrees to string representations of those angles
+	// in radians
+	// Used for codegen
 	static HashMap<Double, String> specialAngles = new HashMap<>();
 	static {
 		specialAngles.put(Math.toRadians(30.0), "Math.PI / 6");
@@ -138,9 +137,9 @@ public class TrajectoryVisualizationTool {
 		specialAngles.put(Math.toRadians(120.0), "2 * Math.PI / 3");
 		specialAngles.put(Math.toRadians(135.0), "3 * Math.PI / 4");
 		specialAngles.put(Math.toRadians(150.0), "5 * Math.PI / 6");
-		
+
 		specialAngles.put(Math.toRadians(180.0), "Math.PI");
-		
+
 		specialAngles.put(Math.toRadians(-30.0), "-Math.PI / 6");
 		specialAngles.put(Math.toRadians(-45.0), "-Math.PI / 4");
 		specialAngles.put(Math.toRadians(-60.0), "-Math.PI / 3");
@@ -149,23 +148,23 @@ public class TrajectoryVisualizationTool {
 		specialAngles.put(Math.toRadians(-135.0), "-3 * Math.PI / 4");
 		specialAngles.put(Math.toRadians(-150.0), "-5 * Math.PI / 6");
 	}
-	
+
 	static double[] primitiveArr(ArrayList<Double> a) {
 		Double[] arr = new Double[a.size()];
 		a.toArray(arr);
 		double[] d = new double[arr.length];
-		for(int i = 0; i < arr.length; i ++)
+		for (int i = 0; i < arr.length; i++)
 			d[i] = arr[i];
 		return d;
 	}
-	
+
 	static double constrainAngle(double angle) {
-		if(angle <= 180.0 && angle > -180.0)
+		if (angle <= 180.0 && angle > -180.0)
 			return angle;
-		while(angle > 180.0) {
+		while (angle > 180.0) {
 			angle -= 360.0;
 		}
-		while(angle <= -180.0) {
+		while (angle <= -180.0) {
 			angle += 360.0;
 		}
 		return angle;
@@ -279,8 +278,8 @@ public class TrajectoryVisualizationTool {
             waypoints.toArray(paramsWaypoints);
             params.waypoints = paramsWaypoints;
 
-            Gson gson = new GsonBuilder().setPrettyPrinting().serializeSpecialFloatingPointValues().create();
-            out.write(gson.toJson(params));
+            Gson gson = new GsonBuilder().serializeSpecialFloatingPointValues().setPrettyPrinting().create();
+            out.write(gson.toJson(params).replace("NaN", "null"));
         }
         catch (IOException e) {
             throw e;

@@ -818,6 +818,11 @@ public class TrajectoryVisualizationTool {
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
+			catch(ArrayIndexOutOfBoundsException e1) {
+				JOptionPane.showMessageDialog(mainFrame, "A zero length trajectory cannot be graphed.", "Error", 
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
             
             // Add the window close hook that shows the main window back
 			WindowAdapter closeHook = new WindowAdapter() {

@@ -1088,7 +1088,9 @@ public class TrajectoryVisualizationTool {
 		if(!GlobalLibraryLoader.libraryLoaded()) {
 			StringBuilder str = new StringBuilder("Failed to load dynamic library '"
 					+ System.mapLibraryName("RobotPathfinder") + "'!'\nPlease ensure that the library is in the same"
-					+ "directory as this jar file, or present in one of the following locations:\n");
+					+ " directory as where this program was launched (" +  System.getProperty("user.dir") 
+					+ File.separator + System.mapLibraryName("RobotPathfinder") + ") or present in one of the"
+					+ " following locations:\n");
 				
 			for(String path : System.getProperty("java.library.path").split(Pattern.quote(File.pathSeparator))) {
 				str.append(path);

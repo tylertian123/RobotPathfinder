@@ -68,23 +68,6 @@ public class DebugTests {
     }
 	public static void main(String[] args) throws Exception {
         prompt();
-
-        for(int i = 0; i < 800000; i ++) {
-            @SuppressWarnings("unused")
-            Path path = new Path(new Waypoint[] {
-                new Waypoint(0, 0, Math.PI / 2),
-                new Waypoint(0, 10, Math.PI / 2),
-            }, 2.0, PathType.QUINTIC_HERMITE);
-        }
-        System.out.println("-- do some memory intensive work --");
-        for (int i = 0; i < 10; i++) {
-            int[] ints = new int[1000000];
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-            }
-        }
-        System.gc();
-        System.out.println("-- heavy work finished --");
+        
 	}
 }

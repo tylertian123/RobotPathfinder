@@ -1,5 +1,7 @@
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.TrajectoryParams;
@@ -9,7 +11,6 @@ import com.arctos6135.robotpathfinder.core.path.PathType;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
 
 import org.junit.Test;
-import static org.junit.Assert.assertThat;
 
 public class BasicTest {
     
@@ -25,17 +26,17 @@ public class BasicTest {
         Path quinticPath = new Path(waypoints, 30, PathType.QUINTIC_HERMITE);
 
         assertThat(bezierPath.computeLen(100), is(not(Double.NaN)));
-        assertThat(bezierPath.at(0), is(not(null)));
-        assertThat(bezierPath.derivAt(0), is(not(null)));
-        assertThat(bezierPath.secondDerivAt(0), is(not(null)));
+        assertNotNull(bezierPath.at(0));
+        assertNotNull(bezierPath.derivAt(0));
+        assertNotNull(bezierPath.secondDerivAt(0));
         bezierPath.setBaseRadius(1);
         bezierPath.setDrivingBackwards(true);
         assertThat(bezierPath.t2S(0), is(not(Double.NaN)));
         assertThat(bezierPath.s2T(0), is(not(Double.NaN)));
         bezierPath._updateWaypoints();
-        assertThat(bezierPath.mirrorLeftRight(), is(not(null)));
-        assertThat(bezierPath.mirrorFrontBack(), is(not(null)));
-        assertThat(bezierPath.retrace(), is(not(null)));
+        assertNotNull(bezierPath.mirrorLeftRight());
+        assertNotNull(bezierPath.mirrorFrontBack());
+        assertNotNull(bezierPath.retrace());
 
         bezierPath.close();
         cubicPath.close();
@@ -57,12 +58,12 @@ public class BasicTest {
         params.sampleCount = 1000;
 
         TankDriveTrajectory traj = new TankDriveTrajectory(specs, params);
-        assertThat(traj.getMoments(), is(not(null)));
-        assertThat(traj.get(0), is(not(null)));
-        assertThat(traj.getPath(), is(not(null)));
-        assertThat(traj.mirrorFrontBack(), is(not(null)));
-        assertThat(traj.mirrorLeftRight(), is(not(null)));
-        assertThat(traj.retrace(), is(not(null)));
+        assertNotNull(traj.getMoments());
+        assertNotNull(traj.get(0));
+        assertNotNull(traj.getPath());
+        assertNotNull(traj.mirrorFrontBack());
+        assertNotNull(traj.mirrorLeftRight());
+        assertNotNull(traj.retrace());
         traj.close();
     }
 }

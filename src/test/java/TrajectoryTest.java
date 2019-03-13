@@ -10,6 +10,7 @@ import com.arctos6135.robotpathfinder.core.path.PathType;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicMoment;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
+import com.arctos6135.robotpathfinder.core.trajectory.TrajectoryGenerationException;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
 
 import org.junit.Test;
@@ -284,5 +285,57 @@ public class TrajectoryTest {
 
         original.close();
         mirrored.close();
+    }
+
+    @Test
+    public void testBasicTrajectoryGenerationException() {
+        RobotSpecs specs = new RobotSpecs(5, 3, 1);
+        TrajectoryParams params = new TrajectoryParams();
+        params.waypoints = new Waypoint[] {
+            new Waypoint(0, 0, Math.PI / 2),
+            new Waypoint(10, 10, Math.PI / 2, 10),
+            new Waypoint(0, 20, Math.PI),
+        };
+        params.alpha = 20;
+        params.isTank = true;
+        params.pathType = PathType.QUINTIC_HERMITE;
+        params.sampleCount = 1000;
+        
+        boolean exception = false;
+        try {
+            BasicTrajectory traj = new BasicTrajectory(specs, params);
+            traj.close();
+        }
+        catch(TrajectoryGenerationException e) {
+            exception = true;
+        }
+
+        assertThat(exception, is(true));
+    }
+
+    @Test
+    public void testTankDriveTrajectoryGenerationException() {
+        RobotSpecs specs = new RobotSpecs(5, 3, 1);
+        TrajectoryParams params = new TrajectoryParams();
+        params.waypoints = new Waypoint[] {
+            new Waypoint(0, 0, Math.PI / 2),
+            new Waypoint(10, 10, Math.PI / 2, 10),
+            new Waypoint(0, 20, Math.PI),
+        };
+        params.alpha = 20;
+        params.isTank = true;
+        params.pathType = PathType.QUINTIC_HERMITE;
+        params.sampleCount = 1000;
+        
+        boolean exception = false;
+        try {
+            TankDriveTrajectory traj = new TankDriveTrajectory(specs, params);
+            traj.close();
+        }
+        catch(TrajectoryGenerationException e) {
+            exception = true;
+        }
+
+        assertThat(exception, is(true));
     }
 }

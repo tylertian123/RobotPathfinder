@@ -8,6 +8,7 @@ import com.arctos6135.robotpathfinder.core.TrajectoryParams;
 import com.arctos6135.robotpathfinder.core.Waypoint;
 import com.arctos6135.robotpathfinder.core.path.Path;
 import com.arctos6135.robotpathfinder.core.path.PathType;
+import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
 
 import org.junit.Test;
@@ -58,6 +59,30 @@ public class BasicTest {
         params.sampleCount = 1000;
 
         TankDriveTrajectory traj = new TankDriveTrajectory(specs, params);
+        assertNotNull(traj.getMoments());
+        assertNotNull(traj.get(0));
+        assertNotNull(traj.getPath());
+        assertNotNull(traj.mirrorFrontBack());
+        assertNotNull(traj.mirrorLeftRight());
+        assertNotNull(traj.retrace());
+        traj.close();
+    }
+
+    @Test
+    public void testBasicTrajectoryAllMethods() {
+        RobotSpecs specs = new RobotSpecs(5, 3, 1);
+        TrajectoryParams params = new TrajectoryParams();
+        params.waypoints = new Waypoint[] {
+            new Waypoint(0, 0, Math.PI / 2),
+            new Waypoint(10, 10, Math.PI / 2),
+            new Waypoint(0, 20, Math.PI),
+        };
+        params.alpha = 20;
+        params.isTank = true;
+        params.pathType = PathType.QUINTIC_HERMITE;
+        params.sampleCount = 1000;
+
+        BasicTrajectory traj = new BasicTrajectory(specs, params);
         assertNotNull(traj.getMoments());
         assertNotNull(traj.get(0));
         assertNotNull(traj.getPath());

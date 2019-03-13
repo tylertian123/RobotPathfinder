@@ -102,6 +102,8 @@ namespace rpf {
                     double curvature = rpf::curvature(d.x, dd.x, d.y, dd.y);
                     // The heading is generated as a by-product
                     headings.push_back(std::atan2(d.y, d.x));
+                    // Store a value into pathr for use by TankDriveTrajectory later
+                    pathr.push_back(1 / curvature);
                     /*
 				     * The maximum speed for the entire robot is computed with a formula. Derivation here:
 				     * Start with the equations:
@@ -120,8 +122,6 @@ namespace rpf {
 				     * V = 2Vmax / (2 + b / R), V = Vmax / (1 + b / (2R))
 				     */
                     mv.push_back(specs.max_v / (1 + specs.base_width / (2 * std::abs(pathr[i]))));
-                    // Store a value into pathr for use by TankDriveTrajectory later
-                    pathr.push_back(1 / curvature);
                 }
             }
             else {

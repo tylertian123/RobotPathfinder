@@ -31,8 +31,7 @@ import com.arctos6135.robotpathfinder.core.lifecycle.GlobalLifeCycleManager;
  * method must be called to free the native resource when the object is no
  * longer needed.
  * </p>
- * <p>
- * <em> Note: Almost all RobotPathfinder JNI classes have some kind of reference
+ * <p>Note: Almost all RobotPathfinder JNI classes have some kind of reference
  * counting. However, this reference count is only increased when an object is
  * created or copied by a method, and not when the reference is copied through
  * assignment. <br>
@@ -55,8 +54,6 @@ import com.arctos6135.robotpathfinder.core.lifecycle.GlobalLifeCycleManager;
  * p1.at(0); // This will throw an IllegalStateException, since the native resource has
  *           // already been freed
  * </pre>
- * 
- * </em>
  * </p>
  * 
  * @see BasicTrajectory

@@ -39,8 +39,8 @@ public class Path extends JNIObject {
      * </p>
      * 
      * @param waypoints The waypoints this path must pass through
-     * @param alpha The turn smoothness constant
-     * @param type The type of the path
+     * @param alpha     The turn smoothness constant
+     * @param type      The type of the path
      */
     public Path(Waypoint[] waypoints, double alpha, PathType type) {
         this.type = type;

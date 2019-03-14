@@ -29,37 +29,40 @@ package com.arctos6135.robotpathfinder.core.trajectory;
  * <h2>Units</h2>
  * <p>
  * The units used for these moment objects are completely decided by which units
- * are used in a trajectory's {@link com.arctos6135.robotpathfinder.core.RobotSpecs
- * RobotSpecs} during generation. For example, if the unit for max velocity was
- * in m/s, then the unit used here for velocity would also be m/s.
+ * are used in a trajectory's
+ * {@link com.arctos6135.robotpathfinder.core.RobotSpecs RobotSpecs} during
+ * generation. For example, if the unit for max velocity was in m/s, then the
+ * unit used here for velocity would also be m/s.
  * </p>
  * 
  * @author Tyler Tian
- *
+ * @since 3.0.0
  */
 public class BasicMoment extends Moment {
-	
+
 	double d, v, a;
 	double t;
-	
+
 	/**
 	 * Constructs a new moment with all fields set to 0.s
 	 */
 	public BasicMoment() {
 		d = v = a = t = heading = 0;
 	}
-	
+
 	@Override
 	public BasicMoment clone() {
 		return new BasicMoment(d, v, a, heading, t, initialFacing);
 	}
-	
+
 	/**
 	 * Creates a new moment with the specified values.
-	 * @param position The desired position
-	 * @param velocity The desired velocity
+	 * 
+	 * @param position     The desired position
+	 * @param velocity     The desired velocity
 	 * @param acceleration The desired acceleration
-	 * @param heading The desired heading; see the class JavaDoc for more information
+	 * @param heading      The desired heading; see the class JavaDoc for more
+	 *                     information
 	 */
 	public BasicMoment(double position, double velocity, double acceleration, double heading) {
 		d = position;
@@ -67,91 +70,116 @@ public class BasicMoment extends Moment {
 		a = acceleration;
 		this.heading = heading;
 	}
+
 	/**
 	 * Creates a new moment with the specified values.
-	 * @param position The desired position
-	 * @param velocity The desired velocity
+	 * 
+	 * @param position     The desired position
+	 * @param velocity     The desired velocity
 	 * @param acceleration The desired acceleration
-	 * @param heading The desired heading; see the class JavaDoc for more information
-	 * @param t The desired time
+	 * @param heading      The desired heading; see the class JavaDoc for more
+	 *                     information
+	 * @param t            The desired time
 	 */
 	public BasicMoment(double position, double velocity, double acceleration, double heading, double t) {
 		this(position, velocity, acceleration, heading);
 		this.t = t;
 	}
+
 	/**
 	 * Creates a new moment with the specified values.
-	 * @param position The desired position
-	 * @param velocity The desired velocity
-	 * @param acceleration The desired acceleration
-	 * @param heading The desired heading; see the class JavaDoc for more information
-	 * @param t The desired time
-	 * @param initialFacing The initial direction the robot is <b>facing</b>; see the class JavaDoc for more information
+	 * 
+	 * @param position      The desired position
+	 * @param velocity      The desired velocity
+	 * @param acceleration  The desired acceleration
+	 * @param heading       The desired heading; see the class JavaDoc for more
+	 *                      information
+	 * @param t             The desired time
+	 * @param initialFacing The initial direction the robot is <b>facing</b>; see
+	 *                      the class JavaDoc for more information
 	 */
-	public BasicMoment(double position, double velocity, double acceleration, double heading, double t, double initialFacing) {
+	public BasicMoment(double position, double velocity, double acceleration, double heading, double t,
+			double initialFacing) {
 		this(position, velocity, acceleration, heading);
 		this.t = t;
 		this.initialFacing = initialFacing;
 	}
-	public BasicMoment(double position, double velocity, double acceleration, double heading, double t, double initialFacing, boolean backwards) {
+
+	public BasicMoment(double position, double velocity, double acceleration, double heading, double t,
+			double initialFacing, boolean backwards) {
 		this(position, velocity, acceleration, heading, t, initialFacing);
 		this.backwards = backwards;
 	}
-	
+
 	/**
 	 * Sets the time of the moment.
+	 * 
 	 * @param t The new time
 	 */
 	public void setTime(double t) {
 		this.t = t;
 	}
+
 	/**
 	 * Retrieves the time of the moment.
+	 * 
 	 * @return The time of the moment
 	 */
 	public double getTime() {
 		return t;
 	}
+
 	/**
 	 * Sets the position of the moment.
+	 * 
 	 * @param position The new position
 	 */
 	public void setPosition(double position) {
 		d = position;
 	}
+
 	/**
 	 * Retrieves the position of the moment.
+	 * 
 	 * @return The position of the moment
 	 */
 	public double getPosition() {
 		return d;
 	}
+
 	/**
 	 * Sets the velocity of the moment.
+	 * 
 	 * @param velocity The new velocity
 	 */
 	public void setVelocity(double velocity) {
 		v = velocity;
 	}
+
 	/**
 	 * Retrieves the velocity of the moment.
+	 * 
 	 * @return The velocity
 	 */
 	public double getVelocity() {
 		return v;
 	}
+
 	/**
 	 * Sets the acceleration of the moment.
+	 * 
 	 * @param acceleration The new acceleration
 	 */
 	public void setAcceleration(double acceleration) {
 		a = acceleration;
 	}
+
 	/**
 	 * Retrieves the acceleration of the moment.
+	 * 
 	 * @return The acceleration of the moment
 	 */
 	public double getAcceleration() {
 		return a;
 	}
- }
+}

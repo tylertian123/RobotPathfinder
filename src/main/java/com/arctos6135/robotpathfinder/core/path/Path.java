@@ -1,5 +1,6 @@
 package com.arctos6135.robotpathfinder.core.path;
 
+import com.arctos6135.robotpathfinder.core.GlobalLibraryLoader;
 import com.arctos6135.robotpathfinder.core.Waypoint;
 import com.arctos6135.robotpathfinder.core.lifecycle.GlobalLifeCycleManager;
 import com.arctos6135.robotpathfinder.core.lifecycle.JNIObject;
@@ -52,6 +53,7 @@ import com.arctos6135.robotpathfinder.util.Pair;
 public class Path extends JNIObject {
 
     static {
+        GlobalLibraryLoader.load();
         GlobalLifeCycleManager.initialize();
     }
 

@@ -1,3 +1,5 @@
+package com.arctos6135.robotpathfinder.tests;
+
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertNotNull;

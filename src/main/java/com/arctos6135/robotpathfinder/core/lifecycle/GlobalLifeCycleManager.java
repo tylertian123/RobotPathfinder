@@ -26,6 +26,9 @@ public final class GlobalLifeCycleManager {
     protected static ResourceDisposalThread resourceDisposalThread;
     protected static boolean initialized = false;
 
+    /**
+     * A daemon thread that runs forever and tries to free all phantom-reachable {@link JNIObject}s.
+     */
     protected static class ResourceDisposalThread extends Thread {
         
         public ResourceDisposalThread() {

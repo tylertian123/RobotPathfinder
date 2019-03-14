@@ -10,7 +10,7 @@ package com.arctos6135.robotpathfinder.follower;
  * </p>
  * 
  * @author Tyler Tian
- *
+ * @since 3.0.0
  */
 abstract public class Follower {
 

@@ -29,42 +29,49 @@ package com.arctos6135.robotpathfinder.core.trajectory;
  * <h2>Units</h2>
  * <p>
  * The units used for these moment objects are completely decided by which units
- * are used in a trajectory's {@link com.arctos6135.robotpathfinder.core.RobotSpecs
- * RobotSpecs} during generation. For example, if the unit for max velocity was
- * in m/s, then the unit used here for velocity would also be m/s.
+ * are used in a trajectory's
+ * {@link com.arctos6135.robotpathfinder.core.RobotSpecs RobotSpecs} during
+ * generation. For example, if the unit for max velocity was in m/s, then the
+ * unit used here for velocity would also be m/s.
  * </p>
  * 
  * @author Tyler Tian
- *
+ * @since 3.0.0
  */
 public class TankDriveMoment extends Moment {
-	
+
 	double ld, lv, la, rd, rv, ra;
 	double t;
-	
+
 	/**
 	 * Constructs a new moment with all fields set to 0.
 	 */
 	public TankDriveMoment() {
 		ld = lv = la = rd = rv = ra = t = heading = 0;
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public TankDriveMoment clone() {
 		return new TankDriveMoment(ld, rd, lv, rv, la, ra, heading, t, initialFacing);
 	}
-	
+
 	/**
 	 * Creates a new moment with the specified values.
-	 * @param leftPos The distance the left wheel has traveled
+	 * 
+	 * @param leftPos  The distance the left wheel has traveled
 	 * @param rightPos The distance the right wheel has traveled
-	 * @param leftVel The velocity of the left wheel
+	 * @param leftVel  The velocity of the left wheel
 	 * @param rightVel The velocity of the right wheel
-	 * @param leftAcl The acceleration of the left wheel
+	 * @param leftAcl  The acceleration of the left wheel
 	 * @param rightAcl The acceleration of the right wheel
-	 * @param heading The desired heading; see the class JavaDoc for more information
+	 * @param heading  The desired heading; see the class JavaDoc for more
+	 *                 information
 	 */
-	public TankDriveMoment(double leftPos, double rightPos, double leftVel, double rightVel, double leftAcl, double rightAcl, double heading) {
+	public TankDriveMoment(double leftPos, double rightPos, double leftVel, double rightVel, double leftAcl,
+			double rightAcl, double heading) {
 		ld = leftPos;
 		rd = rightPos;
 		lv = leftVel;
@@ -73,45 +80,73 @@ public class TankDriveMoment extends Moment {
 		ra = rightAcl;
 		this.heading = heading;
 	}
+
 	/**
 	 * Creates a new moment with the specified values.
-	 * @param leftPos The distance the left wheel has traveled
+	 * 
+	 * @param leftPos  The distance the left wheel has traveled
 	 * @param rightPos The distance the right wheel has traveled
-	 * @param leftVel The velocity of the left wheel
+	 * @param leftVel  The velocity of the left wheel
 	 * @param rightVel The velocity of the right wheel
-	 * @param leftAcl The acceleration of the left wheel
+	 * @param leftAcl  The acceleration of the left wheel
 	 * @param rightAcl The acceleration of the right wheel
-	 * @param heading The desired heading; see the class JavaDoc for more information
-	 * @param time The desired time
+	 * @param heading  The desired heading; see the class JavaDoc for more
+	 *                 information
+	 * @param time     The desired time
 	 */
-	public TankDriveMoment(double leftPos, double rightPos, double leftVel, double rightVel, double leftAcl, double rightAcl, double heading, double time) {
+	public TankDriveMoment(double leftPos, double rightPos, double leftVel, double rightVel, double leftAcl,
+			double rightAcl, double heading, double time) {
 		this(leftPos, rightPos, leftVel, rightVel, leftAcl, rightAcl, heading);
 		t = time;
 	}
+
 	/**
 	 * Creates a new moment with the specified values.
-	 * @param leftPos The distance the left wheel has traveled
-	 * @param rightPos The distance the right wheel has traveled
-	 * @param leftVel The velocity of the left wheel
-	 * @param rightVel The velocity of the right wheel
-	 * @param leftAcl The acceleration of the left wheel
-	 * @param rightAcl The acceleration of the right wheel
-	 * @param heading The desired heading; see the class JavaDoc for more information
-	 * @param time The desired time
-	 * @param initialFacing The initial direction the robot is <b>facing</b>; see the class JavaDoc for more information
+	 * 
+	 * @param leftPos       The distance the left wheel has traveled
+	 * @param rightPos      The distance the right wheel has traveled
+	 * @param leftVel       The velocity of the left wheel
+	 * @param rightVel      The velocity of the right wheel
+	 * @param leftAcl       The acceleration of the left wheel
+	 * @param rightAcl      The acceleration of the right wheel
+	 * @param heading       The desired heading; see the class JavaDoc for more
+	 *                      information
+	 * @param time          The desired time
+	 * @param initialFacing The initial direction the robot is <b>facing</b>; see
+	 *                      the class JavaDoc for more information
 	 */
-	public TankDriveMoment(double leftPos, double rightPos, double leftVel, double rightVel, double leftAcl, double rightAcl, double heading, double time, double initialFacing) {
+	public TankDriveMoment(double leftPos, double rightPos, double leftVel, double rightVel, double leftAcl,
+			double rightAcl, double heading, double time, double initialFacing) {
 		this(leftPos, rightPos, leftVel, rightVel, leftAcl, rightAcl, heading);
 		t = time;
 		this.initialFacing = initialFacing;
 	}
-	public TankDriveMoment(double leftPos, double rightPos, double leftVel, double rightVel, double leftAcl, double rightAcl, double heading, double time, double initialFacing, boolean backwards) {
+
+	/**
+	 * Creates a new moment with the specified values.
+	 * 
+	 * @param leftPos       The distance the left wheel has traveled
+	 * @param rightPos      The distance the right wheel has traveled
+	 * @param leftVel       The velocity of the left wheel
+	 * @param rightVel      The velocity of the right wheel
+	 * @param leftAcl       The acceleration of the left wheel
+	 * @param rightAcl      The acceleration of the right wheel
+	 * @param heading       The desired heading; see the class JavaDoc for more
+	 *                      information
+	 * @param time          The desired time
+	 * @param initialFacing The initial direction the robot is <b>facing</b>; see
+	 *                      the class JavaDoc for more information
+	 * @param backwards     Whether the robot is driving backwards in this moment
+	 */
+	public TankDriveMoment(double leftPos, double rightPos, double leftVel, double rightVel, double leftAcl,
+			double rightAcl, double heading, double time, double initialFacing, boolean backwards) {
 		this(leftPos, rightPos, leftVel, rightVel, leftAcl, rightAcl, heading, time, initialFacing);
 		this.backwards = backwards;
 	}
 
 	/**
 	 * Retrieves the distance the left wheel has traveled.
+	 * 
 	 * @return The distance of the left wheel
 	 */
 	public double getLeftPosition() {
@@ -120,6 +155,7 @@ public class TankDriveMoment extends Moment {
 
 	/**
 	 * Sets the distance the left wheel has traveled.
+	 * 
 	 * @param ld The new distance of the left wheel
 	 */
 	public void setLeftPosition(double ld) {
@@ -128,6 +164,7 @@ public class TankDriveMoment extends Moment {
 
 	/**
 	 * Retrieves the velocity of the left wheel.
+	 * 
 	 * @return The velocity of the left wheel
 	 */
 	public double getLeftVelocity() {
@@ -136,6 +173,7 @@ public class TankDriveMoment extends Moment {
 
 	/**
 	 * Sets the velocity of the left wheel.
+	 * 
 	 * @param lv The new velocity of the left wheel
 	 */
 	public void setLeftVelocity(double lv) {
@@ -144,6 +182,7 @@ public class TankDriveMoment extends Moment {
 
 	/**
 	 * Retrieves the acceleration of the left wheel.
+	 * 
 	 * @return The acceleration of the left wheel
 	 */
 	public double getLeftAcceleration() {
@@ -152,6 +191,7 @@ public class TankDriveMoment extends Moment {
 
 	/**
 	 * Sets the acceleration of the left wheel.
+	 * 
 	 * @param la The new acceleration of the left wheel
 	 */
 	public void setLeftAcceleration(double la) {
@@ -160,6 +200,7 @@ public class TankDriveMoment extends Moment {
 
 	/**
 	 * Retrieves the distance traveled by the right wheel.
+	 * 
 	 * @return The distance traveled by the right wheel
 	 */
 	public double getRightPosition() {
@@ -168,6 +209,7 @@ public class TankDriveMoment extends Moment {
 
 	/**
 	 * Sets the distance traveled by the right wheel.
+	 * 
 	 * @param rd The new distance traveled by the right wheel.
 	 */
 	public void setRightPosition(double rd) {
@@ -176,6 +218,7 @@ public class TankDriveMoment extends Moment {
 
 	/**
 	 * Retrieves the velocity of the right wheel.
+	 * 
 	 * @return The velocity of the right wheel
 	 */
 	public double getRightVelocity() {
@@ -184,6 +227,7 @@ public class TankDriveMoment extends Moment {
 
 	/**
 	 * Sets the velocity of the right wheel.
+	 * 
 	 * @param rv The new velocity of the right wheel
 	 */
 	public void setRightVelocity(double rv) {
@@ -192,6 +236,7 @@ public class TankDriveMoment extends Moment {
 
 	/**
 	 * Retrieves the acceleration of the right wheel.
+	 * 
 	 * @return The acceleration of the right wheel
 	 */
 	public double getRightAcceleration() {
@@ -200,6 +245,7 @@ public class TankDriveMoment extends Moment {
 
 	/**
 	 * Sets the acceleration of the right wheel.
+	 * 
 	 * @param ra The new acceleration of the right wheel
 	 */
 	public void setRightAcceleration(double ra) {
@@ -208,6 +254,7 @@ public class TankDriveMoment extends Moment {
 
 	/**
 	 * Retrieves the time.
+	 * 
 	 * @return The time
 	 */
 	public double getTime() {
@@ -216,36 +263,10 @@ public class TankDriveMoment extends Moment {
 
 	/**
 	 * Sets the time.
+	 * 
 	 * @param t The new time
 	 */
 	public void setTime(double t) {
 		this.t = t;
-	}
-
-	/**
-	 * Retrieves information about the left wheel, heading and time, stored in a {@link BasicMoment} object.
-	 * @return Information about the left wheel, heading and time, stored in a {@link BasicMoment} object
-	 */
-	public BasicMoment leftComponent() {
-		return new BasicMoment(ld, lv, la, heading, t);
-	}
-	/**
-	 * Retrieves information about the right wheel, heading and time, stored in a {@link BasicMoment} object.
-	 * @return Information about the right wheel, heading and time, stored in a {@link BasicMoment} object
-	 */
-	public BasicMoment rightComponent() {
-		return new BasicMoment(rd, rv, ra, heading, t);
-	}
-	
-	/**
-	 * Makes a {@link TankDriveMoment} from information about the left and right wheels. Note that the heading of
-	 * the new moment is taken from the left component.
-	 * @param left Information about the left wheel
-	 * @param right Information about the right wheel
-	 * @return A new {@link TankDriveMoment} that combines the information from the left and right wheels
-	 */
-	public static TankDriveMoment fromComponents(BasicMoment left, BasicMoment right) {
-		return new TankDriveMoment(left.getPosition(), right.getPosition(), left.getVelocity(), right.getVelocity(),
-				left.getAcceleration(), right.getAcceleration(), left.getHeading(), left.getTime());
 	}
 }

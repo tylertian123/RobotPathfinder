@@ -5,6 +5,7 @@ import com.arctos6135.robotpathfinder.core.GlobalLibraryLoader;
 /**
  * This abstract class represents an object that has a native counterpart. It is
  * the superclass of all RobotPathfinder Paths and Trajectories.
+ * <h2>Memory Management</h2>
  * <p>
  * Each JNIObject has a Java part (the object itself) and a part that resides in
  * native code (stored as a pointer casted into a {@code long}). Because these

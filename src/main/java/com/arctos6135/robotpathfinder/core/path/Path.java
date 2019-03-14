@@ -12,6 +12,7 @@ import com.arctos6135.robotpathfinder.util.Pair;
  * from trajectories; they only contain information about the locations the
  * robot will pass through. To follow a path, use a trajectory. This class is
  * the superclass of all path classes.
+ * <h2>Memory Management</h2>
  * <p>
  * Each Path has a Java part (the object itself) and a part that resides in
  * native code (stored as a pointer casted into a {@code long}). Because these

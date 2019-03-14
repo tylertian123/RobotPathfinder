@@ -22,6 +22,7 @@ import com.arctos6135.robotpathfinder.core.lifecycle.GlobalLifeCycleManager;
  * individual movements of the left and right side wheels, and takes into
  * account the slowing down when turning.
  * </p>
+ * <h2>Memory Management</h2>
  * <p>
  * Each Trajectory has a Java part (the object itself) and a part that resides
  * in native code (stored as a pointer casted into a {@code long}). Because

@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * The {@code GlobalLifeCycleManager} is a singleton that manages the lifecycle of all {@link JNIObject}s 
+ * The {@code GlobalLifeCycleManager} is a static class that manages the lifecycle of all {@link JNIObject}s 
  * in RobotPathfinder using {@code PhantomReference}s. This ensures that when an object is being garbage-collected
  * by the GC, its native counterpart is also freed and no memory leak happens.
  * <p>
@@ -16,6 +16,9 @@ import java.util.List;
  * <p>
  * <b><em>This class is intended for internal use only. Use at your own risk.</em></b>
  * </p>
+ * 
+ * @author Tyler Tian
+ * @since 3.0.0
  */
 public final class GlobalLifeCycleManager {
     

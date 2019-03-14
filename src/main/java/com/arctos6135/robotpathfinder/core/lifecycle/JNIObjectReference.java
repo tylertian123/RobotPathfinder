@@ -13,6 +13,9 @@ import com.arctos6135.robotpathfinder.core.GlobalLibraryLoader;
  * <p>
  * <b><em>This class is intended for internal use only. Use at your own risk.</em></b>
  * </p>
+ * 
+ * @author Tyler Tian
+ * @since 3.0.0
  */
 public class JNIObjectReference extends PhantomReference<JNIObject> {
 

@@ -31,6 +31,9 @@ import com.arctos6135.robotpathfinder.core.GlobalLibraryLoader;
  * p1.at(0); // This will throw an IllegalStateException, since the native resource has already been freed
  * }</pre>
  * </em></p>
+ * 
+ * @author Tyler Tian
+ * @since 3.0.0
  */
 public abstract class JNIObject implements AutoCloseable {
 

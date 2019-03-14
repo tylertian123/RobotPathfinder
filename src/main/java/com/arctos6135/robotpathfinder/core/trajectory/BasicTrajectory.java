@@ -73,7 +73,7 @@ public class BasicTrajectory extends Trajectory {
             double alpha, int sampleCount, int type);
 
     /**
-     * Constructs a new {@link BasicTrajectory} with the specified robot
+     * Creates a new {@link BasicTrajectory} with the specified robot
      * specifications and parameters.
      * 
      * @param specs  A {@link RobotSpecs} object providing robot information such as

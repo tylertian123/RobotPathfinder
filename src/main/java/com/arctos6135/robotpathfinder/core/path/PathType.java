@@ -42,11 +42,12 @@ public enum PathType {
 
 	/**
 	 * Retrieves the JNI enum value of this {@link PathType}.
-	 * </p>
 	 * <p>
 	 * <b><em>This method is intended for internal use only. Use at your own
 	 * risk.</em></b>
 	 * </p>
+     * 
+     * @return The native enum value for this {@link PathType}
 	 */
 	public int getJNIID() {
 		switch (this) {

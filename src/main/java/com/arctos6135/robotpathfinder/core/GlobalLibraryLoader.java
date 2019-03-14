@@ -59,6 +59,7 @@ public final class GlobalLibraryLoader {
      * This method will return {@code false} if the {@link #load()} method was never
      * called, or if the loading failed.
      * </p>
+     * @return Whether the RobotPathfinder shared library has been loaded
      */
     public static boolean libraryLoaded() {
         return loaded;

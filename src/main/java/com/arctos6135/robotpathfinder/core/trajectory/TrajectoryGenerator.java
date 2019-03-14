@@ -82,6 +82,7 @@ final public class TrajectoryGenerator {
 	 * 
 	 * @param specs The specifications of the robot
 	 * @param angle The angle to turn, in radians
+     * @return The generated trajectory
 	 */
 	public static TankDriveTrajectory generateRotationTank(RobotSpecs specs, double angle) {
 		return _generateRotationTank(specs.getMaxVelocity(), specs.getMaxAcceleration(), specs.getBaseWidth(), angle);

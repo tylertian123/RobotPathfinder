@@ -124,6 +124,7 @@ public abstract class Trajectory extends JNIObject {
      * the specified time.
      * </p>
      * 
+     * @param t The time
      * @return The {@link Moment} associated with the given time
      * @throws IllegalArgumentException If the specified time is infinite or NaN
      * @throws IllegalStateException    If the native resource has already been
@@ -221,6 +222,10 @@ public abstract class Trajectory extends JNIObject {
      * The change in waypoints is not reflected in the new trajectory's
      * {@link TrajectoryParams}).
      * </p>
+     * 
+     * @return The new trajectory
+     * @throws IllegalStateException If the native resource has already been freed
+     *                               (see class JavaDoc)
      */
     abstract public Trajectory mirrorFrontBack();
 
@@ -238,6 +243,10 @@ public abstract class Trajectory extends JNIObject {
      * The change in waypoints is not reflected in the new trajectory's
      * {@link TrajectoryParams}).
      * </p>
+     * 
+     * @return The new trajectory
+     * @throws IllegalStateException If the native resource has already been freed
+     *                               (see class JavaDoc)
      */
     abstract public Trajectory retrace();
 }

@@ -381,7 +381,7 @@ public class Path extends JNIObject {
     }
 
     /**
-     * Constructs a new path, in which the direction of the driving is reversed
+     * Constructs a new path, in which the direction of driving is reversed
      * (i.e. driving forwards is now driving backwards).
      * 
      * @return The new path

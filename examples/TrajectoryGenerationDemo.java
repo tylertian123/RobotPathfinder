@@ -1,12 +1,12 @@
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import robot.pathfinder.core.RobotSpecs;
-import robot.pathfinder.core.TrajectoryParams;
-import robot.pathfinder.core.Waypoint;
-import robot.pathfinder.core.trajectory.BasicTrajectory;
-import robot.pathfinder.core.trajectory.TankDriveTrajectory;
-import robot.pathfinder.tools.Grapher;
+import com.arctos6135.robotpathfinder.core.RobotSpecs;
+import com.arctos6135.robotpathfinder.core.TrajectoryParams;
+import com.arctos6135.robotpathfinder.core.Waypoint;
+import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
+import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
+import com.arctos6135.robotpathfinder.tools.Grapher;
 
 /**
  * This example program generates a trajectory, graphs it, and displays it in a window.

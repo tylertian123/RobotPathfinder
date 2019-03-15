@@ -11,10 +11,11 @@
 .vscode
 
 # Native Libraries
-*.so 
-*.lib
 *.a
+*.o
+*.so
 *.dll
+*.lib
 *.dylib
 
 # VM Crash Logs

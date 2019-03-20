@@ -38,17 +38,6 @@ Every release contains 3 jars, 1 zip, and numerous dynamic libraries:
 
 Alternatively, you can build the binaries yourself by navigating to the root directory, and running `./gradlew allArchives --rerun-tasks`. (*If you're on a Windows machine, make sure you're using PowerShell not cmd!*) The archives can then be found under the `output` directory.
 
-***Note: Currently JavaDoc generation does not work on Windows for unknown reasons. If the build fails, find this task and comment out the line as shown below:***
-```groovy
-task allArchives(group: 'Archive', description: 'Builds the project, generates the JavaDoc and jars, zips JavaDoc and copies all items to the output directory.') {
-    dependsOn jar
-    dependsOn visualizerJar
-    dependsOn fatJar
-    dependsOn copyJars
-    //dependsOn zipDoc // Temporarily commented out to fix build issues
-}
-```
-
 **In order to use RobotPathfinder, the correct dynamic library for your platform must be present in either the directory java is invoked from, or the library path.**
 
 ## FRC Usage

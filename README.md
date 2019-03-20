@@ -1,8 +1,8 @@
 # RobotPathfinder
 [![Build Status](https://travis-ci.com/Arctos6135/RobotPathfinder.svg?branch=dev%2Fjni)](https://travis-ci.com/Arctos6135/RobotPathfinder)
 
-Robot motion profiler/path planner for tank drive (aka skid-steer or differential drive) robots. Used and developed by [FRC Team 6135 (Arctos)]("https://github.com/Arctos6135").
-Inspired by and partially based on [Pathfinder by Jaci Brunning]("https://github.com/JacisNonsense/Pathfinder"). 
+Robot motion profiler/path planner for tank drive (aka skid-steer or differential drive) robots. Used and developed by [FRC Team 6135 (Arctos)](https://github.com/Arctos6135).
+Inspired by and partially based on [Pathfinder by Jaci Brunning](https://github.com/JacisNonsense/Pathfinder). 
 
 RobotPathfinder is intended as an improvement over Pathfinder for tank drivetrains. As such, it does not have support for other drivetrains, but features these improvements:
 * Smooth path generation with 3 different fit types

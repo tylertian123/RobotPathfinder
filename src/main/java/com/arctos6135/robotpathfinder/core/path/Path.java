@@ -23,8 +23,8 @@ import com.arctos6135.robotpathfinder.util.Pair;
  * <p>Note: Almost all RobotPathfinder JNI classes have some kind of reference
  * counting. However, this reference count is only increased when an object is
  * created or copied by a method, and not when the reference is copied through
- * assignment. <br>
- * For example:
+ * assignment.
+ * For example:</p>
  * 
  * <pre>
  * Path p0 = someTrajectory.getPath();
@@ -43,7 +43,6 @@ import com.arctos6135.robotpathfinder.util.Pair;
  * p1.at(0); // This will throw an IllegalStateException, since the native resource has
  *           // already been freed
  * </pre>
- * </p>
  * 
  * @author Tyler Tian
  * @since 3.0.0

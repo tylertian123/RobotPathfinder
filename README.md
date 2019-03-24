@@ -1,8 +1,8 @@
 # RobotPathfinder
 [![Build Status](https://travis-ci.com/Arctos6135/RobotPathfinder.svg?branch=dev%2Fjni)](https://travis-ci.com/Arctos6135/RobotPathfinder)
 
-Robot motion profiler/path planner for tank drive (aka skid-steer or differential drive) robots. Used and developed by [FRC Team 6135 (Arctos)]("https://github.com/Arctos6135").
-Inspired by and partially based on [Pathfinder by Jaci Brunning]("https://github.com/JacisNonsense/Pathfinder"). 
+Robot motion profiler/path planner for tank drive (aka skid-steer or differential drive) robots. Used and developed by [FRC Team 6135 (Arctos)](https://github.com/Arctos6135).
+Inspired by and partially based on [Pathfinder by Jaci Brunning](https://github.com/JacisNonsense/Pathfinder). 
 
 RobotPathfinder is intended as an improvement over Pathfinder for tank drivetrains. As such, it does not have support for other drivetrains, but features these improvements:
 * Smooth path generation with 3 different fit types
@@ -37,17 +37,6 @@ Every release contains 3 jars, 1 zip, and numerous dynamic libraries:
 * `RobotPathfinder-(PLATFORM).dll` - The native dynamic library used by RobotPathfinder for a specific Windows arch.
 
 Alternatively, you can build the binaries yourself by navigating to the root directory, and running `./gradlew allArchives --rerun-tasks`. (*If you're on a Windows machine, make sure you're using PowerShell not cmd!*) The archives can then be found under the `output` directory.
-
-***Note: Currently JavaDoc generation does not work on Windows for unknown reasons. If the build fails, find this task and comment out the line as shown below:***
-```groovy
-task allArchives(group: 'Archive', description: 'Builds the project, generates the JavaDoc and jars, zips JavaDoc and copies all items to the output directory.') {
-    dependsOn jar
-    dependsOn visualizerJar
-    dependsOn fatJar
-    dependsOn copyJars
-    //dependsOn zipDoc // Temporarily commented out to fix build issues
-}
-```
 
 **In order to use RobotPathfinder, the correct dynamic library for your platform must be present in either the directory java is invoked from, or the library path.**
 

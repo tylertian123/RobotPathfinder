@@ -1,75 +1,79 @@
-import org.usfirst.frc.team0000.robot.Robot;
+import com.arctos6135.robotpathfinder.core.RobotSpecs;
+import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
+import com.arctos6135.robotpathfinder.follower.Follower.DirectionSource;
+import com.arctos6135.robotpathfinder.follower.Follower.DistanceSource;
+import com.arctos6135.robotpathfinder.follower.Follower.Motor;
+import com.arctos6135.robotpathfinder.follower.Follower.TimestampSource;
+import com.arctos6135.robotpathfinder.follower.TankDriveFollower;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
-import com.arctos6135.robotpathfinder.follower.Follower;
-import com.arctos6135.robotpathfinder.follower.TankFollower;
+// Change these as necessary
+import frc.robot.Robot;
+import frc.robot.RobotMap;
+import frc.robot.subsystems.Drivetrain;
 
-/**
- * 	Makes the Robot follow the trajectory of a {@link com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory TankDriveTrajectory}.<br>
- * 	<br>
- * 	Note: For this command to function correctly, the unit of length used in the trajectory must be <em>inches</em>,
- * 	and the unit for time must be <em>seconds</em>.
- *	@author Tyler Tian
- */
-// Note: This example does not include the use of the directional-proportional term.
-public class FollowerDemo_FRC extends Command {
+public class FollowTrajectory extends Command {
 
-	// Acceleration feedforward term, velocity feedforward term, proportional gain, derivative gain
-	// Must tune later by trial and error
-	public static double kA = 0.00215, kV = 0.01, kP = 0.02225, kD = 0.001;
-	
-	static final Follower.TimestampSource TIMER = () -> {
-		return Timer.getFPGATimestamp();
-	};
-	static final Follower.Motor MOTOR_LEFT = (s) -> {
-		Robot.drive.setLeftMotor(s);
-	};
-	static final Follower.Motor MOTOR_RIGHT = (s) -> {
-		Robot.drive.setRightMotor(s);
-	};
-	static final Follower.DistanceSource ENCODER_LEFT = () -> {
-		return Robot.drive.getLeftDistance();
-	};
-	static final Follower.DistanceSource ENCODER_RIGHT = () -> {
-		return Robot.drive.getRightDistance();
-	};
-	
-	Follower follower;
-	
-    public FollowerDemo_FRC(TankDriveTrajectory trajectory) {
+	// Change these as necessary
+    public static final Motor L_MOTOR = Robot.drivetrain::setLeftMotor;
+    public static final Motor R_MOTOR = Robot.drivetrain::setRightMotor;
+    public static final DirectionSource GYRO = () -> {
+        return Math.toRadians(Robot.drivetrain.getHeading());
+    };
+    public static final DistanceSource L_DISTANCE_SOURCE = Robot.drivetrain::getLeftDistance;
+    public static final DistanceSource R_DISTANCE_SOURCE = Robot.drivetrain::getRightDistance;
+    public static final TimestampSource TIMESTAMP_SOURCE = Timer::getFPGATimestamp;
+
+    public static double kP = 0.1, kD = 0.00025, kV = 0.025, kA = 0.002, kDP = 0.01;
+
+    public final TankDriveTrajectory trajectory;
+    public TankDriveFollower follower;
+
+    public FollowTrajectory(TankDriveTrajectory trajectory) {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
-    	requires(Robot.drive);
-    	follower = new TankFollower(trajectory, MOTOR_LEFT, MOTOR_RIGHT, ENCODER_LEFT, ENCODER_RIGHT, TIMER,
-    			kV, kA, kP, kD);
+        requires(Robot.drivetrain);
+        this.trajectory = trajectory;
     }
 
     // Called just before this Command runs the first time
-    protected void initialize() {
-    	follower.initialize();
+    // Note we made this method public! This is so that Commands that wrap around this one have an easier time.
+    @Override
+    public void initialize() {
+		follower = new TankDriveFollower(trajectory, L_MOTOR, R_MOTOR, L_DISTANCE_SOURCE, R_DISTANCE_SOURCE, TIMESTAMP_SOURCE, 
+				GYRO, kV, kA, kP, kD, kDP);
+
+        follower.initialize();
     }
 
     // Called repeatedly when this Command is scheduled to run
-    protected void execute() {
-    	follower.run();
+    @Override
+    public void execute() {
+        follower.run();
     }
 
     // Make this return true when this Command no longer needs to run execute()
-    protected boolean isFinished() {
+    @Override
+    public boolean isFinished() {
         return !follower.isRunning();
     }
 
     // Called once after isFinished returns true
-    protected void end() {
-    	follower.stop();
+    @Override
+    public void end() {
+        follower.stop();
+        Robot.drivetrain.setMotors(0, 0);
     }
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
-    protected void interrupted() {
-    	follower.stop();
+    @Override
+    public void interrupted() {
+        follower.stop();
+        Robot.drivetrain.setMotors(0, 0);
     }
 }

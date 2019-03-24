@@ -32,7 +32,7 @@ buildScan {
 
 dependencies {
     // JMathPlot is needed for the graphing
-    implementation files('lib/jmathplot.jar', 'lib/jmathio.jar')
+    implementation 'com.github.yannrichet:JMathPlot:1.0.1'
     // Gson is needed for the Trajectory Visualizer's saving
     implementation 'com.google.code.gson:gson:2.8.5'
 

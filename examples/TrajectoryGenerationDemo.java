@@ -4,7 +4,7 @@ import javax.swing.SwingUtilities;
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.TrajectoryParams;
 import com.arctos6135.robotpathfinder.core.Waypoint;
-import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
+import com.arctos6135.robotpathfinder.core.path.Path;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
 import com.arctos6135.robotpathfinder.tools.Grapher;
 
@@ -35,13 +35,17 @@ public class TrajectoryGenerationDemo {
 		// The "alpha" value is the turn smoothness constant. For more information, see its documentation.
 		// Try tweaking this value and see what happens!
 		params.alpha = 20.0;
-		// Since we want a tank drive trajectory, set this to true
-		params.isTank = true;
+		// There are also many other trajectory parameters, but we will leave them at the default value for now.
+
 		// Finally, generate the trajectory
-		TankDriveTrajectory trajectory = new TankDriveTrajectory(new BasicTrajectory(robotSpecs, params));
+		TankDriveTrajectory trajectory = new TankDriveTrajectory(robotSpecs, params);
 		// Now that we have the trajectory, graph it using the Grapher utility class, and show it
-		JFrame pathGraph = Grapher.graphPath(trajectory.getPath(), 0.01);
+		// Because we need to free the reference to the path to prevent a memory leak, a variable has to be declared.
+		Path path = trajectory.getPath();
+		JFrame pathGraph = Grapher.graphPath(path, 0.01);
+		path.free();
 		JFrame trajectoryGraph = Grapher.graphTrajectory(trajectory, 0.01);
+		trajectory.free();
 		// Since swing is not thread safe, the windows have to be shown on the EDT
 		SwingUtilities.invokeLater(() -> {
 			pathGraph.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

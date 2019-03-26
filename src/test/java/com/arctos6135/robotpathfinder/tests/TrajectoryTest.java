@@ -188,6 +188,49 @@ public class TrajectoryTest {
     }
 
     @Test
+    public void testTankDriveTrajectoryMultipleMirroring() {
+        RobotSpecs specs = new RobotSpecs(5.0, 3.5, 2.0);
+        TrajectoryParams params = new TrajectoryParams();
+        params.waypoints = new Waypoint[] {
+            new Waypoint(0.0, 0.0, Math.PI / 2, 1.23),
+            new Waypoint(0.0, 100.0, Math.PI / 2, 3.45),
+        };
+        params.alpha = 40.0;
+        params.sampleCount = 1000;
+        params.pathType = PathType.QUINTIC_HERMITE;
+        TankDriveTrajectory original = new TankDriveTrajectory(specs, params);
+        TankDriveTrajectory t0 = original.mirrorLeftRight();
+        TankDriveTrajectory t1 = t0.mirrorFrontBack();
+        TankDriveTrajectory t2 = t1.retrace();
+        TankDriveTrajectory t3 = t2.retrace();
+        TankDriveTrajectory t4 = t3.mirrorFrontBack();
+        TankDriveTrajectory mirrored = t4.mirrorLeftRight();
+
+        t0.free();
+        t1.free();
+        t2.free();
+        t3.free();
+        t4.free();
+
+        double dt = original.totalTime() / 100;
+        for(int i = 0; i < dt; i ++) {
+            TankDriveMoment m0 = original.get(dt * i);
+            TankDriveMoment m1 = mirrored.get(dt * i);
+
+            assertThat(Math.abs(m0.getLeftPosition() - m1.getLeftPosition()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getRightPosition() - m1.getRightPosition()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getLeftVelocity() - m1.getLeftVelocity()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getRightVelocity() - m1.getRightVelocity()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getLeftAcceleration() - m1.getLeftAcceleration()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getRightAcceleration() - m1.getRightAcceleration()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getHeading() - m1.getHeading()), lessThan(1e-7));
+        }
+
+        original.close();
+        mirrored.close();
+    }
+
+    @Test
     public void testBasicTrajectoryMirrorLeftRight() {
         RobotSpecs specs = new RobotSpecs(5.0, 3.5, 2.0);
         TrajectoryParams params = new TrajectoryParams();
@@ -264,6 +307,46 @@ public class TrajectoryTest {
         BasicTrajectory t = original.retrace();
         BasicTrajectory mirrored = t.retrace();
         t.close();
+
+        double dt = original.totalTime() / 100;
+        for(int i = 0; i < dt; i ++) {
+            BasicMoment m0 = original.get(dt * i);
+            BasicMoment m1 = mirrored.get(dt * i);
+
+            assertThat(Math.abs(m0.getPosition() - m1.getPosition()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getVelocity() - m1.getVelocity()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getAcceleration() - m1.getAcceleration()), lessThan(1e-7));
+            assertThat(Math.abs(m0.getHeading() - m1.getHeading()), lessThan(1e-7));
+        }
+
+        original.close();
+        mirrored.close();
+    }
+
+    @Test
+    public void testBasicTrajectoryMultipleMirroring() {
+        RobotSpecs specs = new RobotSpecs(5.0, 3.5, 2.0);
+        TrajectoryParams params = new TrajectoryParams();
+        params.waypoints = new Waypoint[] {
+            new Waypoint(0.0, 0.0, Math.PI / 2, 1.23),
+            new Waypoint(0.0, 100.0, Math.PI / 2, 3.45),
+        };
+        params.alpha = 40.0;
+        params.sampleCount = 1000;
+        params.pathType = PathType.QUINTIC_HERMITE;
+        BasicTrajectory original = new BasicTrajectory(specs, params);
+        BasicTrajectory t0 = original.mirrorLeftRight();
+        BasicTrajectory t1 = t0.mirrorFrontBack();
+        BasicTrajectory t2 = t1.retrace();
+        BasicTrajectory t3 = t2.retrace();
+        BasicTrajectory t4 = t3.mirrorFrontBack();
+        BasicTrajectory mirrored = t4.mirrorLeftRight();
+
+        t0.free();
+        t1.free();
+        t2.free();
+        t3.free();
+        t4.free();
 
         double dt = original.totalTime() / 100;
         for(int i = 0; i < dt; i ++) {

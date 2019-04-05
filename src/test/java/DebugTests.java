@@ -10,8 +10,6 @@ import com.arctos6135.robotpathfinder.core.Waypoint;
 import com.arctos6135.robotpathfinder.core.path.PathType;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
-import com.arctos6135.robotpathfinder.core.trajectory.TrajectoryGenerator;
-import com.arctos6135.robotpathfinder.follower.TankDriveFollower;
 import com.arctos6135.robotpathfinder.tools.Grapher;
 
 public class DebugTests {
@@ -67,26 +65,5 @@ public class DebugTests {
     }
 	public static void main(String[] args) throws Exception {
         prompt();
-        RobotSpecs specs = new RobotSpecs(43, 50, 23.5);
-        TrajectoryParams params = new TrajectoryParams();
-        params.waypoints = new Waypoint[] {
-            new Waypoint(0, 0, Math.PI / 2),
-            new Waypoint(12, 150, Math.PI / 2),
-        };
-        params.alpha = 150;
-        params.pathType = PathType.QUINTIC_HERMITE;
-        params.sampleCount = 1000;
-        TankDriveTrajectory traj = new TankDriveTrajectory(specs, params).mirrorLeftRight().mirrorFrontBack();
-        TankDriveFollower follower = new TankDriveFollower(traj, System.out::println, System.out::println,
-                () -> { return 0; }, () -> { return 0; }, () -> { return 0; }, () -> { return 0; }, 0, 0, 0, 0, 0);
-        follower.initialize();
-        for(int i = 0; i < 10; i ++) {
-            follower.run();
-        }
-        JFrame f = Grapher.graphTrajectory(traj, 0.01, true);
-        JFrame f2 = Grapher.graphPath(traj.getPath(), 0.001);
-        f.setVisible(true);
-        f2.setVisible(true);
-        traj.free();
 	}
 }

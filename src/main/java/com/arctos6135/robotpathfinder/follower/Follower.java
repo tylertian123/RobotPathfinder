@@ -15,6 +15,7 @@ package com.arctos6135.robotpathfinder.follower;
 abstract public class Follower {
 
 	protected double kA, kV, kP, kD;
+	protected Followable target;
 
 	/**
 	 * Sets the gains of the feedback control loop.

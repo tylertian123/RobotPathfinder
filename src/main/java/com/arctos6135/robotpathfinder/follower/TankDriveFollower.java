@@ -19,26 +19,26 @@ import com.arctos6135.robotpathfinder.math.MathUtils;
  */
 public class TankDriveFollower extends Follower {
 
-	TankDriveTrajectory traj;
-	TimestampSource timer;
-	DistanceSource lDistSrc, rDistSrc;
-	DirectionSource directionSrc;
-	Motor lMotor, rMotor;
+	protected TankDriveFollowable target;
+	protected TimestampSource timer;
+	protected DistanceSource lDistSrc, rDistSrc;
+	protected DirectionSource directionSrc;
+	protected Motor lMotor, rMotor;
 
 	// Directional proportional gain
-	double kDP = 0;
+	protected double kDP = 0;
 
 	// Keep track of the initial timestamp and distance measurements so we don't
 	// have to reset
 	// Keep track of the error and timestamp of the last iteration to calculate the
 	// derivative
-	double initTime, lastTime, lLastErr, rLastErr, lInitDist, rInitDist, initDirection;
+	protected double initTime, lastTime, lLastErr, rLastErr, lInitDist, rInitDist, initDirection;
 
-	boolean running = false;
+	protected boolean running = false;
 
 	// Store these as member variables so they can be accessed from outside the
 	// class for testing purposes
-	double leftErr, rightErr, dirErr, leftOutput, rightOutput, leftDeriv, rightDeriv, leftVelo, rightVelo, leftAccel,
+	protected double leftErr, rightErr, dirErr, leftOutput, rightOutput, leftDeriv, rightDeriv, leftVelo, rightVelo, leftAccel,
 			rightAccel;
 
 	/**
@@ -46,7 +46,7 @@ public class TankDriveFollower extends Follower {
 	 * not require distance sources or direction sources, the trajectory following
 	 * is based entirely on the feedforward terms.
 	 * 
-	 * @param traj   The trajectory to follow
+	 * @param target   The trajectory to follow
 	 * @param lMotor The left side motor
 	 * @param rMotor The right side motor
 	 * @param timer  A
@@ -55,10 +55,10 @@ public class TankDriveFollower extends Follower {
 	 * @param kV     The velocity feedforward
 	 * @param kA     The acceleration feedforward
 	 */
-	public TankDriveFollower(TankDriveTrajectory traj, Motor lMotor, Motor rMotor, TimestampSource timer, double kV,
+	public TankDriveFollower(TankDriveTrajectory target, Motor lMotor, Motor rMotor, TimestampSource timer, double kV,
 			double kA) {
 		setGains(kV, kA, 0, 0, 0);
-		this.traj = traj;
+		this.target = target;
 		this.lMotor = lMotor;
 		this.rMotor = rMotor;
 		this.lDistSrc = null;
@@ -72,7 +72,7 @@ public class TankDriveFollower extends Follower {
 	 * not require a direction source, the directional-proportional term will not be
 	 * used.
 	 * 
-	 * @param traj     The trajectory to follow
+	 * @param target     The trajectory to follow
 	 * @param lMotor   The left side motor
 	 * @param rMotor   The right side motor
 	 * @param lDistSrc A
@@ -89,10 +89,10 @@ public class TankDriveFollower extends Follower {
 	 * @param kP       The proportional gain
 	 * @param kD       The derivative gain
 	 */
-	public TankDriveFollower(TankDriveTrajectory traj, Motor lMotor, Motor rMotor, DistanceSource lDistSrc,
+	public TankDriveFollower(TankDriveTrajectory target, Motor lMotor, Motor rMotor, DistanceSource lDistSrc,
 			DistanceSource rDistSrc, TimestampSource timer, double kV, double kA, double kP, double kD) {
 		setGains(kV, kA, kP, kD, 0);
-		this.traj = traj;
+		this.target = target;
 		this.lMotor = lMotor;
 		this.rMotor = rMotor;
 		this.lDistSrc = lDistSrc;
@@ -106,7 +106,7 @@ public class TankDriveFollower extends Follower {
 	 * not require distance sources, the proportional and derivative terms will not
 	 * be used.
 	 * 
-	 * @param traj   The trajectory to follow
+	 * @param target   The trajectory to follow
 	 * @param lMotor The left side motor
 	 * @param rMotor The right side motor
 	 * @param timer  A
@@ -120,10 +120,10 @@ public class TankDriveFollower extends Follower {
 	 * @param kDP    The directional-proportional gain; for more information, see
 	 *               {@link #setDP(double)}
 	 */
-	public TankDriveFollower(TankDriveTrajectory traj, Motor lMotor, Motor rMotor, TimestampSource timer,
+	public TankDriveFollower(TankDriveTrajectory target, Motor lMotor, Motor rMotor, TimestampSource timer,
 			DirectionSource dirSrc, double kV, double kA, double kDP) {
 		setGains(kV, kA, 0, 0, kDP);
-		this.traj = traj;
+		this.target = target;
 		this.lMotor = lMotor;
 		this.rMotor = rMotor;
 		this.lDistSrc = null;
@@ -135,7 +135,7 @@ public class TankDriveFollower extends Follower {
 	/**
 	 * Constructs a new tank drive follower.
 	 * 
-	 * @param traj     The trajectory to follow
+	 * @param target     The trajectory to follow
 	 * @param lMotor   The left side motor
 	 * @param rMotor   The right side motor
 	 * @param lDistSrc A
@@ -157,11 +157,11 @@ public class TankDriveFollower extends Follower {
 	 * @param kDP      The directional-proportional gain; for more information, see
 	 *                 {@link #setDP(double)}
 	 */
-	public TankDriveFollower(TankDriveTrajectory traj, Motor lMotor, Motor rMotor, DistanceSource lDistSrc,
+	public TankDriveFollower(TankDriveTrajectory target, Motor lMotor, Motor rMotor, DistanceSource lDistSrc,
 			DistanceSource rDistSrc, TimestampSource timer, DirectionSource dirSrc, double kV, double kA, double kP,
 			double kD, double kDP) {
 		setGains(kV, kA, kP, kD, kDP);
-		this.traj = traj;
+		this.target = target;
 		this.lMotor = lMotor;
 		this.rMotor = rMotor;
 		this.lDistSrc = lDistSrc;
@@ -217,14 +217,14 @@ public class TankDriveFollower extends Follower {
 	/**
 	 * Sets the trajectory to follow.
 	 * 
-	 * @param traj The new trajectory to follow
+	 * @param target The new trajectory to follow
 	 * @throws RuntimeException If the follower is running
 	 */
-	public void setTrajectory(TankDriveTrajectory traj) {
+	public void setTrajectory(TankDriveTrajectory target) {
 		if (running) {
 			throw new RuntimeException("Trajectory cannot be changed when follower is running");
 		}
-		this.traj = traj;
+		this.target = target;
 	}
 
 	/**
@@ -315,12 +315,12 @@ public class TankDriveFollower extends Follower {
 		double timestamp = timer.getTimestamp();
 		double dt = timestamp - lastTime;
 		double t = timestamp - initTime;
-		if (t > traj.totalTime()) {
+		if (t > target.totalTime()) {
 			stop();
 			return;
 		}
 
-		TankDriveMoment m = traj.get(t);
+		TankDriveMoment m = target.get(t);
 
 		leftErr = rightErr = leftDeriv = rightDeriv = dirErr = 0;
 		// Calculate errors and derivatives only if the distance sources are not null

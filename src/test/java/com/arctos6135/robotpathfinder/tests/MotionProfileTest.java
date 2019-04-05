@@ -52,8 +52,7 @@ public class MotionProfileTest {
             assertThat(profile.velocity(t), is(lessThanOrEqualTo(maxV)));
             assertThat(profile.velocity(t), is(greaterThanOrEqualTo(0.0)));
 
-            assertThat(profile.acceleration(t), is(lessThanOrEqualTo(maxA)));
-            assertThat(profile.acceleration(t), is(greaterThanOrEqualTo(0.0)));
+            assertThat(Math.abs(profile.acceleration(t)), is(lessThanOrEqualTo(maxA)));
         }
     }
 }

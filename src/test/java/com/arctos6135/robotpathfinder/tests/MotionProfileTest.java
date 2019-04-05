@@ -18,5 +18,9 @@ public class MotionProfileTest {
         MotionProfile profile = new TrapezoidalMotionProfile(specs, 10);
         assertThat(profile.distance(profile.totalTime()), is(10.0));
         assertThat(profile.distance(0), is(0.0));
+        assertThat(profile.velocity(0), is(0.0));
+        assertThat(profile.velocity(profile.totalTime()), is(0.0));
+        assertThat(profile.acceleration(0), is(3.0));
+        assertThat(profile.acceleration(profile.totalTime()), is(-3.0));
     }
 }

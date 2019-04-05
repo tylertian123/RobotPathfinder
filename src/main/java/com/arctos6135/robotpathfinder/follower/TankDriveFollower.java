@@ -34,9 +34,6 @@ public class TankDriveFollower extends Follower {
 	// derivative
 	protected double initTime, lastTime, lLastErr, rLastErr, lInitDist, rInitDist, initDirection;
 
-	protected boolean running = false;
-	protected boolean finished = false;
-
 	// Store these as member variables so they can be accessed from outside the
 	// class for testing purposes
 	protected double leftErr, rightErr, dirErr, leftOutput, rightOutput, leftDeriv, rightDeriv, leftVelo, rightVelo,
@@ -47,7 +44,7 @@ public class TankDriveFollower extends Follower {
 	 * not require distance sources or direction sources, the trajectory following
 	 * is based entirely on the feedforward terms.
 	 * 
-	 * @param target The trajectory to follow
+	 * @param target The target to follow
 	 * @param lMotor The left side motor
 	 * @param rMotor The right side motor
 	 * @param timer  A
@@ -73,7 +70,7 @@ public class TankDriveFollower extends Follower {
 	 * not require a direction source, the directional-proportional term will not be
 	 * used.
 	 * 
-	 * @param target   The trajectory to follow
+	 * @param target   The target to follow
 	 * @param lMotor   The left side motor
 	 * @param rMotor   The right side motor
 	 * @param lDistSrc A
@@ -107,7 +104,7 @@ public class TankDriveFollower extends Follower {
 	 * not require distance sources, the proportional and derivative terms will not
 	 * be used.
 	 * 
-	 * @param target The trajectory to follow
+	 * @param target The target to follow
 	 * @param lMotor The left side motor
 	 * @param rMotor The right side motor
 	 * @param timer  A
@@ -136,7 +133,7 @@ public class TankDriveFollower extends Follower {
 	/**
 	 * Constructs a new tank drive follower.
 	 * 
-	 * @param target   The trajectory to follow
+	 * @param target   The target to follow
 	 * @param lMotor   The left side motor
 	 * @param rMotor   The right side motor
 	 * @param lDistSrc A
@@ -215,18 +212,6 @@ public class TankDriveFollower extends Follower {
 		setDP(kDP);
 	}
 
-	/**
-	 * Sets the trajectory to follow.
-	 * 
-	 * @param target The new trajectory to follow
-	 * @throws RuntimeException If the follower is running
-	 */
-	public void setTrajectory(TankDriveTrajectory target) {
-		if (running) {
-			throw new RuntimeException("Trajectory cannot be changed when follower is running");
-		}
-		this.target = target;
-	}
 
 	/**
 	 * Sets the timestamp source.
@@ -271,35 +256,9 @@ public class TankDriveFollower extends Follower {
 		this.rDistSrc = rDistSrc;
 	}
 
-	/**
-	 * {@inheritDoc} The follower is considered to be "running" if
-	 * {@link #initialize()} has been called, the trajectory did not end,
-	 * <em>and</em> {@link #stop()} has not been called.
-	 */
-	public boolean isRunning() {
-		return running;
-	}
-
-	/**
-	 * {@inheritDoc} The follower is considered to be "finished" if {@link #stop()}
-	 * has been called, <em>or</em> the trajectory has ended. Additionally, the
-	 * finished state is reset when {@link #initialize()} is called.
-	 */
-	public boolean isFinished() {
-		return finished;
-	}
-
-	/**
-	 * {@inheritDoc}<br>
-	 * <br>
-	 * If the follower is currently running, this method will do nothing.
-	 */
-	public void initialize() {
-		if (running) {
-			return;
-		}
-		// Reset finished state to rerun
-		finished = false;
+	@Override
+	protected void _initialize() {
+		// Reset the initial distance, direction and timestamp references
 		if (lDistSrc != null && rDistSrc != null) {
 			lInitDist = lDistSrc.getDistance();
 			rInitDist = rDistSrc.getDistance();
@@ -308,26 +267,10 @@ public class TankDriveFollower extends Follower {
 			initDirection = directionSrc.getDirection();
 		}
 		initTime = lastTime = timer.getTimestamp();
-
-		running = true;
 	}
 
-	/**
-	 * {@inheritDoc}<br>
-	 * <br>
-	 * If the follower is not initialized (not running), this method will first call
-	 * {@link #initialize()} and then perform one cycle of the control loop.
-	 */
-	public void run() {
-		if (!running) {
-			// If already finished, do nothing
-			if (finished) {
-				return;
-			}
-			// Otherwise initialize
-			initialize();
-		}
-
+	@Override
+	protected void _run() {
 		// Calculate current t and time difference from last iteration
 		double timestamp = timer.getTimestamp();
 		double dt = timestamp - lastTime;
@@ -377,15 +320,10 @@ public class TankDriveFollower extends Follower {
 
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void stop() {
+	@Override
+	protected void _stop() {
 		lMotor.set(0);
 		rMotor.set(0);
-
-		running = false;
-		finished = true;
 	}
 
 	/**

@@ -17,6 +17,117 @@ abstract public class Follower {
 	protected double kA, kV, kP, kD;
 	protected Followable target;
 
+	protected boolean running = false;
+	protected boolean finished = false;
+
+	/**
+	 * This method must be implemented by any concrete follower to perform any
+	 * initialization tasks. (e.g. resetting time references)
+	 */
+	protected abstract void _initialize();
+
+	/**
+	 * This method must be implemented by any concrete follower to run one iteration
+	 * of the control loop.
+	 */
+	protected abstract void _run();
+
+	/**
+	 * This method must be implemented by any concrete follower to perform any
+	 * additional cleanup after the follower has stopped. (e.g. stopping all motors)
+	 */
+	protected abstract void _stop();
+
+	/**
+	 * Gets whether the follower is running. The follower is considered to be
+	 * "running" if {@link #initialize()} has been called, the trajectory did not
+	 * end, <em>and</em> {@link #stop()} has not been called.
+	 * 
+	 * @return Whether the follower is running
+	 */
+	public boolean isRunning() {
+		return running;
+	}
+
+	/**
+	 * Gets whether the follower has finished. The follower is considered to be
+	 * "finished" if {@link #stop()} has been called, <em>or</em> the trajectory has
+	 * ended. Additionally, the finished state is reset when {@link #initialize()}
+	 * is called.
+	 * 
+	 * @return Whether the follower has finished
+	 */
+	public boolean isFinished() {
+		return finished;
+	}
+
+	/**
+	 * Initializes and starts the follower. This method must be called before
+	 * {@link #run()} can be called.<br>
+	 * <br>
+	 * If the follower is currently running, this method will do nothing.
+	 */
+	public void initialize() {
+		if (running) {
+			return;
+		}
+		_initialize();
+		running = true;
+		finished = false;
+	}
+
+	/**
+	 * Runs the control loop for one cycle. Note that this method must be called
+	 * constantly so the control loop can run; generally, the more frequent the
+	 * calls, the better the results. {@link #initialize()} must be called before
+	 * this method can be called.<br>
+	 * <br>
+	 * If the follower is not initialized (not running), this method will first call
+	 * {@link #initialize()} and then perform one cycle of the control loop.
+	 */
+	public void run() {
+		if (!running) {
+			// If already finished, do nothing
+			if (finished) {
+				return;
+			}
+			// Otherwise initialize
+			initialize();
+		}
+		_run();
+	}
+
+	/**
+	 * Stops the follower if it is already running.
+	 */
+	public void stop() {
+		_stop();
+		running = false;
+		finished = true;
+	}
+
+	/**
+	 * Sets the target to follow.
+	 * 
+	 * @param target The new target to follow
+	 * @throws RuntimeException If the follower is running
+	 */
+	public void setTarget(Followable target) {
+		if (running) {
+			throw new RuntimeException("Target cannot be changed when follower is running");
+		}
+		this.target = target;
+	}
+
+	/**
+	 * Gets the target to follow.
+	 * 
+	 * @return The target followed by this follower
+	 */
+	public Followable getTarget() {
+		return target;
+	}
+
 	/**
 	 * Sets the gains of the feedback control loop.
 	 * 
@@ -67,37 +178,6 @@ abstract public class Follower {
 	public void setD(double d) {
 		kD = d;
 	}
-
-	/**
-	 * Tests whether the follower is running.
-	 * 
-	 * @return Whether the follower is running
-	 */
-	public abstract boolean isRunning();
-	/**
-	 * Tests whether the follower has finished.
-	 * @return Whether the follower has finished
-	 */
-	public abstract boolean isFinished();
-
-	/**
-	 * Initializes and starts the follower. This method must be called before
-	 * {@link #run()} can be called.
-	 */
-	public abstract void initialize();
-
-	/**
-	 * Runs the control loop for one cycle. Note that this method must be called
-	 * constantly so the control loop can run; generally, the more frequent the
-	 * calls, the better the results. {@link #initialize()} must be called before
-	 * this method can be called.
-	 */
-	public abstract void run();
-
-	/**
-	 * Stops the follower if it is already running. This will stop all motors.
-	 */
-	public abstract void stop();
 
 	/**
 	 * This functional interface represents a source of timestamp data, such as a

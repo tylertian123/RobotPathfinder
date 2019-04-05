@@ -3,6 +3,7 @@ package com.arctos6135.robotpathfinder.tests;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 
 import java.util.Random;
@@ -31,6 +32,24 @@ public class MotionProfileTest {
         assertThat(profile.velocity(profile.totalTime()), is(0.0));
         assertThat(profile.acceleration(0), is(maxA));
         assertThat(profile.acceleration(profile.totalTime()), is(-maxA));
+    }
+
+    @Test
+    public void testTrapezoidalMotionProfileBasicReversed() {
+        Random rand = new Random();
+        double maxV = rand.nextDouble() * 1000;
+        double maxA = rand.nextDouble() * 1000;
+        double distance = -rand.nextDouble() * 1000;
+
+        RobotSpecs specs = new RobotSpecs(maxV, maxA);
+
+        MotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
+        assertThat(profile.distance(profile.totalTime()), is(distance));
+        assertThat(Math.abs(profile.distance(0)), is(0.0));
+        assertThat(Math.abs(profile.velocity(0)), is(0.0));
+        assertThat(Math.abs(profile.velocity(profile.totalTime())), is(0.0));
+        assertThat(profile.acceleration(0), closeTo(-maxA, 1e-7));
+        assertThat(profile.acceleration(profile.totalTime()), closeTo(maxA, 1e-7));
     }
 
     @Test

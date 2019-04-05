@@ -212,7 +212,6 @@ public class TankDriveFollower extends Follower {
 		setDP(kDP);
 	}
 
-
 	/**
 	 * Sets the timestamp source.
 	 * 
@@ -270,14 +269,13 @@ public class TankDriveFollower extends Follower {
 	}
 
 	@Override
-	protected void _run() {
+	protected boolean _run() {
 		// Calculate current t and time difference from last iteration
 		double timestamp = timer.getTimestamp();
 		double dt = timestamp - lastTime;
 		double t = timestamp - initTime;
 		if (t > target.totalTime()) {
-			stop();
-			return;
+			return true;
 		}
 
 		TankDriveMoment m = target.get(t);
@@ -318,6 +316,7 @@ public class TankDriveFollower extends Follower {
 		lLastErr = leftErr;
 		rLastErr = rightErr;
 
+		return false;
 	}
 
 	@Override

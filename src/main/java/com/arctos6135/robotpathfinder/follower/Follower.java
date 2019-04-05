@@ -28,9 +28,12 @@ abstract public class Follower {
 
 	/**
 	 * This method must be implemented by any concrete follower to run one iteration
-	 * of the control loop.
+	 * of the control loop. This method should return whether or not the follower is
+	 * finished.
+	 * 
+	 * @return Whether the follower has finished running
 	 */
-	protected abstract void _run();
+	protected abstract boolean _run();
 
 	/**
 	 * This method must be implemented by any concrete follower to perform any
@@ -94,7 +97,10 @@ abstract public class Follower {
 			// Otherwise initialize
 			initialize();
 		}
-		_run();
+		
+		if(_run()) {
+			stop();
+		}
 	}
 
 	/**

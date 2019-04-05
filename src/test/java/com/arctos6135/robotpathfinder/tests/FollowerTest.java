@@ -27,31 +27,34 @@ public class FollowerTest {
             return value;
         }
     }
-    public static DistanceSource distancePlaceholder = () -> { return 0d; };
-    public static DirectionSource directionPlaceholder = () -> { return 0d; };
-    public static Motor motorPlaceholder = (s) -> {};
-    
+
+    public static DistanceSource distancePlaceholder = () -> {
+        return 0d;
+    };
+    public static DirectionSource directionPlaceholder = () -> {
+        return 0d;
+    };
+    public static Motor motorPlaceholder = (s) -> {
+    };
+
     @Test
     public void testTankDriveFollowerBasic() {
         RobotSpecs specs = new RobotSpecs(5, 3, 1);
         TrajectoryParams params = new TrajectoryParams();
-        params.waypoints = new Waypoint[] {
-            new Waypoint(0, 0, Math.PI / 2),
-            new Waypoint(10, 10, Math.PI / 2),
-            new Waypoint(0, 20, Math.PI),
-        };
+        params.waypoints = new Waypoint[] { new Waypoint(0, 0, Math.PI / 2), new Waypoint(10, 10, Math.PI / 2),
+                new Waypoint(0, 20, Math.PI), };
         params.alpha = 20;
         params.pathType = PathType.QUINTIC_HERMITE;
         params.sampleCount = 1000;
 
         TankDriveTrajectory traj = new TankDriveTrajectory(specs, params);
 
-        Follower follower = new TankDriveFollower(traj, motorPlaceholder, motorPlaceholder, 
-                distancePlaceholder, distancePlaceholder, new FakeTimer(), directionPlaceholder, 0, 0, 0, 0, 0);
+        Follower follower = new TankDriveFollower(traj, motorPlaceholder, motorPlaceholder, distancePlaceholder,
+                distancePlaceholder, new FakeTimer(), directionPlaceholder, 0, 0, 0, 0, 0);
         follower.initialize();
         follower.run();
         follower.stop();
-        
+
         traj.free();
     }
 
@@ -59,11 +62,8 @@ public class FollowerTest {
     public void testTankDriveFollowerState() {
         RobotSpecs specs = new RobotSpecs(5, 3, 1);
         TrajectoryParams params = new TrajectoryParams();
-        params.waypoints = new Waypoint[] {
-            new Waypoint(0, 0, Math.PI / 2),
-            new Waypoint(10, 10, Math.PI / 2),
-            new Waypoint(0, 20, Math.PI),
-        };
+        params.waypoints = new Waypoint[] { new Waypoint(0, 0, Math.PI / 2), new Waypoint(10, 10, Math.PI / 2),
+                new Waypoint(0, 20, Math.PI), };
         params.alpha = 20;
         params.pathType = PathType.QUINTIC_HERMITE;
         params.sampleCount = 1000;
@@ -71,8 +71,8 @@ public class FollowerTest {
         TankDriveTrajectory traj = new TankDriveTrajectory(specs, params);
 
         FakeTimer timer = new FakeTimer();
-        Follower follower = new TankDriveFollower(traj, motorPlaceholder, motorPlaceholder, 
-                distancePlaceholder, distancePlaceholder, timer, directionPlaceholder, 0, 0, 0, 0, 0);
+        Follower follower = new TankDriveFollower(traj, motorPlaceholder, motorPlaceholder, distancePlaceholder,
+                distancePlaceholder, timer, directionPlaceholder, 0, 0, 0, 0, 0);
         // Assertion: Follower is not finished or running initially
         assertThat(follower.isFinished(), is(false));
         assertThat(follower.isRunning(), is(false));
@@ -84,7 +84,8 @@ public class FollowerTest {
         follower.run();
         assertThat(follower.isFinished(), is(false));
         assertThat(follower.isRunning(), is(true));
-        // Assertion: Follower is finished and is not running after the trajectory finishes
+        // Assertion: Follower is finished and is not running after the trajectory
+        // finishes
         timer.value = traj.totalTime() + 1;
         follower.run();
         assertThat(follower.isFinished(), is(true));
@@ -97,7 +98,7 @@ public class FollowerTest {
         follower.stop();
         assertThat(follower.isFinished(), is(true));
         assertThat(follower.isRunning(), is(false));
-        
+
         traj.free();
     }
 }

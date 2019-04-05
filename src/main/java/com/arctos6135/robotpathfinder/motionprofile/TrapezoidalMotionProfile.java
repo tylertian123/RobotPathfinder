@@ -1,4 +1,4 @@
-package com.arctos6135.robotpathfinder.simple;
+package com.arctos6135.robotpathfinder.motionprofile;
 
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 

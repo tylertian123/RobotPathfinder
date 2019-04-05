@@ -35,18 +35,19 @@ public class TankDriveFollower extends Follower {
 	protected double initTime, lastTime, lLastErr, rLastErr, lInitDist, rInitDist, initDirection;
 
 	protected boolean running = false;
+	protected boolean finished = false;
 
 	// Store these as member variables so they can be accessed from outside the
 	// class for testing purposes
-	protected double leftErr, rightErr, dirErr, leftOutput, rightOutput, leftDeriv, rightDeriv, leftVelo, rightVelo, leftAccel,
-			rightAccel;
+	protected double leftErr, rightErr, dirErr, leftOutput, rightOutput, leftDeriv, rightDeriv, leftVelo, rightVelo,
+			leftAccel, rightAccel;
 
 	/**
 	 * Constructs a new tank drive follower. Note that since this constructor does
 	 * not require distance sources or direction sources, the trajectory following
 	 * is based entirely on the feedforward terms.
 	 * 
-	 * @param target   The trajectory to follow
+	 * @param target The trajectory to follow
 	 * @param lMotor The left side motor
 	 * @param rMotor The right side motor
 	 * @param timer  A
@@ -72,7 +73,7 @@ public class TankDriveFollower extends Follower {
 	 * not require a direction source, the directional-proportional term will not be
 	 * used.
 	 * 
-	 * @param target     The trajectory to follow
+	 * @param target   The trajectory to follow
 	 * @param lMotor   The left side motor
 	 * @param rMotor   The right side motor
 	 * @param lDistSrc A
@@ -106,7 +107,7 @@ public class TankDriveFollower extends Follower {
 	 * not require distance sources, the proportional and derivative terms will not
 	 * be used.
 	 * 
-	 * @param target   The trajectory to follow
+	 * @param target The trajectory to follow
 	 * @param lMotor The left side motor
 	 * @param rMotor The right side motor
 	 * @param timer  A
@@ -135,7 +136,7 @@ public class TankDriveFollower extends Follower {
 	/**
 	 * Constructs a new tank drive follower.
 	 * 
-	 * @param target     The trajectory to follow
+	 * @param target   The trajectory to follow
 	 * @param lMotor   The left side motor
 	 * @param rMotor   The right side motor
 	 * @param lDistSrc A
@@ -272,11 +273,20 @@ public class TankDriveFollower extends Follower {
 
 	/**
 	 * {@inheritDoc} The follower is considered to be "running" if
-	 * {@link #initialize()} has been called, the trajectory did not end, and
-	 * {@link #stop()} has not been called.
+	 * {@link #initialize()} has been called, the trajectory did not end,
+	 * <em>and</em> {@link #stop()} has not been called.
 	 */
 	public boolean isRunning() {
 		return running;
+	}
+
+	/**
+	 * {@inheritDoc} The follower is considered to be "finished" if {@link #stop()}
+	 * has been called, <em>or</em> the trajectory has ended. Additionally, the
+	 * finished state is reset when {@link #initialize()} is called.
+	 */
+	public boolean isFinished() {
+		return finished;
 	}
 
 	/**
@@ -288,6 +298,8 @@ public class TankDriveFollower extends Follower {
 		if (running) {
 			return;
 		}
+		// Reset finished state to rerun
+		finished = false;
 		if (lDistSrc != null && rDistSrc != null) {
 			lInitDist = lDistSrc.getDistance();
 			rInitDist = rDistSrc.getDistance();
@@ -308,6 +320,11 @@ public class TankDriveFollower extends Follower {
 	 */
 	public void run() {
 		if (!running) {
+			// If already finished, do nothing
+			if (finished) {
+				return;
+			}
+			// Otherwise initialize
 			initialize();
 		}
 
@@ -368,6 +385,7 @@ public class TankDriveFollower extends Follower {
 		rMotor.set(0);
 
 		running = false;
+		finished = true;
 	}
 
 	/**

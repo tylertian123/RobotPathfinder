@@ -74,6 +74,11 @@ abstract public class Follower {
 	 * @return Whether the follower is running
 	 */
 	public abstract boolean isRunning();
+	/**
+	 * Tests whether the follower has finished.
+	 * @return Whether the follower has finished
+	 */
+	public abstract boolean isFinished();
 
 	/**
 	 * Initializes and starts the follower. This method must be called before

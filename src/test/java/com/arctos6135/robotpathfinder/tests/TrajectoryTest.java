@@ -1,19 +1,19 @@
 package com.arctos6135.robotpathfinder.tests;
 
+import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.fail;
 
+import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.TrajectoryParams;
 import com.arctos6135.robotpathfinder.core.Waypoint;
-import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.path.PathType;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicMoment;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
+import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.TrajectoryGenerationException;
-import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
 
 import org.junit.Test;
 
@@ -140,13 +140,13 @@ public class TrajectoryTest {
             TankDriveMoment m0 = original.get(dt * i);
             TankDriveMoment m1 = mirrored.get(dt * i);
 
-            assertThat(Math.abs(m0.getLeftPosition() - m1.getLeftPosition()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getRightPosition() - m1.getRightPosition()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getLeftVelocity() - m1.getLeftVelocity()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getRightVelocity() - m1.getRightVelocity()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getLeftAcceleration() - m1.getLeftAcceleration()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getRightAcceleration() - m1.getRightAcceleration()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getHeading() - m1.getHeading()), lessThan(1e-7));
+            assertThat(m0.getLeftPosition(), closeTo(m1.getLeftPosition(), 1e-7));
+            assertThat(m0.getRightPosition(), closeTo(m1.getRightPosition(), 1e-7));
+            assertThat(m0.getLeftVelocity(), closeTo(m1.getLeftVelocity(), 1e-7));
+            assertThat(m0.getRightVelocity(), closeTo(m1.getRightVelocity(), 1e-7));
+            assertThat(m0.getLeftAcceleration(), closeTo(m1.getLeftAcceleration(), 1e-7));
+            assertThat(m0.getRightAcceleration(), closeTo(m1.getRightAcceleration(), 1e-7));
+            assertThat(m0.getHeading(), closeTo(m1.getHeading(), 1e-7));
         }
 
         original.close();
@@ -174,13 +174,13 @@ public class TrajectoryTest {
             TankDriveMoment m0 = original.get(dt * i);
             TankDriveMoment m1 = mirrored.get(dt * i);
 
-            assertThat(Math.abs(m0.getLeftPosition() - m1.getLeftPosition()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getRightPosition() - m1.getRightPosition()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getLeftVelocity() - m1.getLeftVelocity()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getRightVelocity() - m1.getRightVelocity()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getLeftAcceleration() - m1.getLeftAcceleration()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getRightAcceleration() - m1.getRightAcceleration()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getHeading() - m1.getHeading()), lessThan(1e-7));
+            assertThat(m0.getLeftPosition(), closeTo(m1.getLeftPosition(), 1e-7));
+            assertThat(m0.getRightPosition(), closeTo(m1.getRightPosition(), 1e-7));
+            assertThat(m0.getLeftVelocity(), closeTo(m1.getLeftVelocity(), 1e-7));
+            assertThat(m0.getRightVelocity(), closeTo(m1.getRightVelocity(), 1e-7));
+            assertThat(m0.getLeftAcceleration(), closeTo(m1.getLeftAcceleration(), 1e-7));
+            assertThat(m0.getRightAcceleration(), closeTo(m1.getRightAcceleration(), 1e-7));
+            assertThat(m0.getHeading(), closeTo(m1.getHeading(), 1e-7));
         }
 
         original.close();
@@ -217,13 +217,13 @@ public class TrajectoryTest {
             TankDriveMoment m0 = original.get(dt * i);
             TankDriveMoment m1 = mirrored.get(dt * i);
 
-            assertThat(Math.abs(m0.getLeftPosition() - m1.getLeftPosition()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getRightPosition() - m1.getRightPosition()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getLeftVelocity() - m1.getLeftVelocity()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getRightVelocity() - m1.getRightVelocity()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getLeftAcceleration() - m1.getLeftAcceleration()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getRightAcceleration() - m1.getRightAcceleration()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getHeading() - m1.getHeading()), lessThan(1e-7));
+            assertThat(m0.getLeftPosition(), closeTo(m1.getLeftPosition(), 1e-7));
+            assertThat(m0.getRightPosition(), closeTo(m1.getRightPosition(), 1e-7));
+            assertThat(m0.getLeftVelocity(), closeTo(m1.getLeftVelocity(), 1e-7));
+            assertThat(m0.getRightVelocity(), closeTo(m1.getRightVelocity(), 1e-7));
+            assertThat(m0.getLeftAcceleration(), closeTo(m1.getLeftAcceleration(), 1e-7));
+            assertThat(m0.getRightAcceleration(), closeTo(m1.getRightAcceleration(), 1e-7));
+            assertThat(m0.getHeading(), closeTo(m1.getHeading(), 1e-7));
         }
 
         original.close();
@@ -251,10 +251,10 @@ public class TrajectoryTest {
             BasicMoment m0 = original.get(dt * i);
             BasicMoment m1 = mirrored.get(dt * i);
 
-            assertThat(Math.abs(m0.getPosition() - m1.getPosition()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getVelocity() - m1.getVelocity()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getAcceleration() - m1.getAcceleration()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getHeading() - m1.getHeading()), lessThan(1e-7));
+            assertThat(m0.getPosition(), closeTo(m1.getPosition(), 1e-7));
+            assertThat(m0.getVelocity(), closeTo(m1.getVelocity(), 1e-7));
+            assertThat(m0.getAcceleration(), closeTo(m1.getAcceleration(), 1e-7));
+            assertThat(m0.getHeading(), closeTo(m1.getHeading(), 1e-7));
         }
 
         original.close();
@@ -282,10 +282,10 @@ public class TrajectoryTest {
             BasicMoment m0 = original.get(dt * i);
             BasicMoment m1 = mirrored.get(dt * i);
 
-            assertThat(Math.abs(m0.getPosition() - m1.getPosition()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getVelocity() - m1.getVelocity()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getAcceleration() - m1.getAcceleration()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getHeading() - m1.getHeading()), lessThan(1e-7));
+            assertThat(m0.getPosition(), closeTo(m1.getPosition(), 1e-7));
+            assertThat(m0.getVelocity(), closeTo(m1.getVelocity(), 1e-7));
+            assertThat(m0.getAcceleration(), closeTo(m1.getAcceleration(), 1e-7));
+            assertThat(m0.getHeading(), closeTo(m1.getHeading(), 1e-7));
         }
 
         original.close();
@@ -313,10 +313,10 @@ public class TrajectoryTest {
             BasicMoment m0 = original.get(dt * i);
             BasicMoment m1 = mirrored.get(dt * i);
 
-            assertThat(Math.abs(m0.getPosition() - m1.getPosition()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getVelocity() - m1.getVelocity()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getAcceleration() - m1.getAcceleration()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getHeading() - m1.getHeading()), lessThan(1e-7));
+            assertThat(m0.getPosition(), closeTo(m1.getPosition(), 1e-7));
+            assertThat(m0.getVelocity(), closeTo(m1.getVelocity(), 1e-7));
+            assertThat(m0.getAcceleration(), closeTo(m1.getAcceleration(), 1e-7));
+            assertThat(m0.getHeading(), closeTo(m1.getHeading(), 1e-7));
         }
 
         original.close();
@@ -353,10 +353,10 @@ public class TrajectoryTest {
             BasicMoment m0 = original.get(dt * i);
             BasicMoment m1 = mirrored.get(dt * i);
 
-            assertThat(Math.abs(m0.getPosition() - m1.getPosition()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getVelocity() - m1.getVelocity()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getAcceleration() - m1.getAcceleration()), lessThan(1e-7));
-            assertThat(Math.abs(m0.getHeading() - m1.getHeading()), lessThan(1e-7));
+            assertThat(m0.getPosition(), closeTo(m1.getPosition(), 1e-7));
+            assertThat(m0.getVelocity(), closeTo(m1.getVelocity(), 1e-7));
+            assertThat(m0.getAcceleration(), closeTo(m1.getAcceleration(), 1e-7));
+            assertThat(m0.getHeading(), closeTo(m1.getHeading(), 1e-7));
         }
 
         original.close();

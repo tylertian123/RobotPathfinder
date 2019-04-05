@@ -1,9 +1,10 @@
 package com.arctos6135.robotpathfinder.core.trajectory;
 
-import com.arctos6135.robotpathfinder.core.TrajectoryParams;
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
+import com.arctos6135.robotpathfinder.core.TrajectoryParams;
 import com.arctos6135.robotpathfinder.core.lifecycle.JNIObject;
 import com.arctos6135.robotpathfinder.core.path.Path;
+import com.arctos6135.robotpathfinder.follower.Followable;
 
 /**
  * A class that represents a trajectory (motion profile).
@@ -58,7 +59,7 @@ import com.arctos6135.robotpathfinder.core.path.Path;
  * @author Tyler Tian
  * @since 3.0.0
  */
-public abstract class Trajectory extends JNIObject {
+public abstract class Trajectory extends JNIObject implements Followable {
 
     RobotSpecs specs;
     TrajectoryParams params;
@@ -126,6 +127,7 @@ public abstract class Trajectory extends JNIObject {
      * @throws IllegalStateException    If the native resource has already been
      *                                  freed (see class JavaDoc)
      */
+    @Override
     public Moment get(double t) {
         if (Double.isNaN(t) || !Double.isFinite(t)) {
             throw new IllegalArgumentException("Time must be finite and not NaN");

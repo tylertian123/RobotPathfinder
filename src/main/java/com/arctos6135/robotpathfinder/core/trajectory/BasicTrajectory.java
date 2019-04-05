@@ -1,10 +1,11 @@
 package com.arctos6135.robotpathfinder.core.trajectory;
 
 import com.arctos6135.robotpathfinder.core.GlobalLibraryLoader;
+import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.TrajectoryParams;
 import com.arctos6135.robotpathfinder.core.Waypoint;
-import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.lifecycle.GlobalLifeCycleManager;
+import com.arctos6135.robotpathfinder.follower.BasicFollowable;
 
 /**
  * A class that represents a basic trajectory (motion profile).
@@ -59,7 +60,7 @@ import com.arctos6135.robotpathfinder.core.lifecycle.GlobalLifeCycleManager;
  * @author Tyler Tian
  * @since 3.0.0
  */
-public class BasicTrajectory extends Trajectory {
+public class BasicTrajectory extends Trajectory implements BasicFollowable {
 
     static {
         GlobalLibraryLoader.load();

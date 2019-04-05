@@ -4,14 +4,14 @@ import com.arctos6135.robotpathfinder.core.RobotSpecs;
 
 public class TrapezoidalMotionProfile implements MotionProfile {
 
-    double distance;
-    double maxAcl, maxVel;
-    double cruiseVel;
+    protected double distance;
+    protected double maxAcl, maxVel;
+    protected double cruiseVel;
 
-    double tAccel, tCruise, tTotal;
-    double accelDist, cruiseDist;
+    protected double tAccel, tCruise, tTotal;
+    protected double accelDist, cruiseDist;
 
-    boolean reverse = false;
+    protected boolean reverse = false;
 
     public TrapezoidalMotionProfile(RobotSpecs specs, double dist) {
         this(dist, specs.getMaxVelocity(), specs.getMaxAcceleration());

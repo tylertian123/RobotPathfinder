@@ -1,10 +1,9 @@
 package com.arctos6135.robotpathfinder.tests;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.junit.Assert.assertThat;
 
 import java.util.Random;
 
@@ -26,12 +25,12 @@ public class MotionProfileTest {
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
         MotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
-        assertThat(profile.distance(profile.totalTime()), is(distance));
-        assertThat(profile.distance(0), is(0.0));
-        assertThat(profile.velocity(0), is(0.0));
-        assertThat(profile.velocity(profile.totalTime()), is(0.0));
-        assertThat(profile.acceleration(0), is(maxA));
-        assertThat(profile.acceleration(profile.totalTime()), is(-maxA));
+        assertThat(profile.distance(profile.totalTime()), closeTo(distance, 1e-7));
+        assertThat(profile.distance(0), closeTo(0.0, 1e-7));
+        assertThat(profile.velocity(0), closeTo(0.0, 1e-7));
+        assertThat(profile.velocity(profile.totalTime()), closeTo(0.0, 1e-7));
+        assertThat(profile.acceleration(0), closeTo(maxA, 1e-7));
+        assertThat(profile.acceleration(profile.totalTime()), closeTo(-maxA, 1e-7));
     }
 
     @Test
@@ -44,7 +43,7 @@ public class MotionProfileTest {
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
         MotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
-        assertThat(profile.distance(profile.totalTime()), is(distance));
+        assertThat(profile.distance(profile.totalTime()), closeTo(distance, 1e-7));
         assertThat(profile.distance(0), closeTo(0.0, 1e-7));
         assertThat(profile.velocity(0), closeTo(0.0, 1e-7));
         assertThat(profile.velocity(profile.totalTime()), closeTo(0.0, 1e-7));
@@ -65,13 +64,13 @@ public class MotionProfileTest {
 
         double dt = profile.totalTime() / 1000;
         for(double t = 0; t < profile.totalTime(); t += dt) {
-            assertThat(profile.distance(t), is(lessThanOrEqualTo(distance)));
-            assertThat(profile.distance(t), is(greaterThanOrEqualTo(0.0)));
+            assertThat(profile.distance(t), lessThanOrEqualTo(distance));
+            assertThat(profile.distance(t), greaterThanOrEqualTo(0.0));
 
-            assertThat(profile.velocity(t), is(lessThanOrEqualTo(maxV)));
-            assertThat(profile.velocity(t), is(greaterThanOrEqualTo(0.0)));
+            assertThat(profile.velocity(t), lessThanOrEqualTo(maxV));
+            assertThat(profile.velocity(t), greaterThanOrEqualTo(0.0));
 
-            assertThat(Math.abs(profile.acceleration(t)), is(lessThanOrEqualTo(maxA)));
+            assertThat(Math.abs(profile.acceleration(t)), lessThanOrEqualTo(maxA));
         }
     }
 }

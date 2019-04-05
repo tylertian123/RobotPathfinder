@@ -186,6 +186,7 @@ public abstract class Trajectory extends JNIObject implements Followable {
      * @throws IllegalStateException If the native resource has already been freed
      *                               (see class JavaDoc)
      */
+    @Override
     public abstract double totalTime();
 
     /**

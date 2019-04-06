@@ -45,7 +45,7 @@ after_success:
   - >
     curl --request 'POST' 
     --header 'Content-Type: text/plain; charset=utf-8' 
-    --data "&#9989;**SUCCESS**&#9989; The latest commit pushed to **RobotPathfinder** (commit *$SHORT_COMMIT* on branch *$TRAVIS_BRANCH*) has **passed** CI checks!"
+    --data "&#9989; **SUCCESS** &#9989; The latest commit pushed to **RobotPathfinder** (commit *$SHORT_COMMIT* on branch *$TRAVIS_BRANCH*) has [**passed** CI checks]($TRAVIS_JOB_WEB_URL)!"
     $WEBHOOK_URL
 
 after_failure:
@@ -53,5 +53,5 @@ after_failure:
   - >
     curl --request 'POST' 
     --header 'Content-Type: text/plain; charset=utf-8' 
-    --data "&#10060;**ERROR**&#10060; The latest commit pushed to **RobotPathfinder** (commit *$SHORT_COMMIT* on branch *$TRAVIS_BRANCH*) has **failed** CI checks!" 
+    --data "&#10060; **ERROR** &#10060; The latest commit pushed to **RobotPathfinder** (commit *$SHORT_COMMIT* on branch *$TRAVIS_BRANCH*) has [**failed** CI checks]($TRAVIS_JOB_WEB_URL)!" 
     $WEBHOOK_URL

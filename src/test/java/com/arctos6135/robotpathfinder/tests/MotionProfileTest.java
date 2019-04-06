@@ -1,8 +1,9 @@
 package com.arctos6135.robotpathfinder.tests;
 
 import static org.hamcrest.Matchers.closeTo;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.hamcrest.Matchers.either;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertThat;
 
 import java.util.Random;
@@ -64,13 +65,14 @@ public class MotionProfileTest {
 
         double dt = profile.totalTime() / 1000;
         for(double t = 0; t < profile.totalTime(); t += dt) {
-            assertThat(profile.distance(t), lessThanOrEqualTo(distance));
-            assertThat(profile.distance(t), greaterThanOrEqualTo(0.0));
+            assertThat(profile.distance(t), either(lessThan(distance)).or(closeTo(distance, 1e-7)));
+            assertThat(profile.distance(t), either(lessThan((distance))).or(closeTo((distance), 1e-7)));
+            assertThat(profile.distance(t), either(greaterThan((0.0))).or(closeTo((0.0), 1e-7)));
 
-            assertThat(profile.velocity(t), lessThanOrEqualTo(maxV));
-            assertThat(profile.velocity(t), greaterThanOrEqualTo(0.0));
+            assertThat(profile.velocity(t), either(lessThan((maxV))).or(closeTo((maxV), 1e-7)));
+            assertThat(profile.velocity(t), either(greaterThan((0.0))).or(closeTo((0.0), 1e-7)));
 
-            assertThat(Math.abs(profile.acceleration(t)), lessThanOrEqualTo(maxA));
+            assertThat(Math.abs(profile.acceleration(t)), either(lessThan((maxA))).or(closeTo((maxA), 1e-7)));
         }
     }
 
@@ -87,13 +89,13 @@ public class MotionProfileTest {
 
         double dt = profile.totalTime() / 1000;
         for(double t = 0; t < profile.totalTime(); t += dt) {
-            assertThat(profile.distance(t), greaterThanOrEqualTo(distance));
-            assertThat(profile.distance(t), lessThanOrEqualTo(0.0));
+            assertThat(profile.distance(t), either(greaterThan((distance))).or(closeTo((distance), 1e-7)));
+            assertThat(profile.distance(t), either(lessThan((0.0))).or(closeTo((0.0), 1e-7)));
 
-            assertThat(-profile.velocity(t), lessThanOrEqualTo(maxV));
-            assertThat(profile.velocity(t), lessThanOrEqualTo(0.0));
+            assertThat(-profile.velocity(t), either(lessThan((maxV))).or(closeTo((maxV), 1e-7)));
+            assertThat(profile.velocity(t), either(lessThan((0.0))).or(closeTo((0.0), 1e-7)));
 
-            assertThat(Math.abs(profile.acceleration(t)), lessThanOrEqualTo(maxA));
+            assertThat(Math.abs(profile.acceleration(t)), either(lessThan((maxA))).or(closeTo((maxA), 1e-7)));
         }
     }
 }

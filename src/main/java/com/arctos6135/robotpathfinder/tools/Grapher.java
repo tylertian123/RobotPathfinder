@@ -12,9 +12,10 @@ import javax.swing.SwingUtilities;
 import com.arctos6135.robotpathfinder.core.Waypoint;
 import com.arctos6135.robotpathfinder.core.path.Path;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicMoment;
-import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
-import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
+import com.arctos6135.robotpathfinder.follower.BasicFollowable;
+import com.arctos6135.robotpathfinder.follower.Followable;
+import com.arctos6135.robotpathfinder.follower.TankDriveFollowable;
 import com.arctos6135.robotpathfinder.math.Vec2D;
 import com.arctos6135.robotpathfinder.util.Pair;
 
@@ -36,7 +37,7 @@ public final class Grapher {
 	private static double maxX, maxY, minX, minY;
 
 	/**
-	 * Graphs a {@link BasicTrajectory} in a {@link JFrame}. The heading will not be
+	 * Graphs a {@link BasicFollowable} in a {@link JFrame}. The heading will not be
 	 * graphed.
 	 * <p>
 	 * In addition to graphing, this method also sets the {@link JFrame}'s default
@@ -49,12 +50,12 @@ public final class Grapher {
 	 * @param dt         The time increment between samples
 	 * @return The graphed trajectory in a {@link JFrame}
 	 */
-	public static JFrame graphTrajectory(BasicTrajectory trajectory, double dt) {
+	public static JFrame graphTrajectory(BasicFollowable trajectory, double dt) {
 		return graphTrajectory(trajectory, dt, false);
 	}
 
 	/**
-	 * Graphs a {@link BasicTrajectory} in a {@link JFrame}.
+	 * Graphs a {@link BasicFollowable} in a {@link JFrame}.
 	 * <p>
 	 * In addition to graphing, this method also sets the {@link JFrame}'s default
 	 * close operation to be {@link JFrame#DISPOSE_ON_CLOSE}. Note that this method
@@ -67,7 +68,7 @@ public final class Grapher {
 	 * @param graphHeading Whether or not to graph the heading
 	 * @return The graphed trajectory in a {@link JFrame}
 	 */
-	public static JFrame graphTrajectory(BasicTrajectory trajectory, double dt, boolean graphHeading) {
+	public static JFrame graphTrajectory(BasicFollowable trajectory, double dt, boolean graphHeading) {
 		int elemCount = (int) Math.ceil(trajectory.totalTime() / dt);
 
 		// Create arrays to store data
@@ -127,7 +128,7 @@ public final class Grapher {
 	}
 
 	/**
-	 * Graphs a {@link TankDriveTrajectory} in a {@link JFrame}. The heading will
+	 * Graphs a {@link TankDriveFollowable} in a {@link JFrame}. The heading will
 	 * not be graphed.
 	 * <p>
 	 * In addition to graphing, this method also sets the {@link JFrame}'s default
@@ -140,12 +141,12 @@ public final class Grapher {
 	 * @param dt         The time increment between samples
 	 * @return The graphed trajectory in a {@link JFrame}
 	 */
-	public static JFrame graphTrajectory(TankDriveTrajectory trajectory, double dt) {
+	public static JFrame graphTrajectory(TankDriveFollowable trajectory, double dt) {
 		return graphTrajectory(trajectory, dt, false);
 	}
 
 	/**
-	 * Graphs a {@link TankDriveTrajectory} in a {@link JFrame}.
+	 * Graphs a {@link TankDriveFollowable} in a {@link JFrame}.
 	 * <p>
 	 * In addition to graphing, this method also sets the {@link JFrame}'s default
 	 * close operation to be {@link JFrame#DISPOSE_ON_CLOSE}. Note that this method
@@ -158,7 +159,7 @@ public final class Grapher {
 	 * @param graphHeading Whether or not to graph the relative facing.
 	 * @return The graphed trajectory in a {@link JFrame}
 	 */
-	public static JFrame graphTrajectory(TankDriveTrajectory trajectory, double dt, boolean graphHeading) {
+	public static JFrame graphTrajectory(TankDriveFollowable trajectory, double dt, boolean graphHeading) {
 		int elemCount = (int) Math.ceil(trajectory.totalTime() / dt);
 
 		// Create arrays to store data
@@ -366,5 +367,23 @@ public final class Grapher {
 			}
 		}
 		return frame;
+	}
+
+	public static JFrame graph(Path p, double dt) {
+		return graphPath(p, dt);
+	}
+	public static JFrame graph(Followable f, double dt) {
+		return graph(f, dt, false);
+	}
+	public static JFrame graph(Followable f, double dt, boolean graphHeadings) {
+		if(f instanceof BasicFollowable) {
+			return graphTrajectory((BasicFollowable) f, dt, graphHeadings);
+		}
+		else if(f instanceof TankDriveFollowable) {
+			return graphTrajectory((TankDriveFollowable) f, dt, graphHeadings);
+		}
+		else {
+			throw new IllegalArgumentException("Unsupported followable type");
+		}
 	}
 }

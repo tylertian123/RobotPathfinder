@@ -35,7 +35,7 @@ public class DebugTests {
         BasicTrajectory traj = new BasicTrajectory(specs, params);
         System.out.println(traj.totalTime());
         System.out.println(traj.get(0.01).getVelocity());
-        JFrame f = Grapher.graphTrajectory(traj, 0.001, true);
+        JFrame f = Grapher.graph(traj, 0.001, true);
         traj.close();
         f.setVisible(true);
     }
@@ -56,8 +56,8 @@ public class DebugTests {
         var traj1 = new TankDriveTrajectory(specs, params);
         var traj = traj1.retrace();
         System.out.println(traj.totalTime());
-        JFrame f1 = Grapher.graphPath(traj.getPath(), 0.001);
-        JFrame f = Grapher.graphTrajectory(traj, 0.001, true);
+        JFrame f1 = Grapher.graph(traj.getPath(), 0.001);
+        JFrame f = Grapher.graph(traj, 0.001, true);
         traj.close();
         traj1.close();
         f.setVisible(true);

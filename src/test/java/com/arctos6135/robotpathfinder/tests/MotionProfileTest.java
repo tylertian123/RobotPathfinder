@@ -73,4 +73,27 @@ public class MotionProfileTest {
             assertThat(Math.abs(profile.acceleration(t)), lessThanOrEqualTo(maxA));
         }
     }
+
+    @Test
+    public void testTrapezoidalMotionProfileAdvancedReversed() {
+        Random rand = new Random();
+        double maxV = rand.nextDouble() * 1000;
+        double maxA = rand.nextDouble() * 1000;
+        double distance = -rand.nextDouble() * 1000;
+
+        RobotSpecs specs = new RobotSpecs(maxV, maxA);
+
+        MotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
+
+        double dt = profile.totalTime() / 1000;
+        for(double t = 0; t < profile.totalTime(); t += dt) {
+            assertThat(profile.distance(t), greaterThanOrEqualTo(distance));
+            assertThat(profile.distance(t), lessThanOrEqualTo(0.0));
+
+            assertThat(-profile.velocity(t), lessThanOrEqualTo(maxV));
+            assertThat(profile.velocity(t), lessThanOrEqualTo(0.0));
+
+            assertThat(Math.abs(profile.acceleration(t)), lessThanOrEqualTo(maxA));
+        }
+    }
 }

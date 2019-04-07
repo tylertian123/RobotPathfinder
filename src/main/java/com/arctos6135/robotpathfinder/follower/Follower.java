@@ -97,8 +97,8 @@ abstract public class Follower {
 			// Otherwise initialize
 			initialize();
 		}
-		
-		if(_run()) {
+
+		if (_run()) {
 			stop();
 		}
 	}

@@ -52,7 +52,7 @@ public class TrapezoidalMotionProfile implements MotionProfile {
     }
 
     @Override
-    public double distance(double time) {
+    public double position(double time) {
         double result = 0;
         // When accelerating
         if (time <= tAccel) {

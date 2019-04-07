@@ -7,7 +7,7 @@ public abstract class TankDriveFollowableMotionProfile extends FollowableMotionP
 
     @Override
     public TankDriveMoment get(double t) {
-        double d = profile.distance(t);
+        double d = profile.position(t);
         double v = profile.velocity(t);
         double a = profile.acceleration(t);
 

@@ -6,9 +6,8 @@ import com.arctos6135.robotpathfinder.motionprofile.TrapezoidalMotionProfile;
 public class TrapezoidalRotationTankDriveProfile extends TankDriveFollowableRotationMotionProfile {
 
     public TrapezoidalRotationTankDriveProfile(RobotSpecs specs, double angle) {
-        this.angle = angle;
         baseWidth = specs.getBaseWidth();
-        profile = new TrapezoidalMotionProfile(specs, Math.abs(angle) * baseWidth);
+        profile = new TrapezoidalMotionProfile(specs, angle * baseWidth);
     }
 
     public TrapezoidalRotationTankDriveProfile(RobotSpecs specs, double angle, double initialFacing) {

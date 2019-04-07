@@ -12,6 +12,7 @@ import com.arctos6135.robotpathfinder.math.MathUtils;
 
 import org.junit.Test;
 
+@SuppressWarnings("deprecation")
 public class TrajectoryGeneratorTest {
 
     @Test

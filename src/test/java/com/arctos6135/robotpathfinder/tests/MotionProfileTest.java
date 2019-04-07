@@ -15,7 +15,7 @@ import com.arctos6135.robotpathfinder.motionprofile.TrapezoidalMotionProfile;
 import org.junit.Test;
 
 public class MotionProfileTest {
-    
+
     @Test
     public void testTrapezoidalMotionProfileBasic() {
         Random rand = new Random();
@@ -64,9 +64,8 @@ public class MotionProfileTest {
         MotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
 
         double dt = profile.totalTime() / 1000;
-        for(double t = 0; t < profile.totalTime(); t += dt) {
+        for (double t = 0; t < profile.totalTime(); t += dt) {
             assertThat(profile.distance(t), either(lessThan(distance)).or(closeTo(distance, 1e-7)));
-            assertThat(profile.distance(t), either(lessThan((distance))).or(closeTo((distance), 1e-7)));
             assertThat(profile.distance(t), either(greaterThan((0.0))).or(closeTo((0.0), 1e-7)));
 
             assertThat(profile.velocity(t), either(lessThan((maxV))).or(closeTo((maxV), 1e-7)));
@@ -88,7 +87,7 @@ public class MotionProfileTest {
         MotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
 
         double dt = profile.totalTime() / 1000;
-        for(double t = 0; t < profile.totalTime(); t += dt) {
+        for (double t = 0; t < profile.totalTime(); t += dt) {
             assertThat(profile.distance(t), either(greaterThan((distance))).or(closeTo((distance), 1e-7)));
             assertThat(profile.distance(t), either(lessThan((0.0))).or(closeTo((0.0), 1e-7)));
 

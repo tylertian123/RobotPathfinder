@@ -47,6 +47,11 @@ public class TrapezoidalMotionProfile implements MotionProfile {
     }
 
     @Override
+    public boolean isReversed() {
+        return reverse;
+    }
+
+    @Override
     public double distance(double time) {
         double result = 0;
         // When accelerating

@@ -1,9 +1,10 @@
-package com.arctos6135.robotpathfinder.motionprofile;
+package com.arctos6135.robotpathfinder.motionprofile.followable;
 
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
 import com.arctos6135.robotpathfinder.follower.TankDriveFollowable;
+import com.arctos6135.robotpathfinder.motionprofile.MotionProfile;
 
-public abstract class TankDriveFollowableProfile implements TankDriveFollowable {
+public abstract class TankDriveFollowableMotionProfile implements TankDriveFollowable {
 
     protected MotionProfile profile;
 
@@ -20,10 +21,7 @@ public abstract class TankDriveFollowableProfile implements TankDriveFollowable 
         double v = profile.velocity(t);
         double a = profile.acceleration(t);
 
-        boolean backwards = false;
-        if (profile instanceof TrapezoidalMotionProfile) {
-            backwards = ((TrapezoidalMotionProfile) profile).reverse;
-        }
+        boolean backwards = profile.isReversed();
 
         return new TankDriveMoment(d, d, v, v, a, a, backwards ? -initialFacing : initialFacing, t, 
                 initialFacing, backwards);

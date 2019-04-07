@@ -8,4 +8,6 @@ public interface MotionProfile {
     public double velocity(double t);
 
     public double acceleration(double t);
+
+    public boolean isReversed();
 }

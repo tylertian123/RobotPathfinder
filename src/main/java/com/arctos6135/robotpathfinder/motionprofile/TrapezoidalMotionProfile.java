@@ -72,7 +72,7 @@ public class TrapezoidalMotionProfile implements MotionProfile {
             result = accelDist + cruiseDist
                     + ((time - tAccel - tCruise) * cruiseVel - Math.pow(time - tAccel - tCruise, 2) * maxAcl * 1 / 2);
         } else {
-            throw new RuntimeException("Time out of range");
+            throw new IllegalArgumentException("Time out of range: " + time);
         }
         return reverse ? -result : result;
     }
@@ -96,7 +96,7 @@ public class TrapezoidalMotionProfile implements MotionProfile {
             // decelerating
             result = cruiseVel - (time - tAccel - tCruise) * maxAcl;
         } else {
-            throw new RuntimeException("Time out of range");
+            throw new IllegalArgumentException("Time out of range: " + time);
         }
         return reverse ? -result : result;
     }
@@ -116,7 +116,7 @@ public class TrapezoidalMotionProfile implements MotionProfile {
         else if (time <= totalTime()) {
             result = -maxAcl;
         } else {
-            throw new RuntimeException("Time out of range");
+            throw new IllegalArgumentException("Time out of range: " + time);
         }
         return reverse ? -result : result;
     }

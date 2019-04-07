@@ -15,7 +15,7 @@ public abstract class TankDriveFollowableRotationMotionProfile extends Followabl
         double v = profile.velocity(t);
         double a = profile.acceleration(t);
 
-        double currentAngle = angle > 0 ? d / baseWidth : -d / baseWidth + initialFacing;
+        double currentAngle = (angle > 0 ? d / baseWidth : -d / baseWidth) + initialFacing;
         // Angle > 0 is a left turn
         if(angle > 0) {
             return new TankDriveMoment(-d, d, -v, v, -a, a, currentAngle, t, initialFacing, false);

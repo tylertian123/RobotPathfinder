@@ -62,7 +62,7 @@ public class DebugTests {
     public static void main(String[] args) throws Exception {
         prompt();
 
-        RobotSpecs specs = new RobotSpecs(5, 3, 1);
+        RobotSpecs specs = new RobotSpecs(5, 3, 2);
         Followable f = new TrapezoidalRotationTankDriveProfile(specs, Math.PI / 2);
         JFrame frame = Grapher.graph(f, 0.001, true);
         frame.setVisible(true);

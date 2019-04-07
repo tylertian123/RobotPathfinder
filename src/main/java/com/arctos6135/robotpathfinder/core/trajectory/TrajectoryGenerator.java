@@ -1,10 +1,13 @@
 package com.arctos6135.robotpathfinder.core.trajectory;
 
 import com.arctos6135.robotpathfinder.core.GlobalLibraryLoader;
+import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.TrajectoryParams;
 import com.arctos6135.robotpathfinder.core.Waypoint;
-import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.path.PathType;
+import com.arctos6135.robotpathfinder.motionprofile.followable.TrapezoidalBasicProfile;
+import com.arctos6135.robotpathfinder.motionprofile.followable.TrapezoidalRotationTankDriveProfile;
+import com.arctos6135.robotpathfinder.motionprofile.followable.TrapezoidalTankDriveProfile;
 
 /**
  * This class provides a number of handy static utility functions for generating
@@ -26,10 +29,12 @@ final public class TrajectoryGenerator {
 	 * Generates a {@link BasicTrajectory} that will drive straight forward for the
 	 * specified distance.
 	 * 
+	 * @deprecated Use a {@link TrapezoidalBasicProfile} instead.
 	 * @param specs    The specifications of the robot
 	 * @param distance The distance to drive forward for
 	 * @return The generated trajectory
 	 */
+	@Deprecated
 	public static BasicTrajectory generateStraightBasic(RobotSpecs specs, double distance) {
 		TrajectoryParams params = new TrajectoryParams();
 		// Use Bezier type since we only have one segment and it doesn't really matter
@@ -49,10 +54,12 @@ final public class TrajectoryGenerator {
 	 * Generates a {@link TankDriveTrajectory} that will drive straight forward for
 	 * the specified distance.
 	 * 
+	 * @deprecated Use a {@link TrapezoidalTankDriveProfile} instead.
 	 * @param specs    The specifications of the robot
 	 * @param distance The distance to drive forward for
 	 * @return The generated trajectory
 	 */
+	@Deprecated
 	public static TankDriveTrajectory generateStraightTank(RobotSpecs specs, double distance) {
 		TrajectoryParams params = new TrajectoryParams();
 		params.pathType = PathType.BEZIER;
@@ -80,10 +87,12 @@ final public class TrajectoryGenerator {
 	 * {@link RobotSpecs} and {@link TrajectoryParams} set to {@code null}. </em>
 	 * </p>
 	 * 
+	 * @deprecated Use a {@link TrapezoidalRotationTankDriveProfile} instead.
 	 * @param specs The specifications of the robot
 	 * @param angle The angle to turn, in radians
      * @return The generated trajectory
 	 */
+	@Deprecated
 	public static TankDriveTrajectory generateRotationTank(RobotSpecs specs, double angle) {
 		return _generateRotationTank(specs.getMaxVelocity(), specs.getMaxAcceleration(), specs.getBaseWidth(), angle);
 	}

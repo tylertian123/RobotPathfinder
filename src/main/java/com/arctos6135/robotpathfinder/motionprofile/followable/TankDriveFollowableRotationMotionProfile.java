@@ -2,6 +2,7 @@ package com.arctos6135.robotpathfinder.motionprofile.followable;
 
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
 import com.arctos6135.robotpathfinder.follower.TankDriveFollowable;
+import com.arctos6135.robotpathfinder.math.MathUtils;
 
 public abstract class TankDriveFollowableRotationMotionProfile extends FollowableMotionProfile
         implements TankDriveFollowable {
@@ -15,7 +16,7 @@ public abstract class TankDriveFollowableRotationMotionProfile extends Followabl
         double a = profile.acceleration(t);
 
         // Positive angles, which make the distance positive, are left turns
-        double currentAngle = d / baseWidth + initialFacing;
+        double currentAngle = MathUtils.restrictAngle(d / (baseWidth / 2) + initialFacing);
 
         return new TankDriveMoment(-d, d, -v, v, -a, a, currentAngle, t, initialFacing, false);
     }

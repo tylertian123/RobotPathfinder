@@ -232,8 +232,9 @@ public class FollowableMotionProfileTest {
         Random rand = new Random();
         double maxV = rand.nextDouble() * 1000;
         double maxA = rand.nextDouble() * 1000;
-        double angle = rand.nextDouble() * Math.PI * 4;
+        double angle = rand.nextDouble() * Math.PI;
         double baseWidth = rand.nextDouble() * 1000;
+        double baseRadius = baseWidth / 2;
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA, baseWidth);
 
@@ -241,18 +242,50 @@ public class FollowableMotionProfileTest {
         TankDriveMoment begin = f.get(0);
         TankDriveMoment end = f.get(f.totalTime());
         assertThat(begin.getLeftPosition(), closeTo(0.0, 1e-7));
-        assertThat(end.getLeftPosition(), closeTo(-baseWidth * angle, 1e-7));
+        assertThat(end.getLeftPosition(), closeTo(-baseRadius * angle, 1e-7));
         assertThat(begin.getLeftVelocity(), closeTo(0.0, 1e-7));
         assertThat(end.getLeftVelocity(), closeTo(0.0, 1e-7));
         assertThat(begin.getLeftAcceleration(), closeTo(-maxA, 1e-7));
         assertThat(end.getLeftAcceleration(), closeTo(maxA, 1e-7));
 
         assertThat(begin.getRightPosition(), closeTo(0.0, 1e-7));
-        assertThat(end.getRightPosition(), closeTo(baseWidth * angle, 1e-7));
+        assertThat(end.getRightPosition(), closeTo(baseRadius * angle, 1e-7));
         assertThat(begin.getRightVelocity(), closeTo(0.0, 1e-7));
         assertThat(end.getRightVelocity(), closeTo(0.0, 1e-7));
         assertThat(begin.getRightAcceleration(), closeTo(maxA, 1e-7));
         assertThat(end.getRightAcceleration(), closeTo(-maxA, 1e-7));
+
+        assertThat(begin.getFacingRelative(), closeTo(0.0, 1e-7));
+        assertThat(end.getFacingRelative(), closeTo(angle, 1e-7));
+    }
+
+    @Test
+    public void testTrapezoidalRotationTankDriveProfileBasicReversed() {
+        Random rand = new Random();
+        double maxV = rand.nextDouble() * 1000;
+        double maxA = rand.nextDouble() * 1000;
+        double angle = -rand.nextDouble() * Math.PI;
+        double baseWidth = rand.nextDouble() * 1000;
+        double baseRadius = baseWidth / 2;
+
+        RobotSpecs specs = new RobotSpecs(maxV, maxA, baseWidth);
+
+        TankDriveFollowable f = new TrapezoidalRotationTankDriveProfile(specs, angle);
+        TankDriveMoment begin = f.get(0);
+        TankDriveMoment end = f.get(f.totalTime());
+        assertThat(begin.getLeftPosition(), closeTo(0.0, 1e-7));
+        assertThat(end.getLeftPosition(), closeTo(-baseRadius * angle, 1e-7));
+        assertThat(begin.getLeftVelocity(), closeTo(0.0, 1e-7));
+        assertThat(end.getLeftVelocity(), closeTo(0.0, 1e-7));
+        assertThat(begin.getLeftAcceleration(), closeTo(maxA, 1e-7));
+        assertThat(end.getLeftAcceleration(), closeTo(-maxA, 1e-7));
+
+        assertThat(begin.getRightPosition(), closeTo(0.0, 1e-7));
+        assertThat(end.getRightPosition(), closeTo(baseRadius * angle, 1e-7));
+        assertThat(begin.getRightVelocity(), closeTo(0.0, 1e-7));
+        assertThat(end.getRightVelocity(), closeTo(0.0, 1e-7));
+        assertThat(begin.getRightAcceleration(), closeTo(-maxA, 1e-7));
+        assertThat(end.getRightAcceleration(), closeTo(maxA, 1e-7));
 
         assertThat(begin.getFacingRelative(), closeTo(0.0, 1e-7));
         assertThat(end.getFacingRelative(), closeTo(angle, 1e-7));

@@ -7,7 +7,7 @@ public class TrapezoidalRotationTankDriveProfile extends TankDriveFollowableRota
 
     public TrapezoidalRotationTankDriveProfile(RobotSpecs specs, double angle) {
         baseWidth = specs.getBaseWidth();
-        profile = new TrapezoidalMotionProfile(specs, angle * baseWidth);
+        profile = new TrapezoidalMotionProfile(specs, angle * baseWidth / 2);
     }
 
     public TrapezoidalRotationTankDriveProfile(RobotSpecs specs, double angle, double initialFacing) {

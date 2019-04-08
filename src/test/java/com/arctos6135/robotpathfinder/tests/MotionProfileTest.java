@@ -23,6 +23,10 @@ public class MotionProfileTest {
         double maxA = rand.nextDouble() * 1000;
         double distance = rand.nextDouble() * 1000;
 
+        System.out.println("[INFO] maxV: " + maxV);
+        System.out.println("[INFO] maxA: " + maxA);
+        System.out.println("[INFO] distance: " + distance);
+
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
         MotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
@@ -41,6 +45,10 @@ public class MotionProfileTest {
         double maxA = rand.nextDouble() * 1000;
         double distance = -rand.nextDouble() * 1000;
 
+        System.out.println("[INFO] maxV: " + maxV);
+        System.out.println("[INFO] maxA: " + maxA);
+        System.out.println("[INFO] distance: " + distance);
+
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
         MotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
@@ -58,6 +66,10 @@ public class MotionProfileTest {
         double maxV = rand.nextDouble() * 1000;
         double maxA = rand.nextDouble() * 1000;
         double distance = rand.nextDouble() * 1000;
+
+        System.out.println("[INFO] maxV: " + maxV);
+        System.out.println("[INFO] maxA: " + maxA);
+        System.out.println("[INFO] distance: " + distance);
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
@@ -81,6 +93,10 @@ public class MotionProfileTest {
         double maxV = rand.nextDouble() * 1000;
         double maxA = rand.nextDouble() * 1000;
         double distance = -rand.nextDouble() * 1000;
+
+        System.out.println("[INFO] maxV: " + maxV);
+        System.out.println("[INFO] maxA: " + maxA);
+        System.out.println("[INFO] distance: " + distance);
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 

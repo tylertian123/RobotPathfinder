@@ -28,6 +28,10 @@ public class FollowableMotionProfileTest {
         double maxA = rand.nextDouble() * 1000;
         double distance = rand.nextDouble() * 1000;
 
+        System.out.println("[INFO] maxV: " + maxV);
+        System.out.println("[INFO] maxA: " + maxA);
+        System.out.println("[INFO] distance: " + distance);
+
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
         BasicFollowable f = new TrapezoidalBasicProfile(specs, distance);
@@ -48,6 +52,10 @@ public class FollowableMotionProfileTest {
         double maxA = rand.nextDouble() * 1000;
         double distance = -rand.nextDouble() * 1000;
 
+        System.out.println("[INFO] maxV: " + maxV);
+        System.out.println("[INFO] maxA: " + maxA);
+        System.out.println("[INFO] distance: " + distance);
+
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
         BasicFollowable f = new TrapezoidalBasicProfile(specs, distance);
@@ -67,6 +75,10 @@ public class FollowableMotionProfileTest {
         double maxV = rand.nextDouble() * 1000;
         double maxA = rand.nextDouble() * 1000;
         double distance = rand.nextDouble() * 1000;
+
+        System.out.println("[INFO] maxV: " + maxV);
+        System.out.println("[INFO] maxA: " + maxA);
+        System.out.println("[INFO] distance: " + distance);
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
@@ -92,6 +104,10 @@ public class FollowableMotionProfileTest {
         double maxA = rand.nextDouble() * 1000;
         double distance = -rand.nextDouble() * 1000;
 
+        System.out.println("[INFO] maxV: " + maxV);
+        System.out.println("[INFO] maxA: " + maxA);
+        System.out.println("[INFO] distance: " + distance);
+
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
         BasicFollowable f = new TrapezoidalBasicProfile(specs, distance);
@@ -115,6 +131,10 @@ public class FollowableMotionProfileTest {
         double maxV = rand.nextDouble() * 1000;
         double maxA = rand.nextDouble() * 1000;
         double distance = rand.nextDouble() * 1000;
+
+        System.out.println("[INFO] maxV: " + maxV);
+        System.out.println("[INFO] maxA: " + maxA);
+        System.out.println("[INFO] distance: " + distance);
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
@@ -143,6 +163,10 @@ public class FollowableMotionProfileTest {
         double maxA = rand.nextDouble() * 1000;
         double distance = -rand.nextDouble() * 1000;
 
+        System.out.println("[INFO] maxV: " + maxV);
+        System.out.println("[INFO] maxA: " + maxA);
+        System.out.println("[INFO] distance: " + distance);
+
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
         TankDriveFollowable f = new TrapezoidalTankDriveProfile(specs, distance);
@@ -169,6 +193,10 @@ public class FollowableMotionProfileTest {
         double maxV = rand.nextDouble() * 1000;
         double maxA = rand.nextDouble() * 1000;
         double distance = rand.nextDouble() * 1000;
+
+        System.out.println("[INFO] maxV: " + maxV);
+        System.out.println("[INFO] maxA: " + maxA);
+        System.out.println("[INFO] distance: " + distance);
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
@@ -201,6 +229,10 @@ public class FollowableMotionProfileTest {
         double maxV = rand.nextDouble() * 1000;
         double maxA = rand.nextDouble() * 1000;
         double distance = -rand.nextDouble() * 1000;
+
+        System.out.println("[INFO] maxV: " + maxV);
+        System.out.println("[INFO] maxA: " + maxA);
+        System.out.println("[INFO] distance: " + distance);
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
@@ -236,6 +268,11 @@ public class FollowableMotionProfileTest {
         double baseWidth = rand.nextDouble() * 1000;
         double baseRadius = baseWidth / 2;
 
+        System.out.println("[INFO] maxV: " + maxV);
+        System.out.println("[INFO] maxA: " + maxA);
+        System.out.println("[INFO] angle: " + angle);
+        System.out.println("[INFO] baseWidth: " + baseWidth);
+
         RobotSpecs specs = new RobotSpecs(maxV, maxA, baseWidth);
 
         TankDriveFollowable f = new TrapezoidalRotationTankDriveProfile(specs, angle);
@@ -268,6 +305,11 @@ public class FollowableMotionProfileTest {
         double baseWidth = rand.nextDouble() * 1000;
         double baseRadius = baseWidth / 2;
 
+        System.out.println("[INFO] maxV: " + maxV);
+        System.out.println("[INFO] maxA: " + maxA);
+        System.out.println("[INFO] angle: " + angle);
+        System.out.println("[INFO] baseWidth: " + baseWidth);
+
         RobotSpecs specs = new RobotSpecs(maxV, maxA, baseWidth);
 
         TankDriveFollowable f = new TrapezoidalRotationTankDriveProfile(specs, angle);
@@ -299,6 +341,11 @@ public class FollowableMotionProfileTest {
         double angle = rand.nextDouble() * Math.PI;
         double baseWidth = rand.nextDouble() * 1000;
         double baseRadius = baseWidth / 2;
+
+        System.out.println("[INFO] maxV: " + maxV);
+        System.out.println("[INFO] maxA: " + maxA);
+        System.out.println("[INFO] angle: " + angle);
+        System.out.println("[INFO] baseWidth: " + baseWidth);
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA, baseWidth);
 
@@ -337,6 +384,11 @@ public class FollowableMotionProfileTest {
         double angle = -rand.nextDouble() * Math.PI;
         double baseWidth = rand.nextDouble() * 1000;
         double baseRadius = baseWidth / 2;
+
+        System.out.println("[INFO] maxV: " + maxV);
+        System.out.println("[INFO] maxA: " + maxA);
+        System.out.println("[INFO] angle: " + angle);
+        System.out.println("[INFO] baseWidth: " + baseWidth);
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA, baseWidth);
 

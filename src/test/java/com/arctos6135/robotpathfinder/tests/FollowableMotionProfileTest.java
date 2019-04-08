@@ -290,4 +290,80 @@ public class FollowableMotionProfileTest {
         assertThat(begin.getFacingRelative(), closeTo(0.0, 1e-7));
         assertThat(end.getFacingRelative(), closeTo(angle, 1e-7));
     }
+
+    @Test
+    public void testTrapezoidalRotationTankDriveProfileAdvanced() {
+        Random rand = new Random();
+        double maxV = rand.nextDouble() * 1000;
+        double maxA = rand.nextDouble() * 1000;
+        double angle = rand.nextDouble() * Math.PI;
+        double baseWidth = rand.nextDouble() * 1000;
+        double baseRadius = baseWidth / 2;
+
+        RobotSpecs specs = new RobotSpecs(maxV, maxA, baseWidth);
+
+        TankDriveFollowable f = new TrapezoidalRotationTankDriveProfile(specs, angle);
+
+        double leftDist = -baseRadius * angle;
+        double rightDist = -leftDist;
+        double dt = f.totalTime() / 1000;
+        for (double t = 0; t < f.totalTime(); t += dt) {
+            TankDriveMoment m = f.get(t);
+            assertThat(m.getLeftPosition(), either(greaterThan((leftDist))).or(closeTo((leftDist), 1e-7)));
+            assertThat(m.getLeftPosition(), either(lessThan((0.0))).or(closeTo((0.0), 1e-7)));
+
+            assertThat(-m.getLeftVelocity(), either(lessThan((maxV))).or(closeTo((maxV), 1e-7)));
+            assertThat(m.getLeftVelocity(), either(lessThan((0.0))).or(closeTo((0.0), 1e-7)));
+
+            assertThat(Math.abs(m.getLeftAcceleration()), either(lessThan((maxA))).or(closeTo((maxA), 1e-7)));
+
+            assertThat(m.getRightPosition(), either(lessThan(rightDist)).or(closeTo(rightDist, 1e-7)));
+            assertThat(m.getRightPosition(), either(greaterThan((0.0))).or(closeTo((0.0), 1e-7)));
+
+            assertThat(m.getRightVelocity(), either(lessThan((maxV))).or(closeTo((maxV), 1e-7)));
+            assertThat(m.getRightVelocity(), either(greaterThan((0.0))).or(closeTo((0.0), 1e-7)));
+
+            assertThat(Math.abs(m.getRightAcceleration()), either(lessThan((maxA))).or(closeTo((maxA), 1e-7)));
+            
+            assertThat(m.getFacingRelative(), either(lessThan(angle)).or(closeTo(angle, 1e-7)));
+        }
+    }
+
+    @Test
+    public void testTrapezoidalRotationTankDriveProfileAdvancedReversed() {
+        Random rand = new Random();
+        double maxV = rand.nextDouble() * 1000;
+        double maxA = rand.nextDouble() * 1000;
+        double angle = -rand.nextDouble() * Math.PI;
+        double baseWidth = rand.nextDouble() * 1000;
+        double baseRadius = baseWidth / 2;
+
+        RobotSpecs specs = new RobotSpecs(maxV, maxA, baseWidth);
+
+        TankDriveFollowable f = new TrapezoidalRotationTankDriveProfile(specs, angle);
+
+        double leftDist = -baseRadius * angle;
+        double rightDist = -leftDist;
+        double dt = f.totalTime() / 1000;
+        for (double t = 0; t < f.totalTime(); t += dt) {
+            TankDriveMoment m = f.get(t);
+            assertThat(m.getLeftPosition(), either(lessThan(leftDist)).or(closeTo(leftDist, 1e-7)));
+            assertThat(m.getLeftPosition(), either(greaterThan((0.0))).or(closeTo((0.0), 1e-7)));
+
+            assertThat(m.getLeftVelocity(), either(lessThan((maxV))).or(closeTo((maxV), 1e-7)));
+            assertThat(m.getLeftVelocity(), either(greaterThan((0.0))).or(closeTo((0.0), 1e-7)));
+
+            assertThat(Math.abs(m.getLeftAcceleration()), either(lessThan((maxA))).or(closeTo((maxA), 1e-7)));
+
+            assertThat(m.getRightPosition(), either(greaterThan((rightDist))).or(closeTo((rightDist), 1e-7)));
+            assertThat(m.getRightPosition(), either(lessThan((0.0))).or(closeTo((0.0), 1e-7)));
+
+            assertThat(-m.getRightVelocity(), either(lessThan((maxV))).or(closeTo((maxV), 1e-7)));
+            assertThat(m.getRightVelocity(), either(lessThan((0.0))).or(closeTo((0.0), 1e-7)));
+
+            assertThat(Math.abs(m.getRightAcceleration()), either(lessThan((maxA))).or(closeTo((maxA), 1e-7)));
+            
+            assertThat(m.getFacingRelative(), either(greaterThan(angle)).or(closeTo(angle, 1e-7)));
+        }
+    }
 }

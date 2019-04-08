@@ -48,7 +48,7 @@ repositories {
     jcenter()
 }
 
-project.version = '3.0.0-alpha.0'
+project.version = '3.0.0-alpha.0.1'
 
 // Setup for Gradle-JNI
 // Thanks to @ThadHouse
@@ -207,7 +207,7 @@ task visualizerJar(type: Jar, group: 'Build', description: 'Assembles a runnable
     // Include outputs
     from(sourceSets.main.output) {
         include '**'
-        exclude '**/follower/*', '**/package-info.java'
+        exclude '**/follower/*', '**/package-info.java', '**/motionprofile/*'
     }
     // Add manifest attribute to make it runnable
     manifest {

@@ -1,5 +1,12 @@
 
+import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.either;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.lessThan;
+import static org.junit.Assert.assertThat;
+
 import java.io.IOException;
+import java.util.Random;
 
 import javax.swing.JFrame;
 
@@ -9,8 +16,8 @@ import com.arctos6135.robotpathfinder.core.Waypoint;
 import com.arctos6135.robotpathfinder.core.path.PathType;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
-import com.arctos6135.robotpathfinder.follower.Followable;
-import com.arctos6135.robotpathfinder.motionprofile.followable.TrapezoidalRotationTankDriveProfile;
+import com.arctos6135.robotpathfinder.motionprofile.MotionProfile;
+import com.arctos6135.robotpathfinder.motionprofile.TrapezoidalMotionProfile;
 import com.arctos6135.robotpathfinder.tools.Grapher;
 
 public class DebugTests {
@@ -62,9 +69,27 @@ public class DebugTests {
     public static void main(String[] args) throws Exception {
         prompt();
 
-        RobotSpecs specs = new RobotSpecs(5, 3, 2);
-        Followable f = new TrapezoidalRotationTankDriveProfile(specs, -Math.PI / 2);
-        JFrame frame = Grapher.graph(f, 0.001, true);
-        frame.setVisible(true);
+        double maxV = 85.48278607323012;
+        double maxA = 786.7552382177757;
+        double distance = -32.83271606412042;
+
+        System.out.println("[INFO] maxV: " + maxV);
+        System.out.println("[INFO] maxA: " + maxA);
+        System.out.println("[INFO] distance: " + distance);
+
+        RobotSpecs specs = new RobotSpecs(maxV, maxA);
+
+        MotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
+
+        double dt = profile.totalTime() / 1000;
+        for (double t = 0; t < profile.totalTime(); t += dt) {
+            assertThat(profile.position(t), either(greaterThan((distance))).or(closeTo((distance), 1e-7)));
+            assertThat(profile.position(t), either(lessThan((0.0))).or(closeTo((0.0), 1e-7)));
+
+            assertThat(-profile.velocity(t), either(lessThan((maxV))).or(closeTo((maxV), 1e-7)));
+            assertThat(profile.velocity(t), either(lessThan((0.0))).or(closeTo((0.0), 1e-7)));
+
+            assertThat(Math.abs(profile.acceleration(t)), either(lessThan((maxA))).or(closeTo((maxA), 1e-7)));
+        }
     }
 }

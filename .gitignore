@@ -18,5 +18,9 @@
 *.lib
 *.dylib
 
+# Archives
+*.zip
+*.tar.gz
+
 # VM Crash Logs
 hs_err_pid*.log

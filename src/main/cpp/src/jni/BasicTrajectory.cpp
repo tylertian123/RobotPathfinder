@@ -43,11 +43,7 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_Basic
     auto ptr = rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj);
     rpf::set_obj_ptr<rpf::BasicTrajectory>(env, obj, nullptr);
     // Remove an entry from the instances list
-    auto it = std::find_if(btinstances.begin(), btinstances.end(), [&](const auto &p){ return p.get() == ptr; });
-    
-    if(it != btinstances.end()) {
-        btinstances.erase(it);
-    }
+    rpf::remove_instance(btinstances, ptr);
 }
 
 JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_BasicTrajectory__1getMoments(JNIEnv *env, jobject obj) {

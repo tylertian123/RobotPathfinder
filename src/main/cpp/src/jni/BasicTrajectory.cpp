@@ -11,18 +11,16 @@ extern std::list<std::shared_ptr<rpf::Path>> pinstances;
 
 JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_BasicTrajectory__1construct
         (JNIEnv *env, jobject obj, jdouble maxv, jdouble maxa, jdouble base_width, jboolean is_tank, jobjectArray waypoints, jdouble alpha, jint sample_count, jint type) {
-    std::vector<rpf::Waypoint> wp;
-    wp.reserve(env->GetArrayLength(waypoints));
+    rpf::TrajectoryParams params;
+    params.waypoints.reserve(env->GetArrayLength(waypoints));
     // Translate the waypoints into C++ ones
     for(int i = 0; i < env->GetArrayLength(waypoints); i ++) {
         auto waypoint = env->GetObjectArrayElement(waypoints, i);
-        wp.push_back(rpf::Waypoint(rpf::get_field<double>(env, waypoint, "x"), rpf::get_field<double>(env, waypoint, "y"),
+        params.waypoints.push_back(rpf::Waypoint(rpf::get_field<double>(env, waypoint, "x"), rpf::get_field<double>(env, waypoint, "y"),
                 rpf::get_field<double>(env, waypoint, "heading"), rpf::get_field<double>(env, waypoint, "velocity")));
     }
 
     rpf::RobotSpecs specs(maxv, maxa, base_width);
-    rpf::TrajectoryParams params;
-    params.waypoints = std::move(wp);
     params.is_tank = is_tank;
     params.sample_count = sample_count;
     params.type = static_cast<rpf::PathType>(type);

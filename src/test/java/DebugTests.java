@@ -9,11 +9,7 @@ import com.arctos6135.robotpathfinder.core.Waypoint;
 import com.arctos6135.robotpathfinder.core.path.PathType;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
-import com.arctos6135.robotpathfinder.tests.BasicTest;
-import com.arctos6135.robotpathfinder.tests.FollowableMotionProfileTest;
-import com.arctos6135.robotpathfinder.tests.FollowerTest;
 import com.arctos6135.robotpathfinder.tests.MotionProfileTest;
-import com.arctos6135.robotpathfinder.tests.TrajectoryGeneratorTest;
 import com.arctos6135.robotpathfinder.tests.TrajectoryTest;
 import com.arctos6135.robotpathfinder.tools.Grapher;
 

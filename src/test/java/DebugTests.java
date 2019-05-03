@@ -6,7 +6,6 @@ import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
-import java.util.Random;
 
 import javax.swing.JFrame;
 

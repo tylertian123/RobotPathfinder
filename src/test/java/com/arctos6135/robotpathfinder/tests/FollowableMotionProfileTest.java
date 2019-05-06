@@ -13,9 +13,9 @@ import com.arctos6135.robotpathfinder.core.trajectory.BasicMoment;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
 import com.arctos6135.robotpathfinder.follower.BasicFollowable;
 import com.arctos6135.robotpathfinder.follower.TankDriveFollowable;
-import com.arctos6135.robotpathfinder.motionprofile.followable.TrapezoidalBasicProfile;
-import com.arctos6135.robotpathfinder.motionprofile.followable.TrapezoidalRotationTankDriveProfile;
-import com.arctos6135.robotpathfinder.motionprofile.followable.TrapezoidalTankDriveProfile;
+import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalBasicProfile;
+import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalRotationTankDriveProfile;
+import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalTankDriveProfile;
 
 import org.junit.Test;
 

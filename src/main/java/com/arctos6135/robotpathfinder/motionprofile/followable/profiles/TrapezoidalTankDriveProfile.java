@@ -1,7 +1,8 @@
-package com.arctos6135.robotpathfinder.motionprofile.followable;
+package com.arctos6135.robotpathfinder.motionprofile.followable.profiles;
 
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.motionprofile.TrapezoidalMotionProfile;
+import com.arctos6135.robotpathfinder.motionprofile.followable.TankDriveFollowableMotionProfile;
 
 public class TrapezoidalTankDriveProfile extends TankDriveFollowableMotionProfile {
     

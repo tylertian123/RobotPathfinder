@@ -15,10 +15,14 @@ public class TrapezoidalMotionProfile implements MotionProfile {
     protected boolean reverse = false;
 
     public TrapezoidalMotionProfile(RobotSpecs specs, double dist) {
-        this(specs, dist, 0);
+        construct(specs, dist, 0);
     }
 
     public TrapezoidalMotionProfile(RobotSpecs specs, double dist, double initVel) {
+        construct(specs, dist, initVel);
+    }
+
+    private void construct(RobotSpecs specs, double dist, double initVel) {
         if (dist < 0) {
             reverse = true;
             dist = -dist;

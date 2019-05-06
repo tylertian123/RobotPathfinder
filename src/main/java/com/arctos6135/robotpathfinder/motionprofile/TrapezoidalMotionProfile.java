@@ -84,11 +84,11 @@ public class TrapezoidalMotionProfile implements MotionProfile {
     public double position(double time) {
         double result = 0;
         // When accelerating
-        if (time <= tAccel) {
+        if (time < tAccel) {
             result = time * time * maxAcl * 1 / 2 + initVel * time;
         }
         // When cruising
-        else if (time <= tAccel + tCruise) {
+        else if (time < tAccel + tCruise) {
             // The distance is the distance covered during acceleration and rest of the time
             // multiplied by the cruise velocity
             result = accelDist + (time - tAccel) * cruiseVel;
@@ -110,12 +110,12 @@ public class TrapezoidalMotionProfile implements MotionProfile {
     public double velocity(double time) {
         double result = 0;
         // When accelerating
-        if (time <= tAccel) {
+        if (time < tAccel) {
             // The velocity is just the time multiplied by the acceleration
             result = time * maxAcl + initVel;
         }
         // When cruising
-        else if (time <= tAccel + tCruise) {
+        else if (time < tAccel + tCruise) {
             // The velocity is the cruise velocity
             result = cruiseVel;
         }
@@ -134,11 +134,11 @@ public class TrapezoidalMotionProfile implements MotionProfile {
     public double acceleration(double time) {
         double result = 0;
         // When accelerating
-        if (time <= tAccel) {
+        if (time < tAccel) {
             result = maxAcl;
         }
         // When cruising
-        else if (time <= tAccel + tCruise) {
+        else if (time < tAccel + tCruise) {
             result = 0;
         }
         // When decelerating

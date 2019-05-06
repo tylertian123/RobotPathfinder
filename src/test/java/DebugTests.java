@@ -20,7 +20,7 @@ public class DebugTests {
         prompt();
 
 
-        TrapezoidalMotionProfile p = new TrapezoidalMotionProfile(new RobotSpecs(5, 3), 3, 5);
+        TrapezoidalMotionProfile p = new TrapezoidalMotionProfile(new RobotSpecs(5, 3), -3, -5);
         JFrame f = Grapher.graph(p, 0.01);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setVisible(true);

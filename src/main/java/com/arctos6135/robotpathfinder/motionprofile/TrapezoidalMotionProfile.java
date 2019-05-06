@@ -2,9 +2,11 @@ package com.arctos6135.robotpathfinder.motionprofile;
 
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 
-public class TrapezoidalMotionProfile implements MotionProfile {
+public class TrapezoidalMotionProfile implements DynamicMotionProfile {
 
     protected double initVel;
+    protected double initDist = 0, initTime = 0;
+
     protected double distance;
     protected double maxAcl, maxVel;
     protected double cruiseVel;
@@ -15,22 +17,22 @@ public class TrapezoidalMotionProfile implements MotionProfile {
     protected boolean reverse = false;
 
     public TrapezoidalMotionProfile(RobotSpecs specs, double dist) {
-        construct(specs, dist, 0);
+        construct(specs.getMaxVelocity(), specs.getMaxAcceleration(), dist, 0);
     }
 
     public TrapezoidalMotionProfile(RobotSpecs specs, double dist, double initVel) {
-        construct(specs, dist, initVel);
+        construct(specs.getMaxVelocity(), specs.getMaxAcceleration(), dist, initVel);
     }
 
-    private void construct(RobotSpecs specs, double dist, double initVel) {
+    private void construct(double maxVel, double maxAccel, double dist, double initVel) {
         if (dist < 0) {
             reverse = true;
             dist = -dist;
             initVel = -initVel;
         }
         distance = dist;
-        maxAcl = specs.getMaxAcceleration();
-        maxVel = specs.getMaxVelocity();
+        this.maxAcl = maxAccel;
+        this.maxVel = maxVel;
         this.initVel = initVel;
 
         if (Math.abs(initVel) > maxVel) {
@@ -86,6 +88,10 @@ public class TrapezoidalMotionProfile implements MotionProfile {
 
     @Override
     public double position(double time) {
+        if(time < initTime) {
+            throw new IllegalArgumentException("Time out of range");
+        }
+        time -= initTime;
         double result = 0;
         // When accelerating
         if (time < tAccel) {
@@ -107,11 +113,15 @@ public class TrapezoidalMotionProfile implements MotionProfile {
         } else {
             throw new IllegalArgumentException("Time out of range: " + time);
         }
-        return reverse ? -result : result;
+        return (reverse ? -result : result) + initDist;
     }
 
     @Override
     public double velocity(double time) {
+        if(time < initTime) {
+            throw new IllegalArgumentException("Time out of range");
+        }
+        time -= initTime;
         double result = 0;
         // When accelerating
         if (time < tAccel) {
@@ -136,6 +146,10 @@ public class TrapezoidalMotionProfile implements MotionProfile {
 
     @Override
     public double acceleration(double time) {
+        if(time < initTime) {
+            throw new IllegalArgumentException("Time out of range");
+        }
+        time -= initTime;
         double result = 0;
         // When accelerating
         if (time < tAccel) {
@@ -152,5 +166,12 @@ public class TrapezoidalMotionProfile implements MotionProfile {
             throw new IllegalArgumentException("Time out of range: " + time);
         }
         return reverse ? -result : result;
+    }
+
+    @Override
+    public void update(double currentTime, double currentDist, double currentVel, double currentAccel) {
+        initTime = currentTime;
+        initDist = currentDist;
+        construct(maxVel, maxAcl, distance - currentDist, currentVel);
     }
 }

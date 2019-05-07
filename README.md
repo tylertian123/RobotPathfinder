@@ -25,7 +25,7 @@ These graphs are generated using <b>JMathPlot</b>. You can find its repository <
 There are currently 3 major versions of RobotPathfinder (v1, v2 and v3):
 * v1 is outdated and inaccurate. You should never use it.
 * v2 has been extensively used and tested and is stable.
-* v3 is still in its alpha stage. It uses native code to speed up execution and is on average 4 times as fast as v2.
+* v3 is still in its alpha stage. It uses native code to speed up execution and is on average 4 times as fast as v2. ***Usage is not recommended at this moment. V3 has been known to crash (see [issue #27](https://github.com/Arctos6135/RobotPathfinder/issues/27)) and the API is still undergoing rapid development with no documentation for many classes.***
 
 ## Usage
 Every release contains 3 jars, 1 zip, and numerous dynamic libraries:
@@ -33,16 +33,17 @@ Every release contains 3 jars, 1 zip, and numerous dynamic libraries:
 * `RobotPathfinder-(VERSION)-all.jar` - The fat jar that contains the library as well as all its dependencies. 
 * `Trajectory-Visualizer-(VERSION).jar` - The executable jar that contains the GUI Trajectory Visualization Tool (and all its dependencies).
 * `RobotPathfinder-Doc-(VERSION).zip` - The zip that contains the JavaDocs for all classes and methods.
-* `libRobotPathfinder-(PLATFORM).so` - The native dynamic library used by RobotPathfinder for a specific Linux arch.
-* `RobotPathfinder-(PLATFORM).dll` - The native dynamic library used by RobotPathfinder for a specific Windows arch.
+* \*`libRobotPathfinder-(PLATFORM).so` - The native dynamic library used by RobotPathfinder for a specific Linux arch.
+* \*`RobotPathfinder-(PLATFORM).dll` - The native dynamic library used by RobotPathfinder for a specific Windows arch.
+***\*In v3 only***
 
 Alternatively, you can build the binaries yourself by navigating to the root directory, and running `./gradlew allArchives --rerun-tasks`. (*If you're on a Windows machine, make sure you're using PowerShell not cmd!*) The archives can then be found under the `output` directory.
 
-**In order to use RobotPathfinder, the correct dynamic library for your platform must be present in either the directory java is invoked from, or the library path.**
+**In order to use RobotPathfinder V3, the correct dynamic library for your platform must be present in either the directory java is invoked from, or the library path.**
 
 ## FRC Usage
 ### GradleRIO
-* Put the jar **and the native library for roboRIO** in a folder somewhere in the project, e.g. `lib` (make sure to rename the dynamic library from `libRobotPathfinder-roboRIO.so` to just `libRobotPathfinder.so`!)
+* Put the jar **and the native library for roboRIO (V3 only)** in a folder somewhere in the project, e.g. `lib` (make sure to rename the dynamic library from `libRobotPathfinder-roboRIO.so` to just `libRobotPathfinder.so`!)
 * In `build.gradle`, under `dependencies`, add this line: `compile files('path/to/jar')` and `nativeLib files('path/to/native-lib')`
 * Your new `dependencies` should look something like this:
 ```groovy
@@ -51,7 +52,7 @@ dependencies {
     compile wpi.deps.vendor.java()
 
     compile files('lib/RobotPathfinder-3.0.0-alpha.0.jar')
-    nativeLib files('lib/libRobotPathfinder.so')
+    nativeLib files('lib/libRobotPathfinder.so') // Not needed for V2
     
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
@@ -69,7 +70,7 @@ dependencies {
 ## Documentation
 All classes and methods are documented with JavaDocs, in `RobotPathfinder-Doc-(VERSION).zip`.\
 Head over to the [wiki](https://github.com/Arctos6135/RobotPathfinder/wiki) for tutorials and examples!
-***Currently the wiki and examples are outdated. They will be updated for RobotPathfinder v3 soon.***
+***Currently the wiki and examples are outdated, and some new classes in V3 have no documentation. They will be updated for RobotPathfinder V3 soon.***
 
 ## GUI Trajectory Visualization Tool
 A GUI Trajectory Visualization Tool in the form of an executable jar is included with every release.
@@ -82,7 +83,7 @@ Features include:
 * Saving waypoint data and robot specification parameters (CSV)
 * Code generation
 
-***To run the Trajectory Visualizer, make sure that you have the correct dynamic library on your library path or in the directory where java is invoked!***
+***To run the Trajectory Visualizer V3, make sure that you have the correct dynamic library on your library path or in the directory where java is invoked!***
 
 ## Building
 This project uses Gradle as the build system. From the project root directory, running `./gradlew allArchives` will build the project and generate the jars and a zipped JavaDoc under the `/output/` directory.
@@ -93,9 +94,10 @@ Alternatively, here are a list of tasks:
 * `./gradlew javadoc` generates JavaDocs under `/build/docs/`
 * `./gradlew zipDoc` zips the generated docs into `/output/`
 * `./gradlew allArchives` builds all the archives and copies it into `/output/`
-* `./gradlew updateJNIHeaders` will re-generate the JNI headers and copy them to `/src/main/cpp/include/jni`
-* `./gradlew copyLibDebug` will copy the debug dynamic library for the current platform to the root project folder
-* `./gradlew copyLibRelease` will copy the release dynamic library for the current platform to the root project folder
+* \*`./gradlew updateJNIHeaders` will re-generate the JNI headers and copy them to `/src/main/cpp/include/jni`
+* \*`./gradlew copyLibDebug` will copy the debug dynamic library for the current platform to the root project folder
+* \*`./gradlew copyLibRelease` will copy the release dynamic library for the current platform to the root project folder
+***\*In V3 only***
 
 Thank you to our generous sponsors:<br/>
 <img src="https://dynamicmedia.zuza.com/zz/m/original_/3/a/3aae60b3-ff18-4be5-b2b1-e244943a85fb/TDSB_Gallery.png" alt="Toronto District School Board" height="200px"/>

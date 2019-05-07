@@ -59,7 +59,7 @@ import com.arctos6135.robotpathfinder.follower.Followable;
  * @author Tyler Tian
  * @since 3.0.0
  */
-public abstract class Trajectory extends JNIObject implements Followable {
+public abstract class Trajectory<T extends Moment> extends JNIObject implements Followable<T> {
 
     RobotSpecs specs;
     TrajectoryParams params;
@@ -101,7 +101,7 @@ public abstract class Trajectory extends JNIObject implements Followable {
      * @throws IllegalStateException If the native resource has already been freed
      *                               (see class JavaDoc)
      */
-    abstract public Moment[] getMoments();
+    abstract public T[] getMoments();
 
     /**
      * Clears the cached moments from {@link #getMoments()}.
@@ -109,7 +109,7 @@ public abstract class Trajectory extends JNIObject implements Followable {
     abstract public void clearMomentsCache();
 
     // Native
-    abstract protected Moment _get(double t);
+    abstract protected T _get(double t);
 
     /**
      * Retrieves the {@link Moment} associated with the specified time.
@@ -128,7 +128,7 @@ public abstract class Trajectory extends JNIObject implements Followable {
      *                                  freed (see class JavaDoc)
      */
     @Override
-    public Moment get(double t) {
+    public T get(double t) {
         if (Double.isNaN(t) || !Double.isFinite(t)) {
             throw new IllegalArgumentException("Time must be finite and not NaN");
         }
@@ -206,7 +206,7 @@ public abstract class Trajectory extends JNIObject implements Followable {
      * @throws IllegalStateException If the native resource has already been freed
      *                               (see class JavaDoc)
      */
-    abstract public Trajectory mirrorLeftRight();
+    abstract public Trajectory<T> mirrorLeftRight();
 
     /**
      * Creates a new {@link Trajectory} in which the direction of driving is
@@ -226,7 +226,7 @@ public abstract class Trajectory extends JNIObject implements Followable {
      * @throws IllegalStateException If the native resource has already been freed
      *                               (see class JavaDoc)
      */
-    abstract public Trajectory mirrorFrontBack();
+    abstract public Trajectory<T> mirrorFrontBack();
 
     /**
      * Creates a new {@link Trajectory}, which, if driven out from the end of the
@@ -247,5 +247,5 @@ public abstract class Trajectory extends JNIObject implements Followable {
      * @throws IllegalStateException If the native resource has already been freed
      *                               (see class JavaDoc)
      */
-    abstract public Trajectory retrace();
+    abstract public Trajectory<T> retrace();
 }

@@ -16,9 +16,9 @@ import com.arctos6135.robotpathfinder.math.MathUtils;
  * @author Tyler Tian
  * @since 3.0.0
  */
-public class TankDriveFollower extends Follower {
+public class TankDriveFollower extends Follower<TankDriveMoment> {
 
-	protected TankDriveFollowable target;
+	protected Followable<TankDriveMoment> target;
 	protected TimestampSource timer;
 	protected DistanceSource lDistSrc, rDistSrc;
 	protected DirectionSource directionSrc;
@@ -52,7 +52,7 @@ public class TankDriveFollower extends Follower {
 	 * @param kV     The velocity feedforward
 	 * @param kA     The acceleration feedforward
 	 */
-	public TankDriveFollower(TankDriveFollowable target, Motor lMotor, Motor rMotor, TimestampSource timer, double kV,
+	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, TimestampSource timer, double kV,
 			double kA) {
 		setGains(kV, kA, 0, 0, 0);
 		this.target = target;
@@ -86,7 +86,7 @@ public class TankDriveFollower extends Follower {
 	 * @param kP       The proportional gain
 	 * @param kD       The derivative gain
 	 */
-	public TankDriveFollower(TankDriveFollowable target, Motor lMotor, Motor rMotor, DistanceSource lDistSrc,
+	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, DistanceSource lDistSrc,
 			DistanceSource rDistSrc, TimestampSource timer, double kV, double kA, double kP, double kD) {
 		setGains(kV, kA, kP, kD, 0);
 		this.target = target;
@@ -117,7 +117,7 @@ public class TankDriveFollower extends Follower {
 	 * @param kDP    The directional-proportional gain; for more information, see
 	 *               {@link #setDP(double)}
 	 */
-	public TankDriveFollower(TankDriveFollowable target, Motor lMotor, Motor rMotor, TimestampSource timer,
+	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, TimestampSource timer,
 			DirectionSource dirSrc, double kV, double kA, double kDP) {
 		setGains(kV, kA, 0, 0, kDP);
 		this.target = target;
@@ -154,7 +154,7 @@ public class TankDriveFollower extends Follower {
 	 * @param kDP      The directional-proportional gain; for more information, see
 	 *                 {@link #setDP(double)}
 	 */
-	public TankDriveFollower(TankDriveFollowable target, Motor lMotor, Motor rMotor, DistanceSource lDistSrc,
+	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, DistanceSource lDistSrc,
 			DistanceSource rDistSrc, TimestampSource timer, DirectionSource dirSrc, double kV, double kA, double kP,
 			double kD, double kDP) {
 		setGains(kV, kA, kP, kD, kDP);

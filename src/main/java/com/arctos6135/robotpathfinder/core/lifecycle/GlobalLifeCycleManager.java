@@ -63,9 +63,9 @@ public final class GlobalLifeCycleManager {
      * thread dedicated to resource disposal.
      */
     public static void initialize() {
-        resourceDisposalThread = new ResourceDisposalThread();
-        resourceDisposalThread.start();
-        initialized = true;
+        // resourceDisposalThread = new ResourceDisposalThread();
+        // resourceDisposalThread.start();
+        // initialized = true;
     }
 
     /**

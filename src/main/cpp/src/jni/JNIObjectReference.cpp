@@ -1,13 +1,8 @@
 #include "jni/com_arctos6135_robotpathfinder_core_lifecycle_JNIObjectReference.h"
 #include "trajectories.h"
 #include "jni/jniutil.h"
-#include <memory>
-#include <list>
+#include "jni/instlists.h"
 #include <algorithm>
-
-extern std::list<std::shared_ptr<rpf::Path>> pinstances;
-extern std::list<std::shared_ptr<rpf::BasicTrajectory>> btinstances;
-extern std::list<std::shared_ptr<rpf::TankDriveTrajectory>> ttinstances;
 
 JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_lifecycle_JNIObjectReference__1freeObject(JNIEnv *env, jclass clazz, jlong ptr) {
     if(!ptr) {

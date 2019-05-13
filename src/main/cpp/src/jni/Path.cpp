@@ -1,16 +1,9 @@
 #include "jni/com_arctos6135_robotpathfinder_core_path_Path.h"
 #include "paths.h"
 #include "jni/jniutil.h"
+#include "jni/instlists.h"
 #include <vector>
-#include <list>
-#include <memory>
 #include <algorithm>
-
-// This is a list of all the existing instances of Path (Java side)
-// With each instance created an entry will be added
-// With each instance destroyed an entry will be deleted
-// This ensures that when there are no more Java instances of a Path object, the C++ object is also deleted
-std::list<std::shared_ptr<rpf::Path>> pinstances;
 
 JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1construct
         (JNIEnv *env, jobject obj, jobjectArray waypoints, jdouble alpha, jint type) {

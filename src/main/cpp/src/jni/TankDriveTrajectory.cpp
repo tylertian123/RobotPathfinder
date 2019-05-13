@@ -2,13 +2,9 @@
 #include "jni/jniutil.h"
 #include "trajectory/basictrajectory.h"
 #include "trajectory/tankdrivetrajectory.h"
+#include "jni/instlists.h"
 #include <vector>
-#include <list>
-#include <memory>
 #include <algorithm>
-
-std::list<std::shared_ptr<rpf::TankDriveTrajectory>> ttinstances;
-extern std::list<std::shared_ptr<rpf::Path>> pinstances;
 
 JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_TankDriveTrajectory__1construct
         (JNIEnv *env, jobject obj, jdouble maxv, jdouble maxa, jdouble base_width, jboolean is_tank, jobjectArray waypoints, jdouble alpha, jint sample_count, jint type) {

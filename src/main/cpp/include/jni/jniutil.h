@@ -4,6 +4,7 @@
 #include <list>
 #include <memory>
 #include <algorithm>
+#include <mutex>
 
 namespace rpf {
     template <typename T>
@@ -37,7 +38,9 @@ namespace rpf {
     jdouble get_field<jdouble>(JNIEnv *env, jobject obj, const char *fname);
 
     template <typename T>
-    bool remove_instance(std::list<std::shared_ptr<T>> &instances, T *ptr) {
+    bool remove_instance(std::list<std::shared_ptr<T>> &instances, std::mutex &instances_mutex, T *ptr) {
+        // Acquire lock to the mutex
+        std::lock_guard<std::mutex> lock(instances_mutex);
         auto it = std::find_if(instances.begin(), instances.end(), [&](const auto &p){ return p.get() == ptr; });
         if(it != instances.end()) {
             instances.erase(it);
@@ -48,7 +51,9 @@ namespace rpf {
         }
     }
     template <typename T>
-    bool check_instance(std::list<std::shared_ptr<T>> &instances, T *ptr) {
+    bool check_instance(std::list<std::shared_ptr<T>> &instances, std::mutex &instances_mutex, T *ptr) {
+        // Acquire lock to the mutex
+        std::lock_guard<std::mutex> lock(instances_mutex);
         auto it = std::find_if(instances.begin(), instances.end(), [&](const auto &p){ return p.get() == ptr; });
         return it != instances.end();
     }

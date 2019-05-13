@@ -17,8 +17,12 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1cons
     }
     
     rpf::Path *path = new rpf::Path(wp, alpha, static_cast<rpf::PathType>(type));
-    // Add the newly created path to the instances list
-    pinstances.push_back(std::shared_ptr<rpf::Path>(path));
+    {
+        // Acquire lock
+        std::lock_guard<std::mutex> lock(pinstances_mutex);
+        // Add the newly created path to the instances list
+        pinstances.push_back(std::shared_ptr<rpf::Path>(path));
+    }
     rpf::set_obj_ptr(env, obj, path);
 }
 
@@ -26,17 +30,14 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1dest
     // Retrieve the pointer and set it to null
     auto ptr = rpf::get_obj_ptr<rpf::Path>(env, obj);
     rpf::set_obj_ptr<rpf::Path>(env, obj, nullptr);
+
     // Remove an entry from the instances list
-    auto it = std::find_if(pinstances.begin(), pinstances.end(), [&](const auto &p){ return p.get() == ptr; });
-    
-    if(it != pinstances.end()) {
-        pinstances.erase(it);
-    }
+    rpf::remove_instance(pinstances, pinstances_mutex, ptr);
 }
 
 JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1setBaseRadius(JNIEnv *env, jobject obj, jdouble radius) {
     auto ptr = rpf::get_obj_ptr<rpf::Path>(env, obj);
-    if(!rpf::check_instance(pinstances, ptr)) {
+    if(!rpf::check_instance(pinstances, pinstances_mutex, ptr)) {
         rpf::throw_IllegalStateException(env, "This object has already been freed");
     }
     else {
@@ -45,7 +46,7 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1setB
 }
 JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1setBackwards(JNIEnv *env, jobject obj, jboolean backwards) {
     auto ptr = rpf::get_obj_ptr<rpf::Path>(env, obj);
-    if(!rpf::check_instance(pinstances, ptr)) {
+    if(!rpf::check_instance(pinstances, pinstances_mutex, ptr)) {
         rpf::throw_IllegalStateException(env, "This object has already been freed");
     }
     else {
@@ -55,7 +56,7 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1setB
 
 JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path_at(JNIEnv *env, jobject obj, jdouble t) {
     auto ptr = rpf::get_obj_ptr<rpf::Path>(env, obj);
-    if(!rpf::check_instance(pinstances, ptr)) {
+    if(!rpf::check_instance(pinstances, pinstances_mutex, ptr)) {
         rpf::throw_IllegalStateException(env, "This object has already been freed");
         return NULL;
     }
@@ -70,7 +71,7 @@ JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path_at(
 }
 JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path_derivAt(JNIEnv *env, jobject obj, jdouble t) {
     auto ptr = rpf::get_obj_ptr<rpf::Path>(env, obj);
-    if(!rpf::check_instance(pinstances, ptr)) {
+    if(!rpf::check_instance(pinstances, pinstances_mutex, ptr)) {
         rpf::throw_IllegalStateException(env, "This object has already been freed");
         return NULL;
     }
@@ -84,7 +85,7 @@ JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path_der
 }
 JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path_secondDerivAt(JNIEnv *env, jobject obj, jdouble t) {
     auto ptr = rpf::get_obj_ptr<rpf::Path>(env, obj);
-    if(!rpf::check_instance(pinstances, ptr)) {
+    if(!rpf::check_instance(pinstances, pinstances_mutex, ptr)) {
         rpf::throw_IllegalStateException(env, "This object has already been freed");
         return NULL;
     }
@@ -99,7 +100,7 @@ JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path_sec
 }
 JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path_wheelsAt(JNIEnv *env, jobject obj, jdouble t) {
     auto ptr = rpf::get_obj_ptr<rpf::Path>(env, obj);
-    if(!rpf::check_instance(pinstances, ptr)) {
+    if(!rpf::check_instance(pinstances, pinstances_mutex, ptr)) {
         rpf::throw_IllegalStateException(env, "This object has already been freed");
         return NULL;
     }
@@ -120,7 +121,7 @@ JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path_whe
 
 JNIEXPORT jdouble JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1computeLen(JNIEnv *env, jobject obj, jint points) {
     auto ptr = rpf::get_obj_ptr<rpf::Path>(env, obj);
-    if(!rpf::check_instance(pinstances, ptr)) {
+    if(!rpf::check_instance(pinstances, pinstances_mutex, ptr)) {
         rpf::throw_IllegalStateException(env, "This object has already been freed");
         return 0;
     }
@@ -130,7 +131,7 @@ JNIEXPORT jdouble JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1c
 }
 JNIEXPORT jdouble JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1s2T(JNIEnv *env, jobject obj, jdouble s) {
     auto ptr = rpf::get_obj_ptr<rpf::Path>(env, obj);
-    if(!rpf::check_instance(pinstances, ptr)) {
+    if(!rpf::check_instance(pinstances, pinstances_mutex, ptr)) {
         rpf::throw_IllegalStateException(env, "This object has already been freed");
         return 0;
     }
@@ -140,7 +141,7 @@ JNIEXPORT jdouble JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1s
 }
 JNIEXPORT jdouble JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1t2S(JNIEnv *env, jobject obj, jdouble t) {
     auto ptr = rpf::get_obj_ptr<rpf::Path>(env, obj);
-    if(!rpf::check_instance(pinstances, ptr)) {
+    if(!rpf::check_instance(pinstances, pinstances_mutex, ptr)) {
         rpf::throw_IllegalStateException(env, "This object has already been freed");
         return 0;
     }
@@ -151,44 +152,56 @@ JNIEXPORT jdouble JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1t
 
 JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1mirrorLeftRight(JNIEnv *env, jobject obj) {
     auto p = rpf::get_obj_ptr<rpf::Path>(env, obj);
-    if(!rpf::check_instance(pinstances, p)) {
+    if(!rpf::check_instance(pinstances, pinstances_mutex, p)) {
         rpf::throw_IllegalStateException(env, "This object has already been freed");
         return 0;
     }
     else {
         auto ptr = p->mirror_lr();
-        pinstances.push_back(ptr);
+        {
+            // Acquire lock
+            std::lock_guard<std::mutex> lock(pinstances_mutex);
+            pinstances.push_back(ptr);
+        }
         return reinterpret_cast<jlong>(ptr.get());
     }
 }
 JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1mirrorFrontBack(JNIEnv *env, jobject obj) {
     auto p = rpf::get_obj_ptr<rpf::Path>(env, obj);
-    if(!rpf::check_instance(pinstances, p)) {
+    if(!rpf::check_instance(pinstances, pinstances_mutex, p)) {
         rpf::throw_IllegalStateException(env, "This object has already been freed");
         return 0;
     }
     else {
         auto ptr = p->mirror_fb();
-        pinstances.push_back(ptr);
+        {
+            // Acquire lock
+            std::lock_guard<std::mutex> lock(pinstances_mutex);
+            pinstances.push_back(ptr);
+        }
         return reinterpret_cast<jlong>(ptr.get());
     }
 }
 JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1retrace(JNIEnv *env, jobject obj) {
     auto p = rpf::get_obj_ptr<rpf::Path>(env, obj);
-    if(!rpf::check_instance(pinstances, p)) {
+    if(!rpf::check_instance(pinstances, pinstances_mutex, p)) {
         rpf::throw_IllegalStateException(env, "This object has already been freed");
         return 0;
     }
     else {
         auto ptr = p->retrace();
-        pinstances.push_back(ptr);
+        {
+            // Acquire lock
+            std::lock_guard<std::mutex> lock(pinstances_mutex);
+            pinstances.push_back(ptr);
+        }
         return reinterpret_cast<jlong>(ptr.get());
     }
 }
 
 JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1updateWaypoints(JNIEnv *env, jobject obj) {
     auto p = rpf::get_obj_ptr<rpf::Path>(env, obj);
-    if(!rpf::check_instance(pinstances, p)) {
+    if(!rpf::check_instance(pinstances, pinstances_mutex, p)) {
         rpf::throw_IllegalStateException(env, "This object has already been freed");
     }
     else {

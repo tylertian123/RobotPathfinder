@@ -23,7 +23,11 @@ JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_Tr
 
     rpf::BasicTrajectory bt(specs, params);
     auto *t = new rpf::TankDriveTrajectory(bt);
-    ttinstances.push_back(std::shared_ptr<rpf::TankDriveTrajectory>(t));
+    {
+        // Acquire lock
+        std::lock_guard<std::mutex> lock(ttinstances_mutex);
+        ttinstances.push_back(std::shared_ptr<rpf::TankDriveTrajectory>(t));
+    }
 
     auto &moments = t->get_moments();
     if(angle > 0) {

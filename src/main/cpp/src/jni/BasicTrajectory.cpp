@@ -24,7 +24,11 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_Basic
     
     try {
         rpf::BasicTrajectory *t = new rpf::BasicTrajectory(specs, params);
-        btinstances.push_back(std::shared_ptr<rpf::BasicTrajectory>(t));
+        {
+            // Acquire lock to btinstances mutex
+            std::lock_guard<std::mutex> lock(btinstances_mutex);
+            btinstances.push_back(std::shared_ptr<rpf::BasicTrajectory>(t));
+        }
         rpf::set_obj_ptr(env, obj, t);
     }
     catch(const std::exception &e) {
@@ -37,12 +41,12 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_Basic
     auto ptr = rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj);
     rpf::set_obj_ptr<rpf::BasicTrajectory>(env, obj, nullptr);
     // Remove an entry from the instances list
-    rpf::remove_instance(btinstances, ptr);
+    rpf::remove_instance(btinstances, btinstances_mutex, ptr);
 }
 
 JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_BasicTrajectory__1getMoments(JNIEnv *env, jobject obj) {
     auto ptr = rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj);
-    if(!rpf::check_instance(btinstances, ptr)) {
+    if(!rpf::check_instance(btinstances, btinstances_mutex, ptr)) {
         rpf::throw_IllegalStateException(env, "This object has already been freed");
     }
     else {
@@ -66,7 +70,7 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_Basic
 
 JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_BasicTrajectory__1get(JNIEnv *env, jobject obj, jdouble t) {
     auto ptr = rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj);
-    if(!rpf::check_instance(btinstances, ptr)) {
+    if(!rpf::check_instance(btinstances, btinstances_mutex, ptr)) {
         rpf::throw_IllegalStateException(env, "This object has already been freed");
         return NULL;
     }
@@ -81,7 +85,7 @@ JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_Ba
 
 JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_BasicTrajectory__1getPath(JNIEnv *env, jobject obj) {
     auto p = rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj);
-    if(!rpf::check_instance(btinstances, p)) {
+    if(!rpf::check_instance(btinstances, btinstances_mutex, p)) {
         rpf::throw_IllegalStateException(env, "This object has already been freed");
         return 0;
     }
@@ -98,7 +102,7 @@ JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_Basi
 
 JNIEXPORT jdouble JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_BasicTrajectory_totalTime(JNIEnv *env, jobject obj) {
     auto p = rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj);
-    if(!rpf::check_instance(btinstances, p)) {
+    if(!rpf::check_instance(btinstances, btinstances_mutex, p)) {
         rpf::throw_IllegalStateException(env, "This object has already been freed");
         return 0;
     }
@@ -109,46 +113,58 @@ JNIEXPORT jdouble JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_Ba
 
 JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_BasicTrajectory__1mirrorLeftRight(JNIEnv *env, jobject obj) {
     auto p = rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj);
-    if(!rpf::check_instance(btinstances, p)) {
+    if(!rpf::check_instance(btinstances, btinstances_mutex, p)) {
         rpf::throw_IllegalStateException(env, "This object has already been freed");
         return 0;
     }
     else {
         auto ptr = p->mirror_lr();
-        btinstances.push_back(ptr);
+        {
+            // Acquire lock to btinstances mutex
+            std::lock_guard<std::mutex> lock(btinstances_mutex);
+            btinstances.push_back(ptr);
+        }
         return reinterpret_cast<jlong>(ptr.get());
     }
 }
 
 JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_BasicTrajectory__1mirrorFrontBack(JNIEnv *env, jobject obj) {
     auto p = rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj);
-    if(!rpf::check_instance(btinstances, p)) {
+    if(!rpf::check_instance(btinstances, btinstances_mutex, p)) {
         rpf::throw_IllegalStateException(env, "This object has already been freed");
         return 0;
     }
     else {
         auto ptr = p->mirror_fb();
-        btinstances.push_back(ptr);
+        {
+            // Acquire lock to btinstances mutex
+            std::lock_guard<std::mutex> lock(btinstances_mutex);
+            btinstances.push_back(ptr);
+        }
         return reinterpret_cast<jlong>(ptr.get());
     }
 }
 
 JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_BasicTrajectory__1retrace(JNIEnv *env, jobject obj) {
     auto p = rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj);
-    if(!rpf::check_instance(btinstances, p)) {
+    if(!rpf::check_instance(btinstances, btinstances_mutex, p)) {
         rpf::throw_IllegalStateException(env, "This object has already been freed");
         return 0;
     }
     else {
         auto ptr = p->retrace();
-        btinstances.push_back(ptr);
+        {
+            // Acquire lock to btinstances mutex
+            std::lock_guard<std::mutex> lock(btinstances_mutex);
+            btinstances.push_back(ptr);
+        }
         return reinterpret_cast<jlong>(ptr.get());
     }
 }
 
 JNIEXPORT jint JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_BasicTrajectory__1getMomentCount(JNIEnv *env, jobject obj) {
     auto p = rpf::get_obj_ptr<rpf::BasicTrajectory>(env, obj);
-    if(!rpf::check_instance(btinstances, p)) {
+    if(!rpf::check_instance(btinstances, btinstances_mutex, p)) {
         rpf::throw_IllegalStateException(env, "This object has already been freed");
         return 0;
     }

@@ -7,3 +7,7 @@
 std::list<std::shared_ptr<rpf::Path>> pinstances;
 std::list<std::shared_ptr<rpf::BasicTrajectory>> btinstances;
 std::list<std::shared_ptr<rpf::TankDriveTrajectory>> ttinstances;
+
+std::mutex pinstances_mutex;
+std::mutex btinstances_mutex;
+std::mutex ttinstances_mutex;

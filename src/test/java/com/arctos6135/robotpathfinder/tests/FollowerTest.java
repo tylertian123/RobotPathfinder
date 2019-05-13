@@ -7,6 +7,7 @@ import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.TrajectoryParams;
 import com.arctos6135.robotpathfinder.core.Waypoint;
 import com.arctos6135.robotpathfinder.core.path.PathType;
+import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
 import com.arctos6135.robotpathfinder.follower.Follower;
 import com.arctos6135.robotpathfinder.follower.Follower.DirectionSource;
@@ -49,7 +50,7 @@ public class FollowerTest {
 
         TankDriveTrajectory traj = new TankDriveTrajectory(specs, params);
 
-        Follower follower = new TankDriveFollower(traj, motorPlaceholder, motorPlaceholder, distancePlaceholder,
+        Follower<TankDriveMoment> follower = new TankDriveFollower(traj, motorPlaceholder, motorPlaceholder, distancePlaceholder,
                 distancePlaceholder, new FakeTimer(), directionPlaceholder, 0, 0, 0, 0, 0);
         follower.initialize();
         follower.run();
@@ -71,7 +72,7 @@ public class FollowerTest {
         TankDriveTrajectory traj = new TankDriveTrajectory(specs, params);
 
         FakeTimer timer = new FakeTimer();
-        Follower follower = new TankDriveFollower(traj, motorPlaceholder, motorPlaceholder, distancePlaceholder,
+        Follower<TankDriveMoment> follower = new TankDriveFollower(traj, motorPlaceholder, motorPlaceholder, distancePlaceholder,
                 distancePlaceholder, timer, directionPlaceholder, 0, 0, 0, 0, 0);
         // Assertion: Follower is not finished or running initially
         assertThat(follower.isFinished(), is(false));

@@ -11,8 +11,7 @@ import java.util.Random;
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicMoment;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
-import com.arctos6135.robotpathfinder.follower.BasicFollowable;
-import com.arctos6135.robotpathfinder.follower.TankDriveFollowable;
+import com.arctos6135.robotpathfinder.follower.Followable;
 import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalBasicProfile;
 import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalRotationTankDriveProfile;
 import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalTankDriveProfile;
@@ -34,7 +33,7 @@ public class FollowableMotionProfileTest {
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
-        BasicFollowable f = new TrapezoidalBasicProfile(specs, distance);
+        Followable<BasicMoment> f = new TrapezoidalBasicProfile(specs, distance);
         BasicMoment begin = f.get(0);
         BasicMoment end = f.get(f.totalTime());
         assertThat(begin.getPosition(), closeTo(0.0, 1e-7));
@@ -58,7 +57,7 @@ public class FollowableMotionProfileTest {
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
-        BasicFollowable f = new TrapezoidalBasicProfile(specs, distance);
+        Followable<BasicMoment> f = new TrapezoidalBasicProfile(specs, distance);
         BasicMoment begin = f.get(0);
         BasicMoment end = f.get(f.totalTime());
         assertThat(begin.getPosition(), closeTo(0.0, 1e-7));
@@ -82,7 +81,7 @@ public class FollowableMotionProfileTest {
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
-        BasicFollowable f = new TrapezoidalBasicProfile(specs, distance);
+        Followable<BasicMoment> f = new TrapezoidalBasicProfile(specs, distance);
 
         double dt = f.totalTime() / 1000;
         for (double t = 0; t < f.totalTime(); t += dt) {
@@ -110,7 +109,7 @@ public class FollowableMotionProfileTest {
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
-        BasicFollowable f = new TrapezoidalBasicProfile(specs, distance);
+        Followable<BasicMoment> f = new TrapezoidalBasicProfile(specs, distance);
 
         double dt = f.totalTime() / 1000;
         for (double t = 0; t < f.totalTime(); t += dt) {
@@ -138,7 +137,7 @@ public class FollowableMotionProfileTest {
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
-        TankDriveFollowable f = new TrapezoidalTankDriveProfile(specs, distance);
+        Followable<TankDriveMoment> f = new TrapezoidalTankDriveProfile(specs, distance);
         TankDriveMoment begin = f.get(0);
         TankDriveMoment end = f.get(f.totalTime());
         assertThat(begin.getLeftPosition(), closeTo(0.0, 1e-7));
@@ -169,7 +168,7 @@ public class FollowableMotionProfileTest {
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
-        TankDriveFollowable f = new TrapezoidalTankDriveProfile(specs, distance);
+        Followable<TankDriveMoment> f = new TrapezoidalTankDriveProfile(specs, distance);
         TankDriveMoment begin = f.get(0);
         TankDriveMoment end = f.get(f.totalTime());
         assertThat(begin.getLeftPosition(), closeTo(0.0, 1e-7));
@@ -200,7 +199,7 @@ public class FollowableMotionProfileTest {
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
-        TankDriveFollowable f = new TrapezoidalTankDriveProfile(specs, distance);
+        Followable<TankDriveMoment> f = new TrapezoidalTankDriveProfile(specs, distance);
 
         double dt = f.totalTime() / 1000;
         for (double t = 0; t < f.totalTime(); t += dt) {
@@ -236,7 +235,7 @@ public class FollowableMotionProfileTest {
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
-        TankDriveFollowable f = new TrapezoidalTankDriveProfile(specs, distance);
+        Followable<TankDriveMoment> f = new TrapezoidalTankDriveProfile(specs, distance);
 
         double dt = f.totalTime() / 1000;
         for (double t = 0; t < f.totalTime(); t += dt) {
@@ -275,7 +274,7 @@ public class FollowableMotionProfileTest {
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA, baseWidth);
 
-        TankDriveFollowable f = new TrapezoidalRotationTankDriveProfile(specs, angle);
+        Followable<TankDriveMoment> f = new TrapezoidalRotationTankDriveProfile(specs, angle);
         TankDriveMoment begin = f.get(0);
         TankDriveMoment end = f.get(f.totalTime());
         assertThat(begin.getLeftPosition(), closeTo(0.0, 1e-7));
@@ -312,7 +311,7 @@ public class FollowableMotionProfileTest {
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA, baseWidth);
 
-        TankDriveFollowable f = new TrapezoidalRotationTankDriveProfile(specs, angle);
+        Followable<TankDriveMoment> f = new TrapezoidalRotationTankDriveProfile(specs, angle);
         TankDriveMoment begin = f.get(0);
         TankDriveMoment end = f.get(f.totalTime());
         assertThat(begin.getLeftPosition(), closeTo(0.0, 1e-7));
@@ -349,7 +348,7 @@ public class FollowableMotionProfileTest {
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA, baseWidth);
 
-        TankDriveFollowable f = new TrapezoidalRotationTankDriveProfile(specs, angle);
+        Followable<TankDriveMoment> f = new TrapezoidalRotationTankDriveProfile(specs, angle);
 
         double leftDist = -baseRadius * angle;
         double rightDist = -leftDist;
@@ -392,7 +391,7 @@ public class FollowableMotionProfileTest {
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA, baseWidth);
 
-        TankDriveFollowable f = new TrapezoidalRotationTankDriveProfile(specs, angle);
+        Followable<TankDriveMoment> f = new TrapezoidalRotationTankDriveProfile(specs, angle);
 
         double leftDist = -baseRadius * angle;
         double rightDist = -leftDist;

@@ -1,11 +1,11 @@
 
 import java.io.IOException;
 
-import javax.swing.JFrame;
+import com.arctos6135.robotpathfinder.tests.MotionProfileTest;
+import com.arctos6135.robotpathfinder.tests.TrajectoryTest;
 
-import com.arctos6135.robotpathfinder.core.RobotSpecs;
-import com.arctos6135.robotpathfinder.motionprofile.TrapezoidalMotionProfile;
-import com.arctos6135.robotpathfinder.tools.Grapher;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
 
 public class DebugTests {
 
@@ -18,11 +18,9 @@ public class DebugTests {
 
     public static void main(String[] args) throws Exception {
         prompt();
-
-
-        TrapezoidalMotionProfile p = new TrapezoidalMotionProfile(new RobotSpecs(5, 3), -3, -5);
-        JFrame f = Grapher.graph(p, 0.01);
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setVisible(true);
+        JUnitCore core = new JUnitCore();
+        @SuppressWarnings("unused")
+        Result result = core.run(MotionProfileTest.class,
+                TrajectoryTest.class);
     }
 }

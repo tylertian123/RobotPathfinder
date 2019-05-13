@@ -1,11 +1,10 @@
 package com.arctos6135.robotpathfinder.core.trajectory;
 
 import com.arctos6135.robotpathfinder.core.GlobalLibraryLoader;
+import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.TrajectoryParams;
 import com.arctos6135.robotpathfinder.core.Waypoint;
-import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.lifecycle.GlobalLifeCycleManager;
-import com.arctos6135.robotpathfinder.follower.TankDriveFollowable;
 
 /**
  * A class that represents a trajectory (motion profile) for a tank drive (aka
@@ -60,7 +59,7 @@ import com.arctos6135.robotpathfinder.follower.TankDriveFollowable;
  * @author Tyler Tian
  * @since 3.0.0
  */
-public class TankDriveTrajectory extends Trajectory implements TankDriveFollowable {
+public class TankDriveTrajectory extends Trajectory<TankDriveMoment> {
 
     static {
         GlobalLibraryLoader.load();

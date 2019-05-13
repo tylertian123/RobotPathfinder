@@ -1,9 +1,10 @@
 package com.arctos6135.robotpathfinder.motionprofile.followable;
 
 import com.arctos6135.robotpathfinder.core.trajectory.BasicMoment;
-import com.arctos6135.robotpathfinder.follower.BasicFollowable;
+import com.arctos6135.robotpathfinder.follower.Followable;
 
-public abstract class BasicFollowableMotionProfile extends FollowableMotionProfile implements BasicFollowable {
+public abstract class BasicFollowableMotionProfile extends FollowableMotionProfile<BasicMoment>
+        implements Followable<BasicMoment> {
 
     @Override
     public BasicMoment get(double t) {
@@ -13,7 +14,6 @@ public abstract class BasicFollowableMotionProfile extends FollowableMotionProfi
 
         boolean backwards = profile.isReversed();
 
-        return new BasicMoment(d, v, a, backwards ? -initialFacing : initialFacing, t, 
-                initialFacing, backwards);
+        return new BasicMoment(d, v, a, backwards ? -initialFacing : initialFacing, t, initialFacing, backwards);
     }
 }

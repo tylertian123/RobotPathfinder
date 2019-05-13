@@ -12,11 +12,8 @@ import javax.swing.SwingUtilities;
 import com.arctos6135.robotpathfinder.core.Waypoint;
 import com.arctos6135.robotpathfinder.core.path.Path;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicMoment;
-import com.arctos6135.robotpathfinder.core.trajectory.Moment;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
-import com.arctos6135.robotpathfinder.follower.BasicFollowable;
 import com.arctos6135.robotpathfinder.follower.Followable;
-import com.arctos6135.robotpathfinder.follower.TankDriveFollowable;
 import com.arctos6135.robotpathfinder.math.Vec2D;
 import com.arctos6135.robotpathfinder.motionprofile.MotionProfile;
 import com.arctos6135.robotpathfinder.util.Pair;
@@ -52,8 +49,8 @@ public final class Grapher {
 	 * @param dt         The time increment between samples
 	 * @return The graphed trajectory in a {@link JFrame}
 	 */
-	public static JFrame graphTrajectory(Followable<BasicMoment> trajectory, double dt) {
-		return graphTrajectory(trajectory, dt, false);
+	public static JFrame graphBasicFollowable(Followable<BasicMoment> trajectory, double dt) {
+		return graphBasicFollowable(trajectory, dt, false);
 	}
 
 	/**
@@ -70,7 +67,7 @@ public final class Grapher {
 	 * @param graphHeading Whether or not to graph the heading
 	 * @return The graphed trajectory in a {@link JFrame}
 	 */
-	public static JFrame graphTrajectory(Followable<BasicMoment> trajectory, double dt, boolean graphHeading) {
+	public static JFrame graphBasicFollowable(Followable<BasicMoment> trajectory, double dt, boolean graphHeading) {
 		int elemCount = (int) Math.ceil(trajectory.totalTime() / dt);
 
 		// Create arrays to store data
@@ -143,8 +140,8 @@ public final class Grapher {
 	 * @param dt         The time increment between samples
 	 * @return The graphed trajectory in a {@link JFrame}
 	 */
-	public static JFrame graphTrajectory(Followable<TankDriveMoment> trajectory, double dt) {
-		return graphTrajectory(trajectory, dt, false);
+	public static JFrame graphTankDriveFollowable(Followable<TankDriveMoment> trajectory, double dt) {
+		return graphTankDriveFollowable(trajectory, dt, false);
 	}
 
 	/**
@@ -161,7 +158,7 @@ public final class Grapher {
 	 * @param graphHeading Whether or not to graph the relative facing.
 	 * @return The graphed trajectory in a {@link JFrame}
 	 */
-	public static JFrame graphTrajectory(Followable<TankDriveMoment> trajectory, double dt, boolean graphHeading) {
+	public static JFrame graphTankDriveFollowable(Followable<TankDriveMoment> trajectory, double dt, boolean graphHeading) {
 		int elemCount = (int) Math.ceil(trajectory.totalTime() / dt);
 
 		// Create arrays to store data
@@ -371,7 +368,7 @@ public final class Grapher {
 		return frame;
 	}
 
-	public static JFrame graph(MotionProfile p, double dt) {
+	public static JFrame graphMotionProfile(MotionProfile p, double dt) {
 		int elemCount = (int) Math.ceil(p.totalTime() / dt);
 
 		double[] time = new double[elemCount];
@@ -416,22 +413,5 @@ public final class Grapher {
 			}
 		}
 		return frame;
-	}
-	public static JFrame graph(Path p, double dt) {
-		return graphPath(p, dt);
-	}
-	public static <T extends Moment> JFrame graph(Followable<T> f, double dt) {
-		return graph(f, dt, false);
-	}
-	public static <T extends Moment> JFrame graph(Followable<T> f, double dt, boolean graphHeadings) {
-		if(f instanceof BasicFollowable) {
-			return graphTrajectory((BasicFollowable) f, dt, graphHeadings);
-		}
-		else if(f instanceof TankDriveFollowable) {
-			return graphTrajectory((TankDriveFollowable) f, dt, graphHeadings);
-		}
-		else {
-			throw new IllegalArgumentException("Unsupported followable type");
-		}
 	}
 }

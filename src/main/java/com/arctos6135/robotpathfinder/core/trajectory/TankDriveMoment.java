@@ -253,6 +253,34 @@ public class TankDriveMoment extends Moment {
 	}
 
 	/**
+	 * Retrieves the average of the distances travelled by the left and right
+	 * wheels.
+	 * 
+	 * @return The average of the wheel distances
+	 */
+	public double getAveragePosition() {
+		return (ld + rd) / 2;
+	}
+
+	/**
+	 * Retrieves the average of the velocity of the left and right wheels.
+	 * 
+	 * @return The average of the wheel velocities
+	 */
+	public double getAverageVelocity() {
+		return (lv + rv) / 2;
+	}
+
+	/**
+	 * Retrieves the average of the acceleration of the left and right wheels.
+	 * 
+	 * @return The average of the wheel accelerations
+	 */
+	public double getAverageAcceleration() {
+		return (la + ra) / 2;
+	}
+
+	/**
 	 * Retrieves the time.
 	 * 
 	 * @return The time

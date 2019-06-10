@@ -1,19 +1,43 @@
 package com.arctos6135.robotpathfinder.motionprofile;
 
-public interface DualMotionProfile {
-    public double totalTime();
+public class DualMotionProfile<T extends MotionProfile> {
 
-    public boolean isReversed();
+    T leftProfile, rightProfile;
 
-    public double leftPosition(double t);
+    public DualMotionProfile(T left, T right) {
+        leftProfile = left;
+        rightProfile = right;
+    }
 
-    public double rightPosition(double t);
+    public double totalTime() {
+        return Math.max(leftProfile.totalTime(), rightProfile.totalTime());
+    }
 
-    public double leftVelocity(double t);
+    public boolean isReversed() {
+        return leftProfile.isReversed() && rightProfile.isReversed();
+    }
 
-    public double rightVelocity(double t);
+    public double leftPosition(double t) {
+        return leftProfile.position(t);
+    }
 
-    public double leftAcceleration(double t);
+    public double rightPosition(double t) {
+        return rightProfile.position(t);
+    }
 
-    public double rightAcceleration(double t);
+    public double leftVelocity(double t) {
+        return leftProfile.velocity(t);
+    }
+
+    public double rightVelocity(double t) {
+        return rightProfile.velocity(t);
+    }
+
+    public double leftAcceleration(double t) {
+        return leftProfile.acceleration(t);
+    }
+
+    public double rightAcceleration(double t) {
+        return rightProfile.acceleration(t);
+    }
 }

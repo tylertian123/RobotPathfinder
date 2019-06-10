@@ -2,7 +2,7 @@ package com.arctos6135.robotpathfinder.motionprofile;
 
 public class DualMotionProfile<T extends MotionProfile> {
 
-    T leftProfile, rightProfile;
+    protected T leftProfile, rightProfile;
 
     public DualMotionProfile(T left, T right) {
         leftProfile = left;

@@ -14,6 +14,7 @@ public class DualMotionProfile<T extends MotionProfile> {
     }
 
     public boolean isReversed() {
+        // TODO: Needs review
         return leftProfile.isReversed() && rightProfile.isReversed();
     }
 

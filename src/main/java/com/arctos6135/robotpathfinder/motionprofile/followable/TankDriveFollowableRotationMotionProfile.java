@@ -1,6 +1,7 @@
 package com.arctos6135.robotpathfinder.motionprofile.followable;
 
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
+import com.arctos6135.robotpathfinder.math.MathUtils;
 import com.arctos6135.robotpathfinder.motionprofile.DualMotionProfile;
 
 public abstract class TankDriveFollowableRotationMotionProfile<T extends DualMotionProfile<?>> extends FollowableMotionProfile<TankDriveMoment> {
@@ -27,7 +28,7 @@ public abstract class TankDriveFollowableRotationMotionProfile<T extends DualMot
         // get the angle.
         // The left distance is negative since it moving forward will actually turn the
         // robot clockwise.
-        double currentAngle = rd / baseWidth - ld / baseWidth;
+        double currentAngle = MathUtils.restrictAngle(rd / baseWidth - ld / baseWidth + initialFacing);
         return new TankDriveMoment(ld, rd, profile.leftVelocity(t), profile.rightVelocity(t),
                 profile.leftAcceleration(t), profile.rightAcceleration(t), currentAngle, t, initialFacing, false);
     }

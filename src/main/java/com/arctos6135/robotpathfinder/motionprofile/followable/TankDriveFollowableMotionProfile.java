@@ -1,15 +1,11 @@
 package com.arctos6135.robotpathfinder.motionprofile.followable;
 
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
-import com.arctos6135.robotpathfinder.follower.Followable;
 import com.arctos6135.robotpathfinder.motionprofile.DualMotionProfile;
 
-public abstract class TankDriveFollowableMotionProfile<T extends DualMotionProfile<?>>
-        implements Followable<TankDriveMoment> {
+public abstract class TankDriveFollowableMotionProfile<T extends DualMotionProfile<?>> extends FollowableMotionProfile<TankDriveMoment> {
 
     protected T profile;
-
-    protected double initialFacing = Math.PI / 2;
 
     @Override
     public double totalTime() {

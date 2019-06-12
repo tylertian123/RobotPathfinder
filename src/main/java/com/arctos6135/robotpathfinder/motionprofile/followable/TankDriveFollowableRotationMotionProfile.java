@@ -1,11 +1,9 @@
 package com.arctos6135.robotpathfinder.motionprofile.followable;
 
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
-import com.arctos6135.robotpathfinder.follower.Followable;
 import com.arctos6135.robotpathfinder.motionprofile.DualMotionProfile;
 
-public abstract class TankDriveFollowableRotationMotionProfile<T extends DualMotionProfile<?>>
-        implements Followable<TankDriveMoment> {
+public abstract class TankDriveFollowableRotationMotionProfile<T extends DualMotionProfile<?>> extends FollowableMotionProfile<TankDriveMoment> {
 
     protected T profile;
 

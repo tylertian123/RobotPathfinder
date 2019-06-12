@@ -1,14 +1,12 @@
 package com.arctos6135.robotpathfinder.motionprofile.followable;
 
 import com.arctos6135.robotpathfinder.core.trajectory.BasicMoment;
-import com.arctos6135.robotpathfinder.follower.Followable;
 import com.arctos6135.robotpathfinder.motionprofile.MotionProfile;
 
-public abstract class BasicFollowableMotionProfile<T extends MotionProfile> implements Followable<BasicMoment> {
+public abstract class BasicFollowableMotionProfile<T extends MotionProfile>
+        extends FollowableMotionProfile<BasicMoment> {
 
     protected T profile;
-
-    protected double initialFacing = Math.PI / 2;
 
     @Override
     public double totalTime() {

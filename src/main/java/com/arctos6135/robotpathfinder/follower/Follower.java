@@ -18,6 +18,7 @@ abstract public class Follower<T extends Moment> {
 
 	protected double kA, kV, kP, kD;
 	protected Followable<T> target;
+	protected TimestampSource timer;
 
 	protected boolean running = false;
 	protected boolean finished = false;

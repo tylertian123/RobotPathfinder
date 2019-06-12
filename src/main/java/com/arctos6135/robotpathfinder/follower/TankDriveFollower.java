@@ -18,8 +18,6 @@ import com.arctos6135.robotpathfinder.math.MathUtils;
  */
 public class TankDriveFollower extends Follower<TankDriveMoment> {
 
-	protected Followable<TankDriveMoment> target;
-	protected TimestampSource timer;
 	protected DistanceSource lDistSrc, rDistSrc;
 	protected DirectionSource directionSrc;
 	protected Motor lMotor, rMotor;

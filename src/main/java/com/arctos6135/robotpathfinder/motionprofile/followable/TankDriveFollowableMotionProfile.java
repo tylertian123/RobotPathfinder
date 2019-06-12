@@ -4,10 +4,10 @@ import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
 import com.arctos6135.robotpathfinder.follower.Followable;
 import com.arctos6135.robotpathfinder.motionprofile.DualMotionProfile;
 
-public abstract class TankDriveFollowableMotionProfile<U extends DualMotionProfile<?>>
+public abstract class TankDriveFollowableMotionProfile<T extends DualMotionProfile<?>>
         implements Followable<TankDriveMoment> {
 
-    protected U profile;
+    protected T profile;
 
     protected double initialFacing = Math.PI / 2;
 

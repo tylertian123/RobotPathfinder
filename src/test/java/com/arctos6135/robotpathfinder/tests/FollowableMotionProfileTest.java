@@ -13,7 +13,7 @@ import com.arctos6135.robotpathfinder.core.trajectory.BasicMoment;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
 import com.arctos6135.robotpathfinder.follower.Followable;
 import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalBasicProfile;
-import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalRotationTankDriveProfile;
+import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalTankDriveRotationProfile;
 import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalTankDriveProfile;
 
 import org.junit.Test;
@@ -274,7 +274,7 @@ public class FollowableMotionProfileTest {
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA, baseWidth);
 
-        Followable<TankDriveMoment> f = new TrapezoidalRotationTankDriveProfile(specs, angle);
+        Followable<TankDriveMoment> f = new TrapezoidalTankDriveRotationProfile(specs, angle);
         TankDriveMoment begin = f.get(0);
         TankDriveMoment end = f.get(f.totalTime());
         assertThat(begin.getLeftPosition(), closeTo(0.0, 1e-7));
@@ -311,7 +311,7 @@ public class FollowableMotionProfileTest {
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA, baseWidth);
 
-        Followable<TankDriveMoment> f = new TrapezoidalRotationTankDriveProfile(specs, angle);
+        Followable<TankDriveMoment> f = new TrapezoidalTankDriveRotationProfile(specs, angle);
         TankDriveMoment begin = f.get(0);
         TankDriveMoment end = f.get(f.totalTime());
         assertThat(begin.getLeftPosition(), closeTo(0.0, 1e-7));
@@ -348,7 +348,7 @@ public class FollowableMotionProfileTest {
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA, baseWidth);
 
-        Followable<TankDriveMoment> f = new TrapezoidalRotationTankDriveProfile(specs, angle);
+        Followable<TankDriveMoment> f = new TrapezoidalTankDriveRotationProfile(specs, angle);
 
         double leftDist = -baseRadius * angle;
         double rightDist = -leftDist;
@@ -391,7 +391,7 @@ public class FollowableMotionProfileTest {
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA, baseWidth);
 
-        Followable<TankDriveMoment> f = new TrapezoidalRotationTankDriveProfile(specs, angle);
+        Followable<TankDriveMoment> f = new TrapezoidalTankDriveRotationProfile(specs, angle);
 
         double leftDist = -baseRadius * angle;
         double rightDist = -leftDist;

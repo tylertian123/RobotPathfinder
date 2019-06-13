@@ -72,13 +72,15 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile {
         cruiseDist = dist - accelDist - decelDist;
         // Calculate the cruise time
         tCruise = cruiseDist / cruiseVel;
-
+        // tTotal is the total time in the range of this motion profile
+        // It does not include initTime
         tTotal = tAccel + tCruise + tDecel;
     }
 
     @Override
     public double totalTime() {
-        return tTotal;
+        // Add initTime to tTotal to get the absolute time
+        return tTotal + initTime;
     }
 
     @Override

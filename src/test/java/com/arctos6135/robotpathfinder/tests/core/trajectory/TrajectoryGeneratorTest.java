@@ -1,4 +1,4 @@
-package com.arctos6135.robotpathfinder.tests;
+package com.arctos6135.robotpathfinder.tests.core.trajectory;
 
 import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.core.Is.is;

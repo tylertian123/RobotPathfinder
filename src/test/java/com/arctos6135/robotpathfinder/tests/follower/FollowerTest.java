@@ -1,4 +1,4 @@
-package com.arctos6135.robotpathfinder.tests;
+package com.arctos6135.robotpathfinder.tests.follower;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;

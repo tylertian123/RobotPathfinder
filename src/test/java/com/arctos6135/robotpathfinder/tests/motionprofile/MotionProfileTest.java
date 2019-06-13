@@ -1,4 +1,4 @@
-package com.arctos6135.robotpathfinder.tests;
+package com.arctos6135.robotpathfinder.tests.motionprofile;
 
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.either;

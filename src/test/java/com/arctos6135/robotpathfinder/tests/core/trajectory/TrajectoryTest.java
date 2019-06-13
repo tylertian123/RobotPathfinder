@@ -1,4 +1,4 @@
-package com.arctos6135.robotpathfinder.tests;
+package com.arctos6135.robotpathfinder.tests.core.trajectory;
 
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.core.Is.is;

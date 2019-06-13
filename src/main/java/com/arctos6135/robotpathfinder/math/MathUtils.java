@@ -304,4 +304,34 @@ public class MathUtils {
 
 		return diff;
 	}
+
+	protected static double floatCompareThreshold = 1e-7;
+
+	public static double getFloatCompareThreshold() {
+		return floatCompareThreshold;
+	}
+
+	public static void setFloatCompareThreshold(double threshold) {
+		floatCompareThreshold = threshold;
+	}
+
+	public static boolean floatEq(double a, double b) {
+		return Math.abs(a - b) <= floatCompareThreshold;
+	}
+
+	public static boolean floatLtEq(double a, double b) {
+		return a < b || Math.abs(a - b) <= floatCompareThreshold;
+	}
+
+	public static boolean floatGtEq(double a, double b) {
+		return a > b || Math.abs(a - b) <= floatCompareThreshold;
+	}
+
+	public static boolean floatLt(double a, double b) {
+		return !floatGtEq(a, b);
+	}
+
+	public static boolean floatGt(double a, double b) {
+		return !floatLtEq(a, b);
+	}
 }

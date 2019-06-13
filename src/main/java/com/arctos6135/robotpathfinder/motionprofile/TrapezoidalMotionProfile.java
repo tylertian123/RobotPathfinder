@@ -1,6 +1,7 @@
 package com.arctos6135.robotpathfinder.motionprofile;
 
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
+import com.arctos6135.robotpathfinder.math.MathUtils;
 
 public class TrapezoidalMotionProfile implements DynamicMotionProfile {
 
@@ -35,7 +36,8 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile {
         this.maxVel = maxVel;
         this.initVel = initVel;
 
-        if (Math.abs(initVel) > maxVel) {
+        // Use MathUtils functions to compare floats
+        if (MathUtils.floatGt(Math.abs(initVel), maxVel)) {
             throw new IllegalArgumentException("Initial velocity too high!");
         }
         // Calculate the distance covered when accelerating and decelerating
@@ -93,7 +95,7 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile {
 
     @Override
     public double position(double time) {
-        if (time < initTime) {
+        if (MathUtils.floatLt(time, initTime)) {
             throw new IllegalArgumentException(
                     String.format("Time out of range (%f \u2209 [%f, %f])!", time, initTime, tTotal));
         }
@@ -110,7 +112,7 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile {
             result = accelDist + (time - tAccel) * cruiseVel;
         }
         // When decelerating
-        else if (time <= tTotal) {
+        else if (MathUtils.floatLtEq(time, tTotal)) {
             // The distance is the distance covered during acceleration and cruising, plus
             // the distance covered during deceleration,
             // which can be solved using the third kinematic formula
@@ -125,7 +127,7 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile {
 
     @Override
     public double velocity(double time) {
-        if (time < initTime) {
+        if (MathUtils.floatLt(time, initTime)) {
             throw new IllegalArgumentException(
                 String.format("Time out of range (%f \u2209 [%f, %f])!", time, initTime, tTotal));
         }
@@ -142,7 +144,7 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile {
             result = cruiseVel;
         }
         // When decelerating
-        else if (time <= tTotal) {
+        else if (MathUtils.floatLtEq(time, tTotal)) {
             // The velocity is the cruise velocity minus the acceleration times the time
             // decelerating
             result = cruiseVel - (time - tAccel - tCruise) * maxAcl;
@@ -155,7 +157,7 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile {
 
     @Override
     public double acceleration(double time) {
-        if (time < initTime) {
+        if (MathUtils.floatLt(time, initTime)) {
             throw new IllegalArgumentException(
                     String.format("Time out of range (%f \u2209 [%f, %f])!", time, initTime, tTotal));
         }
@@ -170,7 +172,7 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile {
             result = 0;
         }
         // When decelerating
-        else if (time <= tTotal) {
+        else if (MathUtils.floatLtEq(time, tTotal)) {
             result = -maxAcl;
         } else {
             throw new IllegalArgumentException(

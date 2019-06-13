@@ -259,7 +259,7 @@ public class FollowableMotionProfileTest {
     }
 
     @Test
-    public void testTrapezoidalRotationTankDriveProfileBasic() {
+    public void testTrapezoidalTankDriveRotationProfileBasic() {
         Random rand = new Random();
         double maxV = rand.nextDouble() * 1000;
         double maxA = rand.nextDouble() * 1000;
@@ -296,7 +296,7 @@ public class FollowableMotionProfileTest {
     }
 
     @Test
-    public void testTrapezoidalRotationTankDriveProfileBasicReversed() {
+    public void testTrapezoidalTankDriveRotationProfileBasicReversed() {
         Random rand = new Random();
         double maxV = rand.nextDouble() * 1000;
         double maxA = rand.nextDouble() * 1000;
@@ -333,7 +333,7 @@ public class FollowableMotionProfileTest {
     }
 
     @Test
-    public void testTrapezoidalRotationTankDriveProfileAdvanced() {
+    public void testTrapezoidalTankDriveRotationProfileAdvanced() {
         Random rand = new Random();
         double maxV = rand.nextDouble() * 1000;
         double maxA = rand.nextDouble() * 1000;
@@ -376,7 +376,7 @@ public class FollowableMotionProfileTest {
     }
 
     @Test
-    public void testTrapezoidalRotationTankDriveProfileAdvancedReversed() {
+    public void testTrapezoidalTankDriveRotationProfileAdvancedReversed() {
         Random rand = new Random();
         double maxV = rand.nextDouble() * 1000;
         double maxA = rand.nextDouble() * 1000;

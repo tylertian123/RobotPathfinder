@@ -15,8 +15,19 @@ import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.Trapezoi
 
 import org.junit.Test;
 
+/**
+ * This class contains tests for {@link TrapezoidalTankDriveProfile}.
+ */
 public class TrapezoidalTankDriveProfileTest {
 
+    /**
+     * Performs basic testing on {@link TrapezoidalTankDriveProfile}.
+     * 
+     * This test creates a {@link TrapezoidalTankDriveProfile} and asserts that the
+     * starting position and velocity and end velocity are all 0, the end position
+     * is as expected, the starting acceleration is the max acceleration, and the
+     * end acceleration is negative the max acceleration for each of the sides.
+     */
     @Test
     public void testTrapezoidalTankDriveProfile() {
         Random rand = new Random();
@@ -48,6 +59,14 @@ public class TrapezoidalTankDriveProfileTest {
         assertThat(end.getRightAcceleration(), closeTo(-maxA, 1e-7));
     }
 
+    /**
+     * Performs basic testing on {@link TrapezoidalTankDriveProfile} using a
+     * negative position.
+     * 
+     * This test is identical to {@link #testTrapezoidalTankDriveProfile()} except
+     * that it uses a negative position to construct the
+     * {@link TrapezoidalTankDriveProfile} so that it goes backwards.
+     */
     @Test
     public void testTrapezoidalTankDriveProfileReversed() {
         Random rand = new Random();
@@ -79,6 +98,15 @@ public class TrapezoidalTankDriveProfileTest {
         assertThat(end.getRightAcceleration(), closeTo(maxA, 1e-7));
     }
 
+    /**
+     * Performs testing on many points of a {@link TrapezoidalTankDriveProfile}.
+     * 
+     * This test creates a {@link TrapezoidalTankDriveProfile} and loops through
+     * 1000 points in time, asserting that the position is between 0 and the
+     * specified end position, the velocity is between 0 and the specified max
+     * velocity, and the acceleration is between the negative max acceleration and
+     * max acceleration for both sides.
+     */
     @Test
     public void testTrapezoidalTankDriveProfileAdvanced() {
         Random rand = new Random();
@@ -115,6 +143,14 @@ public class TrapezoidalTankDriveProfileTest {
         }
     }
 
+    /**
+     * Performs testing on many points of a {@link TrapezoidalTankDriveProfile}
+     * using a negative position.
+     * 
+     * This test is identical to {@link #testTrapezoidalTankDriveProfileAdvanced()}
+     * except that it uses a negative position to construct the
+     * {@link TrapezoidalTankDriveProfile} so that it goes backwards.
+     */
     @Test
     public void testTrapezoidalTankDriveProfileAdvancedReversed() {
         Random rand = new Random();

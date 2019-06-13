@@ -15,8 +15,19 @@ import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.Trapezoi
 
 import org.junit.Test;
 
+/**
+ * This class contains tests for {@link TrapezoidalBasicProfile}.
+ */
 public class TrapezoidalBasicProfileTest {
 
+    /**
+     * Performs basic testing on {@link TrapezoidalBasicProfile}.
+     * 
+     * This test creates a {@link TrapezoidalBasicProfile} and asserts that the
+     * starting position and velocity and end velocity are all 0, the end position
+     * is as expected, the starting acceleration is the max acceleration, and the
+     * end acceleration is negative the max acceleration.
+     */
     @Test
     public void testTrapezoidalBasicProfile() {
         Random rand = new Random();
@@ -41,6 +52,14 @@ public class TrapezoidalBasicProfileTest {
         assertThat(end.getAcceleration(), closeTo(-maxA, 1e-7));
     }
 
+    /**
+     * Performs basic testing on {@link TrapezoidalBasicProfile} using a negative
+     * position.
+     * 
+     * This test is identical to {@link #testTrapezoidalBasicProfile()} except that
+     * it uses a negative position to construct the {@link TrapezoidalBasicProfile}
+     * so that it goes backwards.
+     */
     @Test
     public void testTrapezoidalBasicProfileReversed() {
         Random rand = new Random();
@@ -65,6 +84,15 @@ public class TrapezoidalBasicProfileTest {
         assertThat(end.getAcceleration(), closeTo(maxA, 1e-7));
     }
 
+    /**
+     * Performs testing on many points of a {@link TrapezoidalBasicProfile}.
+     * 
+     * This test creates a {@link TrapezoidalBasicProfile} and loops through 1000
+     * points in time, asserting that the position is between 0 and the specified
+     * end position, the velocity is between 0 and the specified max velocity, and
+     * the acceleration is between the negative max acceleration and max
+     * acceleration.
+     */
     @Test
     public void testTrapezoidalBasicProfileAdvanced() {
         Random rand = new Random();
@@ -93,6 +121,14 @@ public class TrapezoidalBasicProfileTest {
         }
     }
 
+    /**
+     * Performs testing on many points of a {@link TrapezoidalBasicProfile} using a
+     * negative position.
+     * 
+     * This test is identical to {@link #testTrapezoidalBasicProfileAdvanced()}
+     * except that it uses a negative position to construct the
+     * {@link TrapezoidalBasicProfile} so that it goes backwards.
+     */
     @Test
     public void testTrapezoidalBasicProfileAdvancedReversed() {
         Random rand = new Random();

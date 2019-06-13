@@ -17,6 +17,9 @@ import com.arctos6135.robotpathfinder.follower.TankDriveFollower;
 
 import org.junit.Test;
 
+/**
+ * This class contains tests for the followers of RobotPathfinder.
+ */
 public class FollowerTest {
 
     public static class FakeTimer implements Follower.TimestampSource {
@@ -38,6 +41,12 @@ public class FollowerTest {
     public static Motor motorPlaceholder = (s) -> {
     };
 
+    /**
+     * Performs very basic testing on {@link TankDriveFollower}.
+     * 
+     * This class creates a {@link TankDriveFollower}, and then calls
+     * {@code initialize()}, {@code run()} and {@code stop()} on it.
+     */
     @Test
     public void testTankDriveFollowerBasic() {
         RobotSpecs specs = new RobotSpecs(5, 3, 1);
@@ -50,8 +59,8 @@ public class FollowerTest {
 
         TankDriveTrajectory traj = new TankDriveTrajectory(specs, params);
 
-        Follower<TankDriveMoment> follower = new TankDriveFollower(traj, motorPlaceholder, motorPlaceholder, distancePlaceholder,
-                distancePlaceholder, new FakeTimer(), directionPlaceholder, 0, 0, 0, 0, 0);
+        Follower<TankDriveMoment> follower = new TankDriveFollower(traj, motorPlaceholder, motorPlaceholder,
+                distancePlaceholder, distancePlaceholder, new FakeTimer(), directionPlaceholder, 0, 0, 0, 0, 0);
         follower.initialize();
         follower.run();
         follower.stop();
@@ -59,6 +68,21 @@ public class FollowerTest {
         traj.free();
     }
 
+    /**
+     * Performs testing on the 'state' logic of {@link TankDriveFollower}.
+     * 
+     * This test creates a {@link TankDriveFollower} and asserts the following:
+     * <ul>
+     * <li>The follower is not finished or running upon creation.</li>
+     * <li>The follower is not finished and is running after being initialized.</li>
+     * <li>The follower is still running and not finished after a single iteration
+     * of {@code run()}.</li>
+     * <li>The follower is finished and not running when the time reaches the end of
+     * the trajectory.</li>
+     * <li>The follower does not reinitialize itself after being stopped.</li>
+     * <li>The follower is finished and not running after being stopped.</li>
+     * </ul>
+     */
     @Test
     public void testTankDriveFollowerState() {
         RobotSpecs specs = new RobotSpecs(5, 3, 1);
@@ -72,8 +96,8 @@ public class FollowerTest {
         TankDriveTrajectory traj = new TankDriveTrajectory(specs, params);
 
         FakeTimer timer = new FakeTimer();
-        Follower<TankDriveMoment> follower = new TankDriveFollower(traj, motorPlaceholder, motorPlaceholder, distancePlaceholder,
-                distancePlaceholder, timer, directionPlaceholder, 0, 0, 0, 0, 0);
+        Follower<TankDriveMoment> follower = new TankDriveFollower(traj, motorPlaceholder, motorPlaceholder,
+                distancePlaceholder, distancePlaceholder, timer, directionPlaceholder, 0, 0, 0, 0, 0);
         // Assertion: Follower is not finished or running initially
         assertThat(follower.isFinished(), is(false));
         assertThat(follower.isRunning(), is(false));

@@ -34,7 +34,7 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	// Store these as member variables so they can be accessed from outside the
 	// class for testing purposes
 	protected double leftErr, rightErr, dirErr, leftOutput, rightOutput, leftDeriv, rightDeriv, leftVelo, rightVelo,
-			leftAccel, rightAccel;
+			leftAccel, rightAccel, facing;
 
 	/**
 	 * Constructs a new tank drive follower. Note that since this constructor does
@@ -288,6 +288,7 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 			leftDeriv = (leftErr - lLastErr) / dt - m.getLeftVelocity();
 			rightDeriv = (rightErr - rLastErr) / dt - m.getRightVelocity();
 		}
+		facing = m.getFacingRelative();
 		// Calculate directional error only if the direction source is not null
 		if (directionSrc != null) {
 			// This angle diff will be positive if the robot needs to turn left
@@ -429,6 +430,10 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 */
 	public double lastRightAcceleration() {
 		return rightAccel;
+	}
+
+	public double lastFacing() {
+		return facing;
 	}
 
 }

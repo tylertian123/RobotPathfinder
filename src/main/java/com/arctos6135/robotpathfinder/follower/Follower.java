@@ -236,6 +236,12 @@ abstract public class Follower<T extends Moment> {
 		public double getDistance();
 	}
 
+	public interface AdvancedDistanceSource extends DistanceSource {
+		public double getVelocity();
+
+		public double getAcceleration();
+	}
+
 	/**
 	 * This functional interface represents a source of orientation/directional
 	 * data, such as a gyroscope.

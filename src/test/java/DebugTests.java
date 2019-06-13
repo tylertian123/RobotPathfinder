@@ -1,7 +1,7 @@
 
 import java.io.IOException;
 
-import com.arctos6135.robotpathfinder.tests.core.trajectory.TrajectoryTest;
+import com.arctos6135.robotpathfinder.tests.core.trajectory.TankDriveTrajectoryTest;
 import com.arctos6135.robotpathfinder.tests.motionprofile.MotionProfileTest;
 
 import org.junit.runner.JUnitCore;
@@ -21,6 +21,6 @@ public class DebugTests {
         JUnitCore core = new JUnitCore();
         @SuppressWarnings("unused")
         Result result = core.run(MotionProfileTest.class,
-                TrajectoryTest.class);
+                TankDriveTrajectoryTest.class);
     }
 }

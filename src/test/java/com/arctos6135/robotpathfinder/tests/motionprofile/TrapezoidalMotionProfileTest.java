@@ -201,5 +201,50 @@ public class TrapezoidalMotionProfileTest {
         }
     }
 
-    
+    /**
+     * Performs basic testing on
+     * {@link TrapezoidalMotionProfile#update(double, double, double, double)}.
+     * 
+     * This test is identical to {@link #testTrapezoidalMotionProfileUpdate()},
+     * except that it uses a negative position so that the generated profile is
+     * reversed.
+     */
+    @Test
+    public void testTrapezoidalMotionProfileUpdateReversed() {
+        Random rand = new Random();
+        double maxV = rand.nextDouble() * 1000;
+        double maxA = rand.nextDouble() * 1000;
+        double distance = -rand.nextDouble() * 1000;
+
+        System.out.println("[INFO] maxV: " + maxV);
+        System.out.println("[INFO] maxA: " + maxA);
+        System.out.println("[INFO] distance: " + distance);
+
+        RobotSpecs specs = new RobotSpecs(maxV, maxA);
+
+        TrapezoidalMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
+
+        // Generate fake update parameters
+        double updateTime = rand.nextDouble() * profile.totalTime();
+        double updatePos = rand.nextDouble() * distance;
+        double updateVel = rand.nextDouble() * -maxV;
+
+        System.out.println("[INFO] updateTime: " + updateTime);
+        System.out.println("[INFO] updatePos: " + updatePos);
+        System.out.println("[INFO] updateVel: " + updateVel);
+
+        // TrapezoidalMotionProfiles completely ignore the acceleration when updating
+        // since theres no constraint on how fast it changes
+        // Just use 0 here as a placeholder
+        boolean overshoot = profile.update(updateTime, updatePos, updateVel, 0);
+
+        double totalTime = profile.totalTime();
+        assertThat(profile.velocity(totalTime), closeTo(0, 1e-7));
+        if (overshoot) {
+            // Assert that it is more negative than the distance
+            assertThat(profile.position(totalTime), lessThan(distance));
+        } else {
+            assertThat(profile.position(totalTime), closeTo(distance, 1e-7));
+        }
+    }
 }

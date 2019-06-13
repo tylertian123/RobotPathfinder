@@ -30,11 +30,12 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	// Keep track of the error and timestamp of the last iteration to calculate the
 	// derivative
 	protected double initTime, lastTime, lLastErr, rLastErr, lInitDist, rInitDist, initDirection;
-
+	
+	protected double leftErr, rightErr, dirErr;
 	// Store these as member variables so they can be accessed from outside the
 	// class for testing purposes
-	protected double leftErr, rightErr, dirErr, leftOutput, rightOutput, leftDeriv, rightDeriv, leftVelo, rightVelo,
-			leftAccel, rightAccel, facing;
+	protected double leftOutput, rightOutput, leftDeriv, rightDeriv;
+	protected TankDriveMoment lastMoment;
 
 	/**
 	 * Constructs a new tank drive follower. Note that since this constructor does
@@ -288,16 +289,11 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 			leftDeriv = (leftErr - lLastErr) / dt - m.getLeftVelocity();
 			rightDeriv = (rightErr - rLastErr) / dt - m.getRightVelocity();
 		}
-		facing = m.getFacingRelative();
 		// Calculate directional error only if the direction source is not null
 		if (directionSrc != null) {
 			// This angle diff will be positive if the robot needs to turn left
 			dirErr = MathUtils.angleDiff(directionSrc.getDirection() - initDirection, m.getFacingRelative());
 		}
-		leftVelo = m.getLeftVelocity();
-		rightVelo = m.getRightVelocity();
-		leftAccel = m.getLeftAcceleration();
-		rightAccel = m.getRightAcceleration();
 		// Calculate outputs
 		leftOutput = kA * m.getLeftAcceleration() + kV * m.getLeftVelocity() + kP * leftErr + kD * leftDeriv
 				- dirErr * kDP;
@@ -313,6 +309,8 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 		lastTime = t;
 		lLastErr = leftErr;
 		rLastErr = rightErr;
+
+		lastMoment = m;
 
 		return false;
 	}
@@ -398,8 +396,9 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * 
 	 * @return The last left velocity
 	 */
+	@Deprecated
 	public double lastLeftVelocity() {
-		return leftVelo;
+		return lastMoment.getLeftVelocity();
 	}
 
 	/**
@@ -408,8 +407,9 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * 
 	 * @return The last right velocity
 	 */
+	@Deprecated
 	public double lastRightVelocity() {
-		return rightVelo;
+		return lastMoment.getRightVelocity();
 	}
 
 	/**
@@ -418,8 +418,9 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * 
 	 * @return The last left acceleration
 	 */
+	@Deprecated
 	public double lastLeftAcceleration() {
-		return leftAccel;
+		return lastMoment.getLeftAcceleration();
 	}
 
 	/**
@@ -428,12 +429,12 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * 
 	 * @return The last right acceleration
 	 */
+	@Deprecated
 	public double lastRightAcceleration() {
-		return rightAccel;
+		return lastMoment.getRightAcceleration();
 	}
 
-	public double lastFacing() {
-		return facing;
+	public TankDriveMoment lastMoment() {
+		return lastMoment;
 	}
-
 }

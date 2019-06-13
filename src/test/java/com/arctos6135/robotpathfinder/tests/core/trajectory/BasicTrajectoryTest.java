@@ -15,6 +15,9 @@ import com.arctos6135.robotpathfinder.core.trajectory.TrajectoryGenerationExcept
 
 import org.junit.Test;
 
+/**
+ * This class contains tests for {@link BasicTrajectory}.
+ */
 public class BasicTrajectoryTest {
 
     /**
@@ -70,6 +73,15 @@ public class BasicTrajectoryTest {
         assertThat(trajectory.get(trajectory.totalTime()).getVelocity(), is(3.45));
         trajectory.close();
     }
+
+    /**
+     * Performs tests on {@link BasicTrajectory#mirrorLeftRight()}.
+     * 
+     * This test generates a {@link BasicTrajectory} and calls
+     * {@code mirrorLeftRight()} on it twice. It then loops through 100 different
+     * points in time and verifies that the twice mirrored trajectory is identical
+     * to the original trajectory.
+     */
     @Test
     public void testBasicTrajectoryMirrorLeftRight() {
         RobotSpecs specs = new RobotSpecs(5.0, 3.5, 2.0);
@@ -99,6 +111,14 @@ public class BasicTrajectoryTest {
         mirrored.close();
     }
 
+    /**
+     * Performs tests on {@link BasicTrajectory#mirrorFrontBack()}.
+     * 
+     * This test generates a {@link BasicTrajectory} and calls
+     * {@code mirrorFrontBack()} on it twice. It then loops through 100 different
+     * points in time and verifies that the twice mirrored trajectory is identical
+     * to the original trajectory.
+     */
     @Test
     public void testBasicTrajectoryMirrorFrontBack() {
         RobotSpecs specs = new RobotSpecs(5.0, 3.5, 2.0);
@@ -128,6 +148,13 @@ public class BasicTrajectoryTest {
         mirrored.close();
     }
 
+    /**
+     * Performs tests on {@link BasicTrajectory#retrace()}.
+     * 
+     * This test generates a {@link BasicTrajectory} and calls {@code retrace()} on
+     * it twice. It then loops through 100 different points in time and verifies
+     * that the twice retraced trajectory is identical to the original trajectory.
+     */
     @Test
     public void testBasicTrajectoryRetrace() {
         RobotSpecs specs = new RobotSpecs(5.0, 3.5, 2.0);
@@ -157,6 +184,25 @@ public class BasicTrajectoryTest {
         mirrored.close();
     }
 
+    /**
+     * Performs tests on combining the mirroring methods of {@link BasicTrajectory}
+     * ({@link BasicTrajectory#mirrorLeftRight()},
+     * {@link BasicTrajectory#mirrorFrontBack()},
+     * {@link BasicTrajectory#retrace()}).
+     * 
+     * This test generates a {@link BasicTrajectory}, and then does these calls in
+     * order:
+     * <ol>
+     * <li>{@code mirrorLeftRight()}</li>
+     * <li>{@code mirrorFrontBack()}</li>
+     * <li>{@code retrace()}</li>
+     * <li>{@code retrace()}</li>
+     * <li>{@code mirrorFrontBack()}</li>
+     * <li>{@code mirrorLeftRight()}</li>
+     * </ol>
+     * It then loops through 100 different points in time making sure that the
+     * result is identical to the original trajectory.
+     */
     @Test
     public void testBasicTrajectoryMultipleMirroring() {
         RobotSpecs specs = new RobotSpecs(5.0, 3.5, 2.0);
@@ -195,6 +241,13 @@ public class BasicTrajectoryTest {
         mirrored.close();
     }
 
+    /**
+     * Performs impossible constraints exception testing on {@link BasicTrajectory}.
+     * 
+     * This test tries to generate a {@link BasicTrajectory} using impossible
+     * constraints by specifying an unreachable velocity using a {@link Waypoint}.
+     * It then asserts that the constructor throws an exception from native code.
+     */
     @Test
     public void testBasicTrajectoryGenerationException() {
         RobotSpecs specs = new RobotSpecs(5, 3, 1);

@@ -24,7 +24,7 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile {
         construct(specs.getMaxVelocity(), specs.getMaxAcceleration(), dist, initVel);
     }
 
-    private void construct(double maxVel, double maxAccel, double dist, double initVel) {
+    private boolean construct(double maxVel, double maxAccel, double dist, double initVel) {
         if (dist < 0) {
             reverse = true;
             dist = -dist;
@@ -45,9 +45,11 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile {
         // If the acceleration distance is less than 0, the distance is not enough to
         // decelerate back to 0
         // Change the distance so that we can
+        boolean overshoot = false;
         if (dAccel < 0) {
             dDecel = initVel * initVel / (2 * maxAcl);
             dist = dDecel;
+            overshoot = true;
         } else {
             dDecel = dist - dAccel;
         }
@@ -75,6 +77,7 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile {
         // tTotal is the total time in the range of this motion profile
         // It does not include initTime
         tTotal = tAccel + tCruise + tDecel;
+        return overshoot;
     }
 
     @Override
@@ -90,8 +93,9 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile {
 
     @Override
     public double position(double time) {
-        if(time < initTime) {
-            throw new IllegalArgumentException("Time out of range");
+        if (time < initTime) {
+            throw new IllegalArgumentException(
+                    String.format("Time out of range (%f \u2209 [%f, %f])!", time, initTime, tTotal));
         }
         time -= initTime;
         double result = 0;
@@ -113,15 +117,17 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile {
             double t = time - tAccel - tCruise;
             result = accelDist + cruiseDist + t * cruiseVel - t * t * maxAcl * 0.5;
         } else {
-            throw new IllegalArgumentException("Time out of range: " + time);
+            throw new IllegalArgumentException(
+                    String.format("Time out of range (%f \u2209 [%f, %f])!", time, initTime, tTotal));
         }
         return (reverse ? -result : result) + initDist;
     }
 
     @Override
     public double velocity(double time) {
-        if(time < initTime) {
-            throw new IllegalArgumentException("Time out of range");
+        if (time < initTime) {
+            throw new IllegalArgumentException(
+                String.format("Time out of range (%f \u2209 [%f, %f])!", time, initTime, tTotal));
         }
         time -= initTime;
         double result = 0;
@@ -141,15 +147,17 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile {
             // decelerating
             result = cruiseVel - (time - tAccel - tCruise) * maxAcl;
         } else {
-            throw new IllegalArgumentException("Time out of range: " + time);
+            throw new IllegalArgumentException(
+                    String.format("Time out of range (%f \u2209 [%f, %f])!", time, initTime, tTotal));
         }
         return reverse ? -result : result;
     }
 
     @Override
     public double acceleration(double time) {
-        if(time < initTime) {
-            throw new IllegalArgumentException("Time out of range");
+        if (time < initTime) {
+            throw new IllegalArgumentException(
+                    String.format("Time out of range (%f \u2209 [%f, %f])!", time, initTime, tTotal));
         }
         time -= initTime;
         double result = 0;
@@ -165,15 +173,16 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile {
         else if (time <= tTotal) {
             result = -maxAcl;
         } else {
-            throw new IllegalArgumentException("Time out of range: " + time);
+            throw new IllegalArgumentException(
+                    String.format("Time out of range (%f \u2209 [%f, %f])!", time, initTime, tTotal));
         }
         return reverse ? -result : result;
     }
 
     @Override
-    public void update(double currentTime, double currentDist, double currentVel, double currentAccel) {
+    public boolean update(double currentTime, double currentDist, double currentVel, double currentAccel) {
         initTime = currentTime;
         initDist = currentDist;
-        construct(maxVel, maxAcl, distance - currentDist, currentVel);
+        return construct(maxVel, maxAcl, distance - currentDist, currentVel);
     }
 }

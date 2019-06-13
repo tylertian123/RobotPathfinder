@@ -14,6 +14,9 @@ plugins {
 
     // Task Tree
     id "com.dorongold.task-tree" version "1.3.1"
+
+    // Code coverage
+    id "jacoco"
 }
 
 compileJava {
@@ -110,6 +113,13 @@ else {
                 }
             }
         }
+    }
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled false
+        csv.enabled false
     }
 }
 

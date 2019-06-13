@@ -7,7 +7,12 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 
 	protected Motor lMotor, rMotor;
 	// Not null
-	protected AdvancedDistanceSource lDistSrc, rDistSrc;
+	// Either a regular DistanceSource or an AdvancedDistanceSource
+	protected DistanceSource lDistSrc, rDistSrc;
+	// This variable keeps track of whether the position sources are advanced
+	// If true they will directly be used
+	// If false the velocity and acceleration will be calculated manually
+	protected boolean advancedDistSrc = false;
 	// Can be null
 	protected DirectionSource directionSrc;
 
@@ -19,6 +24,10 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	// Keep track of the error and timestamp of the last iteration to calculate the
 	// derivative
 	protected double initTime, lastTime, lLastErr, rLastErr, lInitDist, rInitDist, initDirection;
+
+	// Used for finding the velocity and acceleration for updating if a regular
+	// DistanceSource is used
+	protected double lLastPos, rLastPos, lLastVel, rLastVel, lLastAccel, rLastAccel;
 
 	protected double leftErr, rightErr, dirErr;
 	// Store these as member variables so they can be accessed from outside the
@@ -44,6 +53,7 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 		this.rDistSrc = rDistSrc;
 		this.timer = timer;
 		this.directionSrc = null;
+		advancedDistSrc = true;
 	}
 
 	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
@@ -57,6 +67,35 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 		this.rDistSrc = rDistSrc;
 		this.timer = timer;
 		this.directionSrc = dirSrc;
+		advancedDistSrc = true;
+	}
+
+	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
+			DistanceSource lDistSrc, DistanceSource rDistSrc, TimestampSource timer, double kV, double kA, double kP,
+			double kD) {
+		setGains(kV, kA, kP, kD, 0);
+		this.target = target;
+		this.lMotor = lMotor;
+		this.rMotor = rMotor;
+		this.lDistSrc = lDistSrc;
+		this.rDistSrc = rDistSrc;
+		this.timer = timer;
+		this.directionSrc = null;
+		advancedDistSrc = false;
+	}
+
+	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
+			DistanceSource lDistSrc, DistanceSource rDistSrc, TimestampSource timer, DirectionSource dirSrc, double kV,
+			double kA, double kP, double kD, double kDP) {
+		setGains(kV, kA, kP, kD, kDP);
+		this.target = target;
+		this.lMotor = lMotor;
+		this.rMotor = rMotor;
+		this.lDistSrc = lDistSrc;
+		this.rDistSrc = rDistSrc;
+		this.timer = timer;
+		this.directionSrc = dirSrc;
+		advancedDistSrc = false;
 	}
 
 	/**
@@ -157,6 +196,12 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 			initDirection = directionSrc.getDirection();
 		}
 		initTime = lastTime = timer.getTimestamp();
+
+		if (!advancedDistSrc) {
+			lLastPos = lInitDist;
+			rLastPos = rInitDist;
+			lLastVel = rLastVel = lLastAccel = rLastAccel = 0;
+		}
 	}
 
 	@Override
@@ -175,8 +220,10 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 		// Calculate errors and derivatives
 		// No need for null check
 		// Calculate left and right errors
-		leftErr = m.getLeftPosition() - (lDistSrc.getDistance() - lInitDist);
-		rightErr = m.getRightPosition() - (rDistSrc.getDistance() - rInitDist);
+		double lPos = (lDistSrc.getDistance() - lInitDist);
+		double rPos = (rDistSrc.getDistance() - rInitDist);
+		leftErr = m.getLeftPosition() - lPos;
+		rightErr = m.getRightPosition() - rPos;
 		// Get the derivative of the errors
 		// Subtract away the desired velocity to get the true error
 		leftDeriv = (leftErr - lLastErr) / dt - m.getLeftVelocity();
@@ -204,6 +251,18 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 		rLastErr = rightErr;
 
 		lastMoment = m;
+
+		if (!advancedDistSrc) {
+			double lVel = (lPos - lLastPos) / dt;
+			double rVel = (rPos - rLastPos) / dt;
+			lLastPos = lPos;
+			rLastPos = rPos;
+
+			lLastAccel = (lVel - lLastVel) / dt;
+			rLastAccel = (rVel - rLastVel) / dt;
+			lLastVel = lVel;
+			rLastVel = rVel;
+		}
 
 		return false;
 	}
@@ -240,15 +299,35 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 			heading = -heading;
 		}
 
-		double ld = lDistSrc.getDistance();
-		double rd = rDistSrc.getDistance();
-		double lv = lDistSrc.getVelocity();
-		double rv = rDistSrc.getVelocity();
-		double la = lDistSrc.getAcceleration();
-		double ra = rDistSrc.getAcceleration();
+		// Get the positions, velocities and accelerations
+		double ld;
+		double rd;
+		double lv;
+		double rv;
+		double la;
+		double ra;
+		// If using advanced position sources, just cast them and call the methods
+		if (advancedDistSrc) {
+			ld = ((AdvancedDistanceSource) lDistSrc).getDistance();
+			rd = ((AdvancedDistanceSource) rDistSrc).getDistance();
+			lv = ((AdvancedDistanceSource) lDistSrc).getVelocity();
+			rv = ((AdvancedDistanceSource) rDistSrc).getVelocity();
+			la = ((AdvancedDistanceSource) lDistSrc).getAcceleration();
+			ra = ((AdvancedDistanceSource) rDistSrc).getAcceleration();
+		}
+		// Otherwise use the calculated values
+		else {
+			ld = lLastPos;
+			rd = rLastPos;
+			lv = lLastVel;
+			rv = rLastVel;
+			la = lLastAccel;
+			ra = rLastAccel;
+		}
 
 		// Finally construct the moment and update the trajectory
-		// Since constructors all take DynamicFollowables, there is no risk of ClassCastException
+		// Since constructors all take DynamicFollowables, there is no risk of
+		// ClassCastException
 		((DynamicFollowable<TankDriveMoment>) target).update(new TankDriveMoment(ld, rd, lv, rv, la, ra, heading,
 				timer.getTimestamp(), lastMoment.getInitialFacing(), lastMoment.getBackwards()));
 	}

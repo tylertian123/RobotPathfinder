@@ -12,9 +12,22 @@ import com.arctos6135.robotpathfinder.math.MathUtils;
 
 import org.junit.Test;
 
+/**
+ * This class contains tests for {@link TrajectoryGenerator}.
+ * 
+ * Since {@link TrajectoryGenerator} is now deprecated, this class may also be
+ * removed in the future.
+ */
 @SuppressWarnings("deprecation")
 public class TrajectoryGeneratorTest {
 
+    /**
+     * Performs basic testing on
+     * {@link TrajectoryGenerator#generateStraightBasic(RobotSpecs, double)}.
+     * 
+     * This test asserts that the position at the end of the generated trajectory is
+     * as expected.
+     */
     @Test
     public void testGenerateStraightBasic() {
         RobotSpecs specs = new RobotSpecs(10.0, 7.5, 2.0);
@@ -24,6 +37,13 @@ public class TrajectoryGeneratorTest {
         traj.close();
     }
 
+    /**
+     * Performs basic testing on
+     * {@link TrajectoryGenerator#generateStraightTank(RobotSpecs, double)}.
+     * 
+     * This test asserts that the position at the end of the generated trajectory is
+     * as expected.
+     */
     @Test
     public void testGenerateStraightTank() {
         RobotSpecs specs = new RobotSpecs(10.0, 7.5, 2.0);
@@ -34,16 +54,23 @@ public class TrajectoryGeneratorTest {
         traj.close();
     }
 
+    /**
+     * Performs basic testing on
+     * {@link TrajectoryGenerator#generateRotationTank(RobotSpecs, double)}.
+     * 
+     * This test asserts that the angle (relative facing) at the end of the
+     * generated trajectory is as expected.
+     */
     @Test
     public void testGenerateRotationTank() {
         RobotSpecs specs = new RobotSpecs(10.0, 7.5, 1.5);
         TankDriveTrajectory traj1 = TrajectoryGenerator.generateRotationTank(specs, Math.PI / 2);
         TankDriveTrajectory traj2 = TrajectoryGenerator.generateRotationTank(specs, -Math.PI);
 
-        assertThat(Math.abs(MathUtils.angleDiff(traj1.get(traj1.totalTime()).getFacingRelative(), MathUtils.restrictAngle(Math.PI / 2))),
-                lessThan(1e-7));
-        assertThat(Math.abs(MathUtils.angleDiff(traj2.get(traj2.totalTime()).getFacingRelative(), MathUtils.restrictAngle(-Math.PI))),
-                lessThan(1e-7));
+        assertThat(Math.abs(MathUtils.angleDiff(traj1.get(traj1.totalTime()).getFacingRelative(),
+                MathUtils.restrictAngle(Math.PI / 2))), lessThan(1e-7));
+        assertThat(Math.abs(MathUtils.angleDiff(traj2.get(traj2.totalTime()).getFacingRelative(),
+                MathUtils.restrictAngle(-Math.PI))), lessThan(1e-7));
         traj1.close();
         traj2.close();
     }

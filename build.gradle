@@ -262,6 +262,22 @@ task copyJars(type: Copy, group: 'Archive', description: 'Copies all generated j
     }
 }
 
+task testJavadoc(type: Javadoc, group: 'Archive', description: 'Generates JavaDoc for the test classes.') {
+    source = sourceSets.test.allJava
+    classpath = sourceSets.test.compileClasspath
+    // if not changed the destinationDir, the javadoc for production code is overridden.
+    destinationDir = file("${buildDir}/docs/testJavadoc")
+}
+
+task completeJavadoc(type: Javadoc, group: 'Archive', description: 'Generates JavaDoc for both the main classes and the test classes.') {
+    source = sourceSets.test.allJava
+    classpath = sourceSets.test.compileClasspath
+    source += sourceSets.main.allJava;
+    classpath += sourceSets.main.compileClasspath
+
+    destinationDir = file("${buildDir}/docs/completeJavadoc")
+}
+
 task zipDoc(type: Zip, group: 'Archive', description: 'Zips the generated JavaDoc and puts it in the output directory.') {
     dependsOn javadoc
     from 'build/docs/javadoc'

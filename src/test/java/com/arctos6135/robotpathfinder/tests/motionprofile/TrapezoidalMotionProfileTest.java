@@ -14,7 +14,7 @@ import com.arctos6135.robotpathfinder.motionprofile.TrapezoidalMotionProfile;
 
 import org.junit.Test;
 
-public class MotionProfileTest {
+public class TrapezoidalMotionProfileTest {
 
     @Test
     public void testTrapezoidalMotionProfileBasic() {

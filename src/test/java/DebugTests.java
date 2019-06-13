@@ -2,7 +2,7 @@
 import java.io.IOException;
 
 import com.arctos6135.robotpathfinder.tests.core.trajectory.TankDriveTrajectoryTest;
-import com.arctos6135.robotpathfinder.tests.motionprofile.MotionProfileTest;
+import com.arctos6135.robotpathfinder.tests.motionprofile.TrapezoidalMotionProfileTest;
 
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
@@ -20,7 +20,7 @@ public class DebugTests {
         prompt();
         JUnitCore core = new JUnitCore();
         @SuppressWarnings("unused")
-        Result result = core.run(MotionProfileTest.class,
+        Result result = core.run(TrapezoidalMotionProfileTest.class,
                 TankDriveTrajectoryTest.class);
     }
 }

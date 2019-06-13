@@ -14,10 +14,21 @@ import com.arctos6135.robotpathfinder.motionprofile.TrapezoidalMotionProfile;
 
 import org.junit.Test;
 
+/**
+ * This class contains tests for {@link TrapezoidalMotionProfile}.
+ */
 public class TrapezoidalMotionProfileTest {
 
+    /**
+     * Performs basic testing on {@link TrapezoidalMotionProfile}.
+     * 
+     * This test constructs a {@link TrapezoidalMotionProfile}, and asserts that the
+     * starting position and velocity and end velocity are all 0, the end position
+     * is as expected, the starting acceleration is the max acceleration, and the
+     * end acceleration is negative the max acceleration.
+     */
     @Test
-    public void testTrapezoidalMotionProfileBasic() {
+    public void testTrapezoidalMotionProfile() {
         Random rand = new Random();
         double maxV = rand.nextDouble() * 1000;
         double maxA = rand.nextDouble() * 1000;
@@ -38,8 +49,16 @@ public class TrapezoidalMotionProfileTest {
         assertThat(profile.acceleration(profile.totalTime()), closeTo(-maxA, 1e-7));
     }
 
+    /**
+     * Performs basic testing on {@link TrapezoidalMotionProfile} using a negative
+     * position.
+     * 
+     * This test is identical to {@link #testTrapezoidalMotionProfile()} except that
+     * it uses a negative position to construct the {@link TrapezoidalMotionProfile}
+     * so that it goes backwards.
+     */
     @Test
-    public void testTrapezoidalMotionProfileBasicReversed() {
+    public void testTrapezoidalMotionProfileReversed() {
         Random rand = new Random();
         double maxV = rand.nextDouble() * 1000;
         double maxA = rand.nextDouble() * 1000;
@@ -60,6 +79,15 @@ public class TrapezoidalMotionProfileTest {
         assertThat(profile.acceleration(profile.totalTime()), closeTo(maxA, 1e-7));
     }
 
+    /**
+     * Performs testing on many points of a {@link TrapezoidalMotionProfile}.
+     * 
+     * This test creates a {@link TrapezoidalMotionProfile} and loops through 1000
+     * points in time, asserting that the position is between 0 and the specified
+     * end position, the velocity is between 0 and the specified max velocity, and
+     * the acceleration is between the negative max acceleration and max
+     * acceleration.
+     */
     @Test
     public void testTrapezoidalMotionProfileAdvanced() {
         Random rand = new Random();
@@ -87,6 +115,14 @@ public class TrapezoidalMotionProfileTest {
         }
     }
 
+    /**
+     * Performs testing on many points of a {@link TrapezoidalMotionProfile} using a
+     * negative position.
+     * 
+     * This test is identical to {@link #testTrapezoidalMotionProfileAdvanced()}
+     * except that it uses a negative position to construct the
+     * {@link TrapezoidalBasicProfile} so that it goes backwards.
+     */
     @Test
     public void testTrapezoidalMotionProfileAdvancedReversed() {
         Random rand = new Random();

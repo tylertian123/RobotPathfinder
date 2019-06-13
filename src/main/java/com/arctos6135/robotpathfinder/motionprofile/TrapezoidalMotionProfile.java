@@ -185,6 +185,6 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile {
     public boolean update(double currentTime, double currentDist, double currentVel, double currentAccel) {
         initTime = currentTime;
         initDist = currentDist;
-        return construct(maxVel, maxAcl, distance - currentDist, currentVel);
+        return construct(maxVel, maxAcl, (reverse ? -distance : distance) - currentDist, currentVel);
     }
 }

@@ -3,6 +3,7 @@ package com.arctos6135.robotpathfinder.tests.motionprofile;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.either;
 import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertThat;
 
@@ -246,5 +247,90 @@ public class TrapezoidalMotionProfileTest {
         } else {
             assertThat(profile.position(totalTime), closeTo(distance, 1e-7));
         }
+    }
+
+    /**
+     * Performs basic testing on the overshoot handling of
+     * {@link TrapezoidalMotionProfile#update(double, double, double, double)}.
+     * 
+     * This test constructs a {@link TrapezoidalMotionProfile}, and calls
+     * {@link TrapezoidalMotionProfile#update(double, double, double, double)
+     * update()} with the current position being the end position specified by the
+     * constructor. It then asserts that the update causes the profile to overshoot,
+     * the end velocity is still 0, and the final position is correct based on
+     * calculations.
+     */
+    @Test
+    public void testTrapezoidalMotionProfileUpdateOvershoot() {
+        Random rand = new Random();
+        double maxV = rand.nextDouble() * 1000;
+        double maxA = rand.nextDouble() * 1000;
+        double distance = rand.nextDouble() * 1000;
+
+        System.out.println("[INFO] maxV: " + maxV);
+        System.out.println("[INFO] maxA: " + maxA);
+        System.out.println("[INFO] distance: " + distance);
+
+        RobotSpecs specs = new RobotSpecs(maxV, maxA);
+
+        TrapezoidalMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
+
+        // Generate fake update parameters
+        double updateTime = rand.nextDouble() * profile.totalTime();
+        double updateVel = rand.nextDouble() * maxV;
+
+        System.out.println("[INFO] updateTime: " + updateTime);
+        System.out.println("[INFO] updateVel: " + updateVel);
+
+        boolean overshoot = profile.update(updateTime, distance, updateVel, 0);
+        double totalTime = profile.totalTime();
+
+        assertThat(overshoot, is(true));
+        assertThat(profile.velocity(totalTime), closeTo(0, 1e-7));
+
+        // Calculate the overshoot distance using kinematic forumlas
+        double overshootDist = -(updateVel * updateVel) / (2 * -maxA);
+        assertThat(profile.position(totalTime), closeTo(distance + overshootDist, 1e-7));
+    }
+
+    /**
+     * Performs basic testing on the overshoot handling of
+     * {@link TrapezoidalMotionProfile#update(double, double, double, double)}.
+     * 
+     * This test is identical to
+     * {@link #testTrapezoidalMotionProfileUpdateOvershoot()}, except that it uses a
+     * negative position so that the generated profile is reversed.
+     */
+    @Test
+    public void testTrapezoidalMotionProfileUpdateOvershootReversed() {
+        Random rand = new Random();
+        double maxV = rand.nextDouble() * 1000;
+        double maxA = rand.nextDouble() * 1000;
+        double distance = -rand.nextDouble() * 1000;
+
+        System.out.println("[INFO] maxV: " + maxV);
+        System.out.println("[INFO] maxA: " + maxA);
+        System.out.println("[INFO] distance: " + distance);
+
+        RobotSpecs specs = new RobotSpecs(maxV, maxA);
+
+        TrapezoidalMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
+
+        // Generate fake update parameters
+        double updateTime = rand.nextDouble() * profile.totalTime();
+        double updateVel = rand.nextDouble() * -maxV;
+
+        System.out.println("[INFO] updateTime: " + updateTime);
+        System.out.println("[INFO] updateVel: " + updateVel);
+
+        boolean overshoot = profile.update(updateTime, distance, updateVel, 0);
+        double totalTime = profile.totalTime();
+
+        assertThat(overshoot, is(true));
+        assertThat(profile.velocity(totalTime), closeTo(0, 1e-7));
+
+        // Calculate the overshoot distance using kinematic forumlas
+        double overshootDist = -(updateVel * updateVel) / (2 * maxA);
+        assertThat(profile.position(totalTime), closeTo(distance + overshootDist, 1e-7));
     }
 }

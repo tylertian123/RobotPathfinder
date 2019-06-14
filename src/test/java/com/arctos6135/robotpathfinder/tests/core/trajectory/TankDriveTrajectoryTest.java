@@ -13,6 +13,7 @@ import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.TrajectoryGenerationException;
+import com.arctos6135.robotpathfinder.math.MathUtils;
 
 import org.junit.Test;
 
@@ -122,13 +123,13 @@ public class TankDriveTrajectoryTest {
             TankDriveMoment m0 = original.get(dt * i);
             TankDriveMoment m1 = mirrored.get(dt * i);
 
-            assertThat(m0.getLeftPosition(), closeTo(m1.getLeftPosition(), 1e-7));
-            assertThat(m0.getRightPosition(), closeTo(m1.getRightPosition(), 1e-7));
-            assertThat(m0.getLeftVelocity(), closeTo(m1.getLeftVelocity(), 1e-7));
-            assertThat(m0.getRightVelocity(), closeTo(m1.getRightVelocity(), 1e-7));
-            assertThat(m0.getLeftAcceleration(), closeTo(m1.getLeftAcceleration(), 1e-7));
-            assertThat(m0.getRightAcceleration(), closeTo(m1.getRightAcceleration(), 1e-7));
-            assertThat(m0.getHeading(), closeTo(m1.getHeading(), 1e-7));
+            assertThat(m0.getLeftPosition(), closeTo(m1.getLeftPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getRightPosition(), closeTo(m1.getRightPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getLeftVelocity(), closeTo(m1.getLeftVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getRightVelocity(), closeTo(m1.getRightVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getLeftAcceleration(), closeTo(m1.getLeftAcceleration(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getRightAcceleration(), closeTo(m1.getRightAcceleration(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getHeading(), closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
         }
 
         original.close();
@@ -161,13 +162,13 @@ public class TankDriveTrajectoryTest {
             TankDriveMoment m0 = original.get(dt * i);
             TankDriveMoment m1 = mirrored.get(dt * i);
 
-            assertThat(m0.getLeftPosition(), closeTo(m1.getLeftPosition(), 1e-7));
-            assertThat(m0.getRightPosition(), closeTo(m1.getRightPosition(), 1e-7));
-            assertThat(m0.getLeftVelocity(), closeTo(m1.getLeftVelocity(), 1e-7));
-            assertThat(m0.getRightVelocity(), closeTo(m1.getRightVelocity(), 1e-7));
-            assertThat(m0.getLeftAcceleration(), closeTo(m1.getLeftAcceleration(), 1e-7));
-            assertThat(m0.getRightAcceleration(), closeTo(m1.getRightAcceleration(), 1e-7));
-            assertThat(m0.getHeading(), closeTo(m1.getHeading(), 1e-7));
+            assertThat(m0.getLeftPosition(), closeTo(m1.getLeftPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getRightPosition(), closeTo(m1.getRightPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getLeftVelocity(), closeTo(m1.getLeftVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getRightVelocity(), closeTo(m1.getRightVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getLeftAcceleration(), closeTo(m1.getLeftAcceleration(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getRightAcceleration(), closeTo(m1.getRightAcceleration(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getHeading(), closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
         }
 
         original.close();
@@ -221,13 +222,13 @@ public class TankDriveTrajectoryTest {
             TankDriveMoment m0 = original.get(dt * i);
             TankDriveMoment m1 = mirrored.get(dt * i);
 
-            assertThat(m0.getLeftPosition(), closeTo(m1.getLeftPosition(), 1e-7));
-            assertThat(m0.getRightPosition(), closeTo(m1.getRightPosition(), 1e-7));
-            assertThat(m0.getLeftVelocity(), closeTo(m1.getLeftVelocity(), 1e-7));
-            assertThat(m0.getRightVelocity(), closeTo(m1.getRightVelocity(), 1e-7));
-            assertThat(m0.getLeftAcceleration(), closeTo(m1.getLeftAcceleration(), 1e-7));
-            assertThat(m0.getRightAcceleration(), closeTo(m1.getRightAcceleration(), 1e-7));
-            assertThat(m0.getHeading(), closeTo(m1.getHeading(), 1e-7));
+            assertThat(m0.getLeftPosition(), closeTo(m1.getLeftPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getRightPosition(), closeTo(m1.getRightPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getLeftVelocity(), closeTo(m1.getLeftVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getRightVelocity(), closeTo(m1.getRightVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getLeftAcceleration(), closeTo(m1.getLeftAcceleration(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getRightAcceleration(), closeTo(m1.getRightAcceleration(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getHeading(), closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
         }
 
         original.close();

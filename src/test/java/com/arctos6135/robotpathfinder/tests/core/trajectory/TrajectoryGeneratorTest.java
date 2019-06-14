@@ -68,9 +68,9 @@ public class TrajectoryGeneratorTest {
         TankDriveTrajectory traj2 = TrajectoryGenerator.generateRotationTank(specs, -Math.PI);
 
         assertThat(Math.abs(MathUtils.angleDiff(traj1.get(traj1.totalTime()).getFacingRelative(),
-                MathUtils.restrictAngle(Math.PI / 2))), lessThan(1e-7));
+                MathUtils.restrictAngle(Math.PI / 2))), lessThan(MathUtils.getFloatCompareThreshold()));
         assertThat(Math.abs(MathUtils.angleDiff(traj2.get(traj2.totalTime()).getFacingRelative(),
-                MathUtils.restrictAngle(-Math.PI))), lessThan(1e-7));
+                MathUtils.restrictAngle(-Math.PI))), lessThan(MathUtils.getFloatCompareThreshold()));
         traj1.close();
         traj2.close();
     }

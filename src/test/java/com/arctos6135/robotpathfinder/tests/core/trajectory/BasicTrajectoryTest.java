@@ -12,6 +12,7 @@ import com.arctos6135.robotpathfinder.core.path.PathType;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicMoment;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.TrajectoryGenerationException;
+import com.arctos6135.robotpathfinder.math.MathUtils;
 
 import org.junit.Test;
 
@@ -101,10 +102,10 @@ public class BasicTrajectoryTest {
             BasicMoment m0 = original.get(dt * i);
             BasicMoment m1 = mirrored.get(dt * i);
 
-            assertThat(m0.getPosition(), closeTo(m1.getPosition(), 1e-7));
-            assertThat(m0.getVelocity(), closeTo(m1.getVelocity(), 1e-7));
-            assertThat(m0.getAcceleration(), closeTo(m1.getAcceleration(), 1e-7));
-            assertThat(m0.getHeading(), closeTo(m1.getHeading(), 1e-7));
+            assertThat(m0.getPosition(), closeTo(m1.getPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getVelocity(), closeTo(m1.getVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getAcceleration(), closeTo(m1.getAcceleration(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getHeading(), closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
         }
 
         original.close();
@@ -138,10 +139,10 @@ public class BasicTrajectoryTest {
             BasicMoment m0 = original.get(dt * i);
             BasicMoment m1 = mirrored.get(dt * i);
 
-            assertThat(m0.getPosition(), closeTo(m1.getPosition(), 1e-7));
-            assertThat(m0.getVelocity(), closeTo(m1.getVelocity(), 1e-7));
-            assertThat(m0.getAcceleration(), closeTo(m1.getAcceleration(), 1e-7));
-            assertThat(m0.getHeading(), closeTo(m1.getHeading(), 1e-7));
+            assertThat(m0.getPosition(), closeTo(m1.getPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getVelocity(), closeTo(m1.getVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getAcceleration(), closeTo(m1.getAcceleration(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getHeading(), closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
         }
 
         original.close();
@@ -174,10 +175,10 @@ public class BasicTrajectoryTest {
             BasicMoment m0 = original.get(dt * i);
             BasicMoment m1 = mirrored.get(dt * i);
 
-            assertThat(m0.getPosition(), closeTo(m1.getPosition(), 1e-7));
-            assertThat(m0.getVelocity(), closeTo(m1.getVelocity(), 1e-7));
-            assertThat(m0.getAcceleration(), closeTo(m1.getAcceleration(), 1e-7));
-            assertThat(m0.getHeading(), closeTo(m1.getHeading(), 1e-7));
+            assertThat(m0.getPosition(), closeTo(m1.getPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getVelocity(), closeTo(m1.getVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getAcceleration(), closeTo(m1.getAcceleration(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getHeading(), closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
         }
 
         original.close();
@@ -231,10 +232,10 @@ public class BasicTrajectoryTest {
             BasicMoment m0 = original.get(dt * i);
             BasicMoment m1 = mirrored.get(dt * i);
 
-            assertThat(m0.getPosition(), closeTo(m1.getPosition(), 1e-7));
-            assertThat(m0.getVelocity(), closeTo(m1.getVelocity(), 1e-7));
-            assertThat(m0.getAcceleration(), closeTo(m1.getAcceleration(), 1e-7));
-            assertThat(m0.getHeading(), closeTo(m1.getHeading(), 1e-7));
+            assertThat(m0.getPosition(), closeTo(m1.getPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getVelocity(), closeTo(m1.getVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getAcceleration(), closeTo(m1.getAcceleration(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getHeading(), closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
         }
 
         original.close();

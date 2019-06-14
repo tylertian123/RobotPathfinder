@@ -268,7 +268,7 @@ task copyJars(type: Copy, group: 'Archive', description: 'Copies all generated j
     }
 }
 
-task testJavadoc(type: Javadoc, group: 'Archive', description: 'Generates JavaDoc for the test classes.') {
+task testJavadoc(type: Javadoc, group: 'Documentation', description: 'Generates JavaDoc for the test classes.') {
     source = sourceSets.test.allJava
     classpath = sourceSets.test.compileClasspath
     // if not changed the destinationDir, the javadoc for production code is overridden.
@@ -279,7 +279,7 @@ task testJavadoc(type: Javadoc, group: 'Archive', description: 'Generates JavaDo
     }
 }
 
-task completeJavadoc(type: Javadoc, group: 'Archive', description: 'Generates JavaDoc for both the main classes and the test classes.') {
+task completeJavadoc(type: Javadoc, group: 'Documentation', description: 'Generates JavaDoc for both the main classes and the test classes.') {
     source = sourceSets.test.allJava
     classpath = sourceSets.test.compileClasspath
     source += sourceSets.main.allJava;

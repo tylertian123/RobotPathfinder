@@ -38,4 +38,8 @@ abstract public class DynamicFollower<T extends Moment> extends Follower<T> {
     public void setUpdateDelay(double updateDelay) {
         this.updateDelay = updateDelay;
     }
+
+    public void disableUpdates() {
+        updateDelay = Double.NaN;
+    }
 }

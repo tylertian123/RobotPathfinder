@@ -44,7 +44,7 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 
 	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
 			AdvancedDistanceSource lDistSrc, AdvancedDistanceSource rDistSrc, TimestampSource timer, double kV,
-			double kA, double kP, double kD) {
+			double kA, double kP, double kD, double updateDelay) {
 		setGains(kV, kA, kP, kD, 0);
 		this.target = target;
 		this.lMotor = lMotor;
@@ -53,12 +53,13 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 		this.rDistSrc = rDistSrc;
 		this.timer = timer;
 		this.directionSrc = null;
+		this.updateDelay = updateDelay;
 		advancedDistSrc = true;
 	}
 
 	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
 			AdvancedDistanceSource lDistSrc, AdvancedDistanceSource rDistSrc, TimestampSource timer,
-			DirectionSource dirSrc, double kV, double kA, double kP, double kD, double kDP) {
+			DirectionSource dirSrc, double kV, double kA, double kP, double kD, double kDP, double updateDelay) {
 		setGains(kV, kA, kP, kD, kDP);
 		this.target = target;
 		this.lMotor = lMotor;
@@ -67,12 +68,13 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 		this.rDistSrc = rDistSrc;
 		this.timer = timer;
 		this.directionSrc = dirSrc;
+		this.updateDelay = updateDelay;
 		advancedDistSrc = true;
 	}
 
 	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
 			DistanceSource lDistSrc, DistanceSource rDistSrc, TimestampSource timer, double kV, double kA, double kP,
-			double kD) {
+			double kD, double updateDelay) {
 		setGains(kV, kA, kP, kD, 0);
 		this.target = target;
 		this.lMotor = lMotor;
@@ -81,12 +83,13 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 		this.rDistSrc = rDistSrc;
 		this.timer = timer;
 		this.directionSrc = null;
+		this.updateDelay = updateDelay;
 		advancedDistSrc = false;
 	}
 
 	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
 			DistanceSource lDistSrc, DistanceSource rDistSrc, TimestampSource timer, DirectionSource dirSrc, double kV,
-			double kA, double kP, double kD, double kDP) {
+			double kA, double kP, double kD, double kDP, double updateDelay) {
 		setGains(kV, kA, kP, kD, kDP);
 		this.target = target;
 		this.lMotor = lMotor;
@@ -95,6 +98,7 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 		this.rDistSrc = rDistSrc;
 		this.timer = timer;
 		this.directionSrc = dirSrc;
+		this.updateDelay = updateDelay;
 		advancedDistSrc = false;
 	}
 

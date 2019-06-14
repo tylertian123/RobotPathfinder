@@ -81,33 +81,6 @@ public class FollowerTest {
     }
 
     /**
-     * Performs very basic testing on {@link TankDriveFollower}.
-     * 
-     * This class creates a {@link TankDriveFollower}, and then calls
-     * {@code initialize()}, {@code run()} and {@code stop()} on it.
-     */
-    @Test
-    public void testTankDriveFollowerBasic() {
-        RobotSpecs specs = new RobotSpecs(5, 3, 1);
-        TrajectoryParams params = new TrajectoryParams();
-        params.waypoints = new Waypoint[] { new Waypoint(0, 0, Math.PI / 2), new Waypoint(10, 10, Math.PI / 2),
-                new Waypoint(0, 20, Math.PI), };
-        params.alpha = 20;
-        params.pathType = PathType.QUINTIC_HERMITE;
-        params.sampleCount = 1000;
-
-        TankDriveTrajectory traj = new TankDriveTrajectory(specs, params);
-
-        Follower<TankDriveMoment> follower = new TankDriveFollower(traj, new FakeMotor(), new FakeMotor(),
-                new FakeEncoder(), new FakeEncoder(), new FakeTimer(), new FakeGyro(), 0, 0, 0, 0, 0);
-        follower.initialize();
-        follower.run();
-        follower.stop();
-
-        traj.free();
-    }
-
-    /**
      * Performs testing on the 'state' logic of {@link TankDriveFollower}.
      * 
      * This test creates a {@link TankDriveFollower} and asserts the following:

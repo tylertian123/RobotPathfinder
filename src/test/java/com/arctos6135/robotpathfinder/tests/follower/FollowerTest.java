@@ -10,9 +10,6 @@ import com.arctos6135.robotpathfinder.core.path.PathType;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
 import com.arctos6135.robotpathfinder.follower.Follower;
-import com.arctos6135.robotpathfinder.follower.Follower.DirectionSource;
-import com.arctos6135.robotpathfinder.follower.Follower.DistanceSource;
-import com.arctos6135.robotpathfinder.follower.Follower.Motor;
 import com.arctos6135.robotpathfinder.follower.TankDriveFollower;
 
 import org.junit.Test;
@@ -22,6 +19,11 @@ import org.junit.Test;
  */
 public class FollowerTest {
 
+    /**
+     * A fake {@link Follower.TimestampSource} used for testing.
+     * 
+     * It returns a user-defined value (default 0).
+     */
     public static class FakeTimer implements Follower.TimestampSource {
 
         public double value = 0;
@@ -32,14 +34,51 @@ public class FollowerTest {
         }
     }
 
-    public static DistanceSource distancePlaceholder = () -> {
-        return 0d;
-    };
-    public static DirectionSource directionPlaceholder = () -> {
-        return 0d;
-    };
-    public static Motor motorPlaceholder = (s) -> {
-    };
+    /**
+     * A fake {@link Follower.DistanceSource} used for testing.
+     * 
+     * It returns a user-defined value (default 0).
+     */
+    public static class FakeEncoder implements Follower.DistanceSource {
+
+        public double value = 0;
+
+        @Override
+        public double getDistance() {
+            return value;
+        }
+    }
+
+    /**
+     * A fake {@link Follower.DirectionSource} used for testing.
+     * 
+     * It returns a user-defined value (default 0).
+     */
+    public static class FakeGyro implements Follower.DirectionSource {
+
+        public double value = 0;
+
+        @Override
+        public double getDirection() {
+            return value;
+        }
+    }
+
+    /**
+     * A fake {@link Follower.Motor} used for testing.
+     * 
+     * Every time it is set, the value is stored in a public member variable. The
+     * default value of this variable is {@code NaN}.
+     */
+    public static class FakeMotor implements Follower.Motor {
+
+        public double value = Double.NaN;
+
+        @Override
+        public void set(double value) {
+            this.value = value;
+        }
+    }
 
     /**
      * Performs very basic testing on {@link TankDriveFollower}.
@@ -59,8 +98,8 @@ public class FollowerTest {
 
         TankDriveTrajectory traj = new TankDriveTrajectory(specs, params);
 
-        Follower<TankDriveMoment> follower = new TankDriveFollower(traj, motorPlaceholder, motorPlaceholder,
-                distancePlaceholder, distancePlaceholder, new FakeTimer(), directionPlaceholder, 0, 0, 0, 0, 0);
+        Follower<TankDriveMoment> follower = new TankDriveFollower(traj, new FakeMotor(), new FakeMotor(),
+                new FakeEncoder(), new FakeEncoder(), new FakeTimer(), new FakeGyro(), 0, 0, 0, 0, 0);
         follower.initialize();
         follower.run();
         follower.stop();
@@ -96,8 +135,8 @@ public class FollowerTest {
         TankDriveTrajectory traj = new TankDriveTrajectory(specs, params);
 
         FakeTimer timer = new FakeTimer();
-        Follower<TankDriveMoment> follower = new TankDriveFollower(traj, motorPlaceholder, motorPlaceholder,
-                distancePlaceholder, distancePlaceholder, timer, directionPlaceholder, 0, 0, 0, 0, 0);
+        Follower<TankDriveMoment> follower = new TankDriveFollower(traj, new FakeMotor(), new FakeMotor(),
+                new FakeEncoder(), new FakeEncoder(), timer, new FakeGyro(), 0, 0, 0, 0, 0);
         // Assertion: Follower is not finished or running initially
         assertThat(follower.isFinished(), is(false));
         assertThat(follower.isRunning(), is(false));

@@ -53,10 +53,10 @@ public class BasicTrajectoryTest {
         BasicTrajectory trajectory = new BasicTrajectory(robotSpecs, params);
 
         for (BasicMoment m : trajectory.getMoments()) {
-            if (Math.abs(m.getVelocity()) > maxV) {
+            if (MathUtils.floatGt(Math.abs(m.getVelocity()), maxV)) {
                 fail("The BasicTrajectory exceeded the velocity limit at time " + m.getTime());
             }
-            if (Math.abs(m.getAcceleration()) > maxA) {
+            if (MathUtils.floatGt(Math.abs(m.getAcceleration()), maxA)) {
                 fail("The BasicTrajectory exceeded the acceleration limit at time " + m.getTime());
             }
         }
@@ -96,8 +96,8 @@ public class BasicTrajectoryTest {
 
         BasicTrajectory trajectory = new BasicTrajectory(robotSpecs, params);
 
-        assertThat(trajectory.get(0).getVelocity(), is(startVel));
-        assertThat(trajectory.get(trajectory.totalTime()).getVelocity(), is(endVel));
+        assertThat(trajectory.get(0).getVelocity(), closeTo(startVel, MathUtils.getFloatCompareThreshold()));
+        assertThat(trajectory.get(trajectory.totalTime()).getVelocity(), closeTo(endVel, MathUtils.getFloatCompareThreshold()));
         trajectory.close();
     }
 

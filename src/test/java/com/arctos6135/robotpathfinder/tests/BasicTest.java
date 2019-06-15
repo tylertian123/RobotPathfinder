@@ -75,7 +75,7 @@ public class BasicTest {
      * <ul>
      * <li>{@link TankDriveTrajectory#TankDriveTrajectory(RobotSpecs, TrajectoryParams)}</li>
      * <li>{@link TankDriveTrajectory#getMoments()}</li>
-     * <li>{@link TankDriveTrajectory#get()}</li>
+     * <li>{@link TankDriveTrajectory#get(double)}</li>
      * <li>{@link TankDriveTrajectory#getPath()}</li>
      * <li>{@link TankDriveTrajectory#mirrorLeftRight()}</li>
      * <li>{@link TankDriveTrajectory#mirrorFrontBack()}</li>
@@ -109,9 +109,9 @@ public class BasicTest {
      * 
      * This executes the methods:
      * <ul>
-     * <li>{@link BasicTrajectory#TankDriveTrajectory(RobotSpecs, TrajectoryParams)}</li>
+     * <li>{@link BasicTrajectory#BasicTrajectory(RobotSpecs, TrajectoryParams)}</li>
      * <li>{@link BasicTrajectory#getMoments()}</li>
-     * <li>{@link BasicTrajectory#get()}</li>
+     * <li>{@link BasicTrajectory#get(double)}</li>
      * <li>{@link BasicTrajectory#getPath()}</li>
      * <li>{@link BasicTrajectory#mirrorLeftRight()}</li>
      * <li>{@link BasicTrajectory#mirrorFrontBack()}</li>

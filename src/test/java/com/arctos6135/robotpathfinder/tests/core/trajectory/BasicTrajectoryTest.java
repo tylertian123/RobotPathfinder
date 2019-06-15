@@ -13,6 +13,7 @@ import com.arctos6135.robotpathfinder.core.trajectory.BasicMoment;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.TrajectoryGenerationException;
 import com.arctos6135.robotpathfinder.math.MathUtils;
+import com.arctos6135.robotpathfinder.tests.TestHelper;
 
 import org.junit.Test;
 
@@ -31,20 +32,31 @@ public class BasicTrajectoryTest {
      */
     @Test
     public void testVelocityAndAccelerationLimitBasic() {
-        RobotSpecs robotSpecs = new RobotSpecs(5.0, 3.5, 2.0);
+        TestHelper helper = TestHelper.getInstance(getClass());
+
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double startX = helper.getDouble("startX", 1000);
+        double startY = helper.getDouble("startY", 1000);
+        double endX = helper.getDouble("endX", 1000);
+        double endY = helper.getDouble("endY", 1000);
+        double startHeading = helper.getDouble("startHeading", Math.PI * 2);
+        double endHeading = helper.getDouble("endHeading", Math.PI * 2);
+
+        RobotSpecs robotSpecs = new RobotSpecs(maxV, maxA);
         TrajectoryParams params = new TrajectoryParams();
-        params.waypoints = new Waypoint[] { new Waypoint(0.0, 0.0, Math.PI / 2),
-                new Waypoint(0.0, 100.0, Math.PI / 2), };
-        params.alpha = 40.0;
+        params.waypoints = new Waypoint[] { new Waypoint(startX, startY, startHeading),
+                new Waypoint(endX, endY, endHeading), };
+        params.alpha = Math.sqrt((startX - endX) * (startX - endX) + (startY - endY) * (startY - endY));
         params.sampleCount = 1000;
         params.pathType = PathType.QUINTIC_HERMITE;
         BasicTrajectory trajectory = new BasicTrajectory(robotSpecs, params);
 
         for (BasicMoment m : trajectory.getMoments()) {
-            if (Math.abs(m.getVelocity()) > 5.0) {
+            if (Math.abs(m.getVelocity()) > maxV) {
                 fail("The BasicTrajectory exceeded the velocity limit at time " + m.getTime());
             }
-            if (Math.abs(m.getAcceleration()) > 3.5) {
+            if (Math.abs(m.getAcceleration()) > maxA) {
                 fail("The BasicTrajectory exceeded the acceleration limit at time " + m.getTime());
             }
         }
@@ -61,17 +73,31 @@ public class BasicTrajectoryTest {
      */
     @Test
     public void testBeginningAndEndWaypointEx() {
-        RobotSpecs robotSpecs = new RobotSpecs(5.0, 3.5, 2.0);
+        TestHelper helper = TestHelper.getInstance(getClass());
+
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double startX = helper.getDouble("startX", 1000);
+        double startY = helper.getDouble("startY", 1000);
+        double endX = helper.getDouble("endX", 1000);
+        double endY = helper.getDouble("endY", 1000);
+        double startHeading = helper.getDouble("startHeading", Math.PI * 2);
+        double endHeading = helper.getDouble("endHeading", Math.PI * 2);
+        double startVel = helper.getDouble("startVel", maxV);
+        double endVel = helper.getDouble("endVel", maxV);
+
+        RobotSpecs robotSpecs = new RobotSpecs(maxV, maxA);
         TrajectoryParams params = new TrajectoryParams();
-        params.waypoints = new Waypoint[] { new Waypoint(0.0, 0.0, Math.PI / 2, 1.23),
-                new Waypoint(0.0, 100.0, Math.PI / 2, 3.45), };
-        params.alpha = 40.0;
+        params.waypoints = new Waypoint[] { new Waypoint(startX, startY, startHeading, startVel),
+                new Waypoint(endX, endY, endHeading, endVel), };
+        params.alpha = Math.sqrt((startX - endX) * (startX - endX) + (startY - endY) * (startY - endY));
         params.sampleCount = 1000;
         params.pathType = PathType.QUINTIC_HERMITE;
+
         BasicTrajectory trajectory = new BasicTrajectory(robotSpecs, params);
 
-        assertThat(trajectory.get(0).getVelocity(), is(1.23));
-        assertThat(trajectory.get(trajectory.totalTime()).getVelocity(), is(3.45));
+        assertThat(trajectory.get(0).getVelocity(), is(startVel));
+        assertThat(trajectory.get(trajectory.totalTime()).getVelocity(), is(endVel));
         trajectory.close();
     }
 
@@ -85,14 +111,26 @@ public class BasicTrajectoryTest {
      */
     @Test
     public void testBasicTrajectoryMirrorLeftRight() {
-        RobotSpecs specs = new RobotSpecs(5.0, 3.5, 2.0);
+        TestHelper helper = TestHelper.getInstance(getClass());
+
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double startX = helper.getDouble("startX", 1000);
+        double startY = helper.getDouble("startY", 1000);
+        double endX = helper.getDouble("endX", 1000);
+        double endY = helper.getDouble("endY", 1000);
+        double startHeading = helper.getDouble("startHeading", Math.PI * 2);
+        double endHeading = helper.getDouble("endHeading", Math.PI * 2);
+
+        RobotSpecs robotSpecs = new RobotSpecs(maxV, maxA);
         TrajectoryParams params = new TrajectoryParams();
-        params.waypoints = new Waypoint[] { new Waypoint(0.0, 0.0, Math.PI / 2, 1.23),
-                new Waypoint(0.0, 100.0, Math.PI / 2, 3.45), };
-        params.alpha = 40.0;
+        params.waypoints = new Waypoint[] { new Waypoint(startX, startY, startHeading),
+                new Waypoint(endX, endY, endHeading), };
+        params.alpha = Math.sqrt((startX - endX) * (startX - endX) + (startY - endY) * (startY - endY));
         params.sampleCount = 1000;
         params.pathType = PathType.QUINTIC_HERMITE;
-        BasicTrajectory original = new BasicTrajectory(specs, params);
+
+        BasicTrajectory original = new BasicTrajectory(robotSpecs, params);
         BasicTrajectory t = original.mirrorLeftRight();
         BasicTrajectory mirrored = t.mirrorLeftRight();
         t.close();
@@ -122,14 +160,26 @@ public class BasicTrajectoryTest {
      */
     @Test
     public void testBasicTrajectoryMirrorFrontBack() {
-        RobotSpecs specs = new RobotSpecs(5.0, 3.5, 2.0);
+        TestHelper helper = TestHelper.getInstance(getClass());
+
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double startX = helper.getDouble("startX", 1000);
+        double startY = helper.getDouble("startY", 1000);
+        double endX = helper.getDouble("endX", 1000);
+        double endY = helper.getDouble("endY", 1000);
+        double startHeading = helper.getDouble("startHeading", Math.PI * 2);
+        double endHeading = helper.getDouble("endHeading", Math.PI * 2);
+
+        RobotSpecs robotSpecs = new RobotSpecs(maxV, maxA);
         TrajectoryParams params = new TrajectoryParams();
-        params.waypoints = new Waypoint[] { new Waypoint(0.0, 0.0, Math.PI / 2, 1.23),
-                new Waypoint(0.0, 100.0, Math.PI / 2, 3.45), };
-        params.alpha = 40.0;
+        params.waypoints = new Waypoint[] { new Waypoint(startX, startY, startHeading),
+                new Waypoint(endX, endY, endHeading), };
+        params.alpha = Math.sqrt((startX - endX) * (startX - endX) + (startY - endY) * (startY - endY));
         params.sampleCount = 1000;
         params.pathType = PathType.QUINTIC_HERMITE;
-        BasicTrajectory original = new BasicTrajectory(specs, params);
+
+        BasicTrajectory original = new BasicTrajectory(robotSpecs, params);
         BasicTrajectory t = original.mirrorFrontBack();
         BasicTrajectory mirrored = t.mirrorFrontBack();
         t.close();
@@ -158,14 +208,26 @@ public class BasicTrajectoryTest {
      */
     @Test
     public void testBasicTrajectoryRetrace() {
-        RobotSpecs specs = new RobotSpecs(5.0, 3.5, 2.0);
+        TestHelper helper = TestHelper.getInstance(getClass());
+
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double startX = helper.getDouble("startX", 1000);
+        double startY = helper.getDouble("startY", 1000);
+        double endX = helper.getDouble("endX", 1000);
+        double endY = helper.getDouble("endY", 1000);
+        double startHeading = helper.getDouble("startHeading", Math.PI * 2);
+        double endHeading = helper.getDouble("endHeading", Math.PI * 2);
+
+        RobotSpecs robotSpecs = new RobotSpecs(maxV, maxA);
         TrajectoryParams params = new TrajectoryParams();
-        params.waypoints = new Waypoint[] { new Waypoint(0.0, 0.0, Math.PI / 2, 1.23),
-                new Waypoint(0.0, 100.0, Math.PI / 2, 3.45), };
-        params.alpha = 40.0;
+        params.waypoints = new Waypoint[] { new Waypoint(startX, startY, startHeading),
+                new Waypoint(endX, endY, endHeading), };
+        params.alpha = Math.sqrt((startX - endX) * (startX - endX) + (startY - endY) * (startY - endY));
         params.sampleCount = 1000;
         params.pathType = PathType.QUINTIC_HERMITE;
-        BasicTrajectory original = new BasicTrajectory(specs, params);
+
+        BasicTrajectory original = new BasicTrajectory(robotSpecs, params);
         BasicTrajectory t = original.retrace();
         BasicTrajectory mirrored = t.retrace();
         t.close();
@@ -206,14 +268,26 @@ public class BasicTrajectoryTest {
      */
     @Test
     public void testBasicTrajectoryMultipleMirroring() {
-        RobotSpecs specs = new RobotSpecs(5.0, 3.5, 2.0);
+        TestHelper helper = TestHelper.getInstance(getClass());
+
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double startX = helper.getDouble("startX", 1000);
+        double startY = helper.getDouble("startY", 1000);
+        double endX = helper.getDouble("endX", 1000);
+        double endY = helper.getDouble("endY", 1000);
+        double startHeading = helper.getDouble("startHeading", Math.PI * 2);
+        double endHeading = helper.getDouble("endHeading", Math.PI * 2);
+
+        RobotSpecs robotSpecs = new RobotSpecs(maxV, maxA);
         TrajectoryParams params = new TrajectoryParams();
-        params.waypoints = new Waypoint[] { new Waypoint(0.0, 0.0, Math.PI / 2, 1.23),
-                new Waypoint(0.0, 100.0, Math.PI / 2, 3.45), };
-        params.alpha = 40.0;
+        params.waypoints = new Waypoint[] { new Waypoint(startX, startY, startHeading),
+                new Waypoint(endX, endY, endHeading), };
+        params.alpha = Math.sqrt((startX - endX) * (startX - endX) + (startY - endY) * (startY - endY));
         params.sampleCount = 1000;
         params.pathType = PathType.QUINTIC_HERMITE;
-        BasicTrajectory original = new BasicTrajectory(specs, params);
+
+        BasicTrajectory original = new BasicTrajectory(robotSpecs, params);
         BasicTrajectory t0 = original.mirrorLeftRight();
         BasicTrajectory t1 = t0.mirrorFrontBack();
         BasicTrajectory t2 = t1.retrace();
@@ -251,17 +325,32 @@ public class BasicTrajectoryTest {
      */
     @Test
     public void testBasicTrajectoryGenerationException() {
-        RobotSpecs specs = new RobotSpecs(5, 3, 1);
+        TestHelper helper = TestHelper.getInstance(getClass());
+
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double startX = helper.getDouble("startX", 1000);
+        double startY = helper.getDouble("startY", 1000);
+        double endX = helper.getDouble("endX", 1000);
+        double endY = helper.getDouble("endY", 1000);
+        double startHeading = helper.getDouble("startHeading", Math.PI * 2);
+        double endHeading = helper.getDouble("endHeading", Math.PI * 2);
+        double midX = helper.getDouble("midX", 1000);
+        double midY = helper.getDouble("midY", 1000);
+        double midHeading = helper.getDouble("midHeading", Math.PI * 2);
+        double midVel = helper.getDouble("midVel", maxV * 1.1, maxV * 5);
+
+        RobotSpecs robotSpecs = new RobotSpecs(maxV, maxA);
         TrajectoryParams params = new TrajectoryParams();
-        params.waypoints = new Waypoint[] { new Waypoint(0, 0, Math.PI / 2), new Waypoint(10, 10, Math.PI / 2, 10),
-                new Waypoint(0, 20, Math.PI), };
-        params.alpha = 20;
-        params.pathType = PathType.QUINTIC_HERMITE;
+        params.waypoints = new Waypoint[] { new Waypoint(startX, startY, startHeading),
+                new Waypoint(midX, midY, midHeading, midVel), new Waypoint(endX, endY, endHeading), };
+        params.alpha = Math.sqrt((startX - endX) * (startX - endX) + (startY - endY) * (startY - endY));
         params.sampleCount = 1000;
+        params.pathType = PathType.QUINTIC_HERMITE;
 
         boolean exception = false;
         try {
-            BasicTrajectory traj = new BasicTrajectory(specs, params);
+            BasicTrajectory traj = new BasicTrajectory(robotSpecs, params);
             traj.close();
         } catch (TrajectoryGenerationException e) {
             exception = true;

@@ -1,6 +1,9 @@
 package com.arctos6135.robotpathfinder.tests;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
@@ -33,7 +36,15 @@ public final class TestHelper {
     // Use ConcurrentHashMaps since tests might be multithreaded
     private static Map<Class<?>, TestHelper> instances = new ConcurrentHashMap<>();
 
-    private TestHelper() {
+    // The file where logs will be written to
+    private File logFile;
+
+    private TestHelper(Class<?> testClass) {
+        // Names are in the form package/of/class/Class.log
+        logFile = new File(LOG_LOCATION + testClass.getName().replace(".", File.separator) + ".log");
+
+        // Add itself to the instance map
+        instances.put(testClass, this);
     }
 
     /**
@@ -49,11 +60,10 @@ public final class TestHelper {
         if (instances.containsKey(testClass)) {
             return instances.get(testClass);
         }
-        // Otherwise create the instance, add it to the map and return it
+        // Otherwise create the instance
         else {
-            TestHelper instance = new TestHelper();
-            instances.put(testClass, instance);
-            return instance;
+            // The constructor adds itself to the instance map
+            return new TestHelper(testClass);
         }
     }
 
@@ -178,11 +188,7 @@ public final class TestHelper {
      */
     public static void flushAll() throws IOException {
         for (var entry : instances.entrySet()) {
-            // Get the log file name and path from the class name
-            // Names are in the form package/of/class/Class.log
-            String logFileName = entry.getKey().getName().replace(".", File.separator) + ".log";
-            // Get the full path
-            File logFile = new File(LOG_LOCATION + logFileName);
+            File logFile = entry.getValue().logFile;
             // Create file and all dirs
             File parent = logFile.getParentFile();
             if (!parent.exists() && !parent.mkdirs()) {
@@ -197,5 +203,106 @@ public final class TestHelper {
             }
             writer.close();
         }
+    }
+
+    // A class that represents all values generated for a method/test
+    // The members map names to values (doubles and ints)
+    private static class GeneratedValues {
+
+        public Map<String, Double> doubles = new ConcurrentHashMap<>();
+        public Map<String, Integer> ints = new ConcurrentHashMap<>();
+    }
+
+    // This maps method names to their generated values
+    // Usually null, unless loadLoggedValues() is called
+    private Map<String, GeneratedValues> loggedValues;
+
+    /**
+     * Loads all logged values for all methods of the associated class.
+     */
+    private void loadLoggedValues(File logFile) throws IOException {
+        if (!logFile.exists()) {
+            throw new IllegalStateException("TestHelper log not found: " + logFile);
+        }
+
+        BufferedReader reader;
+        try {
+            reader = new BufferedReader(new FileReader(logFile));
+        } catch (FileNotFoundException e) {
+            // This should never happen!
+            e.printStackTrace();
+            return;
+        }
+
+        loggedValues = new ConcurrentHashMap<>();
+        GeneratedValues values = null;
+        // Read line by line
+        String line;
+        while ((line = reader.readLine()) != null) {
+            // Skip empty lines
+            if(line.length() == 0) {
+                continue;
+            }
+            // If line does not start with a label and ends with a colon, it's the start of
+            // a new method
+            if(line.charAt(0) != '[' && line.charAt(line.length() - 1) == ':') {
+                // Get the method name
+                String methodName = line.substring(0, line.length() - 1);
+                // Create a new values object and add it to the map
+                values = new GeneratedValues();
+                loggedValues.put(methodName, values);
+            }
+            else if(line.charAt(0) == '[') {
+                try {
+                    // If there was no method name, throw exception
+                    if(values == null) {
+                        reader.close();
+                        throw new IllegalStateException("Invalid log file: " + logFile);
+                    }
+                    // Find where the label ends
+                    int labelEnd = line.indexOf(']');
+                    String label = line.substring(1, labelEnd);
+                    // If it's not a value, skip
+                    if(!label.startsWith("VALUE")) {
+                        continue;
+                    }
+
+                    // Find the substring containing the name and value
+                    // Skip the label end ] and space after it
+                    String[] s = line.substring(labelEnd + 2).split(":");
+                    String name = s[0];
+                    // Chop off the first character from value since it's a space
+                    String valueStr = s[1].substring(1);
+
+                    // Get value type from label
+                    switch(label) {
+                    case "VALUE.DOUBLE":
+                    {
+                        double value = Double.parseDouble(valueStr);
+                        values.doubles.put(name, value);
+                        break;
+                    }
+                    case "VALUE.INT":
+                    {
+                        int value = Integer.parseInt(valueStr);
+                        values.ints.put(name, value);
+                        break;
+                    }
+                    default: break;
+                    }
+                }
+                // These exceptions mean that the log file is not valid
+                catch(StringIndexOutOfBoundsException | NumberFormatException e) {
+                    reader.close();
+                    throw new IllegalStateException("Invalid log file: " + logFile);
+                }
+            }
+            else {
+                reader.close();
+                throw new IllegalStateException("Invalid log file: " + logFile);
+            }
+        }
+
+        reader.close();
     }
 }

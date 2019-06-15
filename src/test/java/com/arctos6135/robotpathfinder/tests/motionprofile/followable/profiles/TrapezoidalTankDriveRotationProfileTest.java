@@ -36,7 +36,7 @@ public class TrapezoidalTankDriveRotationProfileTest {
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
-        double angle = helper.getDouble("angle", Math.PI * 2);
+        double angle = helper.getDouble("angle", Math.PI);
         double baseWidth = helper.getDouble("baseWidth", 1000);
         double baseRadius = baseWidth / 2;
 
@@ -77,7 +77,7 @@ public class TrapezoidalTankDriveRotationProfileTest {
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
-        double angle = helper.getDouble("angle", -Math.PI * 2, 0);
+        double angle = helper.getDouble("angle", -Math.PI, 0);
         double baseWidth = helper.getDouble("baseWidth", 1000);
         double baseRadius = baseWidth / 2;
 
@@ -121,7 +121,7 @@ public class TrapezoidalTankDriveRotationProfileTest {
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
-        double angle = helper.getDouble("angle", Math.PI * 2);
+        double angle = helper.getDouble("angle", Math.PI);
         double baseWidth = helper.getDouble("baseWidth", 1000);
         double baseRadius = baseWidth / 2;
 
@@ -169,7 +169,7 @@ public class TrapezoidalTankDriveRotationProfileTest {
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
-        double angle = helper.getDouble("angle", -Math.PI * 2, 0);
+        double angle = helper.getDouble("angle", -Math.PI, 0);
         double baseWidth = helper.getDouble("baseWidth", 1000);
         double baseRadius = baseWidth / 2;
 

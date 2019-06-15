@@ -6,13 +6,12 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertThat;
 
-import java.util.Random;
-
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
 import com.arctos6135.robotpathfinder.follower.Followable;
 import com.arctos6135.robotpathfinder.math.MathUtils;
 import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalTankDriveRotationProfile;
+import com.arctos6135.robotpathfinder.tests.TestHelper;
 
 import org.junit.Test;
 
@@ -33,17 +32,13 @@ public class TrapezoidalTankDriveRotationProfileTest {
      */
     @Test
     public void testTrapezoidalTankDriveRotationProfile() {
-        Random rand = new Random();
-        double maxV = rand.nextDouble() * 1000;
-        double maxA = rand.nextDouble() * 1000;
-        double angle = rand.nextDouble() * Math.PI;
-        double baseWidth = rand.nextDouble() * 1000;
-        double baseRadius = baseWidth / 2;
+        TestHelper helper = TestHelper.getInstance(getClass());
 
-        System.out.println("[INFO] maxV: " + maxV);
-        System.out.println("[INFO] maxA: " + maxA);
-        System.out.println("[INFO] angle: " + angle);
-        System.out.println("[INFO] baseWidth: " + baseWidth);
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double angle = helper.getDouble("angle", Math.PI * 2);
+        double baseWidth = helper.getDouble("baseWidth", 1000);
+        double baseRadius = baseWidth / 2;
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA, baseWidth);
 
@@ -78,17 +73,13 @@ public class TrapezoidalTankDriveRotationProfileTest {
      */
     @Test
     public void testTrapezoidalTankDriveRotationProfileReversed() {
-        Random rand = new Random();
-        double maxV = rand.nextDouble() * 1000;
-        double maxA = rand.nextDouble() * 1000;
-        double angle = -rand.nextDouble() * Math.PI;
-        double baseWidth = rand.nextDouble() * 1000;
-        double baseRadius = baseWidth / 2;
+        TestHelper helper = TestHelper.getInstance(getClass());
 
-        System.out.println("[INFO] maxV: " + maxV);
-        System.out.println("[INFO] maxA: " + maxA);
-        System.out.println("[INFO] angle: " + angle);
-        System.out.println("[INFO] baseWidth: " + baseWidth);
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double angle = helper.getDouble("angle", -Math.PI * 2, 0);
+        double baseWidth = helper.getDouble("baseWidth", 1000);
+        double baseRadius = baseWidth / 2;
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA, baseWidth);
 
@@ -126,17 +117,13 @@ public class TrapezoidalTankDriveRotationProfileTest {
      */
     @Test
     public void testTrapezoidalTankDriveRotationProfileAdvanced() {
-        Random rand = new Random();
-        double maxV = rand.nextDouble() * 1000;
-        double maxA = rand.nextDouble() * 1000;
-        double angle = rand.nextDouble() * Math.PI;
-        double baseWidth = rand.nextDouble() * 1000;
-        double baseRadius = baseWidth / 2;
+        TestHelper helper = TestHelper.getInstance(getClass());
 
-        System.out.println("[INFO] maxV: " + maxV);
-        System.out.println("[INFO] maxA: " + maxA);
-        System.out.println("[INFO] angle: " + angle);
-        System.out.println("[INFO] baseWidth: " + baseWidth);
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double angle = helper.getDouble("angle", Math.PI * 2);
+        double baseWidth = helper.getDouble("baseWidth", 1000);
+        double baseRadius = baseWidth / 2;
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA, baseWidth);
 
@@ -178,17 +165,13 @@ public class TrapezoidalTankDriveRotationProfileTest {
      */
     @Test
     public void testTrapezoidalTankDriveRotationProfileAdvancedReversed() {
-        Random rand = new Random();
-        double maxV = rand.nextDouble() * 1000;
-        double maxA = rand.nextDouble() * 1000;
-        double angle = -rand.nextDouble() * Math.PI;
-        double baseWidth = rand.nextDouble() * 1000;
-        double baseRadius = baseWidth / 2;
+        TestHelper helper = TestHelper.getInstance(getClass());
 
-        System.out.println("[INFO] maxV: " + maxV);
-        System.out.println("[INFO] maxA: " + maxA);
-        System.out.println("[INFO] angle: " + angle);
-        System.out.println("[INFO] baseWidth: " + baseWidth);
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double angle = helper.getDouble("angle", -Math.PI * 2, 0);
+        double baseWidth = helper.getDouble("baseWidth", 1000);
+        double baseRadius = baseWidth / 2;
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA, baseWidth);
 

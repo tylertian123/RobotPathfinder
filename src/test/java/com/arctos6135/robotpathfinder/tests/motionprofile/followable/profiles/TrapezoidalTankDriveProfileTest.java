@@ -6,13 +6,12 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertThat;
 
-import java.util.Random;
-
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
 import com.arctos6135.robotpathfinder.follower.Followable;
 import com.arctos6135.robotpathfinder.math.MathUtils;
 import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalTankDriveProfile;
+import com.arctos6135.robotpathfinder.tests.TestHelper;
 
 import org.junit.Test;
 
@@ -31,14 +30,11 @@ public class TrapezoidalTankDriveProfileTest {
      */
     @Test
     public void testTrapezoidalTankDriveProfile() {
-        Random rand = new Random();
-        double maxV = rand.nextDouble() * 1000;
-        double maxA = rand.nextDouble() * 1000;
-        double distance = rand.nextDouble() * 1000;
-
-        System.out.println("[INFO] maxV: " + maxV);
-        System.out.println("[INFO] maxA: " + maxA);
-        System.out.println("[INFO] distance: " + distance);
+        TestHelper helper = TestHelper.getInstance(getClass());
+        
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double distance = helper.getDouble("distance", 1000);
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
@@ -70,14 +66,11 @@ public class TrapezoidalTankDriveProfileTest {
      */
     @Test
     public void testTrapezoidalTankDriveProfileReversed() {
-        Random rand = new Random();
-        double maxV = rand.nextDouble() * 1000;
-        double maxA = rand.nextDouble() * 1000;
-        double distance = -rand.nextDouble() * 1000;
-
-        System.out.println("[INFO] maxV: " + maxV);
-        System.out.println("[INFO] maxA: " + maxA);
-        System.out.println("[INFO] distance: " + distance);
+        TestHelper helper = TestHelper.getInstance(getClass());
+        
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double distance = helper.getDouble("distance", -1000, 0);
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
@@ -110,14 +103,11 @@ public class TrapezoidalTankDriveProfileTest {
      */
     @Test
     public void testTrapezoidalTankDriveProfileAdvanced() {
-        Random rand = new Random();
-        double maxV = rand.nextDouble() * 1000;
-        double maxA = rand.nextDouble() * 1000;
-        double distance = rand.nextDouble() * 1000;
-
-        System.out.println("[INFO] maxV: " + maxV);
-        System.out.println("[INFO] maxA: " + maxA);
-        System.out.println("[INFO] distance: " + distance);
+        TestHelper helper = TestHelper.getInstance(getClass());
+        
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double distance = helper.getDouble("distance", 1000);
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
@@ -154,14 +144,11 @@ public class TrapezoidalTankDriveProfileTest {
      */
     @Test
     public void testTrapezoidalTankDriveProfileAdvancedReversed() {
-        Random rand = new Random();
-        double maxV = rand.nextDouble() * 1000;
-        double maxA = rand.nextDouble() * 1000;
-        double distance = -rand.nextDouble() * 1000;
-
-        System.out.println("[INFO] maxV: " + maxV);
-        System.out.println("[INFO] maxA: " + maxA);
-        System.out.println("[INFO] distance: " + distance);
+        TestHelper helper = TestHelper.getInstance(getClass());
+        
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double distance = helper.getDouble("distance", -1000, 0);
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 

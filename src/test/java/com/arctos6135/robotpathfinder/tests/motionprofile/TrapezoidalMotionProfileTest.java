@@ -7,13 +7,12 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertThat;
 
-import java.util.Random;
-
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.math.MathUtils;
 import com.arctos6135.robotpathfinder.motionprofile.MotionProfile;
 import com.arctos6135.robotpathfinder.motionprofile.TrapezoidalMotionProfile;
 import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalBasicProfile;
+import com.arctos6135.robotpathfinder.tests.TestHelper;
 
 import org.junit.Test;
 
@@ -32,14 +31,11 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfile() {
-        Random rand = new Random();
-        double maxV = rand.nextDouble() * 1000;
-        double maxA = rand.nextDouble() * 1000;
-        double distance = rand.nextDouble() * 1000;
+        TestHelper helper = TestHelper.getInstance(getClass());
 
-        System.out.println("[INFO] maxV: " + maxV);
-        System.out.println("[INFO] maxA: " + maxA);
-        System.out.println("[INFO] distance: " + distance);
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double distance = helper.getDouble("distance", 1000);
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
@@ -62,14 +58,11 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfileReversed() {
-        Random rand = new Random();
-        double maxV = rand.nextDouble() * 1000;
-        double maxA = rand.nextDouble() * 1000;
-        double distance = -rand.nextDouble() * 1000;
+        TestHelper helper = TestHelper.getInstance(getClass());
 
-        System.out.println("[INFO] maxV: " + maxV);
-        System.out.println("[INFO] maxA: " + maxA);
-        System.out.println("[INFO] distance: " + distance);
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double distance = helper.getDouble("distance", -1000, 0);
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
@@ -93,14 +86,11 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfileAdvanced() {
-        Random rand = new Random();
-        double maxV = rand.nextDouble() * 1000;
-        double maxA = rand.nextDouble() * 1000;
-        double distance = rand.nextDouble() * 1000;
+        TestHelper helper = TestHelper.getInstance(getClass());
 
-        System.out.println("[INFO] maxV: " + maxV);
-        System.out.println("[INFO] maxA: " + maxA);
-        System.out.println("[INFO] distance: " + distance);
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double distance = helper.getDouble("distance", 1000);
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
@@ -108,13 +98,18 @@ public class TrapezoidalMotionProfileTest {
 
         double dt = profile.totalTime() / 1000;
         for (double t = 0; t < profile.totalTime(); t += dt) {
-            assertThat(profile.position(t), either(lessThan(distance)).or(closeTo(distance, MathUtils.getFloatCompareThreshold())));
-            assertThat(profile.position(t), either(greaterThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
+            assertThat(profile.position(t),
+                    either(lessThan(distance)).or(closeTo(distance, MathUtils.getFloatCompareThreshold())));
+            assertThat(profile.position(t),
+                    either(greaterThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(profile.velocity(t), either(lessThan((maxV))).or(closeTo((maxV), MathUtils.getFloatCompareThreshold())));
-            assertThat(profile.velocity(t), either(greaterThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
+            assertThat(profile.velocity(t),
+                    either(lessThan((maxV))).or(closeTo((maxV), MathUtils.getFloatCompareThreshold())));
+            assertThat(profile.velocity(t),
+                    either(greaterThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(Math.abs(profile.acceleration(t)), either(lessThan((maxA))).or(closeTo((maxA), MathUtils.getFloatCompareThreshold())));
+            assertThat(Math.abs(profile.acceleration(t)),
+                    either(lessThan((maxA))).or(closeTo((maxA), MathUtils.getFloatCompareThreshold())));
         }
     }
 
@@ -128,14 +123,11 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfileAdvancedReversed() {
-        Random rand = new Random();
-        double maxV = rand.nextDouble() * 1000;
-        double maxA = rand.nextDouble() * 1000;
-        double distance = -rand.nextDouble() * 1000;
+        TestHelper helper = TestHelper.getInstance(getClass());
 
-        System.out.println("[INFO] maxV: " + maxV);
-        System.out.println("[INFO] maxA: " + maxA);
-        System.out.println("[INFO] distance: " + distance);
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double distance = helper.getDouble("distance", -1000, 0);
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
@@ -143,13 +135,18 @@ public class TrapezoidalMotionProfileTest {
 
         double dt = profile.totalTime() / 1000;
         for (double t = 0; t < profile.totalTime(); t += dt) {
-            assertThat(profile.position(t), either(greaterThan((distance))).or(closeTo((distance), MathUtils.getFloatCompareThreshold())));
-            assertThat(profile.position(t), either(lessThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
+            assertThat(profile.position(t),
+                    either(greaterThan((distance))).or(closeTo((distance), MathUtils.getFloatCompareThreshold())));
+            assertThat(profile.position(t),
+                    either(lessThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(-profile.velocity(t), either(lessThan((maxV))).or(closeTo((maxV), MathUtils.getFloatCompareThreshold())));
-            assertThat(profile.velocity(t), either(lessThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
+            assertThat(-profile.velocity(t),
+                    either(lessThan((maxV))).or(closeTo((maxV), MathUtils.getFloatCompareThreshold())));
+            assertThat(profile.velocity(t),
+                    either(lessThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(Math.abs(profile.acceleration(t)), either(lessThan((maxA))).or(closeTo((maxA), MathUtils.getFloatCompareThreshold())));
+            assertThat(Math.abs(profile.acceleration(t)),
+                    either(lessThan((maxA))).or(closeTo((maxA), MathUtils.getFloatCompareThreshold())));
         }
     }
 
@@ -167,27 +164,19 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfileUpdate() {
-        Random rand = new Random();
-        double maxV = rand.nextDouble() * 1000;
-        double maxA = rand.nextDouble() * 1000;
-        double distance = rand.nextDouble() * 1000;
+        TestHelper helper = TestHelper.getInstance(getClass());
 
-        System.out.println("[INFO] maxV: " + maxV);
-        System.out.println("[INFO] maxA: " + maxA);
-        System.out.println("[INFO] distance: " + distance);
-
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double distance = helper.getDouble("distance", 1000);
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
         TrapezoidalMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
 
         // Generate fake update parameters
-        double updateTime = rand.nextDouble() * profile.totalTime();
-        double updatePos = rand.nextDouble() * distance;
-        double updateVel = rand.nextDouble() * maxV;
-
-        System.out.println("[INFO] updateTime: " + updateTime);
-        System.out.println("[INFO] updatePos: " + updatePos);
-        System.out.println("[INFO] updateVel: " + updateVel);
+        double updateTime = helper.getDouble("updateTime", profile.totalTime());
+        double updatePos = helper.getDouble("updatePos", distance);
+        double updateVel = helper.getDouble("updateVel", maxV);
 
         // TrapezoidalMotionProfiles completely ignore the acceleration when updating
         // since theres no constraint on how fast it changes
@@ -213,27 +202,20 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfileUpdateReversed() {
-        Random rand = new Random();
-        double maxV = rand.nextDouble() * 1000;
-        double maxA = rand.nextDouble() * 1000;
-        double distance = -rand.nextDouble() * 1000;
+        TestHelper helper = TestHelper.getInstance(getClass());
 
-        System.out.println("[INFO] maxV: " + maxV);
-        System.out.println("[INFO] maxA: " + maxA);
-        System.out.println("[INFO] distance: " + distance);
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double distance = helper.getDouble("distance", -1000, 0);
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
         TrapezoidalMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
 
         // Generate fake update parameters
-        double updateTime = rand.nextDouble() * profile.totalTime();
-        double updatePos = rand.nextDouble() * distance;
-        double updateVel = rand.nextDouble() * -maxV;
-
-        System.out.println("[INFO] updateTime: " + updateTime);
-        System.out.println("[INFO] updatePos: " + updatePos);
-        System.out.println("[INFO] updateVel: " + updateVel);
+        double updateTime = helper.getDouble("updateTime", profile.totalTime());
+        double updatePos = helper.getDouble("updatePos", distance);
+        double updateVel = helper.getDouble("updateVel", -maxV, 0);
 
         // TrapezoidalMotionProfiles completely ignore the acceleration when updating
         // since theres no constraint on how fast it changes
@@ -263,25 +245,19 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfileUpdateOvershoot() {
-        Random rand = new Random();
-        double maxV = rand.nextDouble() * 1000;
-        double maxA = rand.nextDouble() * 1000;
-        double distance = rand.nextDouble() * 1000;
+        TestHelper helper = TestHelper.getInstance(getClass());
 
-        System.out.println("[INFO] maxV: " + maxV);
-        System.out.println("[INFO] maxA: " + maxA);
-        System.out.println("[INFO] distance: " + distance);
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double distance = helper.getDouble("distance", 1000);
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
         TrapezoidalMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
 
         // Generate fake update parameters
-        double updateTime = rand.nextDouble() * profile.totalTime();
-        double updateVel = rand.nextDouble() * maxV;
-
-        System.out.println("[INFO] updateTime: " + updateTime);
-        System.out.println("[INFO] updateVel: " + updateVel);
+        double updateTime = helper.getDouble("updateTime", profile.totalTime());
+        double updateVel = helper.getDouble("updateVel", maxV);
 
         boolean overshoot = profile.update(updateTime, distance, updateVel, 0);
         double totalTime = profile.totalTime();
@@ -291,7 +267,8 @@ public class TrapezoidalMotionProfileTest {
 
         // Calculate the overshoot distance using kinematic forumlas
         double overshootDist = -(updateVel * updateVel) / (2 * -maxA);
-        assertThat(profile.position(totalTime), closeTo(distance + overshootDist, MathUtils.getFloatCompareThreshold()));
+        assertThat(profile.position(totalTime),
+                closeTo(distance + overshootDist, MathUtils.getFloatCompareThreshold()));
     }
 
     /**
@@ -304,25 +281,19 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfileUpdateOvershootReversed() {
-        Random rand = new Random();
-        double maxV = rand.nextDouble() * 1000;
-        double maxA = rand.nextDouble() * 1000;
-        double distance = -rand.nextDouble() * 1000;
+        TestHelper helper = TestHelper.getInstance(getClass());
 
-        System.out.println("[INFO] maxV: " + maxV);
-        System.out.println("[INFO] maxA: " + maxA);
-        System.out.println("[INFO] distance: " + distance);
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double distance = helper.getDouble("distance", -1000, 0);
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
         TrapezoidalMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
 
         // Generate fake update parameters
-        double updateTime = rand.nextDouble() * profile.totalTime();
-        double updateVel = rand.nextDouble() * -maxV;
-
-        System.out.println("[INFO] updateTime: " + updateTime);
-        System.out.println("[INFO] updateVel: " + updateVel);
+        double updateTime = helper.getDouble("updateTime", profile.totalTime());
+        double updateVel = helper.getDouble("updateVel", -maxV, 0);
 
         boolean overshoot = profile.update(updateTime, distance, updateVel, 0);
         double totalTime = profile.totalTime();
@@ -332,6 +303,7 @@ public class TrapezoidalMotionProfileTest {
 
         // Calculate the overshoot distance using kinematic forumlas
         double overshootDist = -(updateVel * updateVel) / (2 * maxA);
-        assertThat(profile.position(totalTime), closeTo(distance + overshootDist, MathUtils.getFloatCompareThreshold()));
+        assertThat(profile.position(totalTime),
+                closeTo(distance + overshootDist, MathUtils.getFloatCompareThreshold()));
     }
 }

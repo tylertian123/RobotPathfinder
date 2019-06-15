@@ -11,6 +11,7 @@ import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
 import com.arctos6135.robotpathfinder.follower.Follower;
 import com.arctos6135.robotpathfinder.follower.TankDriveFollower;
+import com.arctos6135.robotpathfinder.tests.TestHelper;
 
 import org.junit.Test;
 
@@ -97,15 +98,26 @@ public class FollowerTest {
      */
     @Test
     public void testTankDriveFollowerState() {
-        RobotSpecs specs = new RobotSpecs(5, 3, 1);
-        TrajectoryParams params = new TrajectoryParams();
-        params.waypoints = new Waypoint[] { new Waypoint(0, 0, Math.PI / 2), new Waypoint(10, 10, Math.PI / 2),
-                new Waypoint(0, 20, Math.PI), };
-        params.alpha = 20;
-        params.pathType = PathType.QUINTIC_HERMITE;
-        params.sampleCount = 1000;
+        TestHelper helper = TestHelper.getInstance(getClass());
 
-        TankDriveTrajectory traj = new TankDriveTrajectory(specs, params);
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double startX = helper.getDouble("startX", 1000);
+        double startY = helper.getDouble("startY", 1000);
+        double endX = helper.getDouble("endX", 1000);
+        double endY = helper.getDouble("endY", 1000);
+        double startHeading = helper.getDouble("startHeading", Math.PI * 2);
+        double endHeading = helper.getDouble("endHeading", Math.PI * 2);
+        double baseWidth = helper.getDouble("baseWidth", 1000);
+
+        RobotSpecs robotSpecs = new RobotSpecs(maxV, maxA, baseWidth);
+        TrajectoryParams params = new TrajectoryParams();
+        params.waypoints = new Waypoint[] { new Waypoint(startX, startY, startHeading),
+                new Waypoint(endX, endY, endHeading), };
+        params.alpha = Math.sqrt((startX - endX) * (startX - endX) + (startY - endY) * (startY - endY));
+        params.sampleCount = 1000;
+        params.pathType = PathType.QUINTIC_HERMITE;
+        TankDriveTrajectory traj = new TankDriveTrajectory(robotSpecs, params);
 
         FakeTimer timer = new FakeTimer();
         Follower<TankDriveMoment> follower = new TankDriveFollower(traj, new FakeMotor(), new FakeMotor(),

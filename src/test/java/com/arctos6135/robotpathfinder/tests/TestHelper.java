@@ -9,6 +9,21 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class TestHelper {
 
+    static {
+        // Add a shutdown hook so that the logs are always written
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run () {
+                try {
+                    flushAll();
+                }
+                catch(IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
     // Maps classes to instances of TestHelper
     // Each class can only have one instance
     // Use ConcurrentHashMaps since tests might be multithreaded
@@ -53,7 +68,12 @@ public final class TestHelper {
     private Random rand = new Random();
 
     public double getDouble(String name, double max) {
-        return getDouble(name, 0, max);
+        // Generate the double value
+        double val = rand.nextDouble() * max;
+        // Log it
+        StringBuffer log = getCallerLogs();
+        log.append("[VALUE.DOUBLE] " + name + ": " + val + "\n");
+        return val;
     }
     public double getDouble(String name, double min, double max) {
         // Generate the double value
@@ -62,6 +82,28 @@ public final class TestHelper {
         StringBuffer log = getCallerLogs();
         log.append("[VALUE.DOUBLE] " + name + ": " + val + "\n");
         return val;
+    }
+
+    public int getInt(String name, int max) {
+        // Generate the int value
+        int val = rand.nextInt(max);
+        // Log it
+        StringBuffer log = getCallerLogs();
+        log.append("[VALUE.INT] " + name + ": " + val + "\n");
+        return val;
+    }
+    public int getInt(String name, int min, int max) {
+        // Generate the int value
+        int val = rand.nextInt(max - min) + min;
+        // Log it
+        StringBuffer log = getCallerLogs();
+        log.append("[VALUE.INT] " + name + ": " + val + "\n");
+        return val;
+    }
+
+    public void logMessage(String message) {
+        StringBuffer log = getCallerLogs();
+        log.append("[MESSAGE] " + message + "\n");
     }
 
     public static final String LOG_LOCATION = "build" + File.separator + "testLogs" + File.separator;

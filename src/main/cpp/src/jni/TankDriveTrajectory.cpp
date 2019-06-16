@@ -65,7 +65,7 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_TankD
         jmethodID constructor_mid = env->GetMethodID(mclass, "<init>", "(DDDDDDDDDZ)V");
         
         for(size_t i = 0; i < moments.size(); i ++) {
-            jobject m = env->NewObject(mclass, constructor_mid, moments[i].l_dist, moments[i].r_dist, moments[i].l_vel,
+            jobject m = env->NewObject(mclass, constructor_mid, moments[i].l_pos, moments[i].r_pos, moments[i].l_vel,
                     moments[i].r_vel, moments[i].l_accel, moments[i].r_accel, moments[i].heading, moments[i].time,
                     moments[i].init_facing, moments[i].backwards);
             env->SetObjectArrayElement(*arr, i, m);
@@ -84,7 +84,7 @@ JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_Ta
         jclass mclass = env->FindClass("com/arctos6135/robotpathfinder/core/trajectory/TankDriveMoment");
         jmethodID constructor_mid = env->GetMethodID(mclass, "<init>", "(DDDDDDDDDZ)V");
 
-        return env->NewObject(mclass, constructor_mid, m.l_dist, m.r_dist, m.l_vel, m.r_vel, m.l_accel, m.r_accel, 
+        return env->NewObject(mclass, constructor_mid, m.l_pos, m.r_pos, m.l_vel, m.r_vel, m.l_accel, m.r_accel, 
                 m.heading, m.time, m.init_facing, m.backwards);
     }
 }

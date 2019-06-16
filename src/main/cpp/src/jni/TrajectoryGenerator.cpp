@@ -32,18 +32,18 @@ JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_Tr
     auto &moments = t->get_moments();
     if(angle > 0) {
         for(auto &m : moments) {
-            m.l_dist *= -1;
+            m.l_pos *= -1;
             m.l_vel *= -1;
             m.l_accel *= -1;
-            m.heading = rpf::rangle(m.r_dist / base_radius + m.init_facing);
+            m.heading = rpf::rangle(m.r_pos / base_radius + m.init_facing);
         }
     }
     else {
         for(auto &m : moments) {
-            m.r_dist *= -1;
+            m.r_pos *= -1;
             m.r_vel *= -1;
             m.r_accel *= -1;
-            m.heading = rpf::rangle(-m.l_dist / base_radius + m.init_facing);
+            m.heading = rpf::rangle(-m.l_pos / base_radius + m.init_facing);
         }
     }
 

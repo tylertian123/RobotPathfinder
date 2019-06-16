@@ -7,13 +7,13 @@ namespace rpf {
 
         TankDriveMoment() {}
         TankDriveMoment(double ld, double rd, double lv, double rv, double la, double ra, double h) 
-                : l_dist(ld), r_dist(rd), l_vel(lv), r_vel(rv), l_accel(la), r_accel(ra), heading(h) {}
+                : l_pos(ld), r_pos(rd), l_vel(lv), r_vel(rv), l_accel(la), r_accel(ra), heading(h) {}
         TankDriveMoment(double ld, double rd, double lv, double rv, double la, double ra, double h, double t)
-                : l_dist(ld), r_dist(rd), l_vel(lv), r_vel(rv), l_accel(la), r_accel(ra), heading(h), time(t) {}
+                : l_pos(ld), r_pos(rd), l_vel(lv), r_vel(rv), l_accel(la), r_accel(ra), heading(h), time(t) {}
         TankDriveMoment(double ld, double rd, double lv, double rv, double la, double ra, double h, double t, double ifacing)
-                : l_dist(ld), r_dist(rd), l_vel(lv), r_vel(rv), l_accel(la), r_accel(ra), heading(h), time(t), init_facing(ifacing) {}
+                : l_pos(ld), r_pos(rd), l_vel(lv), r_vel(rv), l_accel(la), r_accel(ra), heading(h), time(t), init_facing(ifacing) {}
         
-        double l_dist, r_dist;
+        double l_pos, r_pos;
         double l_vel, r_vel;
         double l_accel, r_accel;
         double heading;

@@ -61,7 +61,7 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_Basic
         jmethodID constructor_mid = env->GetMethodID(mclass, "<init>", "(DDDDDDZ)V");
         
         for(size_t i = 0; i < moments.size(); i ++) {
-            jobject m = env->NewObject(mclass, constructor_mid, moments[i].dist, moments[i].vel, moments[i].accel,
+            jobject m = env->NewObject(mclass, constructor_mid, moments[i].pos, moments[i].vel, moments[i].accel,
                     moments[i].heading, moments[i].time, moments[i].init_facing, moments[i].backwards);
             env->SetObjectArrayElement(*arr, i, m);
         }
@@ -79,7 +79,7 @@ JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_Ba
         jclass mclass = env->FindClass("com/arctos6135/robotpathfinder/core/trajectory/BasicMoment");
         jmethodID constructor_mid = env->GetMethodID(mclass, "<init>", "(DDDDDDZ)V");
 
-        return env->NewObject(mclass, constructor_mid, m.dist, m.vel, m.accel, m.heading, m.time, m.init_facing, m.backwards);
+        return env->NewObject(mclass, constructor_mid, m.pos, m.vel, m.accel, m.heading, m.time, m.init_facing, m.backwards);
     }
 }
 

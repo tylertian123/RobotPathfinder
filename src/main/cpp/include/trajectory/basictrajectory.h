@@ -266,7 +266,7 @@ namespace rpf {
                 else {
                     // If there is no time diff, it must mean that the acceleration is equal to zero
                     // In this case we can simply use the position difference to calculate time difference
-                    double dt = (moments[i].dist - moments[i - 1].dist) / moments[i - 1].vel;
+                    double dt = (moments[i].pos - moments[i - 1].pos) / moments[i - 1].vel;
                     moments[i].time = moments[i - 1].time + dt;
                 }
             }

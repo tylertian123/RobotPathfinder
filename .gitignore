@@ -24,3 +24,6 @@
 
 # VM Crash Logs
 hs_err_pid*.log
+
+# Debug test file
+/src/test/java/DebugTests.java

@@ -1,10 +1,10 @@
 
 import java.io.IOException;
 
-import com.arctos6135.robotpathfinder.tests.core.trajectory.TankDriveTrajectoryTest;
-import com.arctos6135.robotpathfinder.tests.motionprofile.TrapezoidalMotionProfileTest;
+import com.arctos6135.robotpathfinder.tests.core.trajectory.BasicTrajectoryTest;
 
 import org.junit.runner.JUnitCore;
+import org.junit.runner.Request;
 import org.junit.runner.Result;
 
 public class DebugTests {
@@ -19,8 +19,8 @@ public class DebugTests {
     public static void main(String[] args) throws Exception {
         prompt();
         JUnitCore core = new JUnitCore();
-        @SuppressWarnings("unused")
-        Result result = core.run(TrapezoidalMotionProfileTest.class,
-                TankDriveTrajectoryTest.class);
+        Request request = Request.method(BasicTrajectoryTest.class, "testBeginningAndEndWaypointEx");
+        Result result = core.run(request);
+        System.out.println(result.wasSuccessful() ? "SUCCESS" : "FAILED");
     }
 }

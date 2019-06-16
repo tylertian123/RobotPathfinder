@@ -4,6 +4,8 @@ import static org.hamcrest.Matchers.closeTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.TrajectoryParams;
 import com.arctos6135.robotpathfinder.core.Waypoint;
@@ -20,6 +22,15 @@ import org.junit.Test;
  * This class contains tests for {@link BasicTrajectory}.
  */
 public class BasicTrajectoryTest {
+
+    static {
+        try {
+            TestHelper.getInstance(BasicTrajectoryTest.class).setReplicateLastTest(true);
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Performs velocity and acceleration limit testing on a

@@ -1,14 +1,13 @@
 package com.arctos6135.robotpathfinder.tests.follower;
 
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.trajectory.Moment;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
-import com.arctos6135.robotpathfinder.core.trajectory.Trajectory;
 import com.arctos6135.robotpathfinder.follower.DynamicFollowable;
 import com.arctos6135.robotpathfinder.follower.DynamicFollower;
 import com.arctos6135.robotpathfinder.follower.DynamicTankDriveFollower;

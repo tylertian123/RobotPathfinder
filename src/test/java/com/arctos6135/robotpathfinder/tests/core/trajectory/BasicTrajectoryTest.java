@@ -1,7 +1,6 @@
 package com.arctos6135.robotpathfinder.tests.core.trajectory;
 
 import static org.hamcrest.Matchers.closeTo;
-import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
@@ -323,7 +322,7 @@ public class BasicTrajectoryTest {
      * constraints by specifying an unreachable velocity using a {@link Waypoint}.
      * It then asserts that the constructor throws an exception from native code.
      */
-    @Test
+    @Test(expected = TrajectoryGenerationException.class)
     public void testBasicTrajectoryGenerationException() {
         TestHelper helper = TestHelper.getInstance(getClass());
 
@@ -348,14 +347,7 @@ public class BasicTrajectoryTest {
         params.sampleCount = 1000;
         params.pathType = PathType.QUINTIC_HERMITE;
 
-        boolean exception = false;
-        try {
-            BasicTrajectory traj = new BasicTrajectory(robotSpecs, params);
-            traj.close();
-        } catch (TrajectoryGenerationException e) {
-            exception = true;
-        }
-
-        assertThat(exception, is(true));
+        BasicTrajectory traj = new BasicTrajectory(robotSpecs, params);
+        traj.close();
     }
 }

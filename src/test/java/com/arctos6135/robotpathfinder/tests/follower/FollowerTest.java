@@ -82,7 +82,7 @@ public class FollowerTest {
     }
 
     /**
-     * Performs testing on the 'state' logic of {@link TankDriveFollower}.
+     * Performs testing on the 'state' logic of {@link Follower} using a {@link TankDriveFollower}.
      * 
      * This test creates a {@link TankDriveFollower} and asserts the following:
      * <ul>

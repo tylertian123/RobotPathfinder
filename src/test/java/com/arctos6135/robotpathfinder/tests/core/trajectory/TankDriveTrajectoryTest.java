@@ -1,7 +1,6 @@
 package com.arctos6135.robotpathfinder.tests.core.trajectory;
 
 import static org.hamcrest.Matchers.closeTo;
-import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
@@ -313,7 +312,7 @@ public class TankDriveTrajectoryTest {
      * constraints by specifying an unreachable velocity using a {@link Waypoint}.
      * It then asserts that the constructor throws an exception from native code.
      */
-    @Test
+    @Test(expected = TrajectoryGenerationException.class)
     public void testTankDriveTrajectoryGenerationException() {
         TestHelper helper = TestHelper.getInstance(getClass());
 
@@ -339,14 +338,7 @@ public class TankDriveTrajectoryTest {
         params.sampleCount = 1000;
         params.pathType = PathType.QUINTIC_HERMITE;
 
-        boolean exception = false;
-        try {
-            TankDriveTrajectory traj = new TankDriveTrajectory(robotSpecs, params);
-            traj.close();
-        } catch (TrajectoryGenerationException e) {
-            exception = true;
-        }
-
-        assertThat(exception, is(true));
+        TankDriveTrajectory traj = new TankDriveTrajectory(robotSpecs, params);
+        traj.close();
     }
 }

@@ -215,28 +215,28 @@ abstract public class Follower<T extends Moment> {
 	}
 
 	/**
-	 * This functional interface represents a source of distance data, such as an
+	 * This functional interface represents a source of 1-dimensional positional data, such as an
 	 * encoder.
 	 * 
 	 * @author Tyler Tian
 	 *
 	 */
 	@FunctionalInterface
-	public interface DistanceSource {
+	public interface PositionSource {
 		/**
-		 * Gets distance data from the source.<br>
+		 * Gets position data from the source.<br>
 		 * <br>
 		 * Please note that the unit of the result should stay consistent with the unit
 		 * used to generate the trajectory the follower is to follow. For example, if
 		 * the trajectory is generated with units of m/s, the result should be in
 		 * meters.
 		 * 
-		 * @return The distance
+		 * @return The position
 		 */
-		public double getDistance();
+		public double getPosition();
 	}
 
-	public interface AdvancedDistanceSource extends DistanceSource {
+	public interface AdvancedPositionSource extends PositionSource {
 		public double getVelocity();
 
 		public double getAcceleration();

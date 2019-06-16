@@ -18,7 +18,7 @@ import com.arctos6135.robotpathfinder.math.MathUtils;
  */
 public class TankDriveFollower extends Follower<TankDriveMoment> {
 
-	protected DistanceSource lDistSrc, rDistSrc;
+	protected PositionSource lDistSrc, rDistSrc;
 	protected DirectionSource directionSrc;
 	protected Motor lMotor, rMotor;
 
@@ -72,10 +72,10 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param lMotor   The left side motor
 	 * @param rMotor   The right side motor
 	 * @param lDistSrc A
-	 *                 {@link com.arctos6135.robotpathfinder.follower.Follower.DistanceSource
+	 *                 {@link com.arctos6135.robotpathfinder.follower.Follower.PositionSource
 	 *                 DistanceSource} for the left motor
 	 * @param rDistSrc A
-	 *                 {@link com.arctos6135.robotpathfinder.follower.Follower.DistanceSource
+	 *                 {@link com.arctos6135.robotpathfinder.follower.Follower.PositionSource
 	 *                 DistanceSource} for the right motor
 	 * @param timer    A
 	 *                 {@link com.arctos6135.robotpathfinder.follower.Follower.TimestampSource
@@ -85,8 +85,8 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param kP       The proportional gain
 	 * @param kD       The derivative gain
 	 */
-	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, DistanceSource lDistSrc,
-			DistanceSource rDistSrc, TimestampSource timer, double kV, double kA, double kP, double kD) {
+	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, PositionSource lDistSrc,
+			PositionSource rDistSrc, TimestampSource timer, double kV, double kA, double kP, double kD) {
 		setGains(kV, kA, kP, kD, 0);
 		this.target = target;
 		this.lMotor = lMotor;
@@ -135,10 +135,10 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param lMotor   The left side motor
 	 * @param rMotor   The right side motor
 	 * @param lDistSrc A
-	 *                 {@link com.arctos6135.robotpathfinder.follower.Follower.DistanceSource
+	 *                 {@link com.arctos6135.robotpathfinder.follower.Follower.PositionSource
 	 *                 DistanceSource} for the left motor
 	 * @param rDistSrc A
-	 *                 {@link com.arctos6135.robotpathfinder.follower.Follower.DistanceSource
+	 *                 {@link com.arctos6135.robotpathfinder.follower.Follower.PositionSource
 	 *                 DistanceSource} for the right motor
 	 * @param timer    A
 	 *                 {@link com.arctos6135.robotpathfinder.follower.Follower.TimestampSource
@@ -153,8 +153,8 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param kDP      The directional-proportional gain; for more information, see
 	 *                 {@link #setDP(double)}
 	 */
-	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, DistanceSource lDistSrc,
-			DistanceSource rDistSrc, TimestampSource timer, DirectionSource dirSrc, double kV, double kA, double kP,
+	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, PositionSource lDistSrc,
+			PositionSource rDistSrc, TimestampSource timer, DirectionSource dirSrc, double kV, double kA, double kP,
 			double kD, double kDP) {
 		setGains(kV, kA, kP, kD, kDP);
 		this.target = target;
@@ -245,7 +245,7 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param rDistSrc The right distance source
 	 * @throws RuntimeException If the follower is running
 	 */
-	public void setDistanceSources(DistanceSource lDistSrc, DistanceSource rDistSrc) {
+	public void setDistanceSources(PositionSource lDistSrc, PositionSource rDistSrc) {
 		if (running) {
 			throw new RuntimeException("Distance Sources cannot be changed when follower is running");
 		}
@@ -257,8 +257,8 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	protected void _initialize() {
 		// Reset the initial distance, direction and timestamp references
 		if (lDistSrc != null && rDistSrc != null) {
-			lInitDist = lDistSrc.getDistance();
-			rInitDist = rDistSrc.getDistance();
+			lInitDist = lDistSrc.getPosition();
+			rInitDist = rDistSrc.getPosition();
 		}
 		if (directionSrc != null) {
 			initDirection = directionSrc.getDirection();
@@ -282,8 +282,8 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 		// Calculate errors and derivatives only if the distance sources are not null
 		if (lDistSrc != null && rDistSrc != null) {
 			// Calculate left and right errors
-			leftErr = m.getLeftPosition() - (lDistSrc.getDistance() - lInitDist);
-			rightErr = m.getRightPosition() - (rDistSrc.getDistance() - rInitDist);
+			leftErr = m.getLeftPosition() - (lDistSrc.getPosition() - lInitDist);
+			rightErr = m.getRightPosition() - (rDistSrc.getPosition() - rInitDist);
 			// Get the derivative of the errors
 			// Subtract away the desired velocity to get the true error
 			leftDeriv = (leftErr - lLastErr) / dt - m.getLeftVelocity();

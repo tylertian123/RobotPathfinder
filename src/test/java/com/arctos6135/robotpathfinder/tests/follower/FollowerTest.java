@@ -40,16 +40,16 @@ public class FollowerTest {
     }
 
     /**
-     * A fake {@link Follower.DistanceSource} used for testing.
+     * A fake {@link Follower.PositionSource} used for testing.
      * 
      * It returns a user-defined value (default 0).
      */
-    public static class FakeEncoder implements Follower.DistanceSource {
+    public static class FakeEncoder implements Follower.PositionSource {
 
         public double value = 0;
 
         @Override
-        public double getDistance() {
+        public double getPosition() {
             return value;
         }
     }

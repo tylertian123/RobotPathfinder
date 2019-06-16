@@ -1,5 +1,7 @@
 package com.arctos6135.robotpathfinder.follower;
 
+import com.arctos6135.robotpathfinder.core.trajectory.Moment;
+
 /**
  * This is the base class for all the follower classes.
  * <p>
@@ -12,10 +14,11 @@ package com.arctos6135.robotpathfinder.follower;
  * @author Tyler Tian
  * @since 3.0.0
  */
-abstract public class Follower {
+abstract public class Follower<T extends Moment> {
 
 	protected double kA, kV, kP, kD;
-	protected Followable target;
+	protected Followable<T> target;
+	protected TimestampSource timer;
 
 	protected boolean running = false;
 	protected boolean finished = false;
@@ -118,7 +121,7 @@ abstract public class Follower {
 	 * @param target The new target to follow
 	 * @throws RuntimeException If the follower is running
 	 */
-	public void setTarget(Followable target) {
+	public void setTarget(Followable<T> target) {
 		if (running) {
 			throw new RuntimeException("Target cannot be changed when follower is running");
 		}
@@ -130,7 +133,7 @@ abstract public class Follower {
 	 * 
 	 * @return The target followed by this follower
 	 */
-	public Followable getTarget() {
+	public Followable<T> getTarget() {
 		return target;
 	}
 
@@ -231,6 +234,12 @@ abstract public class Follower {
 		 * @return The distance
 		 */
 		public double getDistance();
+	}
+
+	public interface AdvancedDistanceSource extends DistanceSource {
+		public double getVelocity();
+
+		public double getAcceleration();
 	}
 
 	/**

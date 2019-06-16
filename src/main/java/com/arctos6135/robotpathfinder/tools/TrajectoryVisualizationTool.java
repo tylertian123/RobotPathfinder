@@ -820,12 +820,12 @@ public class TrajectoryVisualizationTool {
 				if (isTank.isSelected()) {
 					TankDriveTrajectory traj = new TankDriveTrajectory(specs, params);
 					pathFrame = Grapher.graphPath(traj.getPath(), 1.0 / pathSamples);
-					movementFrame = Grapher.graphTrajectory(traj, traj.totalTime() / trajSamples);
+					movementFrame = Grapher.graphTankDriveFollowable(traj, traj.totalTime() / trajSamples);
 					totalTime = traj.totalTime();
 				} else {
 					BasicTrajectory traj = new BasicTrajectory(specs, params);
 					pathFrame = Grapher.graphPath(traj.getPath(), 1.0 / pathSamples);
-					movementFrame = Grapher.graphTrajectory(traj, traj.totalTime() / trajSamples);
+					movementFrame = Grapher.graphBasicFollowable(traj, traj.totalTime() / trajSamples);
 					totalTime = traj.totalTime();
 				}
 			} catch (TrajectoryGenerationException e1) {

@@ -3,24 +3,18 @@ package com.arctos6135.robotpathfinder.follower;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
 import com.arctos6135.robotpathfinder.math.MathUtils;
 
-/**
- * A follower class for tank drive robots and trajectories.
- * <p>
- * Followers are classes that can be given parameters to follow a specific
- * trajectory. Tank drive follower does so by using a feedback loop, consisting
- * of 5 gains: velocity feedforward, acceleration feedforward, optional
- * proportional gain, optional derivative gain, and optional
- * directional-proportional gain.
- * </p>
- * 
- * @author Tyler Tian
- * @since 3.0.0
- */
-public class TankDriveFollower extends Follower<TankDriveMoment> {
+public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 
-	protected DistanceSource lDistSrc, rDistSrc;
-	protected DirectionSource directionSrc;
 	protected Motor lMotor, rMotor;
+	// Not null
+	// Either a regular DistanceSource or an AdvancedDistanceSource
+	protected DistanceSource lDistSrc, rDistSrc;
+	// This variable keeps track of whether the position sources are advanced
+	// If true they will directly be used
+	// If false the velocity and acceleration will be calculated manually
+	protected boolean advancedDistSrc = false;
+	// Can be null
+	protected DirectionSource directionSrc;
 
 	// Directional proportional gain
 	protected double kDP = 0;
@@ -30,63 +24,27 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	// Keep track of the error and timestamp of the last iteration to calculate the
 	// derivative
 	protected double initTime, lastTime, lLastErr, rLastErr, lInitDist, rInitDist, initDirection;
-	
+
+	// Used for finding the velocity and acceleration for updating if a regular
+	// DistanceSource is used
+	protected double lLastPos, rLastPos, lLastVel, rLastVel, lLastAccel, rLastAccel;
+
 	protected double leftErr, rightErr, dirErr;
 	// Store these as member variables so they can be accessed from outside the
 	// class for testing purposes
 	protected double leftOutput, rightOutput, leftDeriv, rightDeriv;
 	protected TankDriveMoment lastMoment;
 
-	/**
-	 * Constructs a new tank drive follower. Note that since this constructor does
-	 * not require distance sources or direction sources, the trajectory following
-	 * is based entirely on the feedforward terms.
-	 * 
-	 * @param target The target to follow
-	 * @param lMotor The left side motor
-	 * @param rMotor The right side motor
-	 * @param timer  A
-	 *               {@link com.arctos6135.robotpathfinder.follower.Follower.TimestampSource
-	 *               TimestampSource} to grab timestamps from
-	 * @param kV     The velocity feedforward
-	 * @param kA     The acceleration feedforward
+	/*
+	 * Note that one of the differences between this class and TankDriveFollower is
+	 * the lack of the two constructors that have no distance source. Since updating
+	 * the trajectory requires that we know the distance, the two constructors were
+	 * removed.
 	 */
-	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, TimestampSource timer, double kV,
-			double kA) {
-		setGains(kV, kA, 0, 0, 0);
-		this.target = target;
-		this.lMotor = lMotor;
-		this.rMotor = rMotor;
-		this.lDistSrc = null;
-		this.rDistSrc = null;
-		this.timer = timer;
-		this.directionSrc = null;
-	}
 
-	/**
-	 * Constructs a new tank drive follower. Note that since this constructor does
-	 * not require a direction source, the directional-proportional term will not be
-	 * used.
-	 * 
-	 * @param target   The target to follow
-	 * @param lMotor   The left side motor
-	 * @param rMotor   The right side motor
-	 * @param lDistSrc A
-	 *                 {@link com.arctos6135.robotpathfinder.follower.Follower.DistanceSource
-	 *                 DistanceSource} for the left motor
-	 * @param rDistSrc A
-	 *                 {@link com.arctos6135.robotpathfinder.follower.Follower.DistanceSource
-	 *                 DistanceSource} for the right motor
-	 * @param timer    A
-	 *                 {@link com.arctos6135.robotpathfinder.follower.Follower.TimestampSource
-	 *                 TimestampSource} to grab timestamps from
-	 * @param kV       The velocity feedforward
-	 * @param kA       The acceleration feedforward
-	 * @param kP       The proportional gain
-	 * @param kD       The derivative gain
-	 */
-	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, DistanceSource lDistSrc,
-			DistanceSource rDistSrc, TimestampSource timer, double kV, double kA, double kP, double kD) {
+	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
+			AdvancedDistanceSource lDistSrc, AdvancedDistanceSource rDistSrc, TimestampSource timer, double kV,
+			double kA, double kP, double kD, double updateDelay) {
 		setGains(kV, kA, kP, kD, 0);
 		this.target = target;
 		this.lMotor = lMotor;
@@ -95,67 +53,13 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 		this.rDistSrc = rDistSrc;
 		this.timer = timer;
 		this.directionSrc = null;
+		this.updateDelay = updateDelay;
+		advancedDistSrc = true;
 	}
 
-	/**
-	 * Constructs a new tank drive follower. Note that since this constructor does
-	 * not require distance sources, the proportional and derivative terms will not
-	 * be used.
-	 * 
-	 * @param target The target to follow
-	 * @param lMotor The left side motor
-	 * @param rMotor The right side motor
-	 * @param timer  A
-	 *               {@link com.arctos6135.robotpathfinder.follower.Follower.TimestampSource
-	 *               TimestampSource} to grab timestamps from
-	 * @param dirSrc A
-	 *               {@link com.arctos6135.robotpathfinder.follower.Follower.DirectionSource
-	 *               DirectionSource} to get angle data from
-	 * @param kV     The velocity feedforward
-	 * @param kA     The acceleration feedforward
-	 * @param kDP    The directional-proportional gain; for more information, see
-	 *               {@link #setDP(double)}
-	 */
-	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, TimestampSource timer,
-			DirectionSource dirSrc, double kV, double kA, double kDP) {
-		setGains(kV, kA, 0, 0, kDP);
-		this.target = target;
-		this.lMotor = lMotor;
-		this.rMotor = rMotor;
-		this.lDistSrc = null;
-		this.rDistSrc = null;
-		this.timer = timer;
-		this.directionSrc = dirSrc;
-	}
-
-	/**
-	 * Constructs a new tank drive follower.
-	 * 
-	 * @param target   The target to follow
-	 * @param lMotor   The left side motor
-	 * @param rMotor   The right side motor
-	 * @param lDistSrc A
-	 *                 {@link com.arctos6135.robotpathfinder.follower.Follower.DistanceSource
-	 *                 DistanceSource} for the left motor
-	 * @param rDistSrc A
-	 *                 {@link com.arctos6135.robotpathfinder.follower.Follower.DistanceSource
-	 *                 DistanceSource} for the right motor
-	 * @param timer    A
-	 *                 {@link com.arctos6135.robotpathfinder.follower.Follower.TimestampSource
-	 *                 TimestampSource} to grab timestamps from
-	 * @param dirSrc   A
-	 *                 {@link com.arctos6135.robotpathfinder.follower.Follower.DirectionSource
-	 *                 DirectionSource} to get angle data from
-	 * @param kV       The velocity feedforward
-	 * @param kA       The acceleration feedforward
-	 * @param kP       The proportional gain
-	 * @param kD       The derivative gain
-	 * @param kDP      The directional-proportional gain; for more information, see
-	 *                 {@link #setDP(double)}
-	 */
-	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, DistanceSource lDistSrc,
-			DistanceSource rDistSrc, TimestampSource timer, DirectionSource dirSrc, double kV, double kA, double kP,
-			double kD, double kDP) {
+	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
+			AdvancedDistanceSource lDistSrc, AdvancedDistanceSource rDistSrc, TimestampSource timer,
+			DirectionSource dirSrc, double kV, double kA, double kP, double kD, double kDP, double updateDelay) {
 		setGains(kV, kA, kP, kD, kDP);
 		this.target = target;
 		this.lMotor = lMotor;
@@ -164,6 +68,38 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 		this.rDistSrc = rDistSrc;
 		this.timer = timer;
 		this.directionSrc = dirSrc;
+		this.updateDelay = updateDelay;
+		advancedDistSrc = true;
+	}
+
+	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
+			DistanceSource lDistSrc, DistanceSource rDistSrc, TimestampSource timer, double kV, double kA, double kP,
+			double kD, double updateDelay) {
+		setGains(kV, kA, kP, kD, 0);
+		this.target = target;
+		this.lMotor = lMotor;
+		this.rMotor = rMotor;
+		this.lDistSrc = lDistSrc;
+		this.rDistSrc = rDistSrc;
+		this.timer = timer;
+		this.directionSrc = null;
+		this.updateDelay = updateDelay;
+		advancedDistSrc = false;
+	}
+
+	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
+			DistanceSource lDistSrc, DistanceSource rDistSrc, TimestampSource timer, DirectionSource dirSrc, double kV,
+			double kA, double kP, double kD, double kDP, double updateDelay) {
+		setGains(kV, kA, kP, kD, kDP);
+		this.target = target;
+		this.lMotor = lMotor;
+		this.rMotor = rMotor;
+		this.lDistSrc = lDistSrc;
+		this.rDistSrc = rDistSrc;
+		this.timer = timer;
+		this.directionSrc = dirSrc;
+		this.updateDelay = updateDelay;
+		advancedDistSrc = false;
 	}
 
 	/**
@@ -245,7 +181,7 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param rDistSrc The right distance source
 	 * @throws RuntimeException If the follower is running
 	 */
-	public void setDistanceSources(DistanceSource lDistSrc, DistanceSource rDistSrc) {
+	public void setDistanceSources(AdvancedDistanceSource lDistSrc, AdvancedDistanceSource rDistSrc) {
 		if (running) {
 			throw new RuntimeException("Distance Sources cannot be changed when follower is running");
 		}
@@ -264,6 +200,12 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 			initDirection = directionSrc.getDirection();
 		}
 		initTime = lastTime = timer.getTimestamp();
+
+		if (!advancedDistSrc) {
+			lLastPos = lInitDist;
+			rLastPos = rInitDist;
+			lLastVel = rLastVel = lLastAccel = rLastAccel = 0;
+		}
 	}
 
 	@Override
@@ -279,16 +221,18 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 		TankDriveMoment m = target.get(t);
 
 		leftErr = rightErr = leftDeriv = rightDeriv = dirErr = 0;
-		// Calculate errors and derivatives only if the distance sources are not null
-		if (lDistSrc != null && rDistSrc != null) {
-			// Calculate left and right errors
-			leftErr = m.getLeftPosition() - (lDistSrc.getDistance() - lInitDist);
-			rightErr = m.getRightPosition() - (rDistSrc.getDistance() - rInitDist);
-			// Get the derivative of the errors
-			// Subtract away the desired velocity to get the true error
-			leftDeriv = (leftErr - lLastErr) / dt - m.getLeftVelocity();
-			rightDeriv = (rightErr - rLastErr) / dt - m.getRightVelocity();
-		}
+		// Calculate errors and derivatives
+		// No need for null check
+		// Calculate left and right errors
+		double lPos = (lDistSrc.getDistance() - lInitDist);
+		double rPos = (rDistSrc.getDistance() - rInitDist);
+		leftErr = m.getLeftPosition() - lPos;
+		rightErr = m.getRightPosition() - rPos;
+		// Get the derivative of the errors
+		// Subtract away the desired velocity to get the true error
+		leftDeriv = (leftErr - lLastErr) / dt - m.getLeftVelocity();
+		rightDeriv = (rightErr - rLastErr) / dt - m.getRightVelocity();
+
 		// Calculate directional error only if the direction source is not null
 		if (directionSrc != null) {
 			// This angle diff will be positive if the robot needs to turn left
@@ -312,6 +256,18 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 
 		lastMoment = m;
 
+		if (!advancedDistSrc) {
+			double lVel = (lPos - lLastPos) / dt;
+			double rVel = (rPos - rLastPos) / dt;
+			lLastPos = lPos;
+			rLastPos = rPos;
+
+			lLastAccel = (lVel - lLastVel) / dt;
+			rLastAccel = (rVel - rLastVel) / dt;
+			lLastVel = lVel;
+			rLastVel = rVel;
+		}
+
 		return false;
 	}
 
@@ -319,6 +275,65 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	protected void _stop() {
 		lMotor.set(0);
 		rMotor.set(0);
+	}
+
+	@Override
+	protected void _update() {
+		// To construct the moment used to update the trajectory, we need to get the
+		// heading
+		// Since implementations of the update method mainly use the relative facing,
+		// we'll start with that
+		double facing;
+		// Grab the relative facing
+		// The direction source can be null, so check here
+		if (directionSrc == null) {
+			// If null, set the heading to be the last desired heading
+			facing = lastMoment.getFacingRelative();
+		} else {
+			// Otherwise grab the actual direction
+			// Remember to subtract the initial direction to obtain the relative facing
+			facing = directionSrc.getDirection() - initDirection;
+		}
+		// Now calculate the heading to be passed into the constructor
+		// First, add the initial facing to get the absolute facing
+		double heading = facing + lastMoment.getInitialFacing();
+		// If the moment is reversed, the heading is negated to get the facing
+		// Therefore we negate it to find the heading
+		if (lastMoment.getBackwards()) {
+			heading = -heading;
+		}
+
+		// Get the positions, velocities and accelerations
+		double ld;
+		double rd;
+		double lv;
+		double rv;
+		double la;
+		double ra;
+		// If using advanced position sources, just cast them and call the methods
+		if (advancedDistSrc) {
+			ld = ((AdvancedDistanceSource) lDistSrc).getDistance();
+			rd = ((AdvancedDistanceSource) rDistSrc).getDistance();
+			lv = ((AdvancedDistanceSource) lDistSrc).getVelocity();
+			rv = ((AdvancedDistanceSource) rDistSrc).getVelocity();
+			la = ((AdvancedDistanceSource) lDistSrc).getAcceleration();
+			ra = ((AdvancedDistanceSource) rDistSrc).getAcceleration();
+		}
+		// Otherwise use the calculated values
+		else {
+			ld = lLastPos;
+			rd = rLastPos;
+			lv = lLastVel;
+			rv = rLastVel;
+			la = lLastAccel;
+			ra = rLastAccel;
+		}
+
+		// Finally construct the moment and update the trajectory
+		// Since constructors all take DynamicFollowables, there is no risk of
+		// ClassCastException
+		((DynamicFollowable<TankDriveMoment>) target).update(new TankDriveMoment(ld, rd, lv, rv, la, ra, heading,
+				timer.getTimestamp(), lastMoment.getInitialFacing(), lastMoment.getBackwards()));
 	}
 
 	/**
@@ -437,4 +452,5 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	public TankDriveMoment lastMoment() {
 		return lastMoment;
 	}
+
 }

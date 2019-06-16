@@ -31,26 +31,25 @@ These graphs are generated using <b>JMathPlot</b>. You can find its repository <
 There are currently 3 major versions of RobotPathfinder (v1, v2 and v3):
 * v1 is outdated and inaccurate. You should never use it.
 * v2 has been extensively used and tested and is stable.
-* v3 is still in its alpha stage. It uses native code to speed up execution and is on average 4 times as fast as v2. ***Usage is not recommended at this moment. V3 has been known to crash (see [issue #27](https://github.com/Arctos6135/RobotPathfinder/issues/27)) and the API is still undergoing rapid development with no documentation for many classes.***
+* v3 is still in its alpha stage. It uses native code to speed up execution and is on average 4 times as fast as v2. The API is still undergoing rapid development, so usage at this moment is not recommended unless you know what you're doing.
 
 ## Usage
 Every release contains 3 jars, 1 zip, and numerous dynamic libraries:
 * `RobotPathfinder-(VERSION).jar` - The basic jar that contains the library, but without some dependencies. This is the jar recommended for use on a robot. It does not contain the dependencies required for graphing.
-* `RobotPathfinder-(VERSION)-all.jar` - The fat jar that contains the library as well as all its dependencies. 
+* `RobotPathfinder-(VERSION)-all.jar` - The fat jar that contains the library as well as all its dependencies (JMathPlot, Gson). 
 * `Trajectory-Visualizer-(VERSION).jar` - The executable jar that contains the GUI Trajectory Visualization Tool (and all its dependencies).
 * `RobotPathfinder-Doc-(VERSION).zip` - The zip that contains the JavaDocs for all classes and methods.
-* \*`libRobotPathfinder-(PLATFORM).so` - The native dynamic library used by RobotPathfinder for a specific Linux arch.
-* \*`RobotPathfinder-(PLATFORM).dll` - The native dynamic library used by RobotPathfinder for a specific Windows arch.
-***\*In v3 only***
+* `libRobotPathfinder-(PLATFORM).so` - **(In v3 only)** The native dynamic library used by RobotPathfinder for a specific Linux arch.
+* `RobotPathfinder-(PLATFORM).dll` - **(In v3 only)** The native dynamic library used by RobotPathfinder for a specific Windows arch.
 
 Alternatively, you can build the binaries yourself by navigating to the root directory, and running `./gradlew allArchives --rerun-tasks`. (*If you're on a Windows machine, make sure you're using PowerShell not cmd!*) The archives can then be found under the `output` directory.
 
-**In order to use RobotPathfinder V3, the correct dynamic library for your platform must be present in either the directory java is invoked from, or the library path.**
+**In order to use RobotPathfinder v3, the correct dynamic library for your platform must be present in either the directory java is invoked from, or the library path.**
 
 ## FRC Usage
 ### GradleRIO
-* Put the jar **and the native library for roboRIO (V3 only)** in a folder somewhere in the project, e.g. `lib` (make sure to rename the dynamic library from `libRobotPathfinder-roboRIO.so` to just `libRobotPathfinder.so`!)
-* In `build.gradle`, under `dependencies`, add this line: `compile files('path/to/jar')` and `nativeLib files('path/to/native-lib')`
+* Put the jar and **(v3 only)** the native library for roboRIO in a folder somewhere in the project, e.g. `lib` (**if using v3, make sure to rename the dynamic library from `libRobotPathfinder-roboRIO.so` to just `libRobotPathfinder.so`!**)
+* In `build.gradle`, under `dependencies`, add this line: `compile files('path/to/jar')` and **(v3 only)** `nativeLib files('path/to/native-lib')`
 * Your new `dependencies` should look something like this:
 ```groovy
 dependencies {
@@ -58,7 +57,7 @@ dependencies {
     compile wpi.deps.vendor.java()
 
     compile files('lib/RobotPathfinder-3.0.0-alpha.0.jar')
-    nativeLib files('lib/libRobotPathfinder.so') // Not needed for V2
+    nativeLib files('lib/libRobotPathfinder.so') // v3 only
     
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
@@ -67,7 +66,7 @@ dependencies {
 ```
 
 ### Eclipse
-*** This section is outdated and does not contain instructions for installing the native shared library.***
+***There are currently no instructions for the use of RobotPathfinder v3 in Eclipse.***
 * Put the jar in a folder somewhere in the project, e.g. `lib`
 * Expand the project in Eclipse, right-click Referenced Libraries, Build Path -> Configure Build Path
 * In the dialog that pops up, click Add Jars, navigate to and select the library jar, and confirm
@@ -76,7 +75,7 @@ dependencies {
 ## Documentation
 All classes and methods are documented with JavaDocs, in `RobotPathfinder-Doc-(VERSION).zip`.\
 Head over to the [wiki](https://github.com/Arctos6135/RobotPathfinder/wiki) for tutorials and examples!
-***Currently the wiki and examples are outdated, and some new classes in V3 have no documentation. They will be updated for RobotPathfinder V3 soon.***
+***Wiki pages for RobotPathfinder v3 are coming soon.***
 
 ## GUI Trajectory Visualization Tool
 A GUI Trajectory Visualization Tool in the form of an executable jar is included with every release.
@@ -93,17 +92,22 @@ Features include:
 
 ## Building
 This project uses Gradle as the build system. From the project root directory, running `./gradlew allArchives` will build the project and generate the jars and a zipped JavaDoc under the `/output/` directory.
-Alternatively, here are a list of tasks:
+Alternatively, here are a list of commonly used tasks:
 * `./gradlew build` builds the project and generates the library jar under `/build/libs/`
+* `./gradlew test` runs all unit tests
 * `./gradlew visualizerJar` generates the Trajectory Visualization Tool jar under `/build/libs/`
 * `./gradlew copyJars` copies the generated jars to `/output/`
-* `./gradlew javadoc` generates JavaDocs under `/build/docs/`
+* `./gradlew javadoc` generates JavaDocs under `/build/docs/javadoc`
+* **(In v3 only)** `./gradlew testJavadoc` generates JavaDocs for the test classes, under `/build/docs/testJavadoc`
+* **(In v3 only)** `./gradlew completeJavadoc` generates JavaDocs all classes (main and test), under `/build/docs/completeJavadoc`
 * `./gradlew zipDoc` zips the generated docs into `/output/`
 * `./gradlew allArchives` builds all the archives and copies it into `/output/`
-* \*`./gradlew updateJNIHeaders` will re-generate the JNI headers and copy them to `/src/main/cpp/include/jni`
-* \*`./gradlew copyLibDebug` will copy the debug dynamic library for the current platform to the root project folder
-* \*`./gradlew copyLibRelease` will copy the release dynamic library for the current platform to the root project folder
-***\*In V3 only***
+* **(In v3 only)** `./gradlew updateJNIHeaders` will re-generate the JNI headers and copy them to `/src/main/cpp/include/jni`
+* **(In v3 only)** `./gradlew copyLibDebug` will copy the debug dynamic library for the current platform to the root project folder
+* **(In v3 only)** `./gradlew copyLibRelease` will copy the release dynamic library for the current platform to the root project folder
+* **(In v3 only)** `./gradlew jacocoTestReport` generates a code coverage report for the test task using JaCoco
+
+For all tasks, see the output of `./gradlew tasks`.
 
 Thank you to our generous sponsors:<br/>
 <img src="https://dynamicmedia.zuza.com/zz/m/original_/3/a/3aae60b3-ff18-4be5-b2b1-e244943a85fb/TDSB_Gallery.png" alt="Toronto District School Board" height="200px"/>

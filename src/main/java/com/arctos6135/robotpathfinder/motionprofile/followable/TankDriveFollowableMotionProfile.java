@@ -1,19 +1,22 @@
 package com.arctos6135.robotpathfinder.motionprofile.followable;
 
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
-import com.arctos6135.robotpathfinder.follower.TankDriveFollowable;
+import com.arctos6135.robotpathfinder.motionprofile.DualMotionProfile;
 
-public abstract class TankDriveFollowableMotionProfile extends FollowableMotionProfile implements TankDriveFollowable {
+public abstract class TankDriveFollowableMotionProfile<T extends DualMotionProfile<?>> extends FollowableMotionProfile<TankDriveMoment> {
+
+    protected T profile;
+
+    @Override
+    public double totalTime() {
+        return profile.totalTime();
+    }
 
     @Override
     public TankDriveMoment get(double t) {
-        double d = profile.position(t);
-        double v = profile.velocity(t);
-        double a = profile.acceleration(t);
-
         boolean backwards = profile.isReversed();
-
-        return new TankDriveMoment(d, d, v, v, a, a, backwards ? -initialFacing : initialFacing, t, 
-                initialFacing, backwards);
+        return new TankDriveMoment(profile.leftPosition(t), profile.rightPosition(t), profile.leftVelocity(t),
+                profile.rightVelocity(t), profile.leftAcceleration(t), profile.rightAcceleration(t),
+                backwards ? -initialFacing : initialFacing, t, initialFacing, backwards);
     }
 }

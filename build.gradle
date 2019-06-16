@@ -14,6 +14,9 @@ plugins {
 
     // Task Tree
     id "com.dorongold.task-tree" version "1.3.1"
+
+    // Code coverage
+    id "jacoco"
 }
 
 compileJava {
@@ -28,6 +31,12 @@ wrapper {
 buildScan {
     termsOfServiceUrl = 'https://gradle.com/terms-of-service'
     termsOfServiceAgree = 'yes'
+}
+
+javadoc {
+    options.with {
+        links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
+    }
 }
 
 dependencies {
@@ -110,6 +119,13 @@ else {
                 }
             }
         }
+    }
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled false
+        csv.enabled false
     }
 }
 
@@ -249,6 +265,30 @@ task copyJars(type: Copy, group: 'Archive', description: 'Copies all generated j
     // If the OS is part of the UNIX family, also chmod the visualizer jar to be executable
     if(Os.isFamily(Os.FAMILY_UNIX)) {
         finalizedBy markVisualizerJarExecutable
+    }
+}
+
+task testJavadoc(type: Javadoc, group: 'Documentation', description: 'Generates JavaDoc for the test classes.') {
+    source = sourceSets.test.allJava
+    classpath = sourceSets.test.compileClasspath
+    // if not changed the destinationDir, the javadoc for production code is overridden.
+    destinationDir = file("${buildDir}/docs/testJavadoc")
+
+    options.with {
+        links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
+    }
+}
+
+task completeJavadoc(type: Javadoc, group: 'Documentation', description: 'Generates JavaDoc for both the main classes and the test classes.') {
+    source = sourceSets.test.allJava
+    classpath = sourceSets.test.compileClasspath
+    source += sourceSets.main.allJava;
+    classpath += sourceSets.main.compileClasspath
+
+    destinationDir = file("${buildDir}/docs/completeJavadoc")
+
+    options.with {
+        links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
     }
 }
 

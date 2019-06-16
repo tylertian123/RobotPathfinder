@@ -5,9 +5,9 @@ import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.TrajectoryParams;
 import com.arctos6135.robotpathfinder.core.Waypoint;
 import com.arctos6135.robotpathfinder.core.path.PathType;
-import com.arctos6135.robotpathfinder.motionprofile.followable.TrapezoidalBasicProfile;
-import com.arctos6135.robotpathfinder.motionprofile.followable.TrapezoidalRotationTankDriveProfile;
-import com.arctos6135.robotpathfinder.motionprofile.followable.TrapezoidalTankDriveProfile;
+import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalBasicProfile;
+import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalTankDriveRotationProfile;
+import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalTankDriveProfile;
 
 /**
  * This class provides a number of handy static utility functions for generating
@@ -87,7 +87,7 @@ final public class TrajectoryGenerator {
 	 * {@link RobotSpecs} and {@link TrajectoryParams} set to {@code null}. </em>
 	 * </p>
 	 * 
-	 * @deprecated Use a {@link TrapezoidalRotationTankDriveProfile} instead.
+	 * @deprecated Use a {@link TrapezoidalTankDriveRotationProfile} instead.
 	 * @param specs The specifications of the robot
 	 * @param angle The angle to turn, in radians
      * @return The generated trajectory

@@ -14,6 +14,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * This class is a helper used in random unit testing.
  * 
  * It generates random values used for testing and logs those values.
+ * 
+ * @author Tyler Tian
+ * @since 3.0.0
  */
 public final class TestHelper {
 

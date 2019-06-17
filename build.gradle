@@ -37,6 +37,7 @@ javadoc {
     options.with {
         links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
     }
+    options.addBooleanOption('-no-module-directories', true)
 }
 
 dependencies {
@@ -277,6 +278,7 @@ task testJavadoc(type: Javadoc, group: 'Documentation', description: 'Generates 
     options.with {
         links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
     }
+    options.addBooleanOption('-no-module-directories', true)
 }
 
 task completeJavadoc(type: Javadoc, group: 'Documentation', description: 'Generates JavaDoc for both the main classes and the test classes.') {
@@ -290,6 +292,7 @@ task completeJavadoc(type: Javadoc, group: 'Documentation', description: 'Genera
     options.with {
         links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
     }
+    options.addBooleanOption('-no-module-directories', true)
 }
 
 task zipDoc(type: Zip, group: 'Archive', description: 'Zips the generated JavaDoc and puts it in the output directory.') {

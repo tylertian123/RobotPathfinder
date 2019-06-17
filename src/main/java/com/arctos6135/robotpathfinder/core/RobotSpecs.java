@@ -18,8 +18,8 @@ package com.arctos6135.robotpathfinder.core;
  */
 public class RobotSpecs {
 
-	double baseWidth = Double.NaN;
-	double maxVelocity, maxAcceleration;
+	protected double baseWidth = Double.NaN;
+	protected double maxVelocity, maxAcceleration;
 
 	/**
 	 * Constructs a new robot specification object with the specified values. The
@@ -63,7 +63,8 @@ public class RobotSpecs {
 	}
 
 	/**
-	 * Retrieves the base width of this robot specifications object.
+	 * Retrieves the base width (distance between the left and right side wheels) of
+	 * this robot specifications object.
 	 * 
 	 * @return The width of the robot's base plate
 	 */
@@ -72,9 +73,11 @@ public class RobotSpecs {
 	}
 
 	/**
-	 * Sets the base width of this robot specifications object.
+	 * Sets the base width (distance between the left and right side wheels) of this
+	 * robot specifications object.
 	 * 
-	 * @param baseWidth The new base width
+	 * @param baseWidth The new base width (distance between the left and right side
+	 *                  wheels)
 	 */
 	public void setBaseWidth(double baseWidth) {
 		this.baseWidth = baseWidth;

@@ -5,6 +5,10 @@ import java.io.File;
 /**
  * The {@code GlobalLibraryLoader} is a static class whose only purpose is to
  * load the RobotPathfinder shared native library.
+ * <p>
+ * <b><em>This class is intended for internal use only. Use at your own
+ * risk.</em></b>
+ * </p>
  * 
  * @author Tyler Tian
  * @since 3.0.0

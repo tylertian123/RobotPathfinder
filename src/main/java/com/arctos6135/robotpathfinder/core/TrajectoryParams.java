@@ -31,7 +31,7 @@ public class TrajectoryParams implements Cloneable {
 	 * longer path with smoother turns <em>at the waypoints</em>. However, since the
 	 * turns are only smoothed near the waypoints, increasing this value too much
 	 * can result in unwanted sharp turns between waypoints. Default value is
-	 * {@code NaN}.
+	 * {@code NaN}. This value has no unit.
 	 * </p>
 	 * <p>
 	 * Internally, this value is used to compute the derivatives when fitting
@@ -56,6 +56,9 @@ public class TrajectoryParams implements Cloneable {
 	 */
 	public PathType pathType = PathType.QUINTIC_HERMITE;
 
+	/**
+	 * Creates an identical copy of this {@link TrajectoryParams}.
+	 */
 	@Override
 	public TrajectoryParams clone() {
 		TrajectoryParams tp = new TrajectoryParams();

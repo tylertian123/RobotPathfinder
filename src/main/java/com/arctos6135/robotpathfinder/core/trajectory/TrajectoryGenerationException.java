@@ -13,7 +13,7 @@ package com.arctos6135.robotpathfinder.core.trajectory;
 public class TrajectoryGenerationException extends RuntimeException {
 
 	/**
-	 * 
+	 * Creates a new {@link TrajectoryGenerationException} with a message.
 	 */
 	private static final long serialVersionUID = 4458957792647962346L;
 
@@ -21,6 +21,9 @@ public class TrajectoryGenerationException extends RuntimeException {
 		super(message);
 	}
 
+	/**
+	 * Creates a new {@link TrajectoryGenerationException} with the default message.
+	 */
 	public TrajectoryGenerationException() {
 		super();
 	}

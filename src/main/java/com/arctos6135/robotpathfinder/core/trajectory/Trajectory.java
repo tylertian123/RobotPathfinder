@@ -7,21 +7,13 @@ import com.arctos6135.robotpathfinder.core.path.Path;
 import com.arctos6135.robotpathfinder.follower.Followable;
 
 /**
- * A class that represents a trajectory (motion profile).
+ * A class that represents a trajectory.
  * <p>
  * This is the abstract class that is the superclass of all trajectory classes.
- * A trajectory not only defines the path the robot will go through, it also
- * provides information about the velocity, acceleration and direction at every
- * point in time. Using this information, a robot can implement a feedback loop
- * to follow this trajectory.
- * </p>
- * <h2>Technical Details</h2>
- * <p>
- * Trajectories are generated using numerical integration. This means that it is
- * impossible to have a completely accurate trajectory. However, with enough
- * segments, the error is easily negligible. Trajectories are generated with an
- * algorithm based on the one shown by Team 254 (The Cheesy Poofs) in their
- * video on motion profiling.
+ * A trajectory not only defines the path the robot will go through, but also
+ * provides information about the position, velocity, acceleration and direction
+ * of the robot at every point in time. Using this information, a robot can
+ * implement a feedback loop to follow this trajectory.
  * </p>
  * <h2>Memory Management</h2>
  * <p>
@@ -32,11 +24,12 @@ import com.arctos6135.robotpathfinder.follower.Followable;
  * method must be called to free the native resource when the object is no
  * longer needed.
  * </p>
- * <p>Note: Almost all RobotPathfinder JNI classes have some kind of reference
+ * <p>
+ * Note: Almost all RobotPathfinder JNI classes have some kind of reference
  * counting. However, this reference count is only increased when an object is
  * created or copied by a method, and not when the reference is copied through
- * assignment.
- * For example:</p>
+ * assignment. For example:
+ * </p>
  * 
  * <pre>
  * Path p0 = someTrajectory.getPath();
@@ -56,8 +49,19 @@ import com.arctos6135.robotpathfinder.follower.Followable;
  *           // already been freed
  * </pre>
  * 
+ * <h2>Technical Details</h2>
+ * <p>
+ * Trajectories are generated using numerical integration. This means that it is
+ * impossible to have a completely accurate trajectory. However, with enough
+ * segments, the error is easily negligible. Trajectories are generated with an
+ * algorithm based on the one shown by Team 254 (The Cheesy Poofs) in their
+ * video on motion profiling.
+ * </p>
+ * 
  * @author Tyler Tian
  * @since 3.0.0
+ * @see BasicTrajectory
+ * @see TankDriveTrajectory
  */
 public abstract class Trajectory<T extends Moment> extends JNIObject implements Followable<T> {
 

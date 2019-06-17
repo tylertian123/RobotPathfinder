@@ -1,14 +1,12 @@
 package com.arctos6135.robotpathfinder.core.trajectory;
 
 /**
- * A class that holds information about a robot at a moment in time.
+ * This class contains information about a basic robot (see the docs for
+ * {@link BasicTrajectory} for definition) at a moment in time.
  * <p>
  * Moment objects contain information about the position, velocity, acceleration
  * and direction of a robot at a certain time. They're returned by trajectories
- * when querying a specific time.
- * </p>
- * <p>
- * This class represents a moment in time for a basic robot.
+ * and motion profiles when querying a specific time.
  * </p>
  * <h2>Difference Between Heading and Facing</h2>
  * <p>
@@ -37,6 +35,7 @@ package com.arctos6135.robotpathfinder.core.trajectory;
  * 
  * @author Tyler Tian
  * @since 3.0.0
+ * @see Moment
  */
 public class BasicMoment extends Moment {
 
@@ -50,6 +49,9 @@ public class BasicMoment extends Moment {
 		d = v = a = t = heading = 0;
 	}
 
+	/**
+	 * Creates an exact copy of this {@link BasicMoment}.
+	 */
 	@Override
 	public BasicMoment clone() {
 		return new BasicMoment(d, v, a, heading, t, initialFacing);

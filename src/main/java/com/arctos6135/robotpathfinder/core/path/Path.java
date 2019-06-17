@@ -25,7 +25,6 @@ import com.arctos6135.robotpathfinder.util.Pair;
  * created or copied by a method, and not when the reference is copied through
  * assignment.
  * For example:</p>
- * 
  * <pre>
  * Path p0 = someTrajectory.getPath();
  * Path p1 = someTrajectory.getPath();

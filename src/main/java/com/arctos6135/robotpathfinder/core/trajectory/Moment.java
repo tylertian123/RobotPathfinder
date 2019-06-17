@@ -3,16 +3,12 @@ package com.arctos6135.robotpathfinder.core.trajectory;
 import com.arctos6135.robotpathfinder.math.MathUtils;
 
 /**
- * A class that holds information about a robot at a moment in time.
+ * Moments are objects that hold information about a robot at a moment in time.
+ * All Moments in RobotPathfinder inherit from this abstract class.
  * <p>
  * Moment objects contain information about the position, velocity, acceleration
  * and direction of a robot at a certain time. They're returned by trajectories
- * when querying a specific time.
- * </p>
- * <p>
- * Note that because different robot types call for drastically different moment
- * implementations, there are very few methods that can be shared between all of
- * them.
+ * and motion profiles when querying a specific time.
  * </p>
  * <h2>Difference Between Heading and Facing</h2>
  * <p>
@@ -42,12 +38,14 @@ import com.arctos6135.robotpathfinder.math.MathUtils;
  * 
  * @author Tyler Tian
  * @since 3.0.0
+ * @see BasicMoment
+ * @see TankDriveMoment
  */
 public abstract class Moment implements Cloneable {
 
-	double heading;
-	double initialFacing;
-	boolean backwards = false;
+	protected double heading;
+	protected double initialFacing;
+	protected boolean backwards = false;
 
 	/**
 	 * Retrieves the direction the robot is moving in. For more information, see the

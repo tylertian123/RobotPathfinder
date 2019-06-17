@@ -13,9 +13,12 @@ import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.Trapezoi
  * This class provides a number of handy static utility functions for generating
  * trajectories.
  * 
+ * @deprecated Use followable motion profiles instead.
  * @author Tyler Tian
  * @since 3.0.0
+ * @see com.arctos6135.robotpathfinder.motionprofile.followable.profiles
  */
+@Deprecated
 final public class TrajectoryGenerator {
 
 	static {
@@ -90,7 +93,7 @@ final public class TrajectoryGenerator {
 	 * @deprecated Use a {@link TrapezoidalTankDriveRotationProfile} instead.
 	 * @param specs The specifications of the robot
 	 * @param angle The angle to turn, in radians
-     * @return The generated trajectory
+	 * @return The generated trajectory
 	 */
 	@Deprecated
 	public static TankDriveTrajectory generateRotationTank(RobotSpecs specs, double angle) {

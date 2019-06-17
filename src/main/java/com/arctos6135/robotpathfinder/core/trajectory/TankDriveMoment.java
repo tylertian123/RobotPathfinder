@@ -1,14 +1,11 @@
 package com.arctos6135.robotpathfinder.core.trajectory;
 
 /**
- * A class that holds information about a robot at a moment in time.
+ * This class contains information about a tank drive robot at a moment in time.
  * <p>
  * Moment objects contain information about the position, velocity, acceleration
  * and direction of a robot at a certain time. They're returned by trajectories
- * when querying a specific time.
- * </p>
- * <p>
- * This class represents a moment in time for a tank drive robot.
+ * and motion profiles when querying a specific time.
  * </p>
  * <h2>Difference Between Heading and Facing</h2>
  * <p>
@@ -37,6 +34,7 @@ package com.arctos6135.robotpathfinder.core.trajectory;
  * 
  * @author Tyler Tian
  * @since 3.0.0
+ * @see Moment
  */
 public class TankDriveMoment extends Moment {
 
@@ -51,7 +49,7 @@ public class TankDriveMoment extends Moment {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Creates an exact copy of this {@link TankDriveMoment}.
 	 */
 	@Override
 	public TankDriveMoment clone() {

@@ -119,11 +119,11 @@ abstract public class Follower<T extends Moment> {
 	 * Sets the target to follow.
 	 * 
 	 * @param target The new target to follow
-	 * @throws RuntimeException If the follower is running
+	 * @throws IllegalStateException If the follower is running
 	 */
 	public void setTarget(Followable<T> target) {
 		if (running) {
-			throw new RuntimeException("Target cannot be changed when follower is running");
+			throw new IllegalStateException("Target cannot be changed when follower is running");
 		}
 		this.target = target;
 	}

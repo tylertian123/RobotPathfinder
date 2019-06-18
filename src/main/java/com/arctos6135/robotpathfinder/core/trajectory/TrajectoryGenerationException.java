@@ -10,7 +10,7 @@ package com.arctos6135.robotpathfinder.core.trajectory;
  * @author Tyler Tian
  * @since 3.0.0
  */
-public class TrajectoryGenerationException extends RuntimeException {
+public class TrajectoryGenerationException extends IllegalStateException {
 
 	/**
 	 * Creates a new {@link TrajectoryGenerationException} with a message.

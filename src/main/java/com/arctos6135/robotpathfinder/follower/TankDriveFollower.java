@@ -214,11 +214,11 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * Sets the timestamp source.
 	 * 
 	 * @param timer The new timestamp source
-	 * @throws RuntimeException If the follower is running
+	 * @throws IllegalStateException If the follower is running
 	 */
 	public void setTimestampSource(TimestampSource timer) {
 		if (running) {
-			throw new RuntimeException("Timestamp Source cannot be changed when follower is running");
+			throw new IllegalStateException("Timestamp Source cannot be changed when follower is running");
 		}
 		this.timer = timer;
 	}
@@ -228,11 +228,11 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * 
 	 * @param lMotor The left motor
 	 * @param rMotor The right motor
-	 * @throws RuntimeException If the follower is running
+	 * @throws IllegalStateException If the follower is running
 	 */
 	public void setMotors(Motor lMotor, Motor rMotor) {
 		if (running) {
-			throw new RuntimeException("Motors cannot be changed when follower is running");
+			throw new IllegalStateException("Motors cannot be changed when follower is running");
 		}
 		this.lMotor = lMotor;
 		this.rMotor = rMotor;
@@ -243,11 +243,11 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * 
 	 * @param lDistSrc The left distance source
 	 * @param rDistSrc The right distance source
-	 * @throws RuntimeException If the follower is running
+	 * @throws IllegalStateException If the follower is running
 	 */
 	public void setDistanceSources(PositionSource lDistSrc, PositionSource rDistSrc) {
 		if (running) {
-			throw new RuntimeException("Distance Sources cannot be changed when follower is running");
+			throw new IllegalStateException("Distance Sources cannot be changed when follower is running");
 		}
 		this.lDistSrc = lDistSrc;
 		this.rDistSrc = rDistSrc;

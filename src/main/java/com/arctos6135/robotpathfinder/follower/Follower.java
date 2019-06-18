@@ -5,10 +5,24 @@ import com.arctos6135.robotpathfinder.core.trajectory.Moment;
 /**
  * This is the base class for all the follower classes.
  * <p>
- * Followers are classes that can be given parameters to follow a specific
- * trajectory. They do so using a feedback control system, consisting of 4
- * gains: velocity feedforward, acceleration feedforward, proportional gain, and
- * derivative gain.
+ * A follower is a special class that can be set to follow a {@link Followable}
+ * object (that is, actually driving out the trajectory with a robot in real
+ * life).
+ * </p>
+ * <p>
+ * They do so by using both feedback and feedforward control, with a system that
+ * consists of 4 parts: proportional and derivative gains on the position error,
+ * and velocity and acceleration feedforward (sometimes known as PDVA control).
+ * </p>
+ * <p>
+ * To use a follower, one first must provide values for the aforementioned
+ * gains, sensors for the feedback loop such as encoders, and a timer, such as
+ * {@link System#currentTimeMillis()}. Then, call {@link #initialize()} to
+ * initialize the follower. After initialization, repeatedly call {@link #run()}
+ * to run the follower. Higher frequencies should lead to better results, but
+ * only up to a certain limit. When {@link #isFinished()} returns true, the
+ * following is completed. To stop the follower before it normally finishes,
+ * call {@link #stop()}.
  * </p>
  * 
  * @author Tyler Tian
@@ -48,8 +62,15 @@ abstract public class Follower<T extends Moment> {
 	 * Gets whether the follower is running. The follower is considered to be
 	 * "running" if {@link #initialize()} has been called, the trajectory did not
 	 * end, <em>and</em> {@link #stop()} has not been called.
+	 * <p>
+	 * This method behaves similarly to {@link #isFinished()}. Before
+	 * {@link #initialize()} is called for the first time, both {@link #isRunning()}
+	 * and {@link #isFinished()} return false. Once {@link #initialize()} is called,
+	 * this method will always return the opposite of {@link #isFinished()}.
+	 * </p>
 	 * 
 	 * @return Whether the follower is running
+	 * @see #isFinished()
 	 */
 	public boolean isRunning() {
 		return running;
@@ -60,15 +81,23 @@ abstract public class Follower<T extends Moment> {
 	 * "finished" if {@link #stop()} has been called, <em>or</em> the trajectory has
 	 * ended. Additionally, the finished state is reset when {@link #initialize()}
 	 * is called.
+	 * <p>
+	 * This method behaves similarly to {@link #isRunning()}. Before
+	 * {@link #initialize()} is called for the first time, both
+	 * {@link #isFinished()} and {@link #isRunning()} return false. Once
+	 * {@link #initialize()} is called, this method will always return the opposite
+	 * of {@link #isRunning()}.
+	 * </p>
 	 * 
 	 * @return Whether the follower has finished
+	 * @see #isRunning()
 	 */
 	public boolean isFinished() {
 		return finished;
 	}
 
 	/**
-	 * Initializes and starts the follower. This method must be called before
+	 * Initializes and starts the follower. This method should be called before
 	 * {@link #run()} can be called.<br>
 	 * <br>
 	 * If the follower is currently running, this method will do nothing.
@@ -85,11 +114,13 @@ abstract public class Follower<T extends Moment> {
 	/**
 	 * Runs the control loop for one cycle. Note that this method must be called
 	 * constantly so the control loop can run; generally, the more frequent the
-	 * calls, the better the results. {@link #initialize()} must be called before
+	 * calls, the better the results. {@link #initialize()} should be called before
 	 * this method can be called.<br>
 	 * <br>
 	 * If the follower is not initialized (not running), this method will first call
 	 * {@link #initialize()} and then perform one cycle of the control loop.
+	 * 
+	 * @see #initialize()
 	 */
 	public void run() {
 		if (!running) {
@@ -190,55 +221,88 @@ abstract public class Follower<T extends Moment> {
 
 	/**
 	 * This functional interface represents a source of timestamp data, such as a
-	 * FPGA timer.<br>
+	 * FPGA timer.
+	 * <p>
 	 * The timestamps are used to calculate the derivative part of the control loop;
 	 * therefore, it is recommended that they have a resolution of at least one
 	 * millisecond (preferably higher). Higher resolutions will yield better
 	 * results.
+	 * </p>
 	 * 
 	 * @author Tyler Tian
-	 *
+	 * @since 3.0.0
 	 */
 	@FunctionalInterface
 	public interface TimestampSource {
 		/**
-		 * Gets a timestamp from the source.<br>
-		 * <br>
+		 * Gets the current time.
+		 * <p>
 		 * Please note that the unit of the result should stay consistent with the unit
 		 * used to generate the trajectory the follower is to follow. For example, if
 		 * the trajectory is generated with units of m/s, the result should be in
 		 * seconds.
+		 * </p>
 		 * 
-		 * @return The timestamp
+		 * @return The current time
 		 */
 		public double getTimestamp();
 	}
 
 	/**
-	 * This functional interface represents a source of 1-dimensional positional data, such as an
-	 * encoder.
+	 * This functional interface represents a source of 1-dimensional position data,
+	 * such as an encoder.
 	 * 
 	 * @author Tyler Tian
-	 *
+	 * @since 3.0.0
+	 * @see AdvancedPositionSource
 	 */
 	@FunctionalInterface
 	public interface PositionSource {
 		/**
-		 * Gets position data from the source.<br>
-		 * <br>
+		 * Gets position data from the source.
+		 * <p>
 		 * Please note that the unit of the result should stay consistent with the unit
 		 * used to generate the trajectory the follower is to follow. For example, if
 		 * the trajectory is generated with units of m/s, the result should be in
 		 * meters.
+		 * </p>
 		 * 
-		 * @return The position
+		 * @return The current position
 		 */
 		public double getPosition();
 	}
 
+	/**
+	 * This interface is an extension of {@link PositionSource}. It represents a
+	 * source of 1-dimensional position, velocity and acceleration data.
+	 * 
+	 * @author Tyler Tian
+	 * @since 3.0.0
+	 * @see PositionSource
+	 */
 	public interface AdvancedPositionSource extends PositionSource {
+		/**
+		 * Gets velocity data from the source.
+		 * <p>
+		 * Please note that the unit of the result should stay consistent with the unit
+		 * used to generate the trajectory the follower is to follow. For example, if
+		 * the trajectory is generated with units of m/s, the result should also be in
+		 * m/s.
+		 * </p>
+		 * 
+		 * @return The current velocity
+		 */
 		public double getVelocity();
 
+		/**
+		 * Gets acceleration data from the source.
+		 * <p>
+		 * Please note that the unit of the result should stay consistent with the unit
+		 * used to generate the trajectory the follower is to follow. For example, if
+		 * the trajectory is generated with units of m/s, the result should also be in
+		 * m/s^2.
+		 * </p>
+		 */
 		public double getAcceleration();
 	}
 
@@ -247,16 +311,16 @@ abstract public class Follower<T extends Moment> {
 	 * data, such as a gyroscope.
 	 * 
 	 * @author Tyler Tian
-	 *
+	 * @since 3.0.0
 	 */
 	@FunctionalInterface
 	public interface DirectionSource {
 		/**
-		 * Gets orientation/directional data from the source.<br>
-		 * <br>
+		 * Gets orientation/directional data from the source.
+		 * <p>
 		 * Please note that the result should be in radians, with 0 representing right.
-		 * The representation should be the same as the angles used to generate the
-		 * trajectory.
+		 * The representation is the same as the angles used to generate the trajectory.
+		 * </p>
 		 * 
 		 * @return The angle the robot is facing
 		 */
@@ -265,20 +329,22 @@ abstract public class Follower<T extends Moment> {
 
 	/**
 	 * This functional interface represents a motor or any kind of device that will
-	 * accept the output.
+	 * accept the output of the follower.
 	 * 
 	 * @author Tyler Tian
-	 *
+	 * @since 3.0.0
 	 */
 	@FunctionalInterface
 	public interface Motor {
 		/**
-		 * Sets the speed of the motor. The speed should be a number between -1 and 1,
-		 * with -1 being full speed reverse, 1 being full speed forward, and 0 being no
-		 * motion.
+		 * Sets the output of the motor.
+		 * <p>
+		 * The output should be a number between -1 and 1, with -1 being full speed
+		 * reverse, 1 being full speed forward, and 0 being no motion.
+		 * </p>
 		 * 
-		 * @param speed The speed to set the motor to
+		 * @param output The output to set the motor to
 		 */
-		public void set(double speed);
+		public void set(double output);
 	}
 }

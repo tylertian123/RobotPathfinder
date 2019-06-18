@@ -36,6 +36,7 @@ final public class TrajectoryGenerator {
 	 * @param specs    The specifications of the robot
 	 * @param distance The distance to drive forward for
 	 * @return The generated trajectory
+	 * @see TrapezoidalBasicProfile
 	 */
 	@Deprecated
 	public static BasicTrajectory generateStraightBasic(RobotSpecs specs, double distance) {
@@ -61,6 +62,7 @@ final public class TrajectoryGenerator {
 	 * @param specs    The specifications of the robot
 	 * @param distance The distance to drive forward for
 	 * @return The generated trajectory
+	 * @see TrapezoidalTankDriveProfile
 	 */
 	@Deprecated
 	public static TankDriveTrajectory generateStraightTank(RobotSpecs specs, double distance) {
@@ -94,6 +96,7 @@ final public class TrajectoryGenerator {
 	 * @param specs The specifications of the robot
 	 * @param angle The angle to turn, in radians
 	 * @return The generated trajectory
+	 * @see TrapezoidalTankDriveRotationProfile
 	 */
 	@Deprecated
 	public static TankDriveTrajectory generateRotationTank(RobotSpecs specs, double angle) {

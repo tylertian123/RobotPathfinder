@@ -286,6 +286,7 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 			rightErr = m.getRightPosition() - (rDistSrc.getPosition() - rInitDist);
 			// Get the derivative of the errors
 			// Subtract away the desired velocity to get the true error
+			// TODO: BUT WHY????????
 			leftDeriv = (leftErr - lLastErr) / dt - m.getLeftVelocity();
 			rightDeriv = (rightErr - rLastErr) / dt - m.getRightVelocity();
 		}

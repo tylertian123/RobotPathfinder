@@ -23,7 +23,7 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	// have to reset
 	// Keep track of the error and timestamp of the last iteration to calculate the
 	// derivative
-	protected double initTime, lastTime, lLastErr, rLastErr, lInitDist, rInitDist, initDirection;
+	protected double initTime, lastTime, lLastErr, rLastErr, lInitDist, rInitDist, initDirection, lErrorInt, rErrorInt;
 
 	// Used for finding the velocity and acceleration for updating if a regular
 	// DistanceSource is used
@@ -206,6 +206,11 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 		}
 		initTime = lastTime = timer.getTimestamp();
 
+		// Reset integrals and last errors
+		lErrorInt = rErrorInt = lLastErr = rLastErr = 0;
+
+		// If using manual calculations of the velocity and acceleration, reset the
+		// variables used
 		if (!advancedDistSrc) {
 			lLastPos = lInitDist;
 			rLastPos = rInitDist;
@@ -236,6 +241,9 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 		// Get the derivative of the errors
 		leftDeriv = (leftErr - lLastErr) / dt;
 		rightDeriv = (rightErr - rLastErr) / dt;
+		// Calculate the integral of the error
+		lErrorInt += leftErr * dt;
+		rErrorInt += rightErr * dt;
 
 		// Calculate directional error only if the direction source is not null
 		if (directionSrc != null) {
@@ -243,10 +251,10 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 			dirErr = MathUtils.angleDiff(directionSrc.getDirection() - initDirection, m.getFacingRelative());
 		}
 		// Calculate outputs
-		leftOutput = kA * m.getLeftAcceleration() + kV * m.getLeftVelocity() + kP * leftErr + kD * leftDeriv
-				- dirErr * kDP;
-		rightOutput = kA * m.getRightAcceleration() + kV * m.getRightVelocity() + kP * rightErr + kD * rightDeriv
-				+ dirErr * kDP;
+		leftOutput = kA * m.getLeftAcceleration() + kV * m.getLeftVelocity() + kP * leftErr + kI * lErrorInt
+				+ kD * leftDeriv - dirErr * kDP;
+		rightOutput = kA * m.getRightAcceleration() + kV * m.getRightVelocity() + kP * rightErr + kI * lErrorInt
+				+ kD * rightDeriv + dirErr * kDP;
 		// Constrain
 		leftOutput = Math.max(-1, Math.min(1, leftOutput));
 		rightOutput = Math.max(-1, Math.min(1, rightOutput));
@@ -341,8 +349,10 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	}
 
 	/**
-	 * Retrieves the last positional error of the left wheel. This value is
-	 * multiplied by <b>kP</b>, and added to the left output.
+	 * Retrieves the last positional error of the left wheel.
+	 * <p>
+	 * This value is multiplied by <b>kP</b>, and added to the left output.
+	 * </p>
 	 * 
 	 * @return The last left positional error
 	 */
@@ -351,8 +361,10 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	}
 
 	/**
-	 * Retrieves the last positional error of the right wheel. This value is
-	 * multiplied by <b>kP</b>, and added to the right output.
+	 * Retrieves the last positional error of the right wheel.
+	 * <p>
+	 * This value is multiplied by <b>kP</b>, and added to the left output.
+	 * </p>
 	 * 
 	 * @return The last right positional error
 	 */
@@ -361,14 +373,63 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	}
 
 	/**
-	 * Retrieves the last directional error of the robot. This value is multiplied
-	 * by <b>kDP</b>, and subtracted from the left output and added to the right
-	 * output.
+	 * Retrieves the last calculated integral of the error of the left wheel.
+	 * <p>
+	 * This value is multiplied by <b>kI</b>, and added to the left output.
+	 * </p>
+	 * 
+	 * @return The last left error integral
+	 */
+	public double lastLeftIntegral() {
+		return lErrorInt;
+	}
+
+	/**
+	 * Retrieves the last calculated integral of the error of the right wheel.
+	 * <p>
+	 * This value is multiplied by <b>kI</b>, and added to the left output.
+	 * </p>
+	 * 
+	 * @return The last right error integral
+	 */
+	public double lastRightIntegral() {
+		return rErrorInt;
+	}
+
+	/**
+	 * Retrieves the last directional error of the robot.
+	 * <p>
+	 * This value is multiplied by <b>kDP</b>, and added to the left output.
+	 * </p>
 	 * 
 	 * @return The last directional error
 	 */
 	public double lastDirectionalError() {
 		return dirErr;
+	}
+
+	/**
+	 * Retrieves the last derivative error of the left wheel.
+	 * <p>
+	 * This value is multiplied by <b>kD</b>, and added to the left output.
+	 * </p>
+	 * 
+	 * @return The last left derivative error
+	 */
+	public double lastLeftDerivative() {
+		return leftDeriv;
+	}
+
+	/**
+	 * Retrieves the last derivative error of the right wheel.
+	 * <p>
+	 * This value is multiplied by <b>kD</b>, and added to the left output.
+	 * </p>
+	 * 
+	 * @return The last right derivative error
+	 */
+	public double lastRightDerivative() {
+		return rightDeriv;
 	}
 
 	/**
@@ -390,28 +451,10 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	}
 
 	/**
-	 * Retrieves the last derivative error of the left wheel. This value is
-	 * multiplied by <b>kD</b>, and added to the left output.
-	 * 
-	 * @return The last left derivative error
-	 */
-	public double lastLeftDerivative() {
-		return leftDeriv;
-	}
-
-	/**
-	 * Retrieves the last derivative error of the right wheel. This value is
-	 * multiplied by <b>kD</b>, and added to the right output.
-	 * 
-	 * @return The last right derivative error
-	 */
-	public double lastRightDerivative() {
-		return rightDeriv;
-	}
-
-	/**
-	 * Retrieves the last desired (not actual!) velocity of the left wheel. This
-	 * value is multiplied by <b>kV</b>, and added to the left output.
+	 * Retrieves the last desired (not actual!) velocity of the left wheel.
+	 * <p>
+	 * This value is multiplied by <b>kV</b>, and added to the left output.
+	 * </p>
 	 * 
 	 * @return The last left velocity
 	 */
@@ -421,8 +464,10 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	}
 
 	/**
-	 * Retrieves the last desired (not actual!) velocity of the right wheel. This
-	 * value is multiplied by <b>kV</b>, and added to the right output.
+	 * Retrieves the last desired (not actual!) velocity of the right wheel.
+	 * <p>
+	 * This value is multiplied by <b>kV</b>, and added to the left output.
+	 * </p>
 	 * 
 	 * @return The last right velocity
 	 */
@@ -432,8 +477,10 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	}
 
 	/**
-	 * Retrieves the last desired (not actual!) acceleration of the left wheel. This
-	 * value is multiplied by <b>kV</b>, and added to the left output.
+	 * Retrieves the last desired (not actual!) acceleration of the left wheel.
+	 * <p>
+	 * This value is multiplied by <b>kA</b>, and added to the left output.
+	 * </p>
 	 * 
 	 * @return The last left acceleration
 	 */
@@ -444,7 +491,9 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 
 	/**
 	 * Retrieves the last desired (not actual!) acceleration of the right wheel.
-	 * This value is multiplied by <b>kV</b>, and added to the right output.
+	 * <p>
+	 * This value is multiplied by <b>kA</b>, and added to the left output.
+	 * </p>
 	 * 
 	 * @return The last right acceleration
 	 */
@@ -453,8 +502,13 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 		return lastMoment.getRightAcceleration();
 	}
 
+	/**
+	 * Retrieves the last moment retrieved from the target followable that this
+	 * follower tried to follow.
+	 * 
+	 * @return The last moment retrieved from the target
+	 */
 	public TankDriveMoment lastMoment() {
 		return lastMoment;
 	}
-
 }

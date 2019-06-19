@@ -123,7 +123,7 @@ public class DynamicFollowerTest {
      * <li>With kV=1, kA=0, kD=0 and an arbitrary kP, and no difference between
      * position readings and the desired position, the output is equal to the
      * velocity for that time.</li>
-     * <li>With kA=1, kV=0, kA=0 and an arbitary kP, and no difference between
+     * <li>With kA=1, kV=0, kA=0 and an arbitrary kP, and no difference between
      * position readings and the desired position, the output is equal to the
      * acceleration for that time.
      * </ul>
@@ -157,7 +157,7 @@ public class DynamicFollowerTest {
         assertThat(motor.value, not(closeTo(0.0, MathUtils.getFloatCompareThreshold())));
 
         follower.stop();
-        follower.setGains(1, 0, kP, 0);
+        follower.setGains(1, 0, kP, 0, 0);
         timer.value = 0;
         follower.initialize();
         timer.value = checkTime;
@@ -167,7 +167,7 @@ public class DynamicFollowerTest {
                 closeTo(profile.get(checkTime).getLeftVelocity(), MathUtils.getFloatCompareThreshold()));
 
         follower.stop();
-        follower.setGains(0, 1, kP, 0);
+        follower.setGains(0, 1, kP, 0, 0);
         timer.value = 0;
         encoder.value = 0;
         follower.initialize();

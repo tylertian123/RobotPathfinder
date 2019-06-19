@@ -339,6 +339,12 @@ task zipDoc(type: Zip, group: 'Archive', description: 'Zips the generated JavaDo
     archiveName 'RobotPathfinder-Doc-' + project.version + '.zip'
 }
 
+task zipTaskLogs(type: Zip, group: 'Archive', description: 'Zips the test log from the last test and puts it in the build directory.') {
+    from 'build/testLogs'
+    destinationDir file('build')
+    archiveName 'test-logs.zip'
+}
+
 task allArchives(group: 'Archive', description: 'Builds the project, generates the JavaDoc and jars, zips JavaDoc and copies all items to the output directory.') {
     dependsOn jar
     dependsOn visualizerJar

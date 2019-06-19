@@ -22,7 +22,7 @@ matrix:
 
 install: 
   # chmod the wrapper to be executable
-  - sudo chmod +x ./gradlew
+  - chmod +x ./gradlew
   - ./gradlew --version
   # Install the roboRIO toolchain for cross-compilation
   - ./gradlew installRoboRioToolchain

@@ -387,6 +387,15 @@ public final class TestHelper {
         }
     }
 
+    /**
+     * Clears all logs. Warning: Logs will be lost forever if they were not written!
+     */
+    public static void clearAll() {
+        for(TestHelper instance : instances.values()) {
+            instance.methodLogs = new ConcurrentHashMap<>();
+        }
+    }
+
     // A class that represents all values generated for a method/test
     // The members map names to values (doubles and ints)
     private static class GeneratedValues {

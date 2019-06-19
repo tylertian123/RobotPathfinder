@@ -59,6 +59,9 @@ namespace rpf {
             double wpdt = 1.0 / (waypoints.size() - 1);
             for(size_t i = 1; i < waypoints.size() - 1; i ++) {
                 if(!std::isnan(waypoints[i].velocity)) {
+                    if(std::abs(waypoints[i].velocity) > specs.max_v) {
+                        throw std::invalid_argument("Waypoint velocity constraint is greater than the max velocity");
+                    }
                     // Use t2S to find the fractional distance, then multiply by the total distance
                     constraints.push_back(std::make_pair(path->t2s(i * wpdt) * total, waypoints[i].velocity));
                 }
@@ -170,7 +173,7 @@ namespace rpf {
                     constraints.pop_front();
                     // If the velocity is higher than the current, perform some extra checks and computations
                     if(constraint.second > moments[i - 1].vel) {
-                        double accel = constraint.second * constraint.second - moments[i - 1].vel * moments[i - 1].vel;
+                        double accel = (constraint.second * constraint.second - moments[i - 1].vel * moments[i - 1].vel) / (2 * dpi);
                         if(accel > specs.max_a) {
                             throw std::invalid_argument("Waypoint velocity constraint cannot be met");
                         }

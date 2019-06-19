@@ -339,7 +339,7 @@ task zipDoc(type: Zip, group: 'Archive', description: 'Zips the generated JavaDo
     archiveName 'RobotPathfinder-Doc-' + project.version + '.zip'
 }
 
-task zipTaskLogs(type: Zip, group: 'Archive', description: 'Zips the test log from the last test and puts it in the build directory.') {
+task zipTestLogs(type: Zip, group: 'Archive', description: 'Zips the test log from the last test and puts it in the build directory.') {
     from 'build/testLogs'
     destinationDir file('build')
     archiveName 'test-logs.zip'

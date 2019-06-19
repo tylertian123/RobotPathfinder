@@ -229,9 +229,8 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 		leftErr = m.getLeftPosition() - lPos;
 		rightErr = m.getRightPosition() - rPos;
 		// Get the derivative of the errors
-		// Subtract away the desired velocity to get the true error
-		leftDeriv = (leftErr - lLastErr) / dt - m.getLeftVelocity();
-		rightDeriv = (rightErr - rLastErr) / dt - m.getRightVelocity();
+		leftDeriv = (leftErr - lLastErr) / dt;
+		rightDeriv = (rightErr - rLastErr) / dt;
 
 		// Calculate directional error only if the direction source is not null
 		if (directionSrc != null) {

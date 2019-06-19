@@ -285,10 +285,8 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 			leftErr = m.getLeftPosition() - (lDistSrc.getPosition() - lInitDist);
 			rightErr = m.getRightPosition() - (rDistSrc.getPosition() - rInitDist);
 			// Get the derivative of the errors
-			// Subtract away the desired velocity to get the true error
-			// TODO: BUT WHY????????
-			leftDeriv = (leftErr - lLastErr) / dt - m.getLeftVelocity();
-			rightDeriv = (rightErr - rLastErr) / dt - m.getRightVelocity();
+			leftDeriv = (leftErr - lLastErr) / dt;
+			rightDeriv = (rightErr - rLastErr) / dt;
 		}
 		// Calculate directional error only if the direction source is not null
 		if (directionSrc != null) {

@@ -30,6 +30,11 @@ public final class TestHelper {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                
+                String TRAVIS = System.getenv("TRAVIS");
+                if(TRAVIS != null && TRAVIS.equals("true")) {
+                    printAll();
+                }
             }
         });
     }
@@ -361,6 +366,24 @@ public final class TestHelper {
                 writer.append("\n");
             }
             writer.close();
+        }
+    }
+
+    /**
+     * Prints all logs to stdout.
+     * 
+     * This method is automatically called via a VM shutdown hook if the $TRAVIS
+     * environment variable is set to "true".
+     */
+    public static void printAll() {
+        System.out.println("********** TEST LOGS **********");
+        for (var entry : instances.entrySet()) {
+            File logFile = entry.getValue().logFile;
+
+            System.out.println("(FILE: " + logFile.getPath() + ")");
+            for (StringBuffer methodLog : entry.getValue().methodLogs.values()) {
+                System.out.println(methodLog.toString());
+            }
         }
     }
 

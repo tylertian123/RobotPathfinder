@@ -11,8 +11,9 @@ import com.arctos6135.robotpathfinder.core.trajectory.Moment;
  * </p>
  * <p>
  * They do so by using both feedback and feedforward control, with a system that
- * consists of 4 parts: proportional and derivative gains on the position error,
- * and velocity and acceleration feedforward (sometimes known as PDVA control).
+ * consists of 5 parts: proportional, integral and derivative gains on the
+ * position error, and velocity and acceleration feedforward (sometimes known as
+ * PIDVA control).
  * </p>
  * <p>
  * To use a follower, one first must provide values for the aforementioned
@@ -30,7 +31,7 @@ import com.arctos6135.robotpathfinder.core.trajectory.Moment;
  */
 abstract public class Follower<T extends Moment> {
 
-	protected double kA, kV, kP, kD;
+	protected double kA, kV, kP, kI, kD;
 	protected Followable<T> target;
 	protected TimestampSource timer;
 
@@ -171,34 +172,55 @@ abstract public class Follower<T extends Moment> {
 	/**
 	 * Sets the gains of the feedback control loop.
 	 * 
-	 * @param kV The velocity feedforward
-	 * @param kA The acceleration feedforward
+	 * @param kV The velocity feedforward coefficient
+	 * @param kA The acceleration feedforward coefficient
 	 * @param kP The proportional gain
+	 * @param kI the integral gain
 	 * @param kD The derivative gain
 	 */
-	public void setGains(double kV, double kA, double kP, double kD) {
+	public void setGains(double kV, double kA, double kP, double kI, double kD) {
 		this.kV = kV;
 		this.kA = kA;
 		this.kP = kP;
+		this.kI = kI;
 		this.kD = kD;
 	}
 
 	/**
-	 * Sets the acceleration feedforward term of the control loop.
+	 * Sets the acceleration feedforward term's coefficient of the control loop.
 	 * 
-	 * @param a The acceleration feedforward
+	 * @param a The acceleration feedforward term's coefficient
 	 */
 	public void setA(double a) {
 		kA = a;
 	}
 
 	/**
-	 * Sets the velocity feedforward term of the control loop.
+	 * Retrieves the acceleration feedforward term's coefficient of the control
+	 * loop.
 	 * 
-	 * @param v The velocity feedforward
+	 * @return The acceleration feedforward term coefficient
+	 */
+	public double getA() {
+		return kA;
+	}
+
+	/**
+	 * Sets the velocity feedforward term's coefficient of the control loop.
+	 * 
+	 * @param v The velocity feedforward term's coefficient
 	 */
 	public void setV(double v) {
 		kV = v;
+	}
+
+	/**
+	 * Retrieves the velocity feedforward term's coefficient of the control loop.
+	 * 
+	 * @return The velocity feedforward term coefficient
+	 */
+	public double getV() {
+		return kV;
 	}
 
 	/**
@@ -211,12 +233,48 @@ abstract public class Follower<T extends Moment> {
 	}
 
 	/**
+	 * Retrieves the proportional gain of the control loop.
+	 * 
+	 * @return The proportional gain
+	 */
+	public double getP() {
+		return kP;
+	}
+
+	/**
+	 * Sets the integral gain of the control loop.
+	 * 
+	 * @param i The integral gain
+	 */
+	public void setI(double i) {
+		kI = i;
+	}
+
+	/**
+	 * Retrieves the integral gain of the control loop.
+	 * 
+	 * @return The integral gain
+	 */
+	public double getI() {
+		return kI;
+	}
+
+	/**
 	 * Sets the derivative gain of the control loop.
 	 * 
 	 * @param d The derivative gain
 	 */
 	public void setD(double d) {
 		kD = d;
+	}
+
+	/**
+	 * Retrieves the derivative gain of the control loop.
+	 * 
+	 * @return The derivative gain
+	 */
+	public double getD() {
+		return kD;
 	}
 
 	/**

@@ -30,7 +30,7 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	// Keep track of the error and timestamp of the last iteration to calculate the
 	// derivative
 	protected double initTime, lastTime, lLastErr, rLastErr, lInitDist, rInitDist, initDirection;
-	
+
 	protected double leftErr, rightErr, dirErr;
 	// Store these as member variables so they can be accessed from outside the
 	// class for testing purposes
@@ -51,8 +51,8 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param kV     The velocity feedforward
 	 * @param kA     The acceleration feedforward
 	 */
-	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, TimestampSource timer, double kV,
-			double kA) {
+	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, TimestampSource timer,
+			double kV, double kA) {
 		setGains(kV, kA, 0, 0, 0);
 		this.target = target;
 		this.lMotor = lMotor;
@@ -167,13 +167,15 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	}
 
 	/**
-	 * Sets the directional-proportional gain of the feedback loop. The
-	 * directional-proportional gain allows the robot to better follow the
+	 * Sets the directional-proportional gain of the feedback loop.
+	 * <p>
+	 * The directional-proportional gain allows the robot to better follow the
 	 * trajectory by trying to follow not just the position, velocity and
 	 * acceleration, but the direction as well. The actual angle the robot is facing
 	 * at a given time is subtracted from the angle it is supposed to be facing, and
 	 * then multiplied by the directional-proportional gain and added/subtracted to
 	 * the outputs of the left and right wheels.
+	 * </p>
 	 * 
 	 * @param kDP The new directional-proportional gain
 	 */
@@ -182,13 +184,15 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	}
 
 	/**
-	 * Gets the directional-proportional gain of the feedback loop. The
-	 * directional-proportional gain allows the robot to better follow the
+	 * Gets the directional-proportional gain of the feedback loop.
+	 * <p>
+	 * The directional-proportional gain allows the robot to better follow the
 	 * trajectory by trying to follow not just the position, velocity and
 	 * acceleration, but the direction as well. The actual angle the robot is facing
 	 * at a given time is subtracted from the angle it is supposed to be facing, and
 	 * then multiplied by the directional-proportional gain and added/subtracted to
 	 * the outputs of the left and right wheels.
+	 * </p>
 	 * 
 	 * @return The directional-proportional gain
 	 */
@@ -202,11 +206,12 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param kV  The velocity feedforward
 	 * @param kA  The acceleration feedforward
 	 * @param kP  The proportional gain
+	 * @param kI  The integral gain
 	 * @param kD  The derivative gain
 	 * @param kDP The directional-proportional gain
 	 */
-	public void setGains(double kV, double kA, double kP, double kD, double kDP) {
-		setGains(kV, kA, kP, kD);
+	public void setGains(double kV, double kA, double kP, double kI, double kD, double kDP) {
+		setGains(kV, kA, kP, kI, kD);
 		setDP(kDP);
 	}
 

@@ -103,13 +103,15 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	}
 
 	/**
-	 * Sets the directional-proportional gain of the feedback loop. The
-	 * directional-proportional gain allows the robot to better follow the
+	 * Sets the directional-proportional gain of the feedback loop.
+	 * <p>
+	 * The directional-proportional gain allows the robot to better follow the
 	 * trajectory by trying to follow not just the position, velocity and
 	 * acceleration, but the direction as well. The actual angle the robot is facing
 	 * at a given time is subtracted from the angle it is supposed to be facing, and
 	 * then multiplied by the directional-proportional gain and added/subtracted to
 	 * the outputs of the left and right wheels.
+	 * </p>
 	 * 
 	 * @param kDP The new directional-proportional gain
 	 */
@@ -118,13 +120,15 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	}
 
 	/**
-	 * Gets the directional-proportional gain of the feedback loop. The
-	 * directional-proportional gain allows the robot to better follow the
+	 * Gets the directional-proportional gain of the feedback loop.
+	 * <p>
+	 * The directional-proportional gain allows the robot to better follow the
 	 * trajectory by trying to follow not just the position, velocity and
 	 * acceleration, but the direction as well. The actual angle the robot is facing
 	 * at a given time is subtracted from the angle it is supposed to be facing, and
 	 * then multiplied by the directional-proportional gain and added/subtracted to
 	 * the outputs of the left and right wheels.
+	 * </p>
 	 * 
 	 * @return The directional-proportional gain
 	 */
@@ -138,11 +142,12 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	 * @param kV  The velocity feedforward
 	 * @param kA  The acceleration feedforward
 	 * @param kP  The proportional gain
+	 * @param kI  The integral gain
 	 * @param kD  The derivative gain
 	 * @param kDP The directional-proportional gain
 	 */
-	public void setGains(double kV, double kA, double kP, double kD, double kDP) {
-		setGains(kV, kA, kP, kD);
+	public void setGains(double kV, double kA, double kP, double kI, double kD, double kDP) {
+		setGains(kV, kA, kP, kI, kD);
 		setDP(kDP);
 	}
 

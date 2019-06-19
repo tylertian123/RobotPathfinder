@@ -9,14 +9,16 @@ plugins {
     // For JNI
     id 'cpp'
     id 'edu.wpi.first.GradleVsCode' version '0.8.0'
-    id "edu.wpi.first.GradleJni" version "0.4.1"
-    id "edu.wpi.first.GradleRIO" version "2019.3.2"
+    id 'edu.wpi.first.GradleJni' version '0.4.1'
+    id 'edu.wpi.first.GradleRIO' version '2019.3.2'
 
     // Task Tree
-    id "com.dorongold.task-tree" version "1.3.1"
+    id 'com.dorongold.task-tree' version '1.3.1'
 
     // Code coverage
-    id "jacoco"
+    id 'jacoco'
+
+    id 'checkstyle'
 }
 
 compileJava {
@@ -33,17 +35,17 @@ buildScan {
     termsOfServiceAgree = 'yes'
 }
 
-final JAVADOC_FIX_SEARCH_STR = "\n\n" +
-"/***********************************************************************\n" + 
-" * THE BELOW SNIPPET WAS APPENDED BY THE ROBOTPATHFINDER BUILD PROCESS *\n" +
-" * This fixes the broken search functionality due to not having        *\n" +
-" * modules without breaking external links                             *\n" +
-" ***********************************************************************/\n" +
-"getURLPrefix = function(ui) {\n" +
-"    return \"\";\n" +
-"}\n"
+final JAVADOC_FIX_SEARCH_STR = '\n\n' +
+'/***********************************************************************\n' + 
+' * THE BELOW SNIPPET WAS APPENDED BY THE ROBOTPATHFINDER BUILD PROCESS *\n' +
+' * This fixes the broken search functionality due to not having        *\n' +
+' * modules without breaking external links                             *\n' +
+' ***********************************************************************/\n' +
+'getURLPrefix = function(ui) {\n' +
+'    return \'\';\n' +
+'}\n'
 
-javadoc {
+tasks.withType(Javadoc) {
     options.with {
         links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
     }
@@ -54,20 +56,9 @@ javadoc {
         // project was not using modules. Although --no-module-directories fixes this, it breaks external
         // links in the process. Therefore, we append a short snippet of code to the end of the JavaScript
         // to fix it.
-        def searchScript = new File(destinationDir.getAbsolutePath() + "/search.js")
+        def searchScript = new File(destinationDir.getAbsolutePath() + '/search.js')
         searchScript.append JAVADOC_FIX_SEARCH_STR
     }
-}
-
-dependencies {
-    // JMathPlot is needed for the graphing
-    implementation 'com.github.yannrichet:JMathPlot:1.0.1'
-    // Gson is needed for the Trajectory Visualizer's saving
-    implementation 'com.google.code.gson:gson:2.8.5'
-
-    // Use JUnit test framework
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.hamcrest:hamcrest:2.1'
 }
 
 // In this section you declare where to find the dependencies of your project
@@ -105,9 +96,9 @@ model {
                     it.buildable = false
                 }
                 if (it.targetPlatform.name.contains(wpi.platforms.roborio)) {
-                    useLibrary(it, "wpilibjni")
+                    useLibrary(it, 'wpilibjni')
                 } else {
-                    useLibrary(it, "wpilibjni_common")
+                    useLibrary(it, 'wpilibjni_common')
                 }
             }
         }
@@ -149,6 +140,40 @@ jacocoTestReport {
     }
 }
 
+
+checkstyle {
+    project.ext.checkstyleVersion = '8.20'
+
+    ignoreFailures = true
+    configFile = file("${project.rootDir}/config/checkstyle/checkstyle.xml")
+}
+
+checkstyleMain {
+    source = sourceSets.main.allSource
+}
+
+tasks.withType(Checkstyle) {
+    reports {
+        xml.enabled false
+        html.enabled true
+    }
+}
+
+dependencies {
+    // JMathPlot is needed for the graphing
+    implementation 'com.github.yannrichet:JMathPlot:1.0.1'
+    // Gson is needed for the Trajectory Visualizer's saving
+    implementation 'com.google.code.gson:gson:2.8.5'
+
+    // Use JUnit test framework
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.hamcrest:hamcrest:2.1'
+
+    assert project.hasProperty("checkstyleVersion")
+
+    checkstyle "com.puppycrawl.tools:checkstyle:${checkstyleVersion}"
+}
+
 task updateJNIHeaders(type: Copy, group: 'Development', description: 'Copies JNI generated headers into the JNI headers directory.') {
     dependsOn assemble
 
@@ -177,12 +202,12 @@ task copyLibLinuxx8664Release(type: Copy, group: 'Development', description: 'Co
 task copyLibWindowsx8664Debug(type: Exec, group: 'Development', description: 'Copies the dynamic library for windows x86-64 debug to the root of the project.') {
     dependsOn assemble
     
-    commandLine 'cmd', '/c', '\"copy build\\libs\\jniLibrary\\shared\\windowsx86-64\\debug\\JniLibrary.dll RobotPathfinder.dll\"'
+    commandLine 'cmd', '/c', '\'copy build\\libs\\jniLibrary\\shared\\windowsx86-64\\debug\\JniLibrary.dll RobotPathfinder.dll\''
 }
 task copyLibWindowsx8664Release(type: Exec, group: 'Development', description: 'Copies the dynamic library for windows x86-64 release to the root of the project.') {
     dependsOn assemble
 
-    commandLine 'cmd', '/c', '\"copy build\\libs\\jniLibrary\\shared\\windowsx86-64\\release\\JniLibrary.dll RobotPathfinder.dll\"'
+    commandLine 'cmd', '/c', '\'copy build\\libs\\jniLibrary\\shared\\windowsx86-64\\release\\JniLibrary.dll RobotPathfinder.dll\''
 }
 
 task copyLibDebug(group: 'Development', description: 'Copies the correct debug dynamic library to the root of the project.') {
@@ -292,21 +317,7 @@ task testJavadoc(type: Javadoc, group: 'Documentation', description: 'Generates 
     source = sourceSets.test.allJava
     classpath = sourceSets.test.compileClasspath
     // if not changed the destinationDir, the javadoc for production code is overridden.
-    destinationDir = file("${buildDir}/docs/testJavadoc")
-
-    options.with {
-        links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
-    }
-    options.addBooleanOption('public', true)
-
-    doLast {
-        // Since the introduction of modules in Java 9, the JavaDoc search functionality would break if the
-        // project was not using modules. Although --no-module-directories fixes this, it breaks external
-        // links in the process. Therefore, we append a short snippet of code to the end of the JavaScript
-        // to fix it.
-        def searchScript = new File(destinationDir.getAbsolutePath() + "/search.js")
-        searchScript.append JAVADOC_FIX_SEARCH_STR
-    }
+    destinationDir = file(buildDir.getPath() + '/docs/testJavadoc')
 }
 
 task completeJavadoc(type: Javadoc, group: 'Documentation', description: 'Generates JavaDoc for both the main classes and the test classes.') {
@@ -315,21 +326,7 @@ task completeJavadoc(type: Javadoc, group: 'Documentation', description: 'Genera
     source += sourceSets.main.allJava;
     classpath += sourceSets.main.compileClasspath
 
-    destinationDir = file("${buildDir}/docs/completeJavadoc")
-
-    options.with {
-        links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
-    }
-    options.addBooleanOption('public', true)
-
-    doLast {
-        // Since the introduction of modules in Java 9, the JavaDoc search functionality would break if the
-        // project was not using modules. Although --no-module-directories fixes this, it breaks external
-        // links in the process. Therefore, we append a short snippet of code to the end of the JavaScript
-        // to fix it.
-        def searchScript = new File(destinationDir.getAbsolutePath() + "/search.js")
-        searchScript.append JAVADOC_FIX_SEARCH_STR
-    }
+    destinationDir = file(buildDir.getPath() + '/docs/completeJavadoc')
 }
 
 task zipDoc(type: Zip, group: 'Archive', description: 'Zips the generated JavaDoc and puts it in the output directory.') {
@@ -358,7 +355,7 @@ task cleanAll(type: Exec, group: 'Clean', description: 'Removes all compiled art
         commandLine 'rm', '-rf', 'bin', 'build', 'output', 'libRobotPathfinder.so'
     }
     else {
-        commandLine 'cmd', '/c', '\"del /s /q /f bin build output RobotPathfinder.dll \
-                & rd /s /q bin & rd /s /q build & rd /s /q output\"'
+        commandLine 'cmd', '/c', '\'del /s /q /f bin build output RobotPathfinder.dll \
+                & rd /s /q bin & rd /s /q build & rd /s /q output\''
     }
 }

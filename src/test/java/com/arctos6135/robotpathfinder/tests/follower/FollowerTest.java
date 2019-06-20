@@ -1,8 +1,8 @@
 package com.arctos6135.robotpathfinder.tests.follower;
 
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
@@ -126,7 +126,7 @@ public class FollowerTest {
 
         FakeTimer timer = new FakeTimer();
         Follower<TankDriveMoment> follower = new TankDriveFollower(traj, new FakeMotor(), new FakeMotor(),
-                new FakeEncoder(), new FakeEncoder(), timer, new FakeGyro(), 0, 0, 0, 0, 0);
+                new FakeEncoder(), new FakeEncoder(), timer, new FakeGyro(), 0, 0, 0, 0, 0, 0);
         // Assertion: Follower is not finished or running initially
         assertThat(follower.isFinished(), is(false));
         assertThat(follower.isRunning(), is(false));
@@ -179,6 +179,7 @@ public class FollowerTest {
         double maxA = helper.getDouble("maxA", 1.0);
         double distance = helper.getDouble("distance", 1000);
         double kP = helper.getDouble("kP", MathUtils.getFloatCompareThreshold(), 1000);
+        double kI = helper.getDouble("kI", MathUtils.getFloatCompareThreshold(), 1000);
         double kD = helper.getDouble("kD", MathUtils.getFloatCompareThreshold(), 1000);
         double kV = helper.getDouble("kV", MathUtils.getFloatCompareThreshold(), 1000);
         double kA = helper.getDouble("kA", MathUtils.getFloatCompareThreshold(), 1000);
@@ -191,8 +192,8 @@ public class FollowerTest {
         FakeTimer timer = new FakeTimer();
         FakeMotor motor = new FakeMotor();
         FakeEncoder encoder = new FakeEncoder();
-        Follower<TankDriveMoment> follower = new TankDriveFollower(profile, motor, motor, encoder, encoder, timer, kV,
-                kA, kP, kD);
+        TankDriveFollower follower = new TankDriveFollower(profile, motor, motor, encoder, encoder, timer, kV,
+                kA, kP, kI, kD);
 
         follower.initialize();
         timer.value = profile.totalTime();
@@ -200,7 +201,7 @@ public class FollowerTest {
         assertThat(motor.value, not(closeTo(0.0, MathUtils.getFloatCompareThreshold())));
 
         follower.stop();
-        follower.setGains(1, 0, kP, 0, 0);
+        follower.setGains(1, 0, kP, 0, 0, 0);
         timer.value = 0;
         follower.initialize();
         timer.value = checkTime;
@@ -210,7 +211,7 @@ public class FollowerTest {
                 closeTo(profile.get(checkTime).getLeftVelocity(), MathUtils.getFloatCompareThreshold()));
 
         follower.stop();
-        follower.setGains(0, 1, kP, 0, 0);
+        follower.setGains(0, 1, kP, 0, 0, 0);
         timer.value = 0;
         encoder.value = 0;
         follower.initialize();

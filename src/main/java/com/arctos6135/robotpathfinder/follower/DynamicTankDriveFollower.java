@@ -44,8 +44,8 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 
 	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
 			AdvancedPositionSource lDistSrc, AdvancedPositionSource rDistSrc, TimestampSource timer, double kV,
-			double kA, double kP, double kD, double updateDelay) {
-		setGains(kV, kA, kP, kD, 0);
+			double kA, double kP, double kI, double kD, double updateDelay) {
+		setGains(kV, kA, kP, kI, kD, 0);
 		this.target = target;
 		this.lMotor = lMotor;
 		this.rMotor = rMotor;
@@ -59,8 +59,9 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 
 	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
 			AdvancedPositionSource lDistSrc, AdvancedPositionSource rDistSrc, TimestampSource timer,
-			DirectionSource dirSrc, double kV, double kA, double kP, double kD, double kDP, double updateDelay) {
-		setGains(kV, kA, kP, kD, kDP);
+			DirectionSource dirSrc, double kV, double kA, double kP, double kI, double kD, double kDP,
+			double updateDelay) {
+		setGains(kV, kA, kP, kI, kD, kDP);
 		this.target = target;
 		this.lMotor = lMotor;
 		this.rMotor = rMotor;
@@ -74,8 +75,8 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 
 	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
 			PositionSource lDistSrc, PositionSource rDistSrc, TimestampSource timer, double kV, double kA, double kP,
-			double kD, double updateDelay) {
-		setGains(kV, kA, kP, kD, 0);
+			double kI, double kD, double updateDelay) {
+		setGains(kV, kA, kP, kI, kD, 0);
 		this.target = target;
 		this.lMotor = lMotor;
 		this.rMotor = rMotor;
@@ -89,8 +90,8 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 
 	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
 			PositionSource lDistSrc, PositionSource rDistSrc, TimestampSource timer, DirectionSource dirSrc, double kV,
-			double kA, double kP, double kD, double kDP, double updateDelay) {
-		setGains(kV, kA, kP, kD, kDP);
+			double kA, double kP, double kI, double kD, double kDP, double updateDelay) {
+		setGains(kV, kA, kP, kI, kD, kDP);
 		this.target = target;
 		this.lMotor = lMotor;
 		this.rMotor = rMotor;

@@ -11,7 +11,6 @@ import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
 import com.arctos6135.robotpathfinder.follower.DynamicFollowable;
 import com.arctos6135.robotpathfinder.follower.DynamicFollower;
 import com.arctos6135.robotpathfinder.follower.DynamicTankDriveFollower;
-import com.arctos6135.robotpathfinder.follower.Follower;
 import com.arctos6135.robotpathfinder.math.MathUtils;
 import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalTankDriveProfile;
 import com.arctos6135.robotpathfinder.tests.TestHelper;
@@ -85,7 +84,7 @@ public class DynamicFollowerTest {
         FakeGyro gyro = new FakeGyro();
 
         DynamicFollower<TankDriveMoment> follower = new DynamicTankDriveFollower(followable, motor, motor, encoder,
-                encoder, timer, gyro, 0, 0, 0, 0, 0, updateDelay);
+                encoder, timer, gyro, 0, 0, 0, 0, 0, 0, updateDelay);
 
         follower.initialize();
         follower.run();
@@ -137,6 +136,7 @@ public class DynamicFollowerTest {
         double distance = helper.getDouble("distance", 1000);
         double kP = helper.getDouble("kP", MathUtils.getFloatCompareThreshold(), 1000);
         double kD = helper.getDouble("kD", MathUtils.getFloatCompareThreshold(), 1000);
+        double kI = helper.getDouble("kI", MathUtils.getFloatCompareThreshold(), 1000);
         double kV = helper.getDouble("kV", MathUtils.getFloatCompareThreshold(), 1000);
         double kA = helper.getDouble("kA", MathUtils.getFloatCompareThreshold(), 1000);
 
@@ -148,8 +148,8 @@ public class DynamicFollowerTest {
         FakeTimer timer = new FakeTimer();
         FakeMotor motor = new FakeMotor();
         FakeEncoder encoder = new FakeEncoder();
-        Follower<TankDriveMoment> follower = new DynamicTankDriveFollower(profile, motor, motor, encoder, encoder,
-                timer, kV, kA, kP, kD, profile.totalTime() * 2);
+        DynamicTankDriveFollower follower = new DynamicTankDriveFollower(profile, motor, motor, encoder, encoder,
+                timer, kV, kA, kP, kI, kD, profile.totalTime() * 2);
 
         follower.initialize();
         timer.value = profile.totalTime();
@@ -157,7 +157,7 @@ public class DynamicFollowerTest {
         assertThat(motor.value, not(closeTo(0.0, MathUtils.getFloatCompareThreshold())));
 
         follower.stop();
-        follower.setGains(1, 0, kP, 0, 0);
+        follower.setGains(1, 0, kP, 0, 0, 0);
         timer.value = 0;
         follower.initialize();
         timer.value = checkTime;
@@ -167,7 +167,7 @@ public class DynamicFollowerTest {
                 closeTo(profile.get(checkTime).getLeftVelocity(), MathUtils.getFloatCompareThreshold()));
 
         follower.stop();
-        follower.setGains(0, 1, kP, 0, 0);
+        follower.setGains(0, 1, kP, 0, 0, 0);
         timer.value = 0;
         encoder.value = 0;
         follower.initialize();

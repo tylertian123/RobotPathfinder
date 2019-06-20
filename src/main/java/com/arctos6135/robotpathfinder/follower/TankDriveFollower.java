@@ -54,7 +54,7 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 */
 	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, TimestampSource timer,
 			double kV, double kA) {
-		setGains(kV, kA, 0, 0, 0);
+		setGains(kV, kA, 0, 0, 0, 0);
 		this.target = target;
 		this.lMotor = lMotor;
 		this.rMotor = rMotor;
@@ -84,11 +84,12 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param kV       The velocity feedforward
 	 * @param kA       The acceleration feedforward
 	 * @param kP       The proportional gain
+	 * @param kI       The integral gain
 	 * @param kD       The derivative gain
 	 */
 	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, PositionSource lDistSrc,
-			PositionSource rDistSrc, TimestampSource timer, double kV, double kA, double kP, double kD) {
-		setGains(kV, kA, kP, kD, 0);
+			PositionSource rDistSrc, TimestampSource timer, double kV, double kA, double kP, double kI, double kD) {
+		setGains(kV, kA, kP, kI, kD, 0);
 		this.target = target;
 		this.lMotor = lMotor;
 		this.rMotor = rMotor;
@@ -119,7 +120,7 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 */
 	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, TimestampSource timer,
 			DirectionSource dirSrc, double kV, double kA, double kDP) {
-		setGains(kV, kA, 0, 0, kDP);
+		setGains(kV, kA, 0, 0, 0, kDP);
 		this.target = target;
 		this.lMotor = lMotor;
 		this.rMotor = rMotor;
@@ -150,14 +151,15 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param kV       The velocity feedforward
 	 * @param kA       The acceleration feedforward
 	 * @param kP       The proportional gain
+	 * @param kI       The integral gain
 	 * @param kD       The derivative gain
 	 * @param kDP      The directional-proportional gain; for more information, see
 	 *                 {@link #setDP(double)}
 	 */
 	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, PositionSource lDistSrc,
 			PositionSource rDistSrc, TimestampSource timer, DirectionSource dirSrc, double kV, double kA, double kP,
-			double kD, double kDP) {
-		setGains(kV, kA, kP, kD, kDP);
+			double kI, double kD, double kDP) {
+		setGains(kV, kA, kP, kI, kD, kDP);
 		this.target = target;
 		this.lMotor = lMotor;
 		this.rMotor = rMotor;

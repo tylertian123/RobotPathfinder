@@ -363,6 +363,8 @@ abstract public class Follower<T extends Moment> {
 		 * the trajectory is generated with units of m/s, the result should also be in
 		 * m/s^2.
 		 * </p>
+		 * 
+		 * @return The current acceleration
 		 */
 		public double getAcceleration();
 	}

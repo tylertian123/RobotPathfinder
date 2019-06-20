@@ -58,8 +58,12 @@
 			<property name="severity" value="warning"/>
 			<property name="scope" value="public"/>
 		</module>
-		<!-- @ clauses are non-empty -->
+		<!-- @ clauses are non-empty (warning) -->
 		<module name="NonEmptyAtclauseDescription">
+			<property name="severity" value="warning"/>
+		</module>
+		<!-- @Deprecated annotation and @deprecated Javadoc tag are both present (warning) -->
+		<module name="MissingDeprecated">
 			<property name="severity" value="warning"/>
 		</module>
 	</module>

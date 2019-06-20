@@ -8,6 +8,9 @@
 	<!-- Configuration -->
 	<!-- Tabs are 4 spaces wide -->
 	<property name="tabWidth" value="4"/>
+	<module name="SuppressionFilter">
+		<property name="file" value="${config_loc}/suppressions.xml"/>
+	</module>
 
 	<!-- Best practices checks -->
 	<!-- Newline at the end of file -->
@@ -31,6 +34,7 @@
 		<module name="Indentation">
 			<property name="basicOffset" value="4"/>
 			<property name="caseIndent" value="0"/>
+			<property name="arrayInitIndent" value="8"/>
 		</module>
 		<!-- Curly brace at the end of a line -->
 		<module name="LeftCurly">

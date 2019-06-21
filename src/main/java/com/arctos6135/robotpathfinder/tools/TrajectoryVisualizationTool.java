@@ -1129,6 +1129,11 @@ public class TrajectoryVisualizationTool {
 		mainFrame.setVisible(true);
 	}
 
+	/**
+	 * Loads the necessary libraries and runs the Trajectory Visualization Tool.
+	 * 
+	 * @param args Command line arguments
+	 */
 	public static void main(String[] args) {
 		try {
 			GlobalLibraryLoader.load();

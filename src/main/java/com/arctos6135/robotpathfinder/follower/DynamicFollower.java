@@ -8,7 +8,7 @@ import com.arctos6135.robotpathfinder.core.trajectory.Moment;
  * <p>
  * See {@link Follower} for the basic definition of a "follower". The
  * {@link DynamicFollower} is a special type of follower that follows
- * {@link DynamicFollowable}s instead of regular {@link Followables}. They will
+ * {@link DynamicFollowable}s instead of regular {@link Followable}s. They will
  * periodically call the {@link DynamicFollowable}'s
  * {@link DynamicFollowable#update(Moment) update()} method to re-generate it,
  * with an interval between calls specified in the constructor.

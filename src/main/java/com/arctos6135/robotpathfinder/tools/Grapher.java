@@ -8,6 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 
 import com.arctos6135.robotpathfinder.core.Waypoint;
 import com.arctos6135.robotpathfinder.core.path.Path;
@@ -36,13 +37,13 @@ public final class Grapher {
 	private static double maxX, maxY, minX, minY;
 
 	/**
-	 * Graphs a {@link BasicFollowable} in a {@link JFrame}. The heading will not be
-	 * graphed.
+	 * Graphs a {@link Followable Followable&lt;BasicMoment&gt;} in a
+	 * {@link JFrame}. The heading will not be graphed.
 	 * <p>
 	 * In addition to graphing, this method also sets the {@link JFrame}'s default
-	 * close operation to be {@link JFrame#DISPOSE_ON_CLOSE}. Note that this method
-	 * does not show the window; {@link JFrame#setVisible(boolean) setVisible()}
-	 * needs to be called explicitly in order to show the window.
+	 * close operation to be {@link WindowConstants#DISPOSE_ON_CLOSE}. Note that
+	 * this method does not show the window; {@link JFrame#setVisible(boolean)
+	 * setVisible()} needs to be called explicitly in order to show the window.
 	 * </p>
 	 * 
 	 * @param trajectory The trajectory to graph
@@ -54,12 +55,13 @@ public final class Grapher {
 	}
 
 	/**
-	 * Graphs a {@link BasicFollowable} in a {@link JFrame}.
+	 * Graphs a {@link Followable Followable&lt;BasicMoment&gt;} in a
+	 * {@link JFrame}.
 	 * <p>
 	 * In addition to graphing, this method also sets the {@link JFrame}'s default
-	 * close operation to be {@link JFrame#DISPOSE_ON_CLOSE}. Note that this method
-	 * does not show the window; {@link JFrame#setVisible(boolean) setVisible()}
-	 * needs to be called explicitly in order to show the window.
+	 * close operation to be {@link WindowConstants#DISPOSE_ON_CLOSE}. Note that
+	 * this method does not show the window; {@link JFrame#setVisible(boolean)
+	 * setVisible()} needs to be called explicitly in order to show the window.
 	 * </p>
 	 * 
 	 * @param trajectory   The trajectory to graph
@@ -127,13 +129,13 @@ public final class Grapher {
 	}
 
 	/**
-	 * Graphs a {@link TankDriveFollowable} in a {@link JFrame}. The heading will
-	 * not be graphed.
+	 * Graphs a {@link Followable Followable&lt;TankDriveMoment&gt;} in a
+	 * {@link JFrame}. The heading will not be graphed.
 	 * <p>
 	 * In addition to graphing, this method also sets the {@link JFrame}'s default
-	 * close operation to be {@link JFrame#DISPOSE_ON_CLOSE}. Note that this method
-	 * does not show the window; {@link JFrame#setVisible(boolean) setVisible()}
-	 * needs to be called explicitly in order to show the window.
+	 * close operation to be {@link WindowConstants#DISPOSE_ON_CLOSE}. Note that
+	 * this method does not show the window; {@link JFrame#setVisible(boolean)
+	 * setVisible()} needs to be called explicitly in order to show the window.
 	 * </p>
 	 * 
 	 * @param trajectory The trajectory to graph
@@ -145,12 +147,13 @@ public final class Grapher {
 	}
 
 	/**
-	 * Graphs a {@link TankDriveFollowable} in a {@link JFrame}.
+	 * Graphs a {@link Followable Followable&lt;TankDriveMoment&gt;} in a
+	 * {@link JFrame}.
 	 * <p>
 	 * In addition to graphing, this method also sets the {@link JFrame}'s default
-	 * close operation to be {@link JFrame#DISPOSE_ON_CLOSE}. Note that this method
-	 * does not show the window; {@link JFrame#setVisible(boolean) setVisible()}
-	 * needs to be called explicitly in order to show the window.
+	 * close operation to be {@link WindowConstants#DISPOSE_ON_CLOSE}. Note that
+	 * this method does not show the window; {@link JFrame#setVisible(boolean)
+	 * setVisible()} needs to be called explicitly in order to show the window.
 	 * </p>
 	 * 
 	 * @param trajectory   The trajectory to graph
@@ -158,7 +161,8 @@ public final class Grapher {
 	 * @param graphHeading Whether or not to graph the relative facing.
 	 * @return The graphed trajectory in a {@link JFrame}
 	 */
-	public static JFrame graphTankDriveFollowable(Followable<TankDriveMoment> trajectory, double dt, boolean graphHeading) {
+	public static JFrame graphTankDriveFollowable(Followable<TankDriveMoment> trajectory, double dt,
+			boolean graphHeading) {
 		int elemCount = (int) Math.ceil(trajectory.totalTime() / dt);
 
 		// Create arrays to store data
@@ -228,10 +232,10 @@ public final class Grapher {
 	 * Graphs a {@link Path} in a {@link JFrame}.
 	 * <p>
 	 * In addition to graphing, this method also sets the {@link JFrame}'s default
-	 * close operation to be {@link JFrame#DISPOSE_ON_CLOSE}, disables resizing and
-	 * resizes it to show the entire path. It is not recommended to change the size
-	 * of the frame, as this might mess up the axis scales. Note that this method
-	 * does not show the window; the user needs to call
+	 * close operation to be {@link WindowConstants#DISPOSE_ON_CLOSE}, disables
+	 * resizing and resizes it to show the entire path. It is not recommended to
+	 * change the size of the frame, as this might mess up the axis scales. Note
+	 * that this method does not show the window; the user needs to call
 	 * {@link JFrame#setVisible(boolean) setVisible()} explicitly in order to show
 	 * the window.
 	 * </p>
@@ -368,6 +372,19 @@ public final class Grapher {
 		return frame;
 	}
 
+	/**
+	 * Graphs a {@link MotionProfile} in a {@link JFrame}.
+	 * <p>
+	 * In addition to graphing, this method also sets the {@link JFrame}'s default
+	 * close operation to be {@link WindowConstants#DISPOSE_ON_CLOSE}. Note that
+	 * this method does not show the window; {@link JFrame#setVisible(boolean)
+	 * setVisible()} needs to be called explicitly in order to show the window.
+	 * </p>
+	 * 
+	 * @param p  The motion profile to graph
+	 * @param dt The time increment between samples
+	 * @return The graphed motion profile in a {@link JFrame}
+	 */
 	public static JFrame graphMotionProfile(MotionProfile p, double dt) {
 		int elemCount = (int) Math.ceil(p.totalTime() / dt);
 

@@ -122,7 +122,7 @@ public class Path extends JNIObject {
      * 
      * @param radius The new base radius
      * @throws IllegalStateException If the native resource has already been freed
-     *                               (see class JavaDoc)
+     *                               (see class Javadoc)
      */
     public void setBaseRadius(double radius) {
         this.radius = radius;
@@ -136,7 +136,7 @@ public class Path extends JNIObject {
      * 
      * @param backwards Whether this path should be driven backwards
      * @throws IllegalStateException If the native resource has already been freed
-     *                               (see class JavaDoc)
+     *                               (see class Javadoc)
      */
     public void setDrivingBackwards(boolean backwards) {
         this.backwards = backwards;
@@ -204,7 +204,7 @@ public class Path extends JNIObject {
      * @param time A real number in the range [0, 1]
      * @return The position on this path at the specified time
      * @throws IllegalStateException If the native resource has already been freed
-     *                               (see class JavaDoc)
+     *                               (see class Javadoc)
      */
     public native Vec2D at(double time);
 
@@ -221,7 +221,7 @@ public class Path extends JNIObject {
      * @param time A real number in the range [0, 1]
      * @return The derivative on this path at the specified time
      * @throws IllegalStateException If the native resource has already been freed
-     *                               (see class JavaDoc)
+     *                               (see class Javadoc)
      */
     public native Vec2D derivAt(double time);
 
@@ -239,7 +239,7 @@ public class Path extends JNIObject {
      * @param time A real number in the range [0, 1]
      * @return The second derivative on this path at the specified time
      * @throws IllegalStateException If the native resource has already been freed
-     *                               (see class JavaDoc)
+     *                               (see class Javadoc)
      */
     public native Vec2D secondDerivAt(double time);
 
@@ -260,7 +260,7 @@ public class Path extends JNIObject {
      * @return A pair of positions (left, right) of the wheels on the path at the
      *         specified time
      * @throws IllegalStateException If the native resource has already been freed
-     *                               (see class JavaDoc)
+     *                               (see class Javadoc)
      */
     public native Pair<Vec2D, Vec2D> wheelsAt(double time);
 
@@ -281,7 +281,7 @@ public class Path extends JNIObject {
      * @param points The number of points to take along the path for integration
      * @return The total length of the path
      * @throws IllegalStateException If the native resource has already been freed
-     *                               (see class JavaDoc)
+     *                               (see class Javadoc)
      */
     public double computeLen(int points) {
         length = _computeLen(points);
@@ -295,7 +295,7 @@ public class Path extends JNIObject {
      * 
      * @return The total length of the path
      * @throws IllegalStateException If the native resource has already been freed
-     *                               (see class JavaDoc), or if
+     *                               (see class Javadoc), or if
      *                               {@link #computeLen(int)} was never called
      */
     public double getLength() {
@@ -314,7 +314,7 @@ public class Path extends JNIObject {
      * @param s The fraction of the total path length
      * @return The time upon which s has been travelled
      * @throws IllegalStateException If the native resource has already been freed
-     *                               (see class JavaDoc), or if
+     *                               (see class Javadoc), or if
      *                               {@link #computeLen(int)} was never called
      */
     public double s2T(double s) {
@@ -334,7 +334,7 @@ public class Path extends JNIObject {
      * @param t A time in the range [0, 1]
      * @return The fraction of the total path length travelled at the time specified
      * @throws IllegalStateException If the native resource has already been freed
-     *                               (see class JavaDoc), or if
+     *                               (see class Javadoc), or if
      *                               {@link #computeLen(int)} was never called
      */
     public double t2S(double t) {
@@ -364,7 +364,7 @@ public class Path extends JNIObject {
      * 
      * @return The new path
      * @throws IllegalStateException If the native resource has already been freed
-     *                               (see class JavaDoc)
+     *                               (see class Javadoc)
      */
     public Path mirrorLeftRight() {
         Path p = new Path(waypoints, alpha, type, _mirrorLeftRight());
@@ -381,7 +381,7 @@ public class Path extends JNIObject {
      * 
      * @return The new path
      * @throws IllegalStateException If the native resource has already been freed
-     *                               (see class JavaDoc)
+     *                               (see class Javadoc)
      */
     public Path mirrorFrontBack() {
         Path p = new Path(waypoints, alpha, type, _mirrorFrontBack());
@@ -398,7 +398,7 @@ public class Path extends JNIObject {
      * 
      * @return The new path
      * @throws IllegalStateException If the native resource has already been freed
-     *                               (see class JavaDoc)
+     *                               (see class Javadoc)
      */
     public Path retrace() {
         Path p = new Path(waypoints, alpha, type, _retrace());

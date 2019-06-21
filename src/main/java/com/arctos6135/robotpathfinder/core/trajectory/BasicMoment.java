@@ -55,7 +55,7 @@ public class BasicMoment extends Moment {
 	 * @param position     The desired position
 	 * @param velocity     The desired velocity
 	 * @param acceleration The desired acceleration
-	 * @param heading      The desired heading; see the class JavaDoc for more
+	 * @param heading      The desired heading; see the class Javadoc for more
 	 *                     information
 	 */
 	public BasicMoment(double position, double velocity, double acceleration, double heading) {
@@ -71,7 +71,7 @@ public class BasicMoment extends Moment {
 	 * @param position     The desired position
 	 * @param velocity     The desired velocity
 	 * @param acceleration The desired acceleration
-	 * @param heading      The desired heading; see the class JavaDoc for more
+	 * @param heading      The desired heading; see the class Javadoc for more
 	 *                     information
 	 * @param t            The desired time
 	 */
@@ -86,11 +86,11 @@ public class BasicMoment extends Moment {
 	 * @param position      The desired position
 	 * @param velocity      The desired velocity
 	 * @param acceleration  The desired acceleration
-	 * @param heading       The desired heading; see the class JavaDoc for more
+	 * @param heading       The desired heading; see the class Javadoc for more
 	 *                      information
 	 * @param t             The desired time
 	 * @param initialFacing The initial direction the robot is <b>facing</b>; see
-	 *                      the class JavaDoc for more information
+	 *                      the class Javadoc for more information
 	 */
 	public BasicMoment(double position, double velocity, double acceleration, double heading, double t,
 			double initialFacing) {
@@ -105,11 +105,11 @@ public class BasicMoment extends Moment {
 	 * @param position      The desired position
 	 * @param velocity      The desired velocity
 	 * @param acceleration  The desired acceleration
-	 * @param heading       The desired heading; see the class JavaDoc for more
+	 * @param heading       The desired heading; see the class Javadoc for more
 	 *                      information
 	 * @param t             The desired time
 	 * @param initialFacing The initial direction the robot is <b>facing</b>; see
-	 *                      the class JavaDoc for more information
+	 *                      the class Javadoc for more information
 	 * @param backwards     Whether the robot is driving backwards in this moment
 	 */
 	public BasicMoment(double position, double velocity, double acceleration, double heading, double t,

@@ -27,7 +27,7 @@ public interface DynamicFollowable<T extends Moment> extends Followable<T> {
      * robot (represented by a moment of type {@link T}), and updates/re-generates
      * the object to better match those conditions.
      * <p>
-     * For more information, see the class JavaDoc for this class.
+     * For more information, see the class Javadoc for this class.
      * <p>
      * 
      * @param m The real life conditions of the robot

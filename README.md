@@ -38,7 +38,7 @@ Every release contains 3 jars, 1 zip, and numerous dynamic libraries:
 * `RobotPathfinder-(VERSION).jar` - The basic jar that contains the library, but without some dependencies. This is the jar recommended for use on a robot. It does not contain the dependencies required for graphing.
 * `RobotPathfinder-(VERSION)-all.jar` - The fat jar that contains the library as well as all its dependencies (JMathPlot, Gson). 
 * `Trajectory-Visualizer-(VERSION).jar` - The executable jar that contains the GUI Trajectory Visualization Tool (and all its dependencies).
-* `RobotPathfinder-Doc-(VERSION).zip` - The zip that contains the JavaDocs for all classes and methods.
+* `RobotPathfinder-Doc-(VERSION).zip` - The zip that contains the Javadocs for all classes and methods.
 * `libRobotPathfinder-(PLATFORM).so` - **(In v3 only)** The native dynamic library used by RobotPathfinder for a specific Linux arch.
 * `RobotPathfinder-(PLATFORM).dll` - **(In v3 only)** The native dynamic library used by RobotPathfinder for a specific Windows arch.
 
@@ -73,7 +73,7 @@ dependencies {
 * *Put a copy of the jar or a simlink to it in the WPILib Java libraries directory (`C:\Users\USERNAME\wpilib\user\java\lib` on Windows and `/home/USERNAME/wpilib/user/java/lib` on UNIX-based systems).*
 
 ## Documentation
-All classes and methods are documented with JavaDocs, in `RobotPathfinder-Doc-(VERSION).zip`.\
+All classes and methods are documented with Javadocs, in `RobotPathfinder-Doc-(VERSION).zip`.\
 Head over to the [wiki](https://github.com/Arctos6135/RobotPathfinder/wiki) for tutorials and examples!
 ***Wiki pages for RobotPathfinder v3 are coming soon.***
 
@@ -91,15 +91,15 @@ Features include:
 ***To run the Trajectory Visualizer V3, make sure that you have the correct dynamic library on your library path or in the directory where java is invoked!***
 
 ## Building
-This project uses Gradle as the build system. From the project root directory, running `./gradlew allArchives` will build the project and generate the jars and a zipped JavaDoc under the `/output/` directory.
+This project uses Gradle as the build system. From the project root directory, running `./gradlew allArchives` will build the project and generate the jars and a zipped Javadoc under the `/output/` directory.
 Alternatively, here are a list of commonly used tasks:
 * `./gradlew build` builds the project and generates the library jar under `/build/libs/`
 * `./gradlew test` runs all unit tests
 * `./gradlew visualizerJar` generates the Trajectory Visualization Tool jar under `/build/libs/`
 * `./gradlew copyJars` copies the generated jars to `/output/`
-* `./gradlew javadoc` generates JavaDocs under `/build/docs/javadoc`
-* **(In v3 only)** `./gradlew testJavadoc` generates JavaDocs for the test classes, under `/build/docs/testJavadoc`
-* **(In v3 only)** `./gradlew completeJavadoc` generates JavaDocs all classes (main and test), under `/build/docs/completeJavadoc`
+* `./gradlew javadoc` generates Javadocs under `/build/docs/javadoc`
+* **(In v3 only)** `./gradlew testJavadoc` generates Javadocs for the test classes, under `/build/docs/testJavadoc`
+* **(In v3 only)** `./gradlew completeJavadoc` generates Javadocs all classes (main and test), under `/build/docs/completeJavadoc`
 * `./gradlew zipDoc` zips the generated docs into `/output/`
 * `./gradlew allArchives` builds all the archives and copies it into `/output/`
 * **(In v3 only)** `./gradlew updateJNIHeaders` will re-generate the JNI headers and copy them to `/src/main/cpp/include/jni`

@@ -40,7 +40,7 @@ public abstract class Moment implements Cloneable {
 
 	/**
 	 * Retrieves the direction the robot is moving in. For more information, see the
-	 * class JavaDoc.
+	 * class Javadoc.
 	 * 
 	 * @return The heading of the robot
 	 */
@@ -50,7 +50,7 @@ public abstract class Moment implements Cloneable {
 
 	/**
 	 * Sets the direction the robot is moving in. For more information, see the
-	 * class JavaDoc.
+	 * class Javadoc.
 	 * 
 	 * @param heading The new heading of the robot
 	 */
@@ -61,7 +61,7 @@ public abstract class Moment implements Cloneable {
 	/**
 	 * Retrieves the <em>initial</em> direction the robot is <em>facing</em>. This
 	 * value is used to calculate the result of {@link #getFacingRelative()}. For
-	 * more information, see the class JavaDoc.
+	 * more information, see the class Javadoc.
 	 * 
 	 * @return The initial direction the robot is facing
 	 */
@@ -72,7 +72,7 @@ public abstract class Moment implements Cloneable {
 	/**
 	 * Sets the <em>initial</em> direction the robot is <em>facing</em>. This value
 	 * is used to calculate the result of {@link #getFacingRelative()}. For more
-	 * information, see the class JavaDoc.
+	 * information, see the class Javadoc.
 	 * 
 	 * @param initialFacing The initial direction the robot is facing
 	 */
@@ -103,7 +103,7 @@ public abstract class Moment implements Cloneable {
 
 	/**
 	 * Retrieves the direction the robot is facing, relative to the starting
-	 * position of the robot. For more information, see the class JavaDoc.
+	 * position of the robot. For more information, see the class Javadoc.
 	 * 
 	 * @return The relative facing direction of the robot
 	 */
@@ -113,7 +113,7 @@ public abstract class Moment implements Cloneable {
 
 	/**
 	 * Retrieves the direction the robot is facing, relative to the positive x-axis.
-	 * For more information, see the class JavaDoc.
+	 * For more information, see the class Javadoc.
 	 * 
 	 * @return The absolute facing direction of the robot
 	 */

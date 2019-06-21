@@ -29,7 +29,7 @@ public interface DynamicMotionProfile extends MotionProfile {
      * overshoots, then the method will return true.
      * </p>
      * <p>
-     * For more information, see the class JavaDoc for this class.
+     * For more information, see the class Javadoc for this class.
      * </p>
      * 
      * @param currentTime  The current time

@@ -18,10 +18,12 @@ plugins {
     // Code coverage
     id 'jacoco'
 
+    // Checkstyle
     id 'checkstyle'
 }
 
 compileJava {
+    // Show deprecation warnings
     options.compilerArgs << '-Xlint:deprecation'
 }
 
@@ -30,11 +32,14 @@ wrapper {
     gradleVersion = 5.0
 }
 
+// Build scans
 buildScan {
     termsOfServiceUrl = 'https://gradle.com/terms-of-service'
     termsOfServiceAgree = 'yes'
 }
 
+// Needed to fix Javadoc search
+// See comments below
 final JAVADOC_FIX_SEARCH_STR = '\n\n' +
 '/***********************************************************************\n' + 
 ' * THE BELOW SNIPPET WAS APPENDED BY THE ROBOTPATHFINDER BUILD PROCESS *\n' +
@@ -46,9 +51,11 @@ final JAVADOC_FIX_SEARCH_STR = '\n\n' +
 '}\n'
 
 tasks.withType(Javadoc) {
+    // Link to external docs for all the builtin classes
     options.with {
         links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
     }
+    // Only generate docs for public methods, fields and types
     options.addBooleanOption('public', true)
 
     doLast {
@@ -68,7 +75,7 @@ repositories {
     jcenter()
 }
 
-project.version = '3.0.0-alpha.0.1.1'
+project.version = '3.0.0-alpha.0.1.1-dev'
 
 // Setup for Gradle-JNI
 // Thanks to @ThadHouse
@@ -104,28 +111,39 @@ model {
         }
     }
 }
+// Compiler options
+// Windows
 if(Os.isFamily(Os.FAMILY_WINDOWS)) {
     model {
         binaries {
             all {
+                // For roborio (gcc)
                 if (targetPlatform.name == wpi.platforms.roborio) {
+                    // All warnings, fast math but keep infinite math and NaNs
                     cppCompiler.args << '-Wall' << '-Wextra' << '-ffast-math' << '-fno-finite-math-only'
                 }
+                // For desktop (VC++)
                 else if (targetPlatform.name == wpi.platforms.desktop) {
+                    // All warnings
                     cppCompiler.args << '/W3'
                 }
             }
         }
     }
 }
+// Linux - gcc
 else {
     model {
         binaries {
             all {
+                // For roborio (gcc)
                 if (targetPlatform.name == wpi.platforms.roborio) {
+                    // All warnings, fast math but keep infinite math and NaNs
                     cppCompiler.args << '-Wall' << '-Wextra' << '-ffast-math' << '-fno-finite-math-only'
                 }
+                // For desktop (gcc)
                 else if (targetPlatform.name == wpi.platforms.desktop) {
+                    // All warnings, fast math but keep infinite math and NaNs
                     cppCompiler.args << '-Wall' << '-Wextra' << '-ffast-math' << '-fno-finite-math-only'
                 }
             }
@@ -133,6 +151,7 @@ else {
     }
 }
 
+// Disable XML and CSV code coverage reports
 jacocoTestReport {
     reports {
         xml.enabled false
@@ -140,18 +159,20 @@ jacocoTestReport {
     }
 }
 
-
+// Checkstyle config
 checkstyle {
     project.ext.checkstyleVersion = '8.20'
 
-    ignoreFailures = true
+    ignoreFailures = false
     configFile = file("${project.rootDir}/config/checkstyle/checkstyle.xml")
 }
 
+// Include all Java source files in checkstyleMain
 checkstyleMain {
     source = sourceSets.main.allSource
 }
 
+// Disable XML reports and enable HTML reports for checkstyle
 tasks.withType(Checkstyle) {
     reports {
         xml.enabled false
@@ -169,8 +190,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.hamcrest:hamcrest:2.1'
 
+    // Checkstyle dependency
     assert project.hasProperty("checkstyleVersion")
-
     checkstyle "com.puppycrawl.tools:checkstyle:${checkstyleVersion}"
 }
 

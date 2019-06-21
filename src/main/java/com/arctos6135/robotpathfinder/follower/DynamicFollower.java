@@ -14,8 +14,7 @@ import com.arctos6135.robotpathfinder.core.trajectory.Moment;
  * with an interval between calls specified in the constructor.
  * </p>
  * <p>
- * Since this class inherits from {@link Follower}, the usage is entirely the
- * same.
+ * See the documentation for {@link Follower} for usage instructions.
  * </p>
  * 
  * @param <T> The type of moment used by this {@link DynamicFollower}; must be a

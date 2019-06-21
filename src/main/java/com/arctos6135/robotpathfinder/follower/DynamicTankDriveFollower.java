@@ -3,6 +3,39 @@ package com.arctos6135.robotpathfinder.follower;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
 import com.arctos6135.robotpathfinder.math.MathUtils;
 
+/**
+ * A dynamic follower class for tank drive robots.
+ * <p>
+ * See {@link DynamicFollower} for the basic definition of a "dynamic follower".
+ * This class provides a concrete implementation of the abstract class
+ * {@link DynamicFollower} for {@link TankDriveMoment}.
+ * </p>
+ * <p>
+ * This class is essentially a {@link DynamicFollower} version of
+ * {@link TankDriveFollower}. It contains every method of
+ * {@link TankDriveFollower} except for the constructors and those inherited
+ * from {@link DynamicFollower}. Note that it does not inherit from
+ * {@link TankDriveFollower} since multiple inheritance is not allowed.
+ * </p>
+ * <p>
+ * However, one major difference between this class and
+ * {@link TankDriveFollower} is that this class requires not just the wheel
+ * positions, but also their velocities and accelerations. Therefore, it uses
+ * {@link Follower.AdvancedPositionSource}s, which provide position, velocity
+ * and acceleration data. Nevertheless, if provided with a regular
+ * {@link Follower.PositionSource}, it will attempt to calculate the velocity
+ * and acceleration manually by differentiating the position. Therefore, all
+ * constructors require a {@link PositionSource} of some kind.
+ * </p>
+ * <p>
+ * See the documentation for {@link Follower} for usage instructions.
+ * </p>
+ * 
+ * @author Tyler Tian
+ * @since 3.0.0
+ * @see TankDriveFollower
+ * @see DynamicFollowable
+ */
 public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 
 	protected Motor lMotor, rMotor;
@@ -42,6 +75,28 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	 * removed.
 	 */
 
+	/**
+	 * Constructs a new dynamic tank drive follower using
+	 * {@link AdvancedPositionSource}s and no DP term.
+	 * <p>
+	 * This constructor does not require any sensors for direction, or a value for
+	 * kDP. Therefore, the directional-proportional term is not used. This may
+	 * reduce accuracy, but is typically good enough.
+	 * </p>
+	 * 
+	 * @param target      The target to follow
+	 * @param lMotor      The left side motor
+	 * @param rMotor      The right side motor
+	 * @param lDistSrc    A {@link AdvancedPositionSource} for the left motor
+	 * @param rDistSrc    A {@link AdvancedPositionSource} for the right motor
+	 * @param timer       A {@link TimestampSource} to get the current time from
+	 * @param kV          The velocity feedforward
+	 * @param kA          The acceleration feedforward
+	 * @param kP          The proportional gain
+	 * @param kI          The integral gain
+	 * @param kD          The derivative gain
+	 * @param updateDelay The duration between two updates
+	 */
 	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
 			AdvancedPositionSource lDistSrc, AdvancedPositionSource rDistSrc, TimestampSource timer, double kV,
 			double kA, double kP, double kI, double kD, double updateDelay) {
@@ -57,6 +112,25 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 		advancedDistSrc = true;
 	}
 
+	/**
+	 * Constructs a new dynamic tank drive follower using
+	 * {@link AdvancedPositionSource}s.
+	 * 
+	 * @param target      The target to follow
+	 * @param lMotor      The left side motor
+	 * @param rMotor      The right side motor
+	 * @param lDistSrc    A {@link AdvancedPositionSource} for the left motor
+	 * @param rDistSrc    A {@link AdvancedPositionSource} for the right motor
+	 * @param timer       A {@link TimestampSource} to get the current time from
+	 * @param dirSrc      A {@link DirectionSource} to get angle data from
+	 * @param kV          The velocity feedforward
+	 * @param kA          The acceleration feedforward
+	 * @param kP          The proportional gain
+	 * @param kI          The integral gain
+	 * @param kD          The derivative gain
+	 * @param kDP         The directional-proportional gain
+	 * @param updateDelay The duration between two updates
+	 */
 	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
 			AdvancedPositionSource lDistSrc, AdvancedPositionSource rDistSrc, TimestampSource timer,
 			DirectionSource dirSrc, double kV, double kA, double kP, double kI, double kD, double kDP,
@@ -73,6 +147,33 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 		advancedDistSrc = true;
 	}
 
+	/**
+	 * Constructs a new dynamic tank drive follower using regular
+	 * {@link PositionSource}s and no DP term.
+	 * <p>
+	 * This constructor uses regular {@link PositionSource}s instead of
+	 * {@link AdvancedPositionSource}s, and obtains the velocity and acceleration
+	 * through manual differentiation instead.
+	 * </p>
+	 * <p>
+	 * It also does not require any sensors for direction, or a value for kDP.
+	 * Therefore, the directional-proportional term is not used. This may reduce
+	 * accuracy, but is typically good enough.
+	 * </p>
+	 * 
+	 * @param target      The target to follow
+	 * @param lMotor      The left side motor
+	 * @param rMotor      The right side motor
+	 * @param lDistSrc    A {@link PositionSource} for the left motor
+	 * @param rDistSrc    A {@link PositionSource} for the right motor
+	 * @param timer       A {@link TimestampSource} to get the current time from
+	 * @param kV          The velocity feedforward
+	 * @param kA          The acceleration feedforward
+	 * @param kP          The proportional gain
+	 * @param kI          The integral gain
+	 * @param kD          The derivative gain
+	 * @param updateDelay The duration between two updates
+	 */
 	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
 			PositionSource lDistSrc, PositionSource rDistSrc, TimestampSource timer, double kV, double kA, double kP,
 			double kI, double kD, double updateDelay) {
@@ -88,6 +189,30 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 		advancedDistSrc = false;
 	}
 
+	/**
+	 * Constructs a new dynamic tank drive follower using
+	 * {@link AdvancedPositionSource}s.
+	 * <p>
+	 * This constructor uses regular {@link PositionSource}s instead of
+	 * {@link AdvancedPositionSource}s, and obtains the velocity and acceleration
+	 * through manual differentiation instead.
+	 * </p>
+	 * 
+	 * @param target      The target to follow
+	 * @param lMotor      The left side motor
+	 * @param rMotor      The right side motor
+	 * @param lDistSrc    A {@link PositionSource} for the left motor
+	 * @param rDistSrc    A {@link PositionSource} for the right motor
+	 * @param timer       A {@link TimestampSource} to get the current time from
+	 * @param dirSrc      A {@link DirectionSource} to get angle data from
+	 * @param kV          The velocity feedforward
+	 * @param kA          The acceleration feedforward
+	 * @param kP          The proportional gain
+	 * @param kI          The integral gain
+	 * @param kD          The derivative gain
+	 * @param kDP         The directional-proportional gain
+	 * @param updateDelay The duration between two updates
+	 */
 	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
 			PositionSource lDistSrc, PositionSource rDistSrc, TimestampSource timer, DirectionSource dirSrc, double kV,
 			double kA, double kP, double kI, double kD, double kDP, double updateDelay) {
@@ -106,15 +231,14 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	/**
 	 * Sets the directional-proportional gain of the feedback loop.
 	 * <p>
-	 * The directional-proportional gain allows the robot to better follow the
-	 * trajectory by trying to follow not just the position, velocity and
-	 * acceleration, but the direction as well. The actual angle the robot is facing
-	 * at a given time is subtracted from the angle it is supposed to be facing, and
-	 * then multiplied by the directional-proportional gain and added/subtracted to
-	 * the outputs of the left and right wheels.
+	 * This term takes the error between the angle the robot is supposed to be
+	 * facing and the angle it's actually facing, multiplies the error by a
+	 * constant, and subtracts it from the left wheels output while adding it to the
+	 * right wheel's output in order to correct the overall direction the robot is
+	 * facing.
 	 * </p>
 	 * 
-	 * @param kDP The new directional-proportional gain
+	 * @param kDP The directional-proportional gain
 	 */
 	public void setDP(double kDP) {
 		this.kDP = kDP;
@@ -123,12 +247,11 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	/**
 	 * Gets the directional-proportional gain of the feedback loop.
 	 * <p>
-	 * The directional-proportional gain allows the robot to better follow the
-	 * trajectory by trying to follow not just the position, velocity and
-	 * acceleration, but the direction as well. The actual angle the robot is facing
-	 * at a given time is subtracted from the angle it is supposed to be facing, and
-	 * then multiplied by the directional-proportional gain and added/subtracted to
-	 * the outputs of the left and right wheels.
+	 * This term takes the error between the angle the robot is supposed to be
+	 * facing and the angle it's actually facing, multiplies the error by a
+	 * constant, and subtracts it from the left wheels output while adding it to the
+	 * right wheel's output in order to correct the overall direction the robot is
+	 * facing.
 	 * </p>
 	 * 
 	 * @return The directional-proportional gain
@@ -155,7 +278,7 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	/**
 	 * Sets the timestamp source.
 	 * 
-	 * @param timer The new timestamp source
+	 * @param timer The timestamp source
 	 * @throws IllegalStateException If the follower is running
 	 */
 	public void setTimestampSource(TimestampSource timer) {
@@ -181,15 +304,15 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	}
 
 	/**
-	 * Sets the distance sources.
+	 * Sets the position sources.
 	 * 
-	 * @param lDistSrc The left distance source
-	 * @param rDistSrc The right distance source
+	 * @param lDistSrc The left position source
+	 * @param rDistSrc The right position source
 	 * @throws IllegalStateException If the follower is running
 	 */
 	public void setDistanceSources(AdvancedPositionSource lDistSrc, AdvancedPositionSource rDistSrc) {
 		if (running) {
-			throw new IllegalStateException("Distance Sources cannot be changed when follower is running");
+			throw new IllegalStateException("Position Sources cannot be changed when follower is running");
 		}
 		this.lDistSrc = lDistSrc;
 		this.rDistSrc = rDistSrc;
@@ -457,7 +580,9 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	 * This value is multiplied by <b>kV</b>, and added to the left output.
 	 * </p>
 	 * 
+	 * @deprecated Use {@link #lastMoment()} instead
 	 * @return The last left velocity
+	 * @see #lastMoment()
 	 */
 	@Deprecated
 	public double lastLeftVelocity() {
@@ -470,7 +595,9 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	 * This value is multiplied by <b>kV</b>, and added to the left output.
 	 * </p>
 	 * 
+	 * @deprecated Use {@link #lastMoment()} instead
 	 * @return The last right velocity
+	 * @see #lastMoment()
 	 */
 	@Deprecated
 	public double lastRightVelocity() {
@@ -483,7 +610,9 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	 * This value is multiplied by <b>kA</b>, and added to the left output.
 	 * </p>
 	 * 
+	 * @deprecated Use {@link #lastMoment()} instead
 	 * @return The last left acceleration
+	 * @see #lastMoment()
 	 */
 	@Deprecated
 	public double lastLeftAcceleration() {
@@ -496,7 +625,9 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	 * This value is multiplied by <b>kA</b>, and added to the left output.
 	 * </p>
 	 * 
+	 * @deprecated Use {@link #lastMoment()} instead
 	 * @return The last right acceleration
+	 * @see #lastMoment()
 	 */
 	@Deprecated
 	public double lastRightAcceleration() {

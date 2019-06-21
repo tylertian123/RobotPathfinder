@@ -315,7 +315,6 @@ abstract public class Follower<T extends Moment> {
 	 * 
 	 * @author Tyler Tian
 	 * @since 3.0.0
-	 * @see AdvancedPositionSource
 	 */
 	@FunctionalInterface
 	public interface PositionSource {
@@ -336,10 +335,14 @@ abstract public class Follower<T extends Moment> {
 	/**
 	 * This interface is an extension of {@link PositionSource}. It represents a
 	 * source of 1-dimensional position, velocity and acceleration data.
+	 * <p>
+	 * This class is used by implementations of {@link DynamicFollower}.
+	 * </p>
 	 * 
 	 * @author Tyler Tian
 	 * @since 3.0.0
 	 * @see PositionSource
+	 * @see DynamicFollower
 	 */
 	public interface AdvancedPositionSource extends PositionSource {
 		/**

@@ -20,8 +20,7 @@ import com.arctos6135.robotpathfinder.math.MathUtils;
  * overall direction the robot is facing.
  * </p>
  * <p>
- * Since this class inherits from {@link Follower}, the usage is entirely the
- * same.
+ * See the documentation for {@link Follower} for usage instructions.
  * </p>
  * 
  * @author Tyler Tian

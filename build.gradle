@@ -260,7 +260,7 @@ jar {
 }
 
 def visualizerMainClass = 'com.arctos6135.robotpathfinder.tools.TrajectoryVisualizationTool'
-// This task assembles the trajecotry visualizer jar
+// This task assembles the trajectory visualizer jar
 // This jar is a fat jar
 task visualizerJar(type: Jar, group: 'Build', description: 'Assembles a runnable jar that runs the visualizer.') {
     dependsOn build
@@ -268,7 +268,7 @@ task visualizerJar(type: Jar, group: 'Build', description: 'Assembles a runnable
     // Include outputs
     from(sourceSets.main.output) {
         include '**'
-        exclude '**/follower/*', '**/package-info.java', '**/motionprofile/*'
+        exclude '**/package-info.java'
     }
     // Add manifest attribute to make it runnable
     manifest {

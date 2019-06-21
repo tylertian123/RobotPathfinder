@@ -12,11 +12,13 @@ package com.arctos6135.robotpathfinder.core.trajectory;
  */
 public class TrajectoryGenerationException extends IllegalStateException {
 
-	/**
-	 * Creates a new {@link TrajectoryGenerationException} with a message.
-	 */
 	private static final long serialVersionUID = 4458957792647962346L;
 
+	/**
+	 * Creates a new {@link TrajectoryGenerationException} with a message.
+	 * 
+	 * @param message The exception message
+	 */
 	public TrajectoryGenerationException(String message) {
 		super(message);
 	}

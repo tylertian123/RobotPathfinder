@@ -99,6 +99,19 @@ public class BasicMoment extends Moment {
 		this.initialFacing = initialFacing;
 	}
 
+	/**
+	 * Creates a new moment with the specified values.
+	 * 
+	 * @param position      The desired position
+	 * @param velocity      The desired velocity
+	 * @param acceleration  The desired acceleration
+	 * @param heading       The desired heading; see the class JavaDoc for more
+	 *                      information
+	 * @param t             The desired time
+	 * @param initialFacing The initial direction the robot is <b>facing</b>; see
+	 *                      the class JavaDoc for more information
+	 * @param backwards     Whether the robot is driving backwards in this moment
+	 */
 	public BasicMoment(double position, double velocity, double acceleration, double heading, double t,
 			double initialFacing, boolean backwards) {
 		this(position, velocity, acceleration, heading, t, initialFacing);

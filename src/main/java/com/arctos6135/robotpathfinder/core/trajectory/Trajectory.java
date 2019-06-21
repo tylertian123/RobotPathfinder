@@ -58,6 +58,8 @@ import com.arctos6135.robotpathfinder.follower.Followable;
  * video on motion profiling.
  * </p>
  * 
+ * @param <T> The type of moment used by this {@link Trajectory}; must be a
+ *            subclass of {@link Moment}
  * @author Tyler Tian
  * @since 3.0.0
  * @see BasicTrajectory

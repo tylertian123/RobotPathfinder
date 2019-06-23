@@ -19,6 +19,8 @@ import org.junit.Test;
 
 /**
  * This class contains tests for {@link TankDriveTrajectory}.
+ * 
+ * @author Tyler Tian
  */
 public class TankDriveTrajectoryTest {
 

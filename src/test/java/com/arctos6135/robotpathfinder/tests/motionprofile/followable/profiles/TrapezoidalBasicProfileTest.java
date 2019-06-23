@@ -17,6 +17,8 @@ import org.junit.Test;
 
 /**
  * This class contains tests for {@link TrapezoidalBasicProfile}.
+ * 
+ * @author Tyler Tian
  */
 public class TrapezoidalBasicProfileTest {
 

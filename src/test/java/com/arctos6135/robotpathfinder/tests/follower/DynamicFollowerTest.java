@@ -23,6 +23,8 @@ import org.junit.Test;
 
 /**
  * This class contains tests for the dynamic followers of RobotPathfinder.
+ * 
+ * @author Tyler Tian
  */
 public class DynamicFollowerTest {
 

@@ -18,6 +18,8 @@ import org.junit.Test;
  * 
  * Since {@link TrajectoryGenerator} is now deprecated, this class may also be
  * removed in the future.
+ * 
+ * @author Tyler Tian
  */
 @SuppressWarnings("deprecation")
 public class TrajectoryGeneratorTest {

@@ -17,6 +17,8 @@ import org.junit.Test;
 
 /**
  * This class contains miscellaneous basic tests for some classes.
+ * 
+ * @author Tyler Tian
  */
 public class BasicTest {
 

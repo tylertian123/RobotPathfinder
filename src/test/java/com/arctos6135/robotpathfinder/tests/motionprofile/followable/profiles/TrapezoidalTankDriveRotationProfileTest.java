@@ -17,6 +17,8 @@ import org.junit.Test;
 
 /**
  * This class contains tests for {@link TrapezoidalTankDriveRotationProfile}.
+ * 
+ * @author Tyler Tian
  */
 public class TrapezoidalTankDriveRotationProfileTest {
 

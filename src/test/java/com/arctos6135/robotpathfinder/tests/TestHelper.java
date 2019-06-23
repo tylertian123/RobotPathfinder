@@ -30,9 +30,9 @@ public final class TestHelper {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                
+
                 String TRAVIS = System.getenv("TRAVIS");
-                if(TRAVIS != null && TRAVIS.equals("true")) {
+                if (TRAVIS != null && TRAVIS.equals("true")) {
                     printAll();
                 }
             }
@@ -344,7 +344,7 @@ public final class TestHelper {
      * 
      * This method is automatically called via a shutdown hook when the VM exits.
      * 
-     * @throws IOException
+     * @throws IOException If something goes wrong when writing the logs
      */
     public static void flushAll() throws IOException {
         for (var entry : instances.entrySet()) {
@@ -391,7 +391,7 @@ public final class TestHelper {
      * Clears all logs. Warning: Logs will be lost forever if they were not written!
      */
     public static void clearAll() {
-        for(TestHelper instance : instances.values()) {
+        for (TestHelper instance : instances.values()) {
             instance.methodLogs = new ConcurrentHashMap<>();
         }
     }

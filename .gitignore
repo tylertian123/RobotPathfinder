@@ -1,7 +1,7 @@
 # Build output
 /bin/
 /build/
-/output/
+/archives/
 
 # Gradle files
 .gradle

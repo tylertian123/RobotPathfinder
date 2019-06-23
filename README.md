@@ -43,7 +43,7 @@ Every release contains 3 jars, 1 zip, and numerous dynamic libraries:
 * `libRobotPathfinder-(PLATFORM).so` - **(In v3 only)** The native dynamic library used by RobotPathfinder for a specific Linux arch.
 * `RobotPathfinder-(PLATFORM).dll` - **(In v3 only)** The native dynamic library used by RobotPathfinder for a specific Windows arch.
 
-Alternatively, you can build the binaries yourself by navigating to the root directory, and running `./gradlew allArchives --rerun-tasks`. (*If you're on a Windows machine, make sure you're using PowerShell not cmd!*) The archives can then be found under the `output` directory.
+Alternatively, you can build the binaries yourself by navigating to the root directory, and running `./gradlew allArchives --rerun-tasks`. (*If you're on a Windows machine, make sure you're using PowerShell not cmd!*) The archives can then be found under the `archives` directory.
 
 **In order to use RobotPathfinder v3, the correct dynamic library for your platform must be present in either the directory java is invoked from, or the library path.**
 
@@ -97,23 +97,23 @@ Features include:
 ***To run the Trajectory Visualizer V3, make sure that you have the correct dynamic library on your library path or in the directory where java is invoked!***
 
 ## Building
-This project uses Gradle as the build system. From the project root directory, running `./gradlew allArchives` will build the project and generate the jars and a zipped Javadoc under the `/output/` directory.
+This project uses Gradle as the build system. From the project root directory, running `./gradlew allArchives` will build the project and generate the jars and a zipped Javadoc under the `/archives/` directory.
 Alternatively, here are a list of commonly used tasks:
 * `./gradlew build` builds the project and generates the library jar under `/build/libs/`
 * `./gradlew test` runs all unit tests
 * `./gradlew visualizerJar` generates the Trajectory Visualization Tool jar under `/build/libs/`
-* `./gradlew copyJars` copies the generated jars to `/output/`
+* `./gradlew copyJars` copies the generated jars to `/archives/`
 * `./gradlew javadoc` generates Javadocs under `/build/docs/javadoc`
 * **(In v3 only)** `./gradlew testJavadoc` generates Javadocs for the test classes, under `/build/docs/testJavadoc`
 * **(In v3 only)** `./gradlew completeJavadoc` generates Javadocs all classes (main and test), under `/build/docs/completeJavadoc`
-* `./gradlew zipDoc` zips the generated docs into `/output/`
-* `./gradlew allArchives` builds all the archives and copies it into `/output/`
+* `./gradlew zipDoc` zips the generated docs into `/archives/`
+* `./gradlew allArchives` builds all the archives and copies it into `/archives/`
 * **(In v3 only)** `./gradlew updateJNIHeaders` will re-generate the JNI headers and copy them to `/src/main/cpp/include/jni`
 * **(In v3 only)** `./gradlew copyLibDebug` will copy the debug dynamic library for the current platform to the root project folder
 * **(In v3 only)** `./gradlew copyLibRelease` will copy the release dynamic library for the current platform to the root project folder
 * **(In v3 only)** `./gradlew jacocoTestReport` generates a code coverage report for the test task using JaCoco
 
-For all tasks, see the output of `./gradlew tasks`.
+For all tasks, see the archives of `./gradlew tasks`. Note that the archives directory can be changed by changing the `archiveDir` property of the project. For example, `./gradlew allArchives -ParchiveDir=myArchiveDir` will put all the archives under `myArchiveDir`.
 
 Thank you to our generous sponsors:<br/>
 <img src="https://dynamicmedia.zuza.com/zz/m/original_/3/a/3aae60b3-ff18-4be5-b2b1-e244943a85fb/TDSB_Gallery.png" alt="Toronto District School Board" height="200px"/>

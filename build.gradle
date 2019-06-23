@@ -195,6 +195,10 @@ dependencies {
     checkstyle "com.puppycrawl.tools:checkstyle:${checkstyleVersion}"
 }
 
+if(!project.hasProperty("archiveDir")) {
+    project.ext.archiveDir = 'archives'
+}
+
 task updateJNIHeaders(type: Copy, group: 'Development', description: 'Copies JNI generated headers into the JNI headers directory.') {
     dependsOn assemble
 
@@ -318,15 +322,16 @@ task fatJar(type: Jar, group: 'Build', description: 'Assembles a jar of the libr
 }
 
 task markVisualizerJarExecutable(type: Exec, group: 'Archive', description: 'Sets the Trajectory Visualizer jar to be executable.') {
-    commandLine 'chmod', '+x', 'output/Trajectory-Visualizer-' + project.version + '.jar'
+    commandLine 'chmod', '+x', "$archiveDir/Trajectory-Visualizer-" + project.version + '.jar'
 }
 
-task copyJars(type: Copy, group: 'Archive', description: 'Copies all generated jars to the output directory.') {
+task copyJars(type: Copy, group: 'Archive', description: 'Copies all generated jars to the archives directory.') {
     dependsOn jar
     dependsOn fatJar
     dependsOn visualizerJar
-    from 'build/libs'
-    into 'output'
+    from 'build/libs/'
+    include '*.jar'
+    into "$archiveDir"
 
     // If the OS is part of the UNIX family, also chmod the visualizer jar to be executable
     if(Os.isFamily(Os.FAMILY_UNIX)) {
@@ -350,10 +355,10 @@ task completeJavadoc(type: Javadoc, group: 'Documentation', description: 'Genera
     destinationDir = file(buildDir.getPath() + '/docs/completeJavadoc')
 }
 
-task zipDoc(type: Zip, group: 'Archive', description: 'Zips the generated Javadoc and puts it in the output directory.') {
+task zipDoc(type: Zip, group: 'Archive', description: 'Zips the generated Javadoc and puts it in the archives directory.') {
     dependsOn javadoc
     from 'build/docs/javadoc'
-    destinationDir file('output')
+    destinationDir file("$archiveDir")
     archiveName 'RobotPathfinder-Doc-' + project.version + '.zip'
 }
 
@@ -363,7 +368,7 @@ task zipTestLogs(type: Zip, group: 'Archive', description: 'Zips the test log fr
     archiveName 'test-logs.zip'
 }
 
-task allArchives(group: 'Archive', description: 'Builds the project, generates the Javadoc and jars, zips Javadoc and copies all items to the output directory.') {
+task allArchives(group: 'Archive', description: 'Builds the project, generates the Javadoc and jars, zips Javadoc and copies all items to the archives directory.') {
     dependsOn jar
     dependsOn visualizerJar
     dependsOn fatJar
@@ -373,10 +378,10 @@ task allArchives(group: 'Archive', description: 'Builds the project, generates t
 
 task cleanAll(type: Exec, group: 'Clean', description: 'Removes all compiled artifacts.') {
     if(Os.isFamily(Os.FAMILY_UNIX)) {
-        commandLine 'rm', '-rf', 'bin', 'build', 'output', 'libRobotPathfinder.so'
+        commandLine 'rm', '-rf', 'bin', 'build', "$archiveDir", 'libRobotPathfinder.so'
     }
     else {
-        commandLine 'cmd', '/c', '\'del /s /q /f bin build output RobotPathfinder.dll \
-                & rd /s /q bin & rd /s /q build & rd /s /q output\''
+        commandLine 'cmd', '/c', "\'del /s /q /f bin build $archiveDir RobotPathfinder.dll \
+                & rd /s /q bin & rd /s /q build & rd /s /q $archiveDir\'"
     }
 }

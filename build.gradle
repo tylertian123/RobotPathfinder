@@ -63,9 +63,21 @@ else {
         throw new GradleException("Unrecognized architecture: $arch")
     }
 }
+// Build type
+if(!project.hasProperty('type')) {
+    project.ext.type = 'release'
+}
+else {
+    if(type != 'debug' && type != 'release') {
+        throw new GradleException("Invalid build type: $type")
+    }
+}
+
+println "----- Build Configuration -----"
 println "Archives Directory: $archiveDir"
 println "OS Family: $os"
 println "Computer Architecture: $arch"
+println "Build Type: $type"
 
 compileJava {
     // Show deprecation warnings
@@ -256,6 +268,7 @@ task copyLibLinuxx8664Debug(type: Copy, group: 'Development', description: 'Copi
         fileName.replace('JniLibrary', 'RobotPathfinder')
     }
 }
+
 task copyLibLinuxx8664Release(type: Copy, group: 'Development', description: 'Copies the dynamic library for linux x86-64 release to the root of the project.') {
     dependsOn assemble
 
@@ -265,11 +278,13 @@ task copyLibLinuxx8664Release(type: Copy, group: 'Development', description: 'Co
         fileName.replace('JniLibrary', 'RobotPathfinder')
     }
 }
+
 task copyLibWindowsx8664Debug(type: Exec, group: 'Development', description: 'Copies the dynamic library for windows x86-64 debug to the root of the project.') {
     dependsOn assemble
     
     commandLine 'cmd', '/c', '\"copy build\\libs\\jniLibrary\\shared\\windowsx86-64\\debug\\JniLibrary.dll RobotPathfinder.dll\"'
 }
+
 task copyLibWindowsx8664Release(type: Exec, group: 'Development', description: 'Copies the dynamic library for windows x86-64 release to the root of the project.') {
     dependsOn assemble
 
@@ -277,7 +292,6 @@ task copyLibWindowsx8664Release(type: Exec, group: 'Development', description: '
 }
 
 task copyLibDebug(group: 'Development', description: 'Copies the correct debug dynamic library to the root of the project.') {
-
     if(os == 'unix') {
         dependsOn copyLibLinuxx8664Debug
     }
@@ -295,8 +309,17 @@ task copyLibRelease(group: 'Development', description: 'Copies the correct relea
     }
 }
 
+task copyLib(group: 'Development', description: 'Copies the correct dynamic library to the root of the project.') {
+    if(type == 'release') {
+        dependsOn copyLibRelease
+    }
+    else {
+        dependsOn copyLibDebug
+    }
+}
+
 test {
-    dependsOn copyLibRelease
+    dependsOn copyLib
 }
 
 // Add sources to the jar

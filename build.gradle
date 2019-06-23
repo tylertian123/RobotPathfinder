@@ -223,12 +223,12 @@ task copyLibLinuxx8664Release(type: Copy, group: 'Development', description: 'Co
 task copyLibWindowsx8664Debug(type: Exec, group: 'Development', description: 'Copies the dynamic library for windows x86-64 debug to the root of the project.') {
     dependsOn assemble
     
-    commandLine 'cmd', '/c', '\'copy build\\libs\\jniLibrary\\shared\\windowsx86-64\\debug\\JniLibrary.dll RobotPathfinder.dll\''
+    commandLine 'cmd', '/c', '\"copy build\\libs\\jniLibrary\\shared\\windowsx86-64\\debug\\JniLibrary.dll RobotPathfinder.dll\"'
 }
 task copyLibWindowsx8664Release(type: Exec, group: 'Development', description: 'Copies the dynamic library for windows x86-64 release to the root of the project.') {
     dependsOn assemble
 
-    commandLine 'cmd', '/c', '\'copy build\\libs\\jniLibrary\\shared\\windowsx86-64\\release\\JniLibrary.dll RobotPathfinder.dll\''
+    commandLine 'cmd', '/c', '\"copy build\\libs\\jniLibrary\\shared\\windowsx86-64\\release\\JniLibrary.dll RobotPathfinder.dll\"'
 }
 
 task copyLibDebug(group: 'Development', description: 'Copies the correct debug dynamic library to the root of the project.') {

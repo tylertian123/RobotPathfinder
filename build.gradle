@@ -339,6 +339,17 @@ task copyJars(type: Copy, group: 'Archive', description: 'Copies all generated j
     }
 }
 
+task copyLibs(type: Copy, group: 'Archive', description: 'Copies all compiled dynamic libraries to the archives directory.') {
+    dependsOn assemble
+
+    from 'build/libs/jniLibrary/shared'
+    into "$archiveDir/libraries"
+
+    rename { String fileName ->
+        fileName.replace('JniLibrary', 'RobotPathfinder')
+    }
+}
+
 task testJavadoc(type: Javadoc, group: 'Documentation', description: 'Generates Javadoc for the test classes.') {
     source = sourceSets.test.allJava
     classpath = sourceSets.test.compileClasspath
@@ -374,6 +385,7 @@ task allArchives(group: 'Archive', description: 'Builds the project, generates t
     dependsOn fatJar
     dependsOn copyJars
     dependsOn zipDoc
+    dependsOn copyLibs
 }
 
 task cleanAll(type: Exec, group: 'Clean', description: 'Removes all compiled artifacts.') {

@@ -379,7 +379,7 @@ task copyJars(type: Copy, group: 'Archive', description: 'Copies all generated j
     into "$archiveDir"
 
     // If the OS is part of the UNIX family, also chmod the visualizer jar to be executable
-    if(Os.isFamily(Os.FAMILY_UNIX)) {
+    if(os == 'unix') {
         finalizedBy markVisualizerJarExecutable
     }
 }
@@ -434,11 +434,11 @@ task allArchives(group: 'Archive', description: 'Builds the project, generates t
 }
 
 task cleanAll(type: Exec, group: 'Clean', description: 'Removes all compiled artifacts.') {
-    if(Os.isFamily(Os.FAMILY_UNIX)) {
+    if(os == 'unix') {
         commandLine 'rm', '-rf', 'bin', 'build', "$archiveDir", 'libRobotPathfinder.so'
     }
     else {
-        commandLine 'cmd', '/c', "\'del /s /q /f bin build $archiveDir RobotPathfinder.dll \
-                & rd /s /q bin & rd /s /q build & rd /s /q $archiveDir\'"
+        commandLine 'cmd', '/c', "\"del /s /q /f bin build $archiveDir RobotPathfinder.dll \
+                & rd /s /q bin & rd /s /q build & rd /s /q $archiveDir\""
     }
 }

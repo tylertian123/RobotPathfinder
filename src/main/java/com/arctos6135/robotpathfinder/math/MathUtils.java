@@ -113,7 +113,6 @@ public final class MathUtils {
 
 	/**
 	 * Finds the discriminant of a cubic polynomial.
-	 * <p>
 	 * <ul>
 	 * <li>If this value is positive, then the polynomial has 3 distinct real
 	 * roots.</li>
@@ -122,7 +121,6 @@ public final class MathUtils {
 	 * <li>If this value is negative, then the polynomial has one real root, and 2
 	 * complex roots.</li>
 	 * </ul>
-	 * </p>
 	 * 
 	 * @param a The cubed term coefficient
 	 * @param b The squared term coefficient

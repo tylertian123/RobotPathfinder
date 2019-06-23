@@ -8,9 +8,9 @@ package com.arctos6135.robotpathfinder.core;
  * immutable.
  * </p>
  * <p>
- * </p>
  * The angle used for heading is in <em>radians</em>, following the unit circle.
  * Thus, 0 represents right, &pi;/2 represents up, and so on.
+ * </p>
  * <p>
  * Note that it does not matter what specific unit is used for distance;
  * however, the unit must match with the units in the {@link RobotSpecs} object

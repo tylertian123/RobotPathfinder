@@ -114,7 +114,7 @@ abstract public class DynamicFollower<T extends Moment> extends Follower<T> {
      * <p>
      * Calling this method will completely disable updating. It is equivalent to
      * calling {@link #setUpdateDelay(double)} with {@code NaN}.
-     * <p>
+     * </p>
      */
     public void disableUpdates() {
         updateDelay = Double.NaN;

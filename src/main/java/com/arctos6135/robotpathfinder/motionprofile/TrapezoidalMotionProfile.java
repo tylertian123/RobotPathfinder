@@ -3,6 +3,29 @@ package com.arctos6135.robotpathfinder.motionprofile;
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.math.MathUtils;
 
+/**
+ * This class represents a trapezoidal motion profile.
+ * <p>
+ * In a trapezoidal motion profile, velocity and acceleration are limited to a
+ * maximum value. However, jerk (the derivative of acceleration) is not, which
+ * means that the acceleration can jump around instantaneously.
+ * </p>
+ * <p>
+ * At the start of a trapezoidal motion profile, the acceleration will typically
+ * be set to the maximum, causing the velocity to increase linearly. Once the
+ * maximum velocity is reached, the acceleration will be set to 0, causing the
+ * velocity to become a horizontal line. Near the end, the acceleration will be
+ * set to the negative of the maximum, causing the velocity to decrease
+ * linearly. As a result, the graph of velocity vs. time looks like a trapezoid,
+ * hence the name.
+ * </p>
+ * <p>
+ * This motion profile is {@link DynamicMotionProfile dynamic}.
+ * </p>
+ * 
+ * @author Tyler Tian
+ * @since 3.0.0
+ */
 public class TrapezoidalMotionProfile implements DynamicMotionProfile {
 
     protected double initVel;
@@ -17,14 +40,43 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile {
 
     protected boolean reverse = false;
 
+    /**
+     * Constructs a new trapezoidal motion profile with a set distance.
+     * 
+     * @param specs The specifications of the robot (max velocity and acceleration)
+     * @param dist  The distance this motion profile should cover; can be negative
+     *              for backwards motion
+     */
     public TrapezoidalMotionProfile(RobotSpecs specs, double dist) {
         construct(specs.getMaxVelocity(), specs.getMaxAcceleration(), dist, 0);
     }
 
+    /**
+     * Constructs a new trapezoidal motion profile with a set distance and initial
+     * velocity.
+     * 
+     * @param specs   The specifications of the robot (max velocity and
+     *                acceleration)
+     * @param dist    The distance this motion profile should cover; can be negative
+     *                for backwards motion
+     * @param initVel The velocity of the robot at t=0
+     */
     public TrapezoidalMotionProfile(RobotSpecs specs, double dist, double initVel) {
         construct(specs.getMaxVelocity(), specs.getMaxAcceleration(), dist, initVel);
     }
 
+    /**
+     * Constructs the motion profile.
+     * <p>
+     * Used by the constructor and {@link #update(double, double, double, double)}.
+     * </p>
+     * 
+     * @param maxVel   The max velocity
+     * @param maxAccel The max acceleration
+     * @param dist     The distance to cover
+     * @param initVel  The initial velocity
+     * @return Whether or not the motion profile overshoots
+     */
     private boolean construct(double maxVel, double maxAccel, double dist, double initVel) {
         if (dist < 0) {
             reverse = true;
@@ -82,17 +134,34 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile {
         return overshoot;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public double totalTime() {
         // Add initTime to tTotal to get the absolute time
         return tTotal + initTime;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isReversed() {
         return reverse;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Note: If {@link #update(double, double, double, double) update()} was
+     * previously called with a nonzero time value, this method will throw an
+     * {@link IllegalArgumentException} if the time is less than the time passed to
+     * {@link #update(double, double, double, double) update()}.
+     * </p>
+     * 
+     * @throws IllegalArgumentException If the time is out of range
+     */
     @Override
     public double position(double time) {
         if (MathUtils.floatLt(time, initTime)) {
@@ -125,11 +194,22 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile {
         return (reverse ? -result : result) + initDist;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Note: If {@link #update(double, double, double, double) update()} was
+     * previously called with a nonzero time value, this method will throw an
+     * {@link IllegalArgumentException} if the time is less than the time passed to
+     * {@link #update(double, double, double, double) update()}.
+     * </p>
+     * 
+     * @throws IllegalArgumentException If the time is out of range
+     */
     @Override
     public double velocity(double time) {
         if (MathUtils.floatLt(time, initTime)) {
             throw new IllegalArgumentException(
-                String.format("Time out of range (%f \u2209 [%f, %f])!", time, initTime, tTotal));
+                    String.format("Time out of range (%f \u2209 [%f, %f])!", time, initTime, tTotal));
         }
         time -= initTime;
         double result = 0;
@@ -155,6 +235,17 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile {
         return reverse ? -result : result;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Note: If {@link #update(double, double, double, double) update()} was
+     * previously called with a nonzero time value, this method will throw an
+     * {@link IllegalArgumentException} if the time is less than the time passed to
+     * {@link #update(double, double, double, double) update()}.
+     * </p>
+     * 
+     * @throws IllegalArgumentException If the time is out of range
+     */
     @Override
     public double acceleration(double time) {
         if (MathUtils.floatLt(time, initTime)) {
@@ -181,6 +272,9 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile {
         return reverse ? -result : result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean update(double currentTime, double currentDist, double currentVel, double currentAccel) {
         initTime = currentTime;

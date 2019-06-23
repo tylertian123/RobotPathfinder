@@ -186,7 +186,7 @@ public abstract class Trajectory<T extends Moment> extends JNIObject implements 
     }
 
     /**
-     * Retrieves the total amount of time it takes to drive out this trajectory.
+     * Retrieves the total amount of time it takes to complete this trajectory.
      * 
      * @return The total time needed to drive this trajectory
      * @throws IllegalStateException If the native resource has already been freed

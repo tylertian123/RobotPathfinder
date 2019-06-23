@@ -23,7 +23,7 @@ package com.arctos6135.robotpathfinder.motionprofile;
 public interface MotionProfile {
 
     /**
-     * Retrieves the total time it takes to drive out this {@link MotionProfile}.
+     * Retrieves the total time it takes to complete this {@link MotionProfile}.
      * 
      * @return The total time
      */

@@ -10,10 +10,11 @@
 Robot motion profiler/path planner for tank drive (aka skid-steer or differential drive) robots. Used and developed by [FRC Team 6135 (Arctos)](https://github.com/Arctos6135).
 Inspired by and partially based on [Pathfinder by Jaci Brunning](https://github.com/JacisNonsense/Pathfinder). 
 
-RobotPathfinder is intended as an improvement over Pathfinder for tank drivetrains. As such, it does not have support for other drivetrains, but features these improvements:
+RobotPathfinder is intended as an improvement over Pathfinder for tank drivetrains. As such, it does not have support for other drivetrains, but has these features:
 * Smooth path generation with 3 different fit types
 * *Respects maximum velocity constraints for both wheels, even when turning*
 * *Allows wheels to turn backwards if turns are too tight*
+* *Simple motion profiles that can be re-generated on-the-fly for maximum speed and accuracy*
 * Handy methods that allows the mirroring and retracing of trajectories
 * Follower class that can be set to follow position, velocity, acceleration and direction
 * And much more...!
@@ -66,14 +67,19 @@ dependencies {
 ```
 
 ### Eclipse
-***There are currently no instructions for the use of RobotPathfinder v3 in Eclipse.***
 * Put the jar in a folder somewhere in the project, e.g. `lib`
 * Expand the project in Eclipse, right-click Referenced Libraries, Build Path -> Configure Build Path
 * In the dialog that pops up, click Add Jars, navigate to and select the library jar, and confirm
 * *Put a copy of the jar or a simlink to it in the WPILib Java libraries directory (`C:\Users\USERNAME\wpilib\user\java\lib` on Windows and `/home/USERNAME/wpilib/user/java/lib` on UNIX-based systems).*
+##### For RobotPathfinder v3 an extra step is needed to copy the dynamic library.
+* In a terminal, copy over the dynamic library using `scp`:
+```shell
+scp /path/to/dynamic/library lvuser@10.TE.AM.1:/usr/lib/libRobotPathfinder.so
+```
+*where TE.AM is your team number (e.g. for team 6135 this would be 61.35). Make sure you're connected to the robot's wifi when doing this!*
 
 ## Documentation
-All classes and methods are documented with Javadocs, in `RobotPathfinder-Doc-(VERSION).zip`.\
+All classes and methods are documented with Javadocs, in `RobotPathfinder-Doc-(VERSION).zip`.
 Head over to the [wiki](https://github.com/Arctos6135/RobotPathfinder/wiki) for tutorials and examples!
 ***Wiki pages for RobotPathfinder v3 are coming soon.***
 

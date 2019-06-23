@@ -22,6 +22,51 @@ plugins {
     id 'checkstyle'
 }
 
+// Configure properties
+// Archives directory
+if(!project.hasProperty('archiveDir')) {
+    project.ext.archiveDir = 'archives'
+}
+// Operating System family
+if(!project.hasProperty('os')) {
+    if(Os.isFamily(Os.FAMILY_WINDOWS)) {
+        project.ext.os = 'windows'
+        
+    }
+    else if(Os.isFamily(Os.FAMILY_UNIX)) {
+        project.ext.os = 'unix'
+    }
+    else {
+        throw new GradleException("Unrecognized OS family")
+    }
+}
+else {
+    // Verify property is set to a valid value
+    if(os != 'windows' && os != 'unix') {
+        throw new GradleException("Unrecognized OS family: $os")
+    }
+}
+// Architecture
+if(!project.hasProperty('arch')) {
+    if(System.getProperty('os.arch') == 'amd64' || System.getProperty('os.arch') == 'x86_64') {
+        project.ext.arch = 'amd64'
+    }
+    else {
+        throw new GradleException("Unrecognized architecture: " + System.getProperty('os.arch'))
+    }
+}
+else {
+    if(arch == 'x86_64') {
+        arch = 'amd64'
+    }
+    else if(arch != 'amd64') {
+        throw new GradleException("Unrecognized architecture: $arch")
+    }
+}
+println "Archives Directory: $archiveDir"
+println "OS Family: $os"
+println "Computer Architecture: $arch"
+
 compileJava {
     // Show deprecation warnings
     options.compilerArgs << '-Xlint:deprecation'
@@ -113,7 +158,7 @@ model {
 }
 // Compiler options
 // Windows
-if(Os.isFamily(Os.FAMILY_WINDOWS)) {
+if(os == 'windows') {
     model {
         binaries {
             all {
@@ -131,7 +176,7 @@ if(Os.isFamily(Os.FAMILY_WINDOWS)) {
         }
     }
 }
-// Linux - gcc
+// UNIX - gcc
 else {
     model {
         binaries {
@@ -195,10 +240,6 @@ dependencies {
     checkstyle "com.puppycrawl.tools:checkstyle:${checkstyleVersion}"
 }
 
-if(!project.hasProperty("archiveDir")) {
-    project.ext.archiveDir = 'archives'
-}
-
 task updateJNIHeaders(type: Copy, group: 'Development', description: 'Copies JNI generated headers into the JNI headers directory.') {
     dependsOn assemble
 
@@ -236,40 +277,21 @@ task copyLibWindowsx8664Release(type: Exec, group: 'Development', description: '
 }
 
 task copyLibDebug(group: 'Development', description: 'Copies the correct debug dynamic library to the root of the project.') {
-    if(System.getProperty('os.arch') != 'amd64' && System.getProperty('os.arch') != 'x86_64') {
-        throw new GradleException('OS architecture not supported')
-    }
-    
-    println('Detected architeture: ' + System.getProperty('os.arch'))
-    if(Os.isFamily(Os.FAMILY_UNIX)) {
-        println('Detected OS: UNIX')
+
+    if(os == 'unix') {
         dependsOn copyLibLinuxx8664Debug
     }
-    else if(Os.isFamily(Os.FAMILY_WINDOWS)) {
-        println('Detected OS: Windows')
-        dependsOn copyLibWindowsx8664Debug
-    }
     else {
-        throw new GradleException('OS not supported')
+        dependsOn copyLibWindowsx8664Debug
     }
 }
 
 task copyLibRelease(group: 'Development', description: 'Copies the correct release dynamic library to the root of the project.') {
-    if(System.getProperty('os.arch') != 'amd64' && System.getProperty('os.arch') != 'x86_64') {
-        throw new GradleException('OS architecture not supported')
-    }
-
-    println('Detected architeture: ' + System.getProperty('os.arch'))
-    if(Os.isFamily(Os.FAMILY_UNIX)) {
-        println('Detected OS: UNIX')
+    if(os == 'unix') {
         dependsOn copyLibLinuxx8664Release
     }
-    else if(Os.isFamily(Os.FAMILY_WINDOWS)) {
-        println('Detected OS: Windows')
-        dependsOn copyLibWindowsx8664Release
-    }
     else {
-        throw new GradleException('OS not supported')
+        dependsOn copyLibWindowsx8664Release
     }
 }
 

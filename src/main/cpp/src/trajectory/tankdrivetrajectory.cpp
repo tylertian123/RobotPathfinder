@@ -25,7 +25,7 @@ namespace rpf {
                 auto &current = moments[mid];
                 auto &next = moments[mid + 1];
 
-                TankDriveMoment m(rpf::lerp(current.l_dist, next.l_dist, f), rpf::lerp(current.r_dist, next.r_dist, f),
+                TankDriveMoment m(rpf::lerp(current.l_pos, next.l_pos, f), rpf::lerp(current.r_pos, next.r_pos, f),
                         rpf::lerp(current.l_vel, next.l_vel, f), rpf::lerp(current.r_vel, next.r_vel, f),
                         rpf::lerp(current.l_accel, next.l_accel, f), rpf::lerp(current.r_accel, next.r_accel, f),
                         rpf::langle(current.heading, next.heading, f), time, init_facing);
@@ -51,7 +51,7 @@ namespace rpf {
         std::vector<TankDriveMoment> m;
         m.reserve(moments.size());
         for(const auto &moment : moments) {
-            TankDriveMoment nm(moment.r_dist, moment.l_dist, moment.r_vel, moment.l_vel, moment.r_accel, moment.l_accel, 
+            TankDriveMoment nm(moment.r_pos, moment.l_pos, moment.r_vel, moment.l_vel, moment.r_accel, moment.l_accel, 
                     rpf::mangle(moment.heading, ref), moment.time, moment.init_facing);
             nm.backwards = backwards;
             m.push_back(nm);
@@ -66,7 +66,7 @@ namespace rpf {
         std::vector<TankDriveMoment> m;
         m.reserve(moments.size());
         for(const auto &moment : moments) {
-            TankDriveMoment nm(-moment.l_dist, -moment.r_dist, -moment.l_vel, -moment.r_vel, -moment.l_accel, -moment.r_accel,
+            TankDriveMoment nm(-moment.l_pos, -moment.r_pos, -moment.l_vel, -moment.r_vel, -moment.l_accel, -moment.r_accel,
                     rpf::mangle(moment.heading, ref), moment.time, moment.init_facing);
             nm.backwards = !backwards;
             m.push_back(nm);
@@ -91,7 +91,7 @@ namespace rpf {
 			 * out, resulting in no change. The heading is flipped 180 degrees, and the time is subtracted
 			 * from the total.
 			 */
-            TankDriveMoment nm(-(last.l_dist - moment.l_dist), -(last.r_dist - moment.r_dist), 
+            TankDriveMoment nm(-(last.l_pos - moment.l_pos), -(last.r_pos - moment.r_pos), 
                     -moment.l_vel, -moment.r_vel, moment.l_accel, moment.r_accel, -moment.heading, 
                     last.time - moment.time, params.waypoints[params.waypoints.size() - 1].heading);
             nm.backwards = !backwards;

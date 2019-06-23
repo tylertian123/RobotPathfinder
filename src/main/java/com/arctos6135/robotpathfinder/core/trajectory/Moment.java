@@ -3,16 +3,12 @@ package com.arctos6135.robotpathfinder.core.trajectory;
 import com.arctos6135.robotpathfinder.math.MathUtils;
 
 /**
- * A class that holds information about a robot at a moment in time.
+ * Moments are objects that hold information about a robot at a moment in time.
+ * All Moments in RobotPathfinder inherit from this abstract class.
  * <p>
  * Moment objects contain information about the position, velocity, acceleration
  * and direction of a robot at a certain time. They're returned by trajectories
- * when querying a specific time.
- * </p>
- * <p>
- * Note that because different robot types call for drastically different moment
- * implementations, there are very few methods that can be shared between all of
- * them.
+ * and motion profiles when querying a specific time.
  * </p>
  * <h2>Difference Between Heading and Facing</h2>
  * <p>
@@ -30,28 +26,21 @@ import com.arctos6135.robotpathfinder.math.MathUtils;
  * facing the direction 0 would have an absolute facing direction of 0, but a
  * relative facing direction of -&pi;.
  * </p>
- * <h2>Units</h2>
- * <p>
- * The units used for these moment objects are completely decided by which units
- * are used in a trajectory's
- * {@link com.arctos6135.robotpathfinder.core.RobotSpecs RobotSpecs} during
- * generation. For example, if the unit for max velocity was in m/s, then the
- * unit used here for velocity would also be m/s. All angles are in radians and
- * are in the range (-&pi;, &pi;].
- * </p>
  * 
  * @author Tyler Tian
  * @since 3.0.0
+ * @see BasicMoment
+ * @see TankDriveMoment
  */
 public abstract class Moment implements Cloneable {
 
-	double heading;
-	double initialFacing;
-	boolean backwards = false;
+	protected double heading;
+	protected double initialFacing;
+	protected boolean backwards = false;
 
 	/**
 	 * Retrieves the direction the robot is moving in. For more information, see the
-	 * class JavaDoc.
+	 * class Javadoc.
 	 * 
 	 * @return The heading of the robot
 	 */
@@ -61,7 +50,7 @@ public abstract class Moment implements Cloneable {
 
 	/**
 	 * Sets the direction the robot is moving in. For more information, see the
-	 * class JavaDoc.
+	 * class Javadoc.
 	 * 
 	 * @param heading The new heading of the robot
 	 */
@@ -72,7 +61,7 @@ public abstract class Moment implements Cloneable {
 	/**
 	 * Retrieves the <em>initial</em> direction the robot is <em>facing</em>. This
 	 * value is used to calculate the result of {@link #getFacingRelative()}. For
-	 * more information, see the class JavaDoc.
+	 * more information, see the class Javadoc.
 	 * 
 	 * @return The initial direction the robot is facing
 	 */
@@ -83,7 +72,7 @@ public abstract class Moment implements Cloneable {
 	/**
 	 * Sets the <em>initial</em> direction the robot is <em>facing</em>. This value
 	 * is used to calculate the result of {@link #getFacingRelative()}. For more
-	 * information, see the class JavaDoc.
+	 * information, see the class Javadoc.
 	 * 
 	 * @param initialFacing The initial direction the robot is facing
 	 */
@@ -114,7 +103,7 @@ public abstract class Moment implements Cloneable {
 
 	/**
 	 * Retrieves the direction the robot is facing, relative to the starting
-	 * position of the robot. For more information, see the class JavaDoc.
+	 * position of the robot. For more information, see the class Javadoc.
 	 * 
 	 * @return The relative facing direction of the robot
 	 */
@@ -124,7 +113,7 @@ public abstract class Moment implements Cloneable {
 
 	/**
 	 * Retrieves the direction the robot is facing, relative to the positive x-axis.
-	 * For more information, see the class JavaDoc.
+	 * For more information, see the class Javadoc.
 	 * 
 	 * @return The absolute facing direction of the robot
 	 */

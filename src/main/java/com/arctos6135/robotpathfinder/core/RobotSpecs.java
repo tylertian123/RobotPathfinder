@@ -18,19 +18,12 @@ package com.arctos6135.robotpathfinder.core;
  */
 public class RobotSpecs {
 
-	double baseWidth = Double.NaN;
-	double maxVelocity, maxAcceleration;
+	protected double baseWidth = Double.NaN;
+	protected double maxVelocity, maxAcceleration;
 
 	/**
 	 * Constructs a new robot specification object with the specified values. The
 	 * value for base plate width is set to {@code NaN}.
-	 * <p>
-	 * Note that it does not matter exactly what unit is used; however, they must
-	 * match. For example, if the unit for velocity is in m/s, the unit for
-	 * acceleration must be in m/s^2 and the unit for base plate width must be in m.
-	 * The units used here also dictate which units are used by trajectories when
-	 * they return data for a specific time.
-	 * </p>
 	 * 
 	 * @param maxVelocity     The absolute value of the max velocity of the robot
 	 * @param maxAcceleration The absolute value of the max acceleration of the
@@ -43,13 +36,6 @@ public class RobotSpecs {
 
 	/**
 	 * Constructs a new robot specification object with the specified values.
-	 * <p>
-	 * Note that it does not matter exactly what unit is used; however, they must
-	 * match. For example, if the unit for velocity is in m/s, the unit for
-	 * acceleration must be in m/s^2 and the unit for base plate width must be in m.
-	 * The units used here also dictate which units are used by trajectories when
-	 * they return data for a specific time.
-	 * </p>
 	 * 
 	 * @param maxVelocity     The absolute value of the max velocity of the robot
 	 * @param maxAcceleration The absolute value of the max acceleration of the
@@ -63,7 +49,8 @@ public class RobotSpecs {
 	}
 
 	/**
-	 * Retrieves the base width of this robot specifications object.
+	 * Retrieves the base width (distance between the left and right side wheels) of
+	 * this robot specifications object.
 	 * 
 	 * @return The width of the robot's base plate
 	 */
@@ -72,9 +59,11 @@ public class RobotSpecs {
 	}
 
 	/**
-	 * Sets the base width of this robot specifications object.
+	 * Sets the base width (distance between the left and right side wheels) of this
+	 * robot specifications object.
 	 * 
-	 * @param baseWidth The new base width
+	 * @param baseWidth The new base width (distance between the left and right side
+	 *                  wheels)
 	 */
 	public void setBaseWidth(double baseWidth) {
 		this.baseWidth = baseWidth;

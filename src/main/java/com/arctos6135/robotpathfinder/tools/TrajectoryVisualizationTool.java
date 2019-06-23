@@ -820,12 +820,12 @@ public class TrajectoryVisualizationTool {
 				if (isTank.isSelected()) {
 					TankDriveTrajectory traj = new TankDriveTrajectory(specs, params);
 					pathFrame = Grapher.graphPath(traj.getPath(), 1.0 / pathSamples);
-					movementFrame = Grapher.graphTrajectory(traj, traj.totalTime() / trajSamples);
+					movementFrame = Grapher.graphTankDriveFollowable(traj, traj.totalTime() / trajSamples);
 					totalTime = traj.totalTime();
 				} else {
 					BasicTrajectory traj = new BasicTrajectory(specs, params);
 					pathFrame = Grapher.graphPath(traj.getPath(), 1.0 / pathSamples);
-					movementFrame = Grapher.graphTrajectory(traj, traj.totalTime() / trajSamples);
+					movementFrame = Grapher.graphBasicFollowable(traj, traj.totalTime() / trajSamples);
 					totalTime = traj.totalTime();
 				}
 			} catch (TrajectoryGenerationException e1) {
@@ -1129,11 +1129,37 @@ public class TrajectoryVisualizationTool {
 		mainFrame.setVisible(true);
 	}
 
+	static final String HELP_MESSAGE = "Options:\n\t--library-path=libpath\n\n\tLoads the RobotPathfinder dynamic shared library from the specified path.";
+
+	/**
+	 * Loads the necessary libraries and runs the Trajectory Visualization Tool.
+	 * 
+	 * @param args Command line arguments
+	 */
 	public static void main(String[] args) {
-		try {
-			GlobalLibraryLoader.load();
-		} catch (UnsatisfiedLinkError ule) {
+		String libFile = null;
+		// Search for library path argument
+		for (String arg : args) {
+			if (arg.startsWith("--library-path=")) {
+				try {
+					libFile = arg.substring("--library-path=".length());
+				} catch (StringIndexOutOfBoundsException e) {
+					System.out.println(HELP_MESSAGE);
+					System.exit(0);
+				}
+			}
+			else {
+				System.out.println(HELP_MESSAGE);
+				System.exit(0);
+			}
 		}
+
+		// Load from specified file first if specified
+		if(libFile != null) {
+			GlobalLibraryLoader.load(libFile);
+		}
+
+		GlobalLibraryLoader.load();
 
 		if (!GlobalLibraryLoader.libraryLoaded()) {
 			StringBuilder str = new StringBuilder("Failed to load dynamic library '"
@@ -1154,6 +1180,7 @@ public class TrajectoryVisualizationTool {
 					e.printStackTrace();
 				}
 				JOptionPane.showMessageDialog(null, str.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+				System.exit(1);
 			});
 		} else {
 			SwingUtilities.invokeLater(() -> {

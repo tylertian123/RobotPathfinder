@@ -1,14 +1,11 @@
 package com.arctos6135.robotpathfinder.core.trajectory;
 
 /**
- * A class that holds information about a robot at a moment in time.
+ * This class contains information about a tank drive robot at a moment in time.
  * <p>
  * Moment objects contain information about the position, velocity, acceleration
  * and direction of a robot at a certain time. They're returned by trajectories
- * when querying a specific time.
- * </p>
- * <p>
- * This class represents a moment in time for a tank drive robot.
+ * and motion profiles when querying a specific time.
  * </p>
  * <h2>Difference Between Heading and Facing</h2>
  * <p>
@@ -26,17 +23,10 @@ package com.arctos6135.robotpathfinder.core.trajectory;
  * facing the direction 0 would have an absolute facing direction of 0, but a
  * relative facing direction of -&pi;.
  * </p>
- * <h2>Units</h2>
- * <p>
- * The units used for these moment objects are completely decided by which units
- * are used in a trajectory's
- * {@link com.arctos6135.robotpathfinder.core.RobotSpecs RobotSpecs} during
- * generation. For example, if the unit for max velocity was in m/s, then the
- * unit used here for velocity would also be m/s.
- * </p>
  * 
  * @author Tyler Tian
  * @since 3.0.0
+ * @see Moment
  */
 public class TankDriveMoment extends Moment {
 
@@ -51,7 +41,7 @@ public class TankDriveMoment extends Moment {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Creates an exact copy of this {@link TankDriveMoment}.
 	 */
 	@Override
 	public TankDriveMoment clone() {
@@ -67,7 +57,7 @@ public class TankDriveMoment extends Moment {
 	 * @param rightVel The velocity of the right wheel
 	 * @param leftAcl  The acceleration of the left wheel
 	 * @param rightAcl The acceleration of the right wheel
-	 * @param heading  The desired heading; see the class JavaDoc for more
+	 * @param heading  The desired heading; see the class Javadoc for more
 	 *                 information
 	 */
 	public TankDriveMoment(double leftPos, double rightPos, double leftVel, double rightVel, double leftAcl,
@@ -90,7 +80,7 @@ public class TankDriveMoment extends Moment {
 	 * @param rightVel The velocity of the right wheel
 	 * @param leftAcl  The acceleration of the left wheel
 	 * @param rightAcl The acceleration of the right wheel
-	 * @param heading  The desired heading; see the class JavaDoc for more
+	 * @param heading  The desired heading; see the class Javadoc for more
 	 *                 information
 	 * @param time     The desired time
 	 */
@@ -109,11 +99,11 @@ public class TankDriveMoment extends Moment {
 	 * @param rightVel      The velocity of the right wheel
 	 * @param leftAcl       The acceleration of the left wheel
 	 * @param rightAcl      The acceleration of the right wheel
-	 * @param heading       The desired heading; see the class JavaDoc for more
+	 * @param heading       The desired heading; see the class Javadoc for more
 	 *                      information
 	 * @param time          The desired time
 	 * @param initialFacing The initial direction the robot is <b>facing</b>; see
-	 *                      the class JavaDoc for more information
+	 *                      the class Javadoc for more information
 	 */
 	public TankDriveMoment(double leftPos, double rightPos, double leftVel, double rightVel, double leftAcl,
 			double rightAcl, double heading, double time, double initialFacing) {
@@ -131,11 +121,11 @@ public class TankDriveMoment extends Moment {
 	 * @param rightVel      The velocity of the right wheel
 	 * @param leftAcl       The acceleration of the left wheel
 	 * @param rightAcl      The acceleration of the right wheel
-	 * @param heading       The desired heading; see the class JavaDoc for more
+	 * @param heading       The desired heading; see the class Javadoc for more
 	 *                      information
 	 * @param time          The desired time
 	 * @param initialFacing The initial direction the robot is <b>facing</b>; see
-	 *                      the class JavaDoc for more information
+	 *                      the class Javadoc for more information
 	 * @param backwards     Whether the robot is driving backwards in this moment
 	 */
 	public TankDriveMoment(double leftPos, double rightPos, double leftVel, double rightVel, double leftAcl,

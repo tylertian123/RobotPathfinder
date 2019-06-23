@@ -2,7 +2,7 @@ package com.arctos6135.robotpathfinder.core.path;
 
 /**
  * An enum of different path types. Differently typed paths use different types
- * of internal spline segments. See the JavaDoc for the values for more
+ * of internal spline segments. See the Javadoc for the values for more
  * information.
  * 
  * @author Tyler Tian

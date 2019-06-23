@@ -1,23 +1,23 @@
 package com.arctos6135.robotpathfinder.math;
 
 /**
- * A class containing a collection of static math utility methods. Many of these
- * are unused and are legacies from older versions.
+ * A class containing a collection of static math utility methods.
  * 
  * @author Tyler Tian
  * @since 3.0.0
  */
-public class MathUtils {
+public final class MathUtils {
 
 	private MathUtils() {
 	}
 
 	/**
-	 * Finds the roots of a quadratic equation in standard form.<br>
-	 * <br>
+	 * Finds the roots of a quadratic equation in standard form.
+	 * <p>
 	 * If no real roots exist, the resulting array will contain {@code [NaN, NaN]};
 	 * if the two roots are the same, the two elements of the array will be the same
 	 * number.
+	 * </p>
 	 * 
 	 * @param a The squared term coefficient
 	 * @param b The linear term coefficient
@@ -29,16 +29,18 @@ public class MathUtils {
 	}
 
 	/**
-	 * Finds the roots of a quadratic equation in standard form.<br>
-	 * <br>
+	 * Finds the roots of a quadratic equation in standard form.
+	 * <p>
 	 * If no real roots exist, the resulting array will contain {@code [NaN, NaN]};
 	 * if the two roots are the same, the two elements of the array will be the same
-	 * number.<br>
-	 * <br>
+	 * number.
+	 * </p>
+	 * <p>
 	 * If the absolute value of {@code b^2-4ac} is less than or equal to the
 	 * rounding limit, it will be rounded down to 0; this can help prevent the
 	 * situation in which perfectly fine equations become unsolvable due to rounding
 	 * issues.
+	 * </p>
 	 * 
 	 * @param a       The squared term coefficient
 	 * @param b       The linear term coefficient
@@ -61,8 +63,10 @@ public class MathUtils {
 	/**
 	 * Finds the roots of a quadratic equation using
 	 * {@link MathUtils#findQuadraticRoots(double, double, double)
-	 * findQuadraticRoots()}, and returns the positive root. If both roots are
-	 * negative, this method will return {@code NaN}.
+	 * findQuadraticRoots()}, and returns the positive root.
+	 * <p>
+	 * If both roots are negative, this method will return {@code NaN}.
+	 * </p>
 	 * 
 	 * @param a The squared term coefficient
 	 * @param b The linear term coefficient
@@ -82,17 +86,18 @@ public class MathUtils {
 
 	/**
 	 * Finds the roots of a quadratic equation using
-	 * {@link MathUtils#findQuadraticRoots(double, double, double, double)
-	 * findQuadraticRoots()}, and returns the positive root. If both roots are
-	 * negative, this method will return {@code NaN}.
+	 * {@link MathUtils#findQuadraticRoots(double, double, double)
+	 * findQuadraticRoots()}, and returns the positive root.
+	 * <p>
+	 * If both roots are negative, this method will return {@code NaN}.
+	 * </p>
 	 * 
 	 * @param a       The squared term coefficient
 	 * @param b       The linear term coefficient
 	 * @param c       The constant
-	 * @param minUnit - The rounding limit for {@code b^2-4ac} For more information
+	 * @param minUnit The rounding limit for {@code b^2-4ac}; for more information
 	 *                see
-	 *                {@link MathUtils#findQuadraticRoots(double, double, double, double)
-	 *                findQuadraticRoots()}.
+	 *                {@link #findQuadraticRoots(double, double, double, double)}.
 	 * @return The positive root of the quadratic equation, or if both roots are
 	 *         negative, {@code NaN}.
 	 */
@@ -107,13 +112,15 @@ public class MathUtils {
 	}
 
 	/**
-	 * Finds the discriminant of a cubic polynomial.<br>
-	 * <br>
-	 * If this value is positive, then the polynomial has 3 distinct real roots.<br>
-	 * If this value is zero, then the polynomial has a multiple root and all 3
-	 * roots are real.<br>
-	 * If this value is negative, then the polynomial has one real root, and 2
-	 * complex roots.
+	 * Finds the discriminant of a cubic polynomial.
+	 * <ul>
+	 * <li>If this value is positive, then the polynomial has 3 distinct real
+	 * roots.</li>
+	 * <li>If this value is zero, then the polynomial has a multiple root and all 3
+	 * roots are real.</li>
+	 * <li>If this value is negative, then the polynomial has one real root, and 2
+	 * complex roots.</li>
+	 * </ul>
 	 * 
 	 * @param a The cubed term coefficient
 	 * @param b The squared term coefficient
@@ -129,14 +136,19 @@ public class MathUtils {
 	}
 
 	/**
-	 * Finds the real root of a cubic polynomial. This method assumes that the
-	 * discriminant of the polynomial is negative, that is, the polynomial has only
-	 * one real root and 2 complex roots.<br>
-	 * <br>
+	 * Finds the real root of a cubic polynomial.
+	 * <p>
+	 * This method assumes that the discriminant of the polynomial is negative, that
+	 * is, the polynomial has only one real root and 2 complex roots.
+	 * </p>
+	 * <p>
 	 * If {@code a} is 0, this returns the same result as calling
 	 * {@link #findPositiveQuadraticRoot(double, double, double)
-	 * findPositiveQuadraticRoot(b, c, d)}.<br>
+	 * findPositiveQuadraticRoot(b, c, d)}.
+	 * </p>
+	 * <p>
 	 * If the discriminant is greater than 0, this method will return {@code NaN}.
+	 * </p>
 	 * 
 	 * @param a The cubed term coefficient
 	 * @param b The squared term coefficient
@@ -191,10 +203,12 @@ public class MathUtils {
 	}
 
 	/**
-	 * Linearly interpolates between two scalars. Note due to possible
-	 * discontinuities in angles, this method should not be used if interpolating
-	 * between angles; use {@link #lerpAngle(double, double, double)} or
-	 * {@link #lerpAngle(Vec2D, Vec2D, double)} instead.
+	 * Linearly interpolates between two scalars.
+	 * <p>
+	 * Note due to possible discontinuities, this method should not be used if
+	 * interpolating between angles; use {@link #lerpAngle(double, double, double)}
+	 * or {@link #lerpAngle(Vec2D, Vec2D, double)} instead.
+	 * </p>
 	 * 
 	 * @param a The first number
 	 * @param b The second number
@@ -206,9 +220,11 @@ public class MathUtils {
 	}
 
 	/**
-	 * Linearly interpolates between two angles in radians. This method will choose
-	 * the shortest path around the unit circle, and therefore can interpolate
-	 * between positive and negative angles.
+	 * Linearly interpolates between two angles in radians.
+	 * <p>
+	 * This method will choose the shortest path around the unit circle, and
+	 * therefore can interpolate between positive and negative angles.
+	 * </p>
 	 * <p>
 	 * If the normalized direction vectors for the angles are already known, the
 	 * faster {@link #lerpAngle(Vec2D, Vec2D, double)} can be used.
@@ -226,8 +242,11 @@ public class MathUtils {
 
 	/**
 	 * Linearly interpolates between two normalized vectors, each representing an
-	 * angle. This method will choose the shortest path around the unit circle, and
+	 * angle.
+	 * <p>
+	 * This method will choose the shortest path around the unit circle, and
 	 * therefore can interpolate between positive and negative angles.
+	 * </p>
 	 * 
 	 * @param a The normalized direction vector for the first angle
 	 * @param b The normalized direction vector for the second angle
@@ -242,23 +261,23 @@ public class MathUtils {
 	}
 
 	/**
-	 * Restricts the absolute value of the input to the range [0, absMax]. The sign
-	 * of the number will be kept.
+	 * Restricts the absolute value of the input to the range {@code [0, absMax]}.
+	 * The sign of the number will be kept.
 	 * 
 	 * @param val    The value to restrict
 	 * @param absMax The maximum allowed absolute value
 	 * @return {@code val} if {@code Math.abs(val) <= absMax}, or
-	 *         {@code Math.copySign(Math.min(absMax, Math.abs(val)), val)} if not
+	 *         {@code Math.copySign(Math.min(absMax, Math.abs(val)), val)} otherwise
 	 */
 	public static double clampAbs(double val, double absMax) {
 		return Math.abs(val) <= absMax ? val : Math.copySign(Math.min(absMax, Math.abs(val)), val);
 	}
 
 	/**
-	 * Converts an angle in radians to be in the range (-pi, pi].
+	 * Converts an angle in radians to be in the range (-&pi;, &pi;].
 	 * 
 	 * @param theta An angle in radians
-	 * @return The same angle, converted to be in the range (-pi, pi]
+	 * @return The same angle, converted to be in the range (-&pi;, &pi;]
 	 */
 	public static double restrictAngle(double theta) {
 		if (theta <= Math.PI && theta > -Math.PI) {
@@ -286,9 +305,11 @@ public class MathUtils {
 	}
 
 	/**
-	 * Finds the difference between two angles in radians. The angles should be in
-	 * the range (-pi, pi]. This method will always find the least of the two
-	 * angles.
+	 * Finds the difference between two angles in radians.
+	 * <p>
+	 * The angles should be in the range (-&pi;, &pi;]. This method will always find
+	 * the least of the two possible angles.
+	 * </p>
 	 * 
 	 * @param src    The source angle
 	 * @param target The target angle
@@ -303,5 +324,151 @@ public class MathUtils {
 		}
 
 		return diff;
+	}
+
+	protected static double floatCompareThreshold = 1e-7;
+
+	/**
+	 * Retrieves the floating-point comparison threshold.
+	 * <p>
+	 * This is the threshold value used by the float comparison methods
+	 * ({@link #floatEq(double, double)}, {@link #floatGt(double, double)}, ...). It
+	 * defaults to {@code 1e-7}.
+	 * </p>
+	 * 
+	 * @return The floating-point comparison threshold
+	 */
+	public static double getFloatCompareThreshold() {
+		return floatCompareThreshold;
+	}
+
+	/**
+	 * Sets the floating-point comparison threshold.
+	 * <p>
+	 * This is the threshold value used by the float comparison methods
+	 * ({@link #floatEq(double, double)}, {@link #floatGt(double, double)}, ...). It
+	 * defaults to {@code 1e-7}.
+	 * </p>
+	 * 
+	 * @param threshold The floating-point comparison threshold
+	 */
+	public static void setFloatCompareThreshold(double threshold) {
+		floatCompareThreshold = threshold;
+	}
+
+	/**
+	 * Compares two floating-point numbers for equality using a threshold.
+	 * <p>
+	 * Because floating-point values have rounding errors, directly using {@code ==}
+	 * for equality is not recommended. Instead, this method checks to see if the
+	 * difference between the two arguments is less than a threshold to determine
+	 * whether they're roughly equal.
+	 * </p>
+	 * <p>
+	 * The threshold used can be obtained by calling
+	 * {@link #getFloatCompareThreshold()}.
+	 * </p>
+	 * 
+	 * @param a The first number
+	 * @param b The second number
+	 * @return Whether the two numbers are roughly equal
+	 * @see #getFloatCompareThreshold()
+	 */
+	public static boolean floatEq(double a, double b) {
+		return Math.abs(a - b) <= floatCompareThreshold;
+	}
+
+	/**
+	 * Compares two floating-point numbers to see if one is less than or equal to
+	 * the other using a threshold.
+	 * <p>
+	 * Because floating-point values have rounding errors, directly using {@code <=}
+	 * is not recommended. Instead, this method checks to see if the difference
+	 * between the two arguments is less than a threshold to determine whether
+	 * they're roughly equal, or if {@code a < b}.
+	 * </p>
+	 * <p>
+	 * Equivalent to {@link #floatEq(double, double) floatEq(a, b)}
+	 * {@code || a < b}.
+	 * </p>
+	 * <p>
+	 * The threshold used can be obtained by calling
+	 * {@link #getFloatCompareThreshold()}.
+	 * </p>
+	 * 
+	 * @param a The first number
+	 * @param b The second number
+	 * @return Whether the two numbers are roughly equal, or if {@code a < b}.
+	 * @see #getFloatCompareThreshold()
+	 */
+	public static boolean floatLtEq(double a, double b) {
+		return a < b || Math.abs(a - b) <= floatCompareThreshold;
+	}
+
+	/**
+	 * Compares two floating-point numbers to see if one is greater than or equal to
+	 * the other using a threshold.
+	 * <p>
+	 * Because floating-point values have rounding errors, directly using {@code >=}
+	 * is not recommended. Instead, this method checks to see if the difference
+	 * between the two arguments is less than a threshold to determine whether
+	 * they're roughly equal, or if {@code a > b}.
+	 * </p>
+	 * <p>
+	 * Equivalent to {@link #floatEq(double, double) floatEq(a, b)}
+	 * {@code || a > b}.
+	 * </p>
+	 * <p>
+	 * The threshold used can be obtained by calling
+	 * {@link #getFloatCompareThreshold()}.
+	 * </p>
+	 * 
+	 * @param a The first number
+	 * @param b The second number
+	 * @return Whether the two numbers are roughly equal, or if {@code a > b}.
+	 * @see #getFloatCompareThreshold()
+	 */
+	public static boolean floatGtEq(double a, double b) {
+		return a > b || Math.abs(a - b) <= floatCompareThreshold;
+	}
+
+	/**
+	 * Compares two floating-point numbers to see if one is less than the other
+	 * using a threshold.
+	 * <p>
+	 * Equivalent to {@code !}{@link #floatGtEq(double, double) floatGtEq(a, b)}.
+	 * </p>
+	 * <p>
+	 * The threshold used can be obtained by calling
+	 * {@link #getFloatCompareThreshold()}.
+	 * </p>
+	 * 
+	 * @param a The first number
+	 * @param b The second number
+	 * @return Whether {@code a} is less than {@code b}
+	 * @see #getFloatCompareThreshold()
+	 */
+	public static boolean floatLt(double a, double b) {
+		return !floatGtEq(a, b);
+	}
+
+	/**
+	 * Compares two floating-point numbers to see if one is greater than the other
+	 * using a threshold.
+	 * <p>
+	 * Equivalent to {@code !}{@link #floatLtEq(double, double) floatLtEq(a, b)}.
+	 * </p>
+	 * <p>
+	 * The threshold used can be obtained by calling
+	 * {@link #getFloatCompareThreshold()}.
+	 * </p>
+	 * 
+	 * @param a The first number
+	 * @param b The second number
+	 * @return Whether {@code a} is greater than {@code b}
+	 * @see #getFloatCompareThreshold()
+	 */
+	public static boolean floatGt(double a, double b) {
+		return !floatLtEq(a, b);
 	}
 }

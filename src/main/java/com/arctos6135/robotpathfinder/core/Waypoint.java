@@ -2,15 +2,21 @@ package com.arctos6135.robotpathfinder.core;
 
 /**
  * Represents a point that the robot must pass through in a path or trajectory.
+ * <p>
  * A waypoint consists of an X value, Y value, and heading (direction the robot
- * is travelling in). All angles are in <em>radians</em>. Used to construct
- * paths and trajectories. This class is immutable.
+ * is travelling in). Used to construct paths and trajectories. Waypoints are
+ * immutable.
+ * </p>
+ * <p>
+ * The angle used for heading is in <em>radians</em>, following the unit circle.
+ * Thus, 0 represents right, &pi;/2 represents up, and so on.
+ * </p>
  * <p>
  * Note that it does not matter what specific unit is used for distance;
  * however, the unit must match with the units in the {@link RobotSpecs} object
  * used to construct the trajectory. For example, if the unit for max velocity
  * in the {@link RobotSpecs} object was m/s, the unit used for distance must be
- * m. On the other hand, the angles must all be in <strong>radians</strong>.
+ * m.
  * </p>
  * 
  * @author Tyler Tian

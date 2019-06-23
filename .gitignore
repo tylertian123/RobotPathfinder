@@ -1,7 +1,7 @@
 # Build output
 /bin/
 /build/
-/output/
+/archives/
 
 # Gradle files
 .gradle
@@ -18,5 +18,12 @@
 *.lib
 *.dylib
 
+# Archives
+*.zip
+*.tar.gz
+
 # VM Crash Logs
 hs_err_pid*.log
+
+# Debug test file
+/src/test/java/DebugTests.java

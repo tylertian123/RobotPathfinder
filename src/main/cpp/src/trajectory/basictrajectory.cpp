@@ -24,7 +24,7 @@ namespace rpf {
                 double f = (time - mid_time) / (next_time - mid_time);
                 auto &current = moments[mid];
                 auto &next = moments[mid + 1];
-                BasicMoment m(rpf::lerp(current.dist, next.dist, f), rpf::lerp(current.vel, next.vel, f),
+                BasicMoment m(rpf::lerp(current.pos, next.pos, f), rpf::lerp(current.vel, next.vel, f),
                         rpf::lerp(current.accel, next.accel, f), rpf::langle(current.heading, next.heading, f), time, init_facing);
                 m.backwards = backwards;
                 return m;
@@ -63,7 +63,7 @@ namespace rpf {
         std::vector<BasicMoment> m;
         m.reserve(moments.size());
         for(size_t i = 0; i < moments.size(); i ++) {
-            BasicMoment moment(-moments[i].dist, -moments[i].vel, moments[i].accel, 
+            BasicMoment moment(-moments[i].pos, -moments[i].vel, moments[i].accel, 
                     rpf::mangle(moments[i].heading, ref), moments[i].time);
             moment.init_facing = params.waypoints[0].heading;
             moment.backwards = true;
@@ -81,7 +81,7 @@ namespace rpf {
         for(size_t i = 0; i < moments.size(); i ++) {
             auto &current = moments[moments.size() - 1 - i];
 
-            BasicMoment moment(-(last.dist - current.dist), -current.vel, current.accel, -current.heading, last.time - current.time);
+            BasicMoment moment(-(last.pos - current.pos), -current.vel, current.accel, -current.heading, last.time - current.time);
             moment.init_facing = params.waypoints[params.waypoints.size() - 1].heading;
             moment.backwards = true;
             m.push_back(moment);

@@ -11,10 +11,11 @@ import java.util.List;
  * garbage-collected by the GC, its native counterpart is also freed and no
  * memory leak happens.
  * <p>
- * However, this does not mean that {@link JNIObject#free()} is optional. The GC
- * does not know how much memory each native object takes up, and thus it will
- * prioritize other large Java objects over {@link JNIObject}s due to its small
- * size in the JVM, which leads to inefficient memory management.
+ * However, this does not mean that calling {@link JNIObject#free()} is
+ * optional. The GC does not know how much memory each native object takes up,
+ * and thus it will prioritize other large Java objects over {@link JNIObject}s
+ * due to its small size in the JVM, which leads to inefficient memory
+ * management.
  * </p>
  * <p>
  * <b><em>This class is intended for internal use only. Use at your own

@@ -59,6 +59,9 @@ namespace rpf {
             double wpdt = 1.0 / (waypoints.size() - 1);
             for(size_t i = 1; i < waypoints.size() - 1; i ++) {
                 if(!std::isnan(waypoints[i].velocity)) {
+                    if(std::abs(waypoints[i].velocity) > specs.max_v) {
+                        throw std::invalid_argument("Waypoint velocity constraint is greater than the max velocity");
+                    }
                     // Use t2S to find the fractional distance, then multiply by the total distance
                     constraints.push_back(std::make_pair(path->t2s(i * wpdt) * total, waypoints[i].velocity));
                 }
@@ -137,15 +140,6 @@ namespace rpf {
                 }
             }
 
-            // Initialize the first moment of the array
-            // If the velocity is specified then follow the constraints
-            if(!std::isnan(waypoints[0].velocity)) {
-                moments.push_back(BasicMoment(0, waypoints[0].velocity, 0, headings[0]));
-            }
-            else {
-                moments.push_back(BasicMoment(0, 0, 0, headings[0]));
-            }
-
             /*
 		     * This array holds the difference in time between two moments.
 		     * During the forward and backwards passes, the time difference can be computed just using simple
@@ -155,6 +149,18 @@ namespace rpf {
             // This is a set that stores all the indices of the moments of which their velocities cannot be changed
             // (as specified by the Waypoints)
             std::unordered_set<int> constrained;
+
+            // Initialize the first moment of the array
+            // If the velocity is specified then follow the constraints
+            if(!std::isnan(waypoints[0].velocity)) {
+                moments.push_back(BasicMoment(0, waypoints[0].velocity, 0, headings[0]));
+                // Mark the first moment as constrained so that it cannot be changed
+                constrained.insert(0);
+            }
+            else {
+                moments.push_back(BasicMoment(0, 0, 0, headings[0]));
+            }
+
             // Forwards pass
             for(int i = 1; i < params.sample_count; i ++) {
                 double dist = i * dpi;
@@ -167,7 +173,7 @@ namespace rpf {
                     constraints.pop_front();
                     // If the velocity is higher than the current, perform some extra checks and computations
                     if(constraint.second > moments[i - 1].vel) {
-                        double accel = constraint.second * constraint.second - moments[i - 1].vel * moments[i - 1].vel;
+                        double accel = (constraint.second * constraint.second - moments[i - 1].vel * moments[i - 1].vel) / (2 * dpi);
                         if(accel > specs.max_a) {
                             throw std::invalid_argument("Waypoint velocity constraint cannot be met");
                         }
@@ -263,7 +269,7 @@ namespace rpf {
                 else {
                     // If there is no time diff, it must mean that the acceleration is equal to zero
                     // In this case we can simply use the position difference to calculate time difference
-                    double dt = (moments[i].dist - moments[i - 1].dist) / moments[i - 1].vel;
+                    double dt = (moments[i].pos - moments[i - 1].pos) / moments[i - 1].vel;
                     moments[i].time = moments[i - 1].time + dt;
                 }
             }

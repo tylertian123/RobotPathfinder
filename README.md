@@ -79,7 +79,7 @@ scp /path/to/dynamic/library lvuser@10.TE.AM.1:/usr/lib/libRobotPathfinder.so
 *where TE.AM is your team number (e.g. for team 6135 this would be 61.35). Make sure you're connected to the robot's wifi when doing this!*
 
 ## Documentation
-All classes and methods are documented with Javadocs, in `RobotPathfinder-Doc-(VERSION).zip`.
+All classes and methods are documented with Javadocs, in `RobotPathfinder-Doc-(VERSION).zip`. The Javadocs of most versions are also available online [here](https://tylertian123.github.io/RobotPathfinder/index.html).
 Head over to the [wiki](https://github.com/Arctos6135/RobotPathfinder/wiki) for tutorials and examples!
 ***Wiki pages for RobotPathfinder v3 are coming soon.***
 

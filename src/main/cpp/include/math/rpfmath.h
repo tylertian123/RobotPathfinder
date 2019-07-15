@@ -2,8 +2,14 @@
 
 #include "vec2d.h"
 
+/* 
+ * RobotPathfinder Math 
+ *
+ * These functions are intended for internal use only.
+ * Use at your own risk.
+ */
+
 namespace rpf {
-    /* RobotPathfinder Math */
 
     // Linear Interpolation
     double lerp(double, double, double);
@@ -13,6 +19,7 @@ namespace rpf {
     double mangle(double, double);
     // Linearly interpolates between angles
     double langle(double, double, double);
+    // Linearly interpolates between angles represented as vectors
     double langle(Vec2D, Vec2D, double);
     // Restrict absolute value
     double rabs(double, double);

@@ -3,8 +3,47 @@
 #include "paths.h"
 #include <cmath>
 #include <stdexcept>
+#include <string>
 
 namespace rpf {
+
+    Path::Path(const std::vector<Waypoint> &waypoints, double alpha, PathType type) : 
+                waypoints(waypoints), alpha(alpha), type(type) {
+        if(waypoints.size() < 2) {
+            throw std::invalid_argument("Not enough waypoints");
+        }
+        segments.reserve(waypoints.size() - 1);
+        switch(type) {
+        case PathType::BEZIER:
+            for(size_t i = 0; i < waypoints.size() - 1; i ++) {
+                segments.push_back(std::make_unique<BezierSegment>(BezierSegment::from_hermite(
+                    static_cast<Vec2D>(waypoints[i]), static_cast<Vec2D>(waypoints[i + 1]),
+                    Vec2D(std::cos(waypoints[i].heading) * alpha, std::sin(waypoints[i].heading) * alpha),
+                    Vec2D(std::cos(waypoints[i + 1].heading) * alpha, std::sin(waypoints[i + 1].heading) * alpha)
+                )));
+            }
+            break;
+        case PathType::CUBIC_HERMITE:
+            for(size_t i = 0; i < waypoints.size() - 1; i ++) {
+                segments.push_back(std::make_unique<CubicSegment>(
+                    static_cast<Vec2D>(waypoints[i]), static_cast<Vec2D>(waypoints[i + 1]),
+                    Vec2D(std::cos(waypoints[i].heading) * alpha, std::sin(waypoints[i].heading) * alpha),
+                    Vec2D(std::cos(waypoints[i + 1].heading) * alpha, std::sin(waypoints[i + 1].heading) * alpha)
+                ));
+            }
+            break;
+        case PathType::QUINTIC_HERMITE:
+            for(size_t i = 0; i < waypoints.size() - 1; i ++) {
+                segments.push_back(std::make_unique<QuinticSegment>(
+                    static_cast<Vec2D>(waypoints[i]), static_cast<Vec2D>(waypoints[i + 1]),
+                    Vec2D(std::cos(waypoints[i].heading) * alpha, std::sin(waypoints[i].heading) * alpha),
+                    Vec2D(std::cos(waypoints[i + 1].heading) * alpha, std::sin(waypoints[i + 1].heading) * alpha),
+                    Vec2D(0, 0), Vec2D(0, 0)
+                ));
+            }
+            break;
+        }
+    }
 
     Vec2D Path::at(double t) const {
         if(t >= 1) {
@@ -182,6 +221,26 @@ namespace rpf {
         p->set_base(base_radius);
         p->set_backwards(!backwards);
         return p;
+    }
+
+    std::shared_ptr<Path> Path::update(double t, const Vec2D &p, const Vec2D &v, const Vec2D &a) {
+        if(waypoints.size() > 2) {
+            throw std::invalid_argument("update() is not supported on paths with multiple segments!");
+        }
+        if(type != PathType::QUINTIC_HERMITE) {
+            throw std::invalid_argument("update() is not supported for this path type!");
+        }
+        using namespace std::string_literals;
+        if(t > 1.0 || t < 0.0) {
+            throw std::invalid_argument("Time out of range: "s + std::to_string(t));
+        }
+
+        segments[0] = std::make_unique<QuinticSegment>(
+            p, static_cast<Vec2D>(waypoints[1]),
+            v, Vec2D(std::cos(waypoints[1].heading) * alpha, std::sin(waypoints[1].heading) * alpha),
+            a, Vec2D(0, 0),
+            t
+        );
     }
 }
 

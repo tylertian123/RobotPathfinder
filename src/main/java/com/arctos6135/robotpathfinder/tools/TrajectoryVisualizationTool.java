@@ -43,6 +43,7 @@ import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
@@ -470,12 +471,7 @@ public class TrajectoryVisualizationTool {
 	}
 
 	TrajectoryVisualizationTool() {
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-				| UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
-		}
+		setLookAndFeel(lookAndFeel);
 
 		// Set up the waypoints dialog
 		waypointX.setPreferredSize(new Dimension(100, 20));
@@ -1129,7 +1125,70 @@ public class TrajectoryVisualizationTool {
 		mainFrame.setVisible(true);
 	}
 
-	static final String HELP_MESSAGE = "Options:\n\t--library-path=libpath\n\n\tLoads the RobotPathfinder dynamic shared library from the specified path.";
+	static boolean setSystemLookAndFeel() {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e1) {
+			e1.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	static boolean setNimbusLookAndFeel() {
+		try {
+			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+				if ("Nimbus".equals(info.getName())) {
+					UIManager.setLookAndFeel(info.getClassName());
+					break;
+				}
+			}
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	static void setLookAndFeel(String lf) {
+		boolean success;
+
+		if(lf.equals("nimbus")) {
+			if(!setNimbusLookAndFeel()) {
+				System.err.println("Error: Cannot set look and feel to Nimbus. Falling back to System look and feel...");
+				success = setSystemLookAndFeel();
+			}
+			else {
+				success = true;
+			}
+		}
+		else if(lf.equals("system")) {
+			success = setSystemLookAndFeel();
+		}
+		else {
+			try {
+				UIManager.setLookAndFeel(lf);
+				success = true;
+			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+					| UnsupportedLookAndFeelException e) {
+				success = false;
+			}
+		}
+
+		if(!success) {
+			System.err.println("Failed to set look and feel to '" + lf + "'!");
+		}
+	}
+
+	static final String HELP_MESSAGE = 
+			"Options:\n" +
+				"\t--library-path=LIBRARY_PATH\n\n" +
+					"\t\tLoads the RobotPathfinder dynamic shared library from the specified path.\n\n" +
+				"\t--lf=LOOK_AND_FEEL\n\n" +
+					"\t\tSets the look and feel of the application. This can either be the fully-qualified class name " +
+					"of the look and feel, or 'nimbus' or 'system'. The default is 'nimbus'.\n";
+
+	static String lookAndFeel = "nimbus";
 
 	/**
 	 * Loads the necessary libraries and runs the Trajectory Visualization Tool.
@@ -1147,6 +1206,14 @@ public class TrajectoryVisualizationTool {
 					System.out.println(HELP_MESSAGE);
 					System.exit(0);
 				}
+			} 
+			else if(arg.startsWith("--lf=")) {
+				try {
+					lookAndFeel = arg.substring("--lf=".length());
+				} catch (StringIndexOutOfBoundsException e) {
+					System.out.println(HELP_MESSAGE);
+					System.exit(0);
+				}
 			}
 			else {
 				System.out.println(HELP_MESSAGE);
@@ -1155,7 +1222,7 @@ public class TrajectoryVisualizationTool {
 		}
 
 		// Load from specified file first if specified
-		if(libFile != null) {
+		if (libFile != null) {
 			GlobalLibraryLoader.load(libFile);
 		}
 
@@ -1173,12 +1240,7 @@ public class TrajectoryVisualizationTool {
 				str.append('\n');
 			}
 			SwingUtilities.invokeLater(() -> {
-				try {
-					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-						| UnsupportedLookAndFeelException e) {
-					e.printStackTrace();
-				}
+				setLookAndFeel(lookAndFeel);
 				JOptionPane.showMessageDialog(null, str.toString(), "Error", JOptionPane.ERROR_MESSAGE);
 				System.exit(1);
 			});

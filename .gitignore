@@ -6,7 +6,10 @@
 # Gradle files
 .gradle
 
-# Visual studio code
+# Gradle properties
+gradle.properties
+
+# Visual Studio Code
 .settings
 .vscode
 

@@ -72,12 +72,22 @@ else {
         throw new GradleException("Invalid build type: $type")
     }
 }
+// Whether or not to skip tests
+if(!project.hasProperty('skiptests')) {
+    project.ext.skiptests = 'false'
+}
+else {
+    if(skiptests != 'true' && skiptests != 'false') {
+        throw new GradleException("Invalid boolean value: $skiptests")
+    }
+}
 
 println "----- Build Configuration -----"
 println "Archives Directory: $archiveDir"
 println "OS Family: $os"
 println "Computer Architecture: $arch"
 println "Build Type: $type"
+println "Skip Testing: $skiptests"
 
 compileJava {
     // Show deprecation warnings
@@ -320,6 +330,9 @@ task copyLib(group: 'Development', description: 'Copies the correct dynamic libr
 
 test {
     dependsOn copyLib
+    onlyIf {
+        skiptests == 'false'
+    }
 }
 
 // Add sources to the jar

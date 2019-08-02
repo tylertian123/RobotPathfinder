@@ -41,6 +41,42 @@ abstract public class Follower<T extends Moment> {
 	protected boolean running = false;
 	protected boolean finished = false;
 
+	public static class Gains implements Cloneable {
+
+		public double kV = 0;
+		
+		public double kA = 0;
+		
+		public double kP = 0;
+
+		public double kI = 0;
+		
+		public double kD = 0;
+
+		@Override
+		public Gains clone() {
+			Gains gains = new Gains();
+			gains.kV = kV;
+			gains.kA = kA;
+			gains.kP = kP;
+			gains.kI = kI;
+			gains.kD = kD;
+
+			return gains;
+		}
+
+		public Gains() {
+		}
+
+		public Gains(double kV, double kA, double kP, double kI, double kD) {
+			this.kV = kV;
+			this.kA = kA;
+			this.kP = kP;
+			this.kI = kI;
+			this.kD = kD;
+		}
+	}
+
 	/**
 	 * This method must be implemented by any concrete follower to perform any
 	 * initialization tasks. (e.g. resetting time references)
@@ -172,6 +208,18 @@ abstract public class Follower<T extends Moment> {
 		return target;
 	}
 
+	public void setGains(Gains gains) {
+		this.kV = gains.kV;
+		this.kA = gains.kA;
+		this.kP = gains.kP;
+		this.kI = gains.kI;
+		this.kD = gains.kD;
+	}
+
+	public Gains getGains() {
+		return new Gains(kV, kA, kP, kI, kD);
+	}
+
 	/**
 	 * Sets the gains of the feedback control loop.
 	 * 
@@ -181,6 +229,7 @@ abstract public class Follower<T extends Moment> {
 	 * @param kI the integral gain
 	 * @param kD The derivative gain
 	 */
+	@Deprecated
 	public void setGains(double kV, double kA, double kP, double kI, double kD) {
 		this.kV = kV;
 		this.kA = kA;
@@ -194,6 +243,7 @@ abstract public class Follower<T extends Moment> {
 	 * 
 	 * @param a The acceleration feedforward term's coefficient
 	 */
+	@Deprecated
 	public void setA(double a) {
 		kA = a;
 	}
@@ -204,6 +254,7 @@ abstract public class Follower<T extends Moment> {
 	 * 
 	 * @return The acceleration feedforward term coefficient
 	 */
+	@Deprecated
 	public double getA() {
 		return kA;
 	}
@@ -213,6 +264,7 @@ abstract public class Follower<T extends Moment> {
 	 * 
 	 * @param v The velocity feedforward term's coefficient
 	 */
+	@Deprecated
 	public void setV(double v) {
 		kV = v;
 	}
@@ -222,6 +274,7 @@ abstract public class Follower<T extends Moment> {
 	 * 
 	 * @return The velocity feedforward term coefficient
 	 */
+	@Deprecated
 	public double getV() {
 		return kV;
 	}
@@ -231,6 +284,7 @@ abstract public class Follower<T extends Moment> {
 	 * 
 	 * @param p The proportional gain
 	 */
+	@Deprecated
 	public void setP(double p) {
 		kP = p;
 	}
@@ -240,6 +294,7 @@ abstract public class Follower<T extends Moment> {
 	 * 
 	 * @return The proportional gain
 	 */
+	@Deprecated
 	public double getP() {
 		return kP;
 	}
@@ -249,6 +304,7 @@ abstract public class Follower<T extends Moment> {
 	 * 
 	 * @param i The integral gain
 	 */
+	@Deprecated
 	public void setI(double i) {
 		kI = i;
 	}
@@ -258,6 +314,7 @@ abstract public class Follower<T extends Moment> {
 	 * 
 	 * @return The integral gain
 	 */
+	@Deprecated
 	public double getI() {
 		return kI;
 	}
@@ -267,6 +324,7 @@ abstract public class Follower<T extends Moment> {
 	 * 
 	 * @param d The derivative gain
 	 */
+	@Deprecated
 	public void setD(double d) {
 		kD = d;
 	}
@@ -276,6 +334,7 @@ abstract public class Follower<T extends Moment> {
 	 * 
 	 * @return The derivative gain
 	 */
+	@Deprecated
 	public double getD() {
 		return kD;
 	}

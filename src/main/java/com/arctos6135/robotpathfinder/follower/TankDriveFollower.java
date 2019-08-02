@@ -49,6 +49,36 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	protected double leftOutput, rightOutput, leftDeriv, rightDeriv;
 	protected TankDriveMoment lastMoment;
 
+	public static class TankDriveGains extends Gains {
+
+		public double kDP = 0;
+
+		@Override
+		public TankDriveGains clone() {
+			TankDriveGains gains = new TankDriveGains();
+			gains.kV = kV;
+			gains.kA = kA;
+			gains.kP = kP;
+			gains.kI = kI;
+			gains.kD = kD;
+			gains.kDP = kDP;
+
+			return gains;
+		}
+
+		public TankDriveGains() {
+		}
+
+		public TankDriveGains(double kV, double kA, double kP, double kI, double kD, double kDP) {
+			this.kV = kV;
+			this.kA = kA;
+			this.kP = kP;
+			this.kI = kI;
+			this.kD = kD;
+			this.kDP = kDP;
+		}
+	}
+
 	/**
 	 * Constructs a new tank drive follower only using the feedforward terms (VA).
 	 * <p>
@@ -174,6 +204,32 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 		this.directionSrc = dirSrc;
 	}
 
+	public void setGains(TankDriveGains gains) {
+		setGains((Gains) gains);
+		kDP = gains.kDP;
+	}
+
+	@Override
+	public TankDriveGains getGains() {
+		return new TankDriveGains(kV, kA, kP, kI, kD, kDP);
+	}
+	
+	/**
+	 * Sets the gains of the feedback loop.
+	 * 
+	 * @param kV  The velocity feedforward
+	 * @param kA  The acceleration feedforward
+	 * @param kP  The proportional gain
+	 * @param kI  The integral gain
+	 * @param kD  The derivative gain
+	 * @param kDP The directional-proportional gain
+	 */
+	@Deprecated
+	public void setGains(double kV, double kA, double kP, double kI, double kD, double kDP) {
+		setGains(kV, kA, kP, kI, kD);
+		setDP(kDP);
+	}
+
 	/**
 	 * Sets the directional-proportional gain of the feedback loop.
 	 * <p>
@@ -186,6 +242,7 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * 
 	 * @param kDP The directional-proportional gain
 	 */
+	@Deprecated
 	public void setDP(double kDP) {
 		this.kDP = kDP;
 	}
@@ -202,25 +259,11 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * 
 	 * @return The directional-proportional gain
 	 */
+	@Deprecated
 	public double getDP() {
 		return kDP;
 	}
-
-	/**
-	 * Sets the gains of the feedback loop.
-	 * 
-	 * @param kV  The velocity feedforward
-	 * @param kA  The acceleration feedforward
-	 * @param kP  The proportional gain
-	 * @param kI  The integral gain
-	 * @param kD  The derivative gain
-	 * @param kDP The directional-proportional gain
-	 */
-	public void setGains(double kV, double kA, double kP, double kI, double kD, double kDP) {
-		setGains(kV, kA, kP, kI, kD);
-		setDP(kDP);
-	}
-
+	
 	/**
 	 * Sets the timestamp source.
 	 * 
@@ -233,7 +276,7 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 		}
 		this.timer = timer;
 	}
-
+	
 	/**
 	 * Sets the motors.
 	 * 

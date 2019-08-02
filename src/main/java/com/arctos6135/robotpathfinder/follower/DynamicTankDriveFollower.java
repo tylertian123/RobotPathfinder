@@ -1,6 +1,7 @@
 package com.arctos6135.robotpathfinder.follower;
 
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
+import com.arctos6135.robotpathfinder.follower.TankDriveFollower.TankDriveGains;
 import com.arctos6135.robotpathfinder.math.MathUtils;
 
 /**
@@ -228,6 +229,33 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 		advancedDistSrc = false;
 	}
 
+	public void setGains(TankDriveGains gains) {
+		setGains((Gains) gains);
+		kDP = gains.kDP;
+	}
+
+	@Override
+	public TankDriveGains getGains() {
+		return new TankDriveGains(kV, kA, kP, kI, kD, kDP);
+	}
+
+	
+	/**
+	 * Sets the gains of the feedback loop.
+	 * 
+	 * @param kV  The velocity feedforward
+	 * @param kA  The acceleration feedforward
+	 * @param kP  The proportional gain
+	 * @param kI  The integral gain
+	 * @param kD  The derivative gain
+	 * @param kDP The directional-proportional gain
+	 */
+	@Deprecated
+	public void setGains(double kV, double kA, double kP, double kI, double kD, double kDP) {
+		setGains(kV, kA, kP, kI, kD);
+		setDP(kDP);
+	}
+
 	/**
 	 * Sets the directional-proportional gain of the feedback loop.
 	 * <p>
@@ -240,6 +268,7 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	 * 
 	 * @param kDP The directional-proportional gain
 	 */
+	@Deprecated
 	public void setDP(double kDP) {
 		this.kDP = kDP;
 	}
@@ -256,23 +285,9 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	 * 
 	 * @return The directional-proportional gain
 	 */
+	@Deprecated
 	public double getDP() {
 		return kDP;
-	}
-
-	/**
-	 * Sets the gains of the feedback loop.
-	 * 
-	 * @param kV  The velocity feedforward
-	 * @param kA  The acceleration feedforward
-	 * @param kP  The proportional gain
-	 * @param kI  The integral gain
-	 * @param kD  The derivative gain
-	 * @param kDP The directional-proportional gain
-	 */
-	public void setGains(double kV, double kA, double kP, double kI, double kD, double kDP) {
-		setGains(kV, kA, kP, kI, kD);
-		setDP(kDP);
 	}
 
 	/**

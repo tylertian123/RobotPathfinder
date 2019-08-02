@@ -94,6 +94,11 @@ compileJava {
     options.compilerArgs << '-Xlint:deprecation'
 }
 
+compileTestJava {
+    // Show deprecation warnings
+    options.compilerArgs << '-Xlint:deprecation'
+}
+
 // Use Gradle 5.0 as GradleRIO only supports 5.0
 wrapper {
     gradleVersion = 5.0

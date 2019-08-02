@@ -95,6 +95,7 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param kV     The velocity feedforward
 	 * @param kA     The acceleration feedforward
 	 */
+	@Deprecated
 	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, TimestampSource timer,
 			double kV, double kA) {
 		setGains(kV, kA, 0, 0, 0, 0);
@@ -127,6 +128,7 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param kI       The integral gain
 	 * @param kD       The derivative gain
 	 */
+	@Deprecated
 	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, PositionSource lDistSrc,
 			PositionSource rDistSrc, TimestampSource timer, double kV, double kA, double kP, double kI, double kD) {
 		setGains(kV, kA, kP, kI, kD, 0);
@@ -158,6 +160,7 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param kA     The acceleration feedforward
 	 * @param kDP    The directional-proportional gain
 	 */
+	@Deprecated
 	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, TimestampSource timer,
 			DirectionSource dirSrc, double kV, double kA, double kDP) {
 		setGains(kV, kA, 0, 0, 0, kDP);
@@ -191,6 +194,7 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param kD       The derivative gain
 	 * @param kDP      The directional-proportional gain
 	 */
+	@Deprecated
 	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, PositionSource lDistSrc,
 			PositionSource rDistSrc, TimestampSource timer, DirectionSource dirSrc, double kV, double kA, double kP,
 			double kI, double kD, double kDP) {
@@ -202,6 +206,57 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 		this.rDistSrc = rDistSrc;
 		this.timer = timer;
 		this.directionSrc = dirSrc;
+	}
+
+	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, TimestampSource timer,
+			Gains gains) {
+		setGains(gains);
+		this.target = target;
+		this.lMotor = lMotor;
+		this.rMotor = rMotor;
+		this.timer = timer;
+	}
+
+	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, PositionSource lDistSrc,
+			PositionSource rDistSrc, TimestampSource timer, Gains gains) {
+		setGains(gains);
+		this.target = target;
+		this.lMotor = lMotor;
+		this.rMotor = rMotor;
+		this.lDistSrc = lDistSrc;
+		this.rDistSrc = rDistSrc;
+		this.timer = timer;
+	}
+
+	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, TimestampSource timer,
+			DirectionSource dirSrc, Gains gains) {
+		setGains(gains);
+		this.target = target;
+		this.lMotor = lMotor;
+		this.rMotor = rMotor;
+		this.timer = timer;
+		this.directionSrc = dirSrc;
+	}
+	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, PositionSource lDistSrc,
+			PositionSource rDistSrc, TimestampSource timer, DirectionSource dirSrc, Gains gains) {
+		setGains(gains);
+		this.target = target;
+		this.lMotor = lMotor;
+		this.rMotor = rMotor;
+		this.lDistSrc = lDistSrc;
+		this.rDistSrc = rDistSrc;
+		this.timer = timer;
+		this.directionSrc = dirSrc;
+	}
+
+	@Override
+	public void setGains(Gains gains) {
+		if(gains instanceof TankDriveGains) {
+			setGains((TankDriveGains) gains);
+		}
+		else {
+			super.setGains(gains);
+		}
 	}
 
 	public void setGains(TankDriveGains gains) {

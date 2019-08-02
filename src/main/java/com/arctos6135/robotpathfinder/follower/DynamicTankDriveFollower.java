@@ -98,6 +98,7 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	 * @param kD          The derivative gain
 	 * @param updateDelay The duration between two updates
 	 */
+	@Deprecated
 	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
 			AdvancedPositionSource lDistSrc, AdvancedPositionSource rDistSrc, TimestampSource timer, double kV,
 			double kA, double kP, double kI, double kD, double updateDelay) {
@@ -132,6 +133,7 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	 * @param kDP         The directional-proportional gain
 	 * @param updateDelay The duration between two updates
 	 */
+	@Deprecated
 	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
 			AdvancedPositionSource lDistSrc, AdvancedPositionSource rDistSrc, TimestampSource timer,
 			DirectionSource dirSrc, double kV, double kA, double kP, double kI, double kD, double kDP,
@@ -175,6 +177,7 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	 * @param kD          The derivative gain
 	 * @param updateDelay The duration between two updates
 	 */
+	@Deprecated
 	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
 			PositionSource lDistSrc, PositionSource rDistSrc, TimestampSource timer, double kV, double kA, double kP,
 			double kI, double kD, double updateDelay) {
@@ -214,6 +217,7 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	 * @param kDP         The directional-proportional gain
 	 * @param updateDelay The duration between two updates
 	 */
+	@Deprecated
 	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
 			PositionSource lDistSrc, PositionSource rDistSrc, TimestampSource timer, DirectionSource dirSrc, double kV,
 			double kA, double kP, double kI, double kD, double kDP, double updateDelay) {
@@ -227,6 +231,73 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 		this.directionSrc = dirSrc;
 		this.updateDelay = updateDelay;
 		advancedDistSrc = false;
+	}
+
+	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
+			AdvancedPositionSource lDistSrc, AdvancedPositionSource rDistSrc, TimestampSource timer, Gains gains, 
+			double updateDelay) {
+		setGains(gains);
+		this.target = target;
+		this.lMotor = lMotor;
+		this.rMotor = rMotor;
+		this.lDistSrc = lDistSrc;
+		this.rDistSrc = rDistSrc;
+		this.timer = timer;
+		this.updateDelay = updateDelay;
+		advancedDistSrc = true;
+	}
+
+	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
+			AdvancedPositionSource lDistSrc, AdvancedPositionSource rDistSrc, TimestampSource timer,
+			DirectionSource dirSrc, Gains gains, double updateDelay) {
+		setGains(gains);
+		this.target = target;
+		this.lMotor = lMotor;
+		this.rMotor = rMotor;
+		this.lDistSrc = lDistSrc;
+		this.rDistSrc = rDistSrc;
+		this.timer = timer;
+		this.directionSrc = dirSrc;
+		this.updateDelay = updateDelay;
+		advancedDistSrc = true;
+	}
+
+	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
+			PositionSource lDistSrc, PositionSource rDistSrc, TimestampSource timer, Gains gains, double updateDelay) {
+		setGains(gains);
+		this.target = target;
+		this.lMotor = lMotor;
+		this.rMotor = rMotor;
+		this.lDistSrc = lDistSrc;
+		this.rDistSrc = rDistSrc;
+		this.timer = timer;
+		this.updateDelay = updateDelay;
+		advancedDistSrc = false;
+	}
+
+	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
+			PositionSource lDistSrc, PositionSource rDistSrc, TimestampSource timer, DirectionSource dirSrc, Gains gains,
+			double updateDelay) {
+		setGains(gains);
+		this.target = target;
+		this.lMotor = lMotor;
+		this.rMotor = rMotor;
+		this.lDistSrc = lDistSrc;
+		this.rDistSrc = rDistSrc;
+		this.timer = timer;
+		this.directionSrc = dirSrc;
+		this.updateDelay = updateDelay;
+		advancedDistSrc = false;
+	}
+
+	@Override
+	public void setGains(Gains gains) {
+		if(gains instanceof TankDriveGains) {
+			setGains((TankDriveGains) gains);
+		}
+		else {
+			super.setGains(gains);
+		}
 	}
 
 	public void setGains(TankDriveGains gains) {

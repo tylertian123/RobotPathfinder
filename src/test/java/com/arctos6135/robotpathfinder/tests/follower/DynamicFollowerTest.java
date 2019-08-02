@@ -11,6 +11,7 @@ import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
 import com.arctos6135.robotpathfinder.follower.DynamicFollowable;
 import com.arctos6135.robotpathfinder.follower.DynamicFollower;
 import com.arctos6135.robotpathfinder.follower.DynamicTankDriveFollower;
+import com.arctos6135.robotpathfinder.follower.TankDriveFollower.TankDriveGains;
 import com.arctos6135.robotpathfinder.math.MathUtils;
 import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalTankDriveProfile;
 import com.arctos6135.robotpathfinder.tests.TestHelper;
@@ -86,7 +87,7 @@ public class DynamicFollowerTest {
         FakeGyro gyro = new FakeGyro();
 
         DynamicFollower<TankDriveMoment> follower = new DynamicTankDriveFollower(followable, motor, motor, encoder,
-                encoder, timer, gyro, 0, 0, 0, 0, 0, 0, updateDelay);
+                encoder, timer, gyro, new TankDriveGains(), updateDelay);
 
         follower.initialize();
         follower.run();
@@ -150,8 +151,9 @@ public class DynamicFollowerTest {
         FakeTimer timer = new FakeTimer();
         FakeMotor motor = new FakeMotor();
         FakeEncoder encoder = new FakeEncoder();
+        TankDriveGains gains = new TankDriveGains(kV, kA, kP, kI, kD, 0);
         DynamicTankDriveFollower follower = new DynamicTankDriveFollower(profile, motor, motor, encoder, encoder,
-                timer, kV, kA, kP, kI, kD, profile.totalTime() * 2);
+                timer, gains, profile.totalTime() * 2);
 
         follower.initialize();
         timer.value = profile.totalTime();
@@ -159,7 +161,13 @@ public class DynamicFollowerTest {
         assertThat(motor.value, not(closeTo(0.0, MathUtils.getFloatCompareThreshold())));
 
         follower.stop();
-        follower.setGains(1, 0, kP, 0, 0, 0);
+        gains.kV = 1;
+        gains.kA = 0;
+        gains.kP = kP;
+        gains.kI = 0;
+        gains.kD = 0;
+        gains.kDP = 0;
+        follower.setGains(gains);
         timer.value = 0;
         follower.initialize();
         timer.value = checkTime;
@@ -169,7 +177,13 @@ public class DynamicFollowerTest {
                 closeTo(profile.get(checkTime).getLeftVelocity(), MathUtils.getFloatCompareThreshold()));
 
         follower.stop();
-        follower.setGains(0, 1, kP, 0, 0, 0);
+        gains.kV = 0;
+        gains.kA = 1;
+        gains.kP = kP;
+        gains.kI = 0;
+        gains.kD = 0;
+        gains.kDP = 0;
+        follower.setGains(gains);
         timer.value = 0;
         encoder.value = 0;
         follower.initialize();

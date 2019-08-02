@@ -301,7 +301,7 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	}
 
 	public void setGains(TankDriveGains gains) {
-		setGains((Gains) gains);
+		super.setGains((Gains) gains);
 		kDP = gains.kDP;
 	}
 

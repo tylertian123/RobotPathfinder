@@ -260,7 +260,7 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	}
 
 	public void setGains(TankDriveGains gains) {
-		setGains((Gains) gains);
+		super.setGains((Gains) gains);
 		kDP = gains.kDP;
 	}
 

@@ -290,6 +290,12 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 		advancedDistSrc = false;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * Note that if the object passed in is an instance of {@link TankDriveGains},
+	 * this method will call {@link #setGains(TankDriveGains)}.
+	 */
 	@Override
 	public void setGains(Gains gains) {
 		if(gains instanceof TankDriveGains) {
@@ -300,11 +306,19 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 		}
 	}
 
+	/**
+	 * Sets the gains of the feedback control loop.
+	 * 
+	 * @param gains A {@link TankDriveGains} object containing the gains to set.
+	 */
 	public void setGains(TankDriveGains gains) {
 		super.setGains((Gains) gains);
 		kDP = gains.kDP;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public TankDriveGains getGains() {
 		return new TankDriveGains(kV, kA, kP, kI, kD, kDP);
@@ -320,6 +334,7 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	 * @param kI  The integral gain
 	 * @param kD  The derivative gain
 	 * @param kDP The directional-proportional gain
+	 * @deprecated Use {@link #setGains(TankDriveGains)} instead.
 	 */
 	@Deprecated
 	public void setGains(double kV, double kA, double kP, double kI, double kD, double kDP) {
@@ -338,6 +353,7 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	 * </p>
 	 * 
 	 * @param kDP The directional-proportional gain
+	 * @deprecated Use {@link #setGains(TankDriveGains)} instead.
 	 */
 	@Deprecated
 	public void setDP(double kDP) {
@@ -355,6 +371,7 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	 * </p>
 	 * 
 	 * @return The directional-proportional gain
+	 * @deprecated Use {@link #getGains()} instead.
 	 */
 	@Deprecated
 	public double getDP() {

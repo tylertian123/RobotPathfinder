@@ -15,7 +15,7 @@ import com.arctos6135.robotpathfinder.math.MathUtils;
  * {@link Follower}, {@link TankDriveFollower}s also have a fifth term&mdash;the
  * "directional-proportional" (DP) term. This term takes the error between the
  * angle the robot is supposed to be facing and the angle it's actually facing,
- * multiplies the error by a constant, and subtracts it from the left wheels
+ * multiplies the error by a constant, and subtracts it from the left wheel's
  * output while adding it to the right wheel's output in order to correct the
  * overall direction the robot is facing.
  * </p>
@@ -49,10 +49,35 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	protected double leftOutput, rightOutput, leftDeriv, rightDeriv;
 	protected TankDriveMoment lastMoment;
 
+	/**
+	 * A class that represents a set of gains for PIDVA control, specialized for
+	 * tank drive robots.
+	 * 
+	 * In addition to the 5 terms in {@link Gains}, this class also includes a fifth
+	 * term, the directional-proportional term. For more information, see the
+	 * documentation for {@link #kDP the field}.
+	 * 
+	 * @author Tyler Tian
+	 * @since 3.0.0
+	 * @see Gains
+	 */
 	public static class TankDriveGains extends Gains {
 
+		/**
+		 * The directional-proportional term.
+		 * 
+		 * This term is multiplied by the error between the angle the robot is supposed
+		 * to be facing and the angle it's actually facing, and is subtracted from the
+		 * left wheel's output and added to the right wheel's output in order to correct
+		 * the overall direction the robot is facing.
+		 * 
+		 * The default value for this term is 0.
+		 */
 		public double kDP = 0;
 
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public TankDriveGains clone() {
 			TankDriveGains gains = new TankDriveGains();
@@ -66,9 +91,22 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 			return gains;
 		}
 
+		/**
+		 * Constructs a new set of gains with each gain set to 0.
+		 */
 		public TankDriveGains() {
 		}
 
+		/**
+		 * Constructs a new set of gains with each gain set to the specified value.
+		 * 
+		 * @param kV  The {@link #kV velocity feedforward}
+		 * @param kA  The {@link #kA acceleration feedforward}
+		 * @param kP  The {@link #kP proportional feedback}
+		 * @param kI  The {@link #kI integral feedback}
+		 * @param kD  The {@link #kD derivative feedback}
+		 * @param kDP The {@link #kDP directional-proportional feedback}
+		 */
 		public TankDriveGains(double kV, double kA, double kP, double kI, double kD, double kDP) {
 			this.kV = kV;
 			this.kA = kA;
@@ -94,6 +132,9 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param timer  A {@link TimestampSource} to get the current time from
 	 * @param kV     The velocity feedforward
 	 * @param kA     The acceleration feedforward
+	 * @deprecated Use
+	 *             {@link #TankDriveFollower(Followable, Motor, Motor, TimestampSource, Gains)}
+	 *             instead.
 	 */
 	@Deprecated
 	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, TimestampSource timer,
@@ -127,6 +168,9 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param kP       The proportional gain
 	 * @param kI       The integral gain
 	 * @param kD       The derivative gain
+	 * @deprecated Use
+	 *             {@link #TankDriveFollower(Followable, Motor, Motor, PositionSource, PositionSource, TimestampSource, Gains)}
+	 *             instead.
 	 */
 	@Deprecated
 	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, PositionSource lDistSrc,
@@ -159,6 +203,9 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param kV     The velocity feedforward
 	 * @param kA     The acceleration feedforward
 	 * @param kDP    The directional-proportional gain
+	 * @deprecated Use
+	 *             {@link #TankDriveFollower(Followable, Motor, Motor, TimestampSource, DirectionSource, Gains)}
+	 *             instead.
 	 */
 	@Deprecated
 	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, TimestampSource timer,
@@ -193,6 +240,9 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param kI       The integral gain
 	 * @param kD       The derivative gain
 	 * @param kDP      The directional-proportional gain
+	 * @deprecated Use
+	 *             {@link #TankDriveFollower(Followable, Motor, Motor, PositionSource, PositionSource, TimestampSource, DirectionSource, Gains)}
+	 *             instead.
 	 */
 	@Deprecated
 	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, PositionSource lDistSrc,
@@ -237,6 +287,7 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 		this.timer = timer;
 		this.directionSrc = dirSrc;
 	}
+
 	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, PositionSource lDistSrc,
 			PositionSource rDistSrc, TimestampSource timer, DirectionSource dirSrc, Gains gains) {
 		setGains(gains);
@@ -249,26 +300,39 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 		this.directionSrc = dirSrc;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * Note that if the object passed in is an instance of {@link TankDriveGains},
+	 * this method will call {@link #setGains(TankDriveGains)}.
+	 */
 	@Override
 	public void setGains(Gains gains) {
-		if(gains instanceof TankDriveGains) {
+		if (gains instanceof TankDriveGains) {
 			setGains((TankDriveGains) gains);
-		}
-		else {
+		} else {
 			super.setGains(gains);
 		}
 	}
 
+	/**
+	 * Sets the gains of the feedback control loop.
+	 * 
+	 * @param gains A {@link TankDriveGains} object containing the gains to set.
+	 */
 	public void setGains(TankDriveGains gains) {
 		super.setGains((Gains) gains);
 		kDP = gains.kDP;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public TankDriveGains getGains() {
 		return new TankDriveGains(kV, kA, kP, kI, kD, kDP);
 	}
-	
+
 	/**
 	 * Sets the gains of the feedback loop.
 	 * 
@@ -278,6 +342,7 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param kI  The integral gain
 	 * @param kD  The derivative gain
 	 * @param kDP The directional-proportional gain
+	 * @deprecated Use {@link #setGains(TankDriveGains)} instead.
 	 */
 	@Deprecated
 	public void setGains(double kV, double kA, double kP, double kI, double kD, double kDP) {
@@ -296,6 +361,7 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * </p>
 	 * 
 	 * @param kDP The directional-proportional gain
+	 * @deprecated Use {@link #setGains(TankDriveGains)} instead.
 	 */
 	@Deprecated
 	public void setDP(double kDP) {
@@ -313,12 +379,13 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * </p>
 	 * 
 	 * @return The directional-proportional gain
+	 * @deprecated Use {@link #getGains()} instead.
 	 */
 	@Deprecated
 	public double getDP() {
 		return kDP;
 	}
-	
+
 	/**
 	 * Sets the timestamp source.
 	 * 
@@ -331,7 +398,7 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 		}
 		this.timer = timer;
 	}
-	
+
 	/**
 	 * Sets the motors.
 	 * 

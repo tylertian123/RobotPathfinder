@@ -102,7 +102,7 @@ abstract public class Follower<T extends Moment> {
 		public double kD = 0;
 
 		/**
-		 * {@inheritDoc}
+		 * Creates an identical copy of this {@link Gains} object.
 		 */
 		@Override
 		public Gains clone() {

@@ -12,6 +12,7 @@ import com.arctos6135.robotpathfinder.follower.DynamicFollowable;
 import com.arctos6135.robotpathfinder.follower.DynamicFollower;
 import com.arctos6135.robotpathfinder.follower.DynamicTankDriveFollower;
 import com.arctos6135.robotpathfinder.follower.TankDriveFollower.TankDriveGains;
+import com.arctos6135.robotpathfinder.follower.TankDriveFollower.TankDriveRobot;
 import com.arctos6135.robotpathfinder.math.MathUtils;
 import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalTankDriveProfile;
 import com.arctos6135.robotpathfinder.tests.TestHelper;
@@ -85,9 +86,9 @@ public class DynamicFollowerTest {
         FakeMotor motor = new FakeMotor();
         FakeEncoder encoder = new FakeEncoder();
         FakeGyro gyro = new FakeGyro();
-
-        DynamicFollower<TankDriveMoment> follower = new DynamicTankDriveFollower(followable, motor, motor, encoder,
-                encoder, timer, gyro, new TankDriveGains(), updateDelay);
+        TankDriveRobot robot = new TankDriveRobot(motor, motor, encoder, encoder, timer, gyro);
+        DynamicFollower<TankDriveMoment> follower = new DynamicTankDriveFollower(followable, robot,
+                new TankDriveGains(), updateDelay);
 
         follower.initialize();
         follower.run();
@@ -152,8 +153,9 @@ public class DynamicFollowerTest {
         FakeMotor motor = new FakeMotor();
         FakeEncoder encoder = new FakeEncoder();
         TankDriveGains gains = new TankDriveGains(kV, kA, kP, kI, kD, 0);
-        DynamicTankDriveFollower follower = new DynamicTankDriveFollower(profile, motor, motor, encoder, encoder,
-                timer, gains, profile.totalTime() * 2);
+        TankDriveRobot robot = new TankDriveRobot(motor, motor, encoder, encoder, timer, null);
+        DynamicTankDriveFollower follower = new DynamicTankDriveFollower(profile, robot, gains,
+                profile.totalTime() * 2);
 
         follower.initialize();
         timer.value = profile.totalTime();

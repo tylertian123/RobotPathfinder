@@ -2,6 +2,7 @@ package com.arctos6135.robotpathfinder.follower;
 
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
 import com.arctos6135.robotpathfinder.follower.TankDriveFollower.TankDriveGains;
+import com.arctos6135.robotpathfinder.follower.TankDriveFollower.TankDriveRobot;
 import com.arctos6135.robotpathfinder.math.MathUtils;
 
 /**
@@ -233,61 +234,32 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 		advancedDistSrc = false;
 	}
 
-	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
-			AdvancedPositionSource lDistSrc, AdvancedPositionSource rDistSrc, TimestampSource timer, Gains gains, 
+	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, TankDriveRobot robot, Gains gains,
 			double updateDelay) {
 		setGains(gains);
 		this.target = target;
-		this.lMotor = lMotor;
-		this.rMotor = rMotor;
-		this.lDistSrc = lDistSrc;
-		this.rDistSrc = rDistSrc;
-		this.timer = timer;
-		this.updateDelay = updateDelay;
-		advancedDistSrc = true;
-	}
 
-	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
-			AdvancedPositionSource lDistSrc, AdvancedPositionSource rDistSrc, TimestampSource timer,
-			DirectionSource dirSrc, Gains gains, double updateDelay) {
-		setGains(gains);
-		this.target = target;
-		this.lMotor = lMotor;
-		this.rMotor = rMotor;
-		this.lDistSrc = lDistSrc;
-		this.rDistSrc = rDistSrc;
-		this.timer = timer;
-		this.directionSrc = dirSrc;
+		// Verify motors are nonnull
+		if (robot.leftMotor == null || robot.rightMotor == null) {
+			throw new IllegalArgumentException("Motors cannot be null!");
+		}
+		// Verify timer is nonnull
+		if (robot.timestampSource == null) {
+			throw new IllegalArgumentException("Timestamp source cannot be null!");
+		}
+		// Verify position sources are nonnull
+		if (robot.leftPositionSource == null || robot.rightPositionSource == null) {
+			throw new IllegalArgumentException("Position sources cannot be null!");
+		}
+		lMotor = robot.leftMotor;
+		rMotor = robot.rightMotor;
+		lDistSrc = robot.leftPositionSource;
+		rDistSrc = robot.rightPositionSource;
+		timer = robot.timestampSource;
+		directionSrc = robot.directionSource;
 		this.updateDelay = updateDelay;
-		advancedDistSrc = true;
-	}
 
-	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
-			PositionSource lDistSrc, PositionSource rDistSrc, TimestampSource timer, Gains gains, double updateDelay) {
-		setGains(gains);
-		this.target = target;
-		this.lMotor = lMotor;
-		this.rMotor = rMotor;
-		this.lDistSrc = lDistSrc;
-		this.rDistSrc = rDistSrc;
-		this.timer = timer;
-		this.updateDelay = updateDelay;
-		advancedDistSrc = false;
-	}
-
-	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
-			PositionSource lDistSrc, PositionSource rDistSrc, TimestampSource timer, DirectionSource dirSrc, Gains gains,
-			double updateDelay) {
-		setGains(gains);
-		this.target = target;
-		this.lMotor = lMotor;
-		this.rMotor = rMotor;
-		this.lDistSrc = lDistSrc;
-		this.rDistSrc = rDistSrc;
-		this.timer = timer;
-		this.directionSrc = dirSrc;
-		this.updateDelay = updateDelay;
-		advancedDistSrc = false;
+		advancedDistSrc = (lDistSrc instanceof AdvancedPositionSource) && (rDistSrc instanceof AdvancedPositionSource);
 	}
 
 	/**
@@ -298,10 +270,9 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	 */
 	@Override
 	public void setGains(Gains gains) {
-		if(gains instanceof TankDriveGains) {
+		if (gains instanceof TankDriveGains) {
 			setGains((TankDriveGains) gains);
-		}
-		else {
+		} else {
 			super.setGains(gains);
 		}
 	}
@@ -324,7 +295,6 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 		return new TankDriveGains(kV, kA, kP, kI, kD, kDP);
 	}
 
-	
 	/**
 	 * Sets the gains of the feedback loop.
 	 * 

@@ -397,7 +397,9 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * 
 	 * @param timer The timestamp source
 	 * @throws IllegalStateException If the follower is running
+	 * @deprecated This method should not be used. Create a new object instead.
 	 */
+	@Deprecated
 	public void setTimestampSource(TimestampSource timer) {
 		if (running) {
 			throw new IllegalStateException("Timestamp Source cannot be changed when follower is running");
@@ -411,7 +413,9 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param lMotor The left motor
 	 * @param rMotor The right motor
 	 * @throws IllegalStateException If the follower is running
+	 * @deprecated This method should not be used. Create a new object instead.
 	 */
+	@Deprecated
 	public void setMotors(Motor lMotor, Motor rMotor) {
 		if (running) {
 			throw new IllegalStateException("Motors cannot be changed when follower is running");
@@ -426,7 +430,9 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param lDistSrc The left position source
 	 * @param rDistSrc The right position source
 	 * @throws IllegalStateException If the follower is running
+	 * @deprecated This method should not be used. Create a new object instead.
 	 */
+	@Deprecated
 	public void setDistanceSources(PositionSource lDistSrc, PositionSource rDistSrc) {
 		if (running) {
 			throw new IllegalStateException("Position Sources cannot be changed when follower is running");

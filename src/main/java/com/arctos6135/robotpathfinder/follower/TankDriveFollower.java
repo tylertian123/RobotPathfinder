@@ -162,8 +162,7 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param timer  A {@link TimestampSource} to get the current time from
 	 * @param kV     The velocity feedforward
 	 * @param kA     The acceleration feedforward
-	 * @deprecated Use
-	 *             {@link #TankDriveFollower(Followable, Motor, Motor, TimestampSource, Gains)}
+	 * @deprecated Use {@link #TankDriveFollower(Followable, TankDriveRobot, Gains)}
 	 *             instead.
 	 */
 	@Deprecated
@@ -198,8 +197,7 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param kP       The proportional gain
 	 * @param kI       The integral gain
 	 * @param kD       The derivative gain
-	 * @deprecated Use
-	 *             {@link #TankDriveFollower(Followable, Motor, Motor, PositionSource, PositionSource, TimestampSource, Gains)}
+	 * @deprecated Use {@link #TankDriveFollower(Followable, TankDriveRobot, Gains)}
 	 *             instead.
 	 */
 	@Deprecated
@@ -233,8 +231,7 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param kV     The velocity feedforward
 	 * @param kA     The acceleration feedforward
 	 * @param kDP    The directional-proportional gain
-	 * @deprecated Use
-	 *             {@link #TankDriveFollower(Followable, Motor, Motor, TimestampSource, DirectionSource, Gains)}
+	 * @deprecated Use {@link #TankDriveFollower(Followable, TankDriveRobot, Gains)}
 	 *             instead.
 	 */
 	@Deprecated
@@ -270,8 +267,7 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param kI       The integral gain
 	 * @param kD       The derivative gain
 	 * @param kDP      The directional-proportional gain
-	 * @deprecated Use
-	 *             {@link #TankDriveFollower(Followable, Motor, Motor, PositionSource, PositionSource, TimestampSource, DirectionSource, Gains)}
+	 * @deprecated Use {@link #TankDriveFollower(Followable, TankDriveRobot, Gains)}
 	 *             instead.
 	 */
 	@Deprecated
@@ -288,53 +284,33 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 		this.directionSrc = dirSrc;
 	}
 
-	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, TimestampSource timer,
-			Gains gains) {
+	public TankDriveFollower(Followable<TankDriveMoment> target, TankDriveRobot robot, Gains gains) {
 		setGains(gains);
 		this.target = target;
-		this.lMotor = lMotor;
-		this.rMotor = rMotor;
-		this.timer = timer;
-	}
 
-	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, PositionSource lDistSrc,
-			PositionSource rDistSrc, TimestampSource timer, Gains gains) {
-		setGains(gains);
-		this.target = target;
-		this.lMotor = lMotor;
-		this.rMotor = rMotor;
-		this.lDistSrc = lDistSrc;
-		this.rDistSrc = rDistSrc;
-		this.timer = timer;
-	}
-
-	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, TimestampSource timer,
-			DirectionSource dirSrc, Gains gains) {
-		setGains(gains);
-		this.target = target;
-		this.lMotor = lMotor;
-		this.rMotor = rMotor;
-		this.timer = timer;
-		this.directionSrc = dirSrc;
-	}
-
-	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, PositionSource lDistSrc,
-			PositionSource rDistSrc, TimestampSource timer, DirectionSource dirSrc, Gains gains) {
-		setGains(gains);
-		this.target = target;
-		this.lMotor = lMotor;
-		this.rMotor = rMotor;
-		this.lDistSrc = lDistSrc;
-		this.rDistSrc = rDistSrc;
-		this.timer = timer;
-		this.directionSrc = dirSrc;
+		// Verify motors are nonnull
+		if (robot.leftMotor == null || robot.rightMotor == null) {
+			throw new IllegalArgumentException("Motors cannot be null!");
+		}
+		// Verify timer is nonnull
+		if (robot.timestampSource == null) {
+			throw new IllegalArgumentException("Timestamp source cannot be null!");
+		}
+		lMotor = robot.leftMotor;
+		rMotor = robot.rightMotor;
+		lDistSrc = robot.leftPositionSource;
+		rDistSrc = robot.rightPositionSource;
+		timer = robot.timestampSource;
+		directionSrc = robot.directionSource;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 * 
+	 * <p>
 	 * Note that if the object passed in is an instance of {@link TankDriveGains},
 	 * this method will call {@link #setGains(TankDriveGains)}.
+	 * </p>
 	 */
 	@Override
 	public void setGains(Gains gains) {

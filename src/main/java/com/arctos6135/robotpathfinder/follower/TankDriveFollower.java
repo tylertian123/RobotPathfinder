@@ -117,6 +117,36 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 		}
 	}
 
+	public static class TankDriveRobot implements Cloneable {
+
+		public Motor leftMotor, rightMotor;
+
+		public PositionSource leftPositionSource, rightPositionSource;
+
+		public TimestampSource timestampSource;
+
+		public DirectionSource directionSource;
+
+		@Override
+		public TankDriveRobot clone() {
+			return new TankDriveRobot(leftMotor, rightMotor, leftPositionSource, rightPositionSource, timestampSource,
+					directionSource);
+		}
+
+		public TankDriveRobot() {
+		}
+
+		public TankDriveRobot(Motor lMotor, Motor rMotor, PositionSource lPosSrc, PositionSource rPosSrc,
+				TimestampSource timeSrc, DirectionSource dirSrc) {
+			leftMotor = lMotor;
+			rightMotor = rMotor;
+			leftPositionSource = lPosSrc;
+			rightPositionSource = rPosSrc;
+			timestampSource = timeSrc;
+			directionSource = dirSrc;
+		}
+	}
+
 	/**
 	 * Constructs a new tank drive follower only using the feedforward terms (VA).
 	 * <p>

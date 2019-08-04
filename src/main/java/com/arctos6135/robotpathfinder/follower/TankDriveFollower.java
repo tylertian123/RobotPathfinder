@@ -52,10 +52,11 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	/**
 	 * A class that represents a set of gains for PIDVA control, specialized for
 	 * tank drive robots.
-	 * 
+	 * <p>
 	 * In addition to the 5 terms in {@link Gains}, this class also includes a fifth
 	 * term, the directional-proportional term. For more information, see the
 	 * documentation for {@link #kDP the field}.
+	 * </p>
 	 * 
 	 * @author Tyler Tian
 	 * @since 3.0.0
@@ -65,13 +66,15 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 
 		/**
 		 * The directional-proportional term.
-		 * 
+		 * <p>
 		 * This term is multiplied by the error between the angle the robot is supposed
 		 * to be facing and the angle it's actually facing, and is subtracted from the
 		 * left wheel's output and added to the right wheel's output in order to correct
 		 * the overall direction the robot is facing.
-		 * 
+		 * </p>
+		 * <p>
 		 * The default value for this term is 0.
+		 * </p>
 		 */
 		public double kDP = 0;
 
@@ -117,25 +120,88 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 		}
 	}
 
+	/**
+	 * A class that represents a tank drive robot, including motors and sensors.
+	 * 
+	 * @author Tyler Tian
+	 * @since 3.0.0
+	 */
 	public static class TankDriveRobot implements Cloneable {
 
-		public Motor leftMotor, rightMotor;
+		/**
+		 * The motor that controls the left side's wheels on the robot.
+		 * 
+		 * @see Motor
+		 * @see Motor#set(double)
+		 */
+		public Motor leftMotor;
 
-		public PositionSource leftPositionSource, rightPositionSource;
+		/**
+		 * The motor that controls the right side's wheels on the robot.
+		 * 
+		 * @see Motor
+		 * @see Motor#set(double)
+		 */
+		public Motor rightMotor;
 
+		/**
+		 * A {@link PositionSource} for the left side's wheels on the robot.
+		 * 
+		 * @see PositionSource
+		 * @see PositionSource#getPosition()
+		 */
+		public PositionSource leftPositionSource;
+
+		/**
+		 * A {@link PositionSource} for the right side's wheels on the robot.
+		 * 
+		 * @see PositionSource
+		 * @see PositionSource#getPosition()
+		 */
+		public PositionSource rightPositionSource;
+
+		/**
+		 * A {@link TimestampSource} for the robot to get time data from.
+		 * 
+		 * @see TimestampSource
+		 * @see TimestampSource#getTimestamp()
+		 */
 		public TimestampSource timestampSource;
 
+		/**
+		 * A {@link DirectionSource} for the robot to get directional data from. Usually
+		 * optional.
+		 * 
+		 * @see DirectionSource
+		 * @see DirectionSource#getDirection()
+		 */
 		public DirectionSource directionSource;
 
+		/**
+		 * Creates an identical copy of this {@link TankDriveRobot} object.
+		 */
 		@Override
 		public TankDriveRobot clone() {
 			return new TankDriveRobot(leftMotor, rightMotor, leftPositionSource, rightPositionSource, timestampSource,
 					directionSource);
 		}
 
+		/**
+		 * Constructs a new object with everything set to {@code null}.
+		 */
 		public TankDriveRobot() {
 		}
 
+		/**
+		 * Constructs a new object with the specified values.
+		 * 
+		 * @param lMotor  The {@link #leftMotor left motor}
+		 * @param rMotor  The {@link #rightMotor right motor}
+		 * @param lPosSrc The {@link #leftPositionSource left position source}
+		 * @param rPosSrc The {@link #rightPositionSource right position source}
+		 * @param timeSrc The {@link #timestampSource timestamp source}
+		 * @param dirSrc  The {@link #directionSource direction source}
+		 */
 		public TankDriveRobot(Motor lMotor, Motor rMotor, PositionSource lPosSrc, PositionSource rPosSrc,
 				TimestampSource timeSrc, DirectionSource dirSrc) {
 			leftMotor = lMotor;

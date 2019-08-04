@@ -52,52 +52,62 @@ abstract public class Follower<T extends Moment> {
 
 		/**
 		 * The velocity feedforward value.
-		 * 
+		 * <p>
 		 * This value is multiplied by the desired (setpoint) velocity, and then added
 		 * to the output at each point in time.
-		 * 
+		 * </p>
+		 * <p>
 		 * The default value for this term is 0.
+		 * </p>
 		 */
 		public double kV = 0;
 
 		/**
 		 * The acceleration feedforward value.
-		 * 
+		 * <p>
 		 * This value is multiplied by the desired (setpoint) acceleration, and then
 		 * added to the output at each point in time.
-		 * 
+		 * </p>
+		 * <p>
 		 * The default value for this term is 0.
+		 * </p>
 		 */
 		public double kA = 0;
 
 		/**
 		 * The proportional feedback value.
-		 * 
+		 * <p>
 		 * This value is multiplied by the error in position (the difference between the
 		 * setpoint's position and the current position), and then added to the output
 		 * at each point in time.
-		 * 
+		 * </p>
+		 * <p>
 		 * The default value for this term is 0.
+		 * </p>
 		 */
 		public double kP = 0;
 
 		/**
 		 * The integral feedback value.
-		 * 
+		 * <p>
 		 * This value is multiplied by the integral of the error (the error accumulated
 		 * through time), and then added to the output at each point in time.
-		 * 
+		 * </p>
+		 * <p>
 		 * The default value for this term is 0.
+		 * </p>
 		 */
 		public double kI = 0;
 
 		/**
 		 * The derivative feedback value.
-		 * 
+		 * <p>
 		 * This value is multiplied by the derivative of the error (the rate of change
 		 * of the error), and then added to the output at each point in time.
-		 * 
+		 * </p>
+		 * <p>
 		 * The default value for this term is 0.
+		 * </p>
 		 */
 		public double kD = 0;
 

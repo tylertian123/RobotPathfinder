@@ -24,8 +24,8 @@ import com.arctos6135.robotpathfinder.math.MathUtils;
  * </p>
  * 
  * @author Tyler Tian
- * @since 3.0.0
  * @see Follower
+ * @since 3.0.0
  */
 public class TankDriveFollower extends Follower<TankDriveMoment> {
 
@@ -59,8 +59,8 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * </p>
 	 * 
 	 * @author Tyler Tian
-	 * @since 3.0.0
 	 * @see Gains
+	 * @since 3.0.0
 	 */
 	public static class TankDriveGains extends Gains {
 

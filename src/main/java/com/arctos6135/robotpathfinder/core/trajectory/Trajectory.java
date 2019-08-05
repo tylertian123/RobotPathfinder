@@ -58,12 +58,12 @@ import com.arctos6135.robotpathfinder.follower.Followable;
  * video on motion profiling.
  * </p>
  * 
+ * @author Tyler Tian
  * @param <T> The type of moment used by this {@link Trajectory}; must be a
  *            subclass of {@link Moment}
- * @author Tyler Tian
- * @since 3.0.0
  * @see BasicTrajectory
  * @see TankDriveTrajectory
+ * @since 3.0.0
  */
 public abstract class Trajectory<T extends Moment> extends JNIObject implements Followable<T> {
 

@@ -26,8 +26,8 @@ package com.arctos6135.robotpathfinder.core.trajectory;
  * </p>
  * 
  * @author Tyler Tian
- * @since 3.0.0
  * @see Moment
+ * @since 3.0.0
  */
 public class BasicMoment extends Moment {
 

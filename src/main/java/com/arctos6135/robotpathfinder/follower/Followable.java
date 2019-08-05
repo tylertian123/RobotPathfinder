@@ -16,11 +16,11 @@ import com.arctos6135.robotpathfinder.core.trajectory.Moment;
  * {@link Moment}.
  * </p>
  * 
+ * @author Tyler Tian
  * @param <T> The type of moment used by this {@link Followable}; must be a
  *            subclass of {@link Moment}
- * @author Tyler Tian
- * @since 3.0.0
  * @see DynamicFollowable
+ * @since 3.0.0
  */
 public interface Followable<T extends Moment> {
     /**

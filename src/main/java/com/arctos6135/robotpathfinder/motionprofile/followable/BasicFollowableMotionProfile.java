@@ -12,11 +12,11 @@ import com.arctos6135.robotpathfinder.motionprofile.MotionProfile;
  * {@link BasicMoment}s for a given time.
  * </p>
  * 
- * @param <T> The type of {@link MotionProfile} used
  * @author Tyler Tian
- * @since 3.0.0
+ * @param <T> The type of {@link MotionProfile} used
  * @see com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalBasicProfile
  *      TrapezoidalBasicProfile
+ * @since 3.0.0
  */
 public abstract class BasicFollowableMotionProfile<T extends MotionProfile>
         extends FollowableMotionProfile<BasicMoment> {

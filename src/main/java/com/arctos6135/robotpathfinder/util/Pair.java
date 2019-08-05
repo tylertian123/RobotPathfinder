@@ -3,10 +3,9 @@ package com.arctos6135.robotpathfinder.util;
 /**
  * A class that holds a pair of values.
  *
+ * @author Tyler Tian
  * @param <T> The type of the first element
  * @param <U> The type of the second element
- * 
- * @author Tyler Tian
  * @since 3.0.0
  */
 public class Pair<T, U> {

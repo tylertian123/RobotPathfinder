@@ -55,8 +55,8 @@ import com.arctos6135.robotpathfinder.core.lifecycle.GlobalLifeCycleManager;
  *           // already been freed
  * </pre>
  * 
- * @see BasicTrajectory
  * @author Tyler Tian
+ * @see BasicTrajectory
  * @since 3.0.0
  */
 public class TankDriveTrajectory extends Trajectory<TankDriveMoment> {

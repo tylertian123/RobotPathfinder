@@ -27,11 +27,11 @@ import com.arctos6135.robotpathfinder.core.trajectory.Moment;
  * call {@link #stop()}.
  * </p>
  * 
+ * @author Tyler Tian
  * @param <T> The type of moment used by this {@link Follower}; must be a
  *            subclass of {@link Moment}
- * @author Tyler Tian
- * @since 3.0.0
  * @see Followable
+ * @since 3.0.0
  */
 abstract public class Follower<T extends Moment> {
 
@@ -493,9 +493,9 @@ abstract public class Follower<T extends Moment> {
 	 * </p>
 	 * 
 	 * @author Tyler Tian
-	 * @since 3.0.0
 	 * @see PositionSource
 	 * @see DynamicFollower
+	 * @since 3.0.0
 	 */
 	public interface AdvancedPositionSource extends PositionSource {
 		/**

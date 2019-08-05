@@ -12,12 +12,12 @@ package com.arctos6135.robotpathfinder.motionprofile;
  * method of the internal motion profiles.
  * </p>
  * 
+ * @author Tyler Tian
  * @param <T> The type of {@link MotionProfile} used; must be a subclass of
  *            {@link DynamicMotionProfile}
- * @author Tyler Tian
- * @since 3.0.0
  * @see DualMotionProfile
  * @see DynamicMotionProfile
+ * @since 3.0.0
  */
 public class DynamicDualMotionProfile<T extends DynamicMotionProfile> extends DualMotionProfile<T> {
 

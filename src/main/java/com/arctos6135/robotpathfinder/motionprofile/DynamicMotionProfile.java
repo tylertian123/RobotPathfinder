@@ -13,8 +13,8 @@ package com.arctos6135.robotpathfinder.motionprofile;
  * </p>
  * 
  * @author Tyler Tian
- * @since 3.0.0
  * @see MotionProfile
+ * @since 3.0.0
  */
 public interface DynamicMotionProfile extends MotionProfile {
     /**

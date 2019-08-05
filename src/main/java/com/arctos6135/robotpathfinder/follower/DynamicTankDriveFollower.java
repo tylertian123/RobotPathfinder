@@ -34,9 +34,9 @@ import com.arctos6135.robotpathfinder.math.MathUtils;
  * </p>
  * 
  * @author Tyler Tian
- * @since 3.0.0
  * @see TankDriveFollower
  * @see DynamicFollowable
+ * @since 3.0.0
  */
 public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 

@@ -1,6 +1,8 @@
 package com.arctos6135.robotpathfinder.follower;
 
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
+import com.arctos6135.robotpathfinder.follower.TankDriveFollower.TankDriveGains;
+import com.arctos6135.robotpathfinder.follower.TankDriveFollower.TankDriveRobot;
 import com.arctos6135.robotpathfinder.math.MathUtils;
 
 /**
@@ -96,7 +98,11 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	 * @param kI          The integral gain
 	 * @param kD          The derivative gain
 	 * @param updateDelay The duration between two updates
+	 * @deprecated Use
+	 *             {@link #DynamicTankDriveFollower(DynamicFollowable, TankDriveRobot, Gains, double)}
+	 *             instead.
 	 */
+	@Deprecated
 	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
 			AdvancedPositionSource lDistSrc, AdvancedPositionSource rDistSrc, TimestampSource timer, double kV,
 			double kA, double kP, double kI, double kD, double updateDelay) {
@@ -130,7 +136,11 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	 * @param kD          The derivative gain
 	 * @param kDP         The directional-proportional gain
 	 * @param updateDelay The duration between two updates
+	 * @deprecated Use
+	 *             {@link #DynamicTankDriveFollower(DynamicFollowable, TankDriveRobot, Gains, double)}
+	 *             instead.
 	 */
+	@Deprecated
 	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
 			AdvancedPositionSource lDistSrc, AdvancedPositionSource rDistSrc, TimestampSource timer,
 			DirectionSource dirSrc, double kV, double kA, double kP, double kI, double kD, double kDP,
@@ -173,7 +183,11 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	 * @param kI          The integral gain
 	 * @param kD          The derivative gain
 	 * @param updateDelay The duration between two updates
+	 * @deprecated Use
+	 *             {@link #DynamicTankDriveFollower(DynamicFollowable, TankDriveRobot, Gains, double)}
+	 *             instead.
 	 */
+	@Deprecated
 	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
 			PositionSource lDistSrc, PositionSource rDistSrc, TimestampSource timer, double kV, double kA, double kP,
 			double kI, double kD, double updateDelay) {
@@ -212,7 +226,11 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	 * @param kD          The derivative gain
 	 * @param kDP         The directional-proportional gain
 	 * @param updateDelay The duration between two updates
+	 * @deprecated Use
+	 *             {@link #DynamicTankDriveFollower(DynamicFollowable, TankDriveRobot, Gains, double)}
+	 *             instead.
 	 */
+	@Deprecated
 	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
 			PositionSource lDistSrc, PositionSource rDistSrc, TimestampSource timer, DirectionSource dirSrc, double kV,
 			double kA, double kP, double kI, double kD, double kDP, double updateDelay) {
@@ -229,6 +247,120 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	}
 
 	/**
+	 * Constructs a new dynamic tank drive follower.
+	 * <p>
+	 * Note that ideally {@link TankDriveRobot#leftPositionSource
+	 * robot.leftPositionSource} and {@link TankDriveRobot#rightPositionSource
+	 * robot.rightPositionSource} should be instances of
+	 * {@link AdvancedPositionSource}, since updating the target followable often
+	 * requires knowing the current velocity and acceleration in addition to
+	 * position. However, if they're not instances of
+	 * {@link AdvancedPositionSource}, this follower will attempt to derive the
+	 * velocity and acceleration manually from the position data, which may not be
+	 * as efficient.
+	 * </p>
+	 * <p>
+	 * If any of {@link TankDriveRobot#leftMotor robot.leftMotor},
+	 * {@link TankDriveRobot#rightMotor robot.rightMotor},
+	 * {@link TankDriveRobot#leftPositionSource robot.leftPositionSource}
+	 * {@link TankDriveRobot#rightPositionSource robot.rightPositionSource}, or
+	 * {@link TankDriveRobot#timestampSource robot.timestampSource} is {@code null},
+	 * this constructor will throw an {@link IllegalArgumentException}.
+	 * </p>
+	 * <p>
+	 * If {@link TankDriveRobot#directionSource robot.directionSource} is
+	 * {@code null}, the directional-proportional term will not be used.
+	 * </p>
+	 * <p>
+	 * If {@code updateDelay} is {@code NaN}, the target will never be updated.
+	 * </p>
+	 * 
+	 * @param target      The target {@link Followable} to follow
+	 * @param robot       A {@link TankDriveRobot} object containing the necessary
+	 *                    motors and sensors
+	 * @param gains       A set of all the gains used in the control loop
+	 * @param updateDelay The duration between two updates of the target; set to
+	 *                    {@code NaN} to disable updating
+	 */
+	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, TankDriveRobot robot, Gains gains,
+			double updateDelay) {
+		setGains(gains);
+		this.target = target;
+
+		// Verify motors are nonnull
+		if (robot.leftMotor == null || robot.rightMotor == null) {
+			throw new IllegalArgumentException("Motors cannot be null!");
+		}
+		// Verify timer is nonnull
+		if (robot.timestampSource == null) {
+			throw new IllegalArgumentException("Timestamp source cannot be null!");
+		}
+		// Verify position sources are nonnull
+		if (robot.leftPositionSource == null || robot.rightPositionSource == null) {
+			throw new IllegalArgumentException("Position sources cannot be null!");
+		}
+		lMotor = robot.leftMotor;
+		rMotor = robot.rightMotor;
+		lDistSrc = robot.leftPositionSource;
+		rDistSrc = robot.rightPositionSource;
+		timer = robot.timestampSource;
+		directionSrc = robot.directionSource;
+		this.updateDelay = updateDelay;
+
+		advancedDistSrc = (lDistSrc instanceof AdvancedPositionSource) && (rDistSrc instanceof AdvancedPositionSource);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * Note that if the object passed in is an instance of {@link TankDriveGains},
+	 * this method will call {@link #setGains(TankDriveGains)}.
+	 */
+	@Override
+	public void setGains(Gains gains) {
+		if (gains instanceof TankDriveGains) {
+			setGains((TankDriveGains) gains);
+		} else {
+			super.setGains(gains);
+		}
+	}
+
+	/**
+	 * Sets the gains of the feedback control loop.
+	 * 
+	 * @param gains A {@link TankDriveGains} object containing the gains to set.
+	 */
+	public void setGains(TankDriveGains gains) {
+		super.setGains((Gains) gains);
+		kDP = gains.kDP;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public TankDriveGains getGains() {
+		return new TankDriveGains(kV, kA, kP, kI, kD, kDP);
+	}
+
+	/**
+	 * Sets the gains of the feedback loop.
+	 * 
+	 * @param kV  The velocity feedforward
+	 * @param kA  The acceleration feedforward
+	 * @param kP  The proportional gain
+	 * @param kI  The integral gain
+	 * @param kD  The derivative gain
+	 * @param kDP The directional-proportional gain
+	 * @deprecated Use {@link #setGains(TankDriveGains)} instead.
+	 */
+	@Deprecated
+	public void setGains(double kV, double kA, double kP, double kI, double kD, double kDP) {
+		setGains(kV, kA, kP, kI, kD);
+		setDP(kDP);
+	}
+
+	/**
 	 * Sets the directional-proportional gain of the feedback loop.
 	 * <p>
 	 * This term takes the error between the angle the robot is supposed to be
@@ -239,7 +371,9 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	 * </p>
 	 * 
 	 * @param kDP The directional-proportional gain
+	 * @deprecated Use {@link #setGains(TankDriveGains)} instead.
 	 */
+	@Deprecated
 	public void setDP(double kDP) {
 		this.kDP = kDP;
 	}
@@ -255,24 +389,11 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	 * </p>
 	 * 
 	 * @return The directional-proportional gain
+	 * @deprecated Use {@link #getGains()} instead.
 	 */
+	@Deprecated
 	public double getDP() {
 		return kDP;
-	}
-
-	/**
-	 * Sets the gains of the feedback loop.
-	 * 
-	 * @param kV  The velocity feedforward
-	 * @param kA  The acceleration feedforward
-	 * @param kP  The proportional gain
-	 * @param kI  The integral gain
-	 * @param kD  The derivative gain
-	 * @param kDP The directional-proportional gain
-	 */
-	public void setGains(double kV, double kA, double kP, double kI, double kD, double kDP) {
-		setGains(kV, kA, kP, kI, kD);
-		setDP(kDP);
 	}
 
 	/**
@@ -280,7 +401,9 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	 * 
 	 * @param timer The timestamp source
 	 * @throws IllegalStateException If the follower is running
+	 * @deprecated This method should not be used. Create a new object instead.
 	 */
+	@Deprecated
 	public void setTimestampSource(TimestampSource timer) {
 		if (running) {
 			throw new IllegalStateException("Timestamp Source cannot be changed when follower is running");
@@ -294,7 +417,9 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	 * @param lMotor The left motor
 	 * @param rMotor The right motor
 	 * @throws IllegalStateException If the follower is running
+	 * @deprecated This method should not be used. Create a new object instead.
 	 */
+	@Deprecated
 	public void setMotors(Motor lMotor, Motor rMotor) {
 		if (running) {
 			throw new IllegalStateException("Motors cannot be changed when follower is running");
@@ -309,7 +434,9 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	 * @param lDistSrc The left position source
 	 * @param rDistSrc The right position source
 	 * @throws IllegalStateException If the follower is running
+	 * @deprecated This method should not be used. Create a new object instead.
 	 */
+	@Deprecated
 	public void setDistanceSources(AdvancedPositionSource lDistSrc, AdvancedPositionSource rDistSrc) {
 		if (running) {
 			throw new IllegalStateException("Position Sources cannot be changed when follower is running");

@@ -13,7 +13,8 @@ import com.arctos6135.robotpathfinder.core.trajectory.Moment;
  * They do so by using both feedback and feedforward control, with a system that
  * consists of 5 parts: proportional, integral and derivative gains on the
  * position error, and velocity and acceleration feedforward (sometimes known as
- * PIDVA control).
+ * PIDVA control). For more information regarding the gains, see the
+ * documentation for the fields of {@link Gains}.
  * </p>
  * <p>
  * To use a follower, one first must provide values for the aforementioned
@@ -40,6 +41,114 @@ abstract public class Follower<T extends Moment> {
 
 	protected boolean running = false;
 	protected boolean finished = false;
+
+	/**
+	 * A class that represents a set of gains for PIDVA control.
+	 * 
+	 * @author Tyler Tian
+	 * @since 3.0.0
+	 */
+	public static class Gains implements Cloneable {
+
+		/**
+		 * The velocity feedforward value.
+		 * <p>
+		 * This value is multiplied by the desired (setpoint) velocity, and then added
+		 * to the output at each point in time.
+		 * </p>
+		 * <p>
+		 * The default value for this term is 0.
+		 * </p>
+		 */
+		public double kV = 0;
+
+		/**
+		 * The acceleration feedforward value.
+		 * <p>
+		 * This value is multiplied by the desired (setpoint) acceleration, and then
+		 * added to the output at each point in time.
+		 * </p>
+		 * <p>
+		 * The default value for this term is 0.
+		 * </p>
+		 */
+		public double kA = 0;
+
+		/**
+		 * The proportional feedback value.
+		 * <p>
+		 * This value is multiplied by the error in position (the difference between the
+		 * setpoint's position and the current position), and then added to the output
+		 * at each point in time.
+		 * </p>
+		 * <p>
+		 * The default value for this term is 0.
+		 * </p>
+		 */
+		public double kP = 0;
+
+		/**
+		 * The integral feedback value.
+		 * <p>
+		 * This value is multiplied by the integral of the error (the error accumulated
+		 * through time), and then added to the output at each point in time.
+		 * </p>
+		 * <p>
+		 * The default value for this term is 0.
+		 * </p>
+		 */
+		public double kI = 0;
+
+		/**
+		 * The derivative feedback value.
+		 * <p>
+		 * This value is multiplied by the derivative of the error (the rate of change
+		 * of the error), and then added to the output at each point in time.
+		 * </p>
+		 * <p>
+		 * The default value for this term is 0.
+		 * </p>
+		 */
+		public double kD = 0;
+
+		/**
+		 * Creates an identical copy of this {@link Gains} object.
+		 */
+		@Override
+		public Gains clone() {
+			Gains gains = new Gains();
+			gains.kV = kV;
+			gains.kA = kA;
+			gains.kP = kP;
+			gains.kI = kI;
+			gains.kD = kD;
+
+			return gains;
+		}
+
+		/**
+		 * Constructs a new set of gains with each gain set to 0.
+		 */
+		public Gains() {
+		}
+
+		/**
+		 * Constructs a new set of gains with each gain set to the specified value.
+		 * 
+		 * @param kV The {@link #kV velocity feedforward}
+		 * @param kA The {@link #kA acceleration feedforward}
+		 * @param kP The {@link #kP proportional feedback}
+		 * @param kI The {@link #kI integral feedback}
+		 * @param kD The {@link #kD derivative feedback}
+		 */
+		public Gains(double kV, double kA, double kP, double kI, double kD) {
+			this.kV = kV;
+			this.kA = kA;
+			this.kP = kP;
+			this.kI = kI;
+			this.kD = kD;
+		}
+	}
 
 	/**
 	 * This method must be implemented by any concrete follower to perform any
@@ -175,12 +284,36 @@ abstract public class Follower<T extends Moment> {
 	/**
 	 * Sets the gains of the feedback control loop.
 	 * 
+	 * @param gains A {@link Gains} object containing the gains to set.
+	 */
+	public void setGains(Gains gains) {
+		this.kV = gains.kV;
+		this.kA = gains.kA;
+		this.kP = gains.kP;
+		this.kI = gains.kI;
+		this.kD = gains.kD;
+	}
+
+	/**
+	 * Gets the gains of the feedback control loop.
+	 * 
+	 * @return A {@link Gains} object containing the gains of the system.
+	 */
+	public Gains getGains() {
+		return new Gains(kV, kA, kP, kI, kD);
+	}
+
+	/**
+	 * Sets the gains of the feedback control loop.
+	 * 
 	 * @param kV The velocity feedforward coefficient
 	 * @param kA The acceleration feedforward coefficient
 	 * @param kP The proportional gain
 	 * @param kI the integral gain
 	 * @param kD The derivative gain
+	 * @deprecated Use {@link #setGains(Gains)} instead.
 	 */
+	@Deprecated
 	public void setGains(double kV, double kA, double kP, double kI, double kD) {
 		this.kV = kV;
 		this.kA = kA;
@@ -193,7 +326,9 @@ abstract public class Follower<T extends Moment> {
 	 * Sets the acceleration feedforward term's coefficient of the control loop.
 	 * 
 	 * @param a The acceleration feedforward term's coefficient
+	 * @deprecated Use {@link #setGains(Gains)} instead.
 	 */
+	@Deprecated
 	public void setA(double a) {
 		kA = a;
 	}
@@ -203,7 +338,9 @@ abstract public class Follower<T extends Moment> {
 	 * loop.
 	 * 
 	 * @return The acceleration feedforward term coefficient
+	 * @deprecated Use {@link #getGains()} instead.
 	 */
+	@Deprecated
 	public double getA() {
 		return kA;
 	}
@@ -212,7 +349,9 @@ abstract public class Follower<T extends Moment> {
 	 * Sets the velocity feedforward term's coefficient of the control loop.
 	 * 
 	 * @param v The velocity feedforward term's coefficient
+	 * @deprecated Use {@link #setGains(Gains)} instead.
 	 */
+	@Deprecated
 	public void setV(double v) {
 		kV = v;
 	}
@@ -221,7 +360,9 @@ abstract public class Follower<T extends Moment> {
 	 * Retrieves the velocity feedforward term's coefficient of the control loop.
 	 * 
 	 * @return The velocity feedforward term coefficient
+	 * @deprecated Use {@link #getGains()} instead.
 	 */
+	@Deprecated
 	public double getV() {
 		return kV;
 	}
@@ -230,7 +371,9 @@ abstract public class Follower<T extends Moment> {
 	 * Sets the proportional gain of the control loop.
 	 * 
 	 * @param p The proportional gain
+	 * @deprecated Use {@link #setGains(Gains)} instead.
 	 */
+	@Deprecated
 	public void setP(double p) {
 		kP = p;
 	}
@@ -239,7 +382,9 @@ abstract public class Follower<T extends Moment> {
 	 * Retrieves the proportional gain of the control loop.
 	 * 
 	 * @return The proportional gain
+	 * @deprecated Use {@link #getGains()} instead.
 	 */
+	@Deprecated
 	public double getP() {
 		return kP;
 	}
@@ -248,7 +393,9 @@ abstract public class Follower<T extends Moment> {
 	 * Sets the integral gain of the control loop.
 	 * 
 	 * @param i The integral gain
+	 * @deprecated Use {@link #setGains(Gains)} instead.
 	 */
+	@Deprecated
 	public void setI(double i) {
 		kI = i;
 	}
@@ -257,7 +404,9 @@ abstract public class Follower<T extends Moment> {
 	 * Retrieves the integral gain of the control loop.
 	 * 
 	 * @return The integral gain
+	 * @deprecated Use {@link #getGains()} instead.
 	 */
+	@Deprecated
 	public double getI() {
 		return kI;
 	}
@@ -266,7 +415,9 @@ abstract public class Follower<T extends Moment> {
 	 * Sets the derivative gain of the control loop.
 	 * 
 	 * @param d The derivative gain
+	 * @deprecated Use {@link #setGains(Gains)} instead.
 	 */
+	@Deprecated
 	public void setD(double d) {
 		kD = d;
 	}
@@ -275,7 +426,9 @@ abstract public class Follower<T extends Moment> {
 	 * Retrieves the derivative gain of the control loop.
 	 * 
 	 * @return The derivative gain
+	 * @deprecated Use {@link #getGains()} instead.
 	 */
+	@Deprecated
 	public double getD() {
 		return kD;
 	}

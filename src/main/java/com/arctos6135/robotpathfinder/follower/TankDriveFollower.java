@@ -350,6 +350,36 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 		this.directionSrc = dirSrc;
 	}
 
+	/**
+	 * Constructs a new tank drive follower.
+	 * <p>
+	 * If any of {@link TankDriveRobot#leftMotor robot.leftMotor},
+	 * {@link TankDriveRobot#rightMotor robot.rightMotor} or
+	 * {@link TankDriveRobot#timestampSource robot.timestampSource} is {@code null},
+	 * this constructor will throw an {@link IllegalArgumentException}.
+	 * </p>
+	 * <p>
+	 * If any of {@link TankDriveRobot#leftPositionSource robot.leftPositionSource}
+	 * or {@link TankDriveRobot#rightPositionSource robot.rightPositionSource} is
+	 * {@code null}, the proportional, integral and derivative terms will not be
+	 * used.
+	 * </p>
+	 * <p>
+	 * If {@link TankDriveRobot#directionSource robot.directionSource} is
+	 * {@code null}, the directional-proportional term will not be used.
+	 * </p>
+	 * 
+	 * @param target The target {@link Followable} to follow
+	 * @param robot  A {@link TankDriveRobot} object containing the necessary motors
+	 *               and sensors
+	 * @param gains  A set of all the gains used in the control loop
+	 * @throws IllegalArgumentException If any of {@link TankDriveRobot#leftMotor
+	 *                                  robot.leftMotor},
+	 *                                  {@link TankDriveRobot#rightMotor
+	 *                                  robot.rightMotor} or
+	 *                                  {@link TankDriveRobot#timestampSource
+	 *                                  robot.timestampSource} is {@code null}.
+	 */
 	public TankDriveFollower(Followable<TankDriveMoment> target, TankDriveRobot robot, Gains gains) {
 		setGains(gains);
 		this.target = target;

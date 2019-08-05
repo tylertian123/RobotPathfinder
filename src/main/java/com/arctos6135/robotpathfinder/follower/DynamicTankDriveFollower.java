@@ -98,6 +98,9 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	 * @param kI          The integral gain
 	 * @param kD          The derivative gain
 	 * @param updateDelay The duration between two updates
+	 * @deprecated Use
+	 *             {@link #DynamicTankDriveFollower(DynamicFollowable, TankDriveRobot, Gains, double)}
+	 *             instead.
 	 */
 	@Deprecated
 	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
@@ -133,6 +136,9 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	 * @param kD          The derivative gain
 	 * @param kDP         The directional-proportional gain
 	 * @param updateDelay The duration between two updates
+	 * @deprecated Use
+	 *             {@link #DynamicTankDriveFollower(DynamicFollowable, TankDriveRobot, Gains, double)}
+	 *             instead.
 	 */
 	@Deprecated
 	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
@@ -177,6 +183,9 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	 * @param kI          The integral gain
 	 * @param kD          The derivative gain
 	 * @param updateDelay The duration between two updates
+	 * @deprecated Use
+	 *             {@link #DynamicTankDriveFollower(DynamicFollowable, TankDriveRobot, Gains, double)}
+	 *             instead.
 	 */
 	@Deprecated
 	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
@@ -217,6 +226,9 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 	 * @param kD          The derivative gain
 	 * @param kDP         The directional-proportional gain
 	 * @param updateDelay The duration between two updates
+	 * @deprecated Use
+	 *             {@link #DynamicTankDriveFollower(DynamicFollowable, TankDriveRobot, Gains, double)}
+	 *             instead.
 	 */
 	@Deprecated
 	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, Motor lMotor, Motor rMotor,
@@ -234,6 +246,42 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 		advancedDistSrc = false;
 	}
 
+	/**
+	 * Constructs a new dynamic tank drive follower.
+	 * <p>
+	 * Note that ideally {@link TankDriveRobot#leftPositionSource
+	 * robot.leftPositionSource} and {@link TankDriveRobot#rightPositionSource
+	 * robot.rightPositionSource} should be instances of
+	 * {@link AdvancedPositionSource}, since updating the target followable often
+	 * requires knowing the current velocity and acceleration in addition to
+	 * position. However, if they're not instances of
+	 * {@link AdvancedPositionSource}, this follower will attempt to derive the
+	 * velocity and acceleration manually from the position data, which may not be
+	 * as efficient.
+	 * </p>
+	 * <p>
+	 * If any of {@link TankDriveRobot#leftMotor robot.leftMotor},
+	 * {@link TankDriveRobot#rightMotor robot.rightMotor},
+	 * {@link TankDriveRobot#leftPositionSource robot.leftPositionSource}
+	 * {@link TankDriveRobot#rightPositionSource robot.rightPositionSource}, or
+	 * {@link TankDriveRobot#timestampSource robot.timestampSource} is {@code null},
+	 * this constructor will throw an {@link IllegalArgumentException}.
+	 * </p>
+	 * <p>
+	 * If {@link TankDriveRobot#directionSource robot.directionSource} is
+	 * {@code null}, the directional-proportional term will not be used.
+	 * </p>
+	 * <p>
+	 * If {@code updateDelay} is {@code NaN}, the target will never be updated.
+	 * </p>
+	 * 
+	 * @param target      The target {@link Followable} to follow
+	 * @param robot       A {@link TankDriveRobot} object containing the necessary
+	 *                    motors and sensors
+	 * @param gains       A set of all the gains used in the control loop
+	 * @param updateDelay The duration between two updates of the target; set to
+	 *                    {@code NaN} to disable updating
+	 */
 	public DynamicTankDriveFollower(DynamicFollowable<TankDriveMoment> target, TankDriveRobot robot, Gains gains,
 			double updateDelay) {
 		setGains(gains);

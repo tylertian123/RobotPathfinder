@@ -13,6 +13,21 @@ namespace rpf {
             contents = new T[m * n]();
         }
 
+        Mat(std::initializer_list<std::initializer_list<T>> values) {
+            m = values.size();
+            n = values.begin()->size();
+
+            contents = new T[m * n]();
+
+            std::size_t i = 0;
+            for(const auto &row : values) {
+                if(row.size() != n) {
+                    throw std::invalid_argument("Matrix initializer lists must be rectangular!");
+                }
+                std::copy(row.begin(), row.end(), (*this)[i++]);
+            }
+        }
+
         ~Mat() {
             delete[] contents;
         }
@@ -22,6 +37,20 @@ namespace rpf {
         }
         inline const T* operator[](std::size_t row) const {
             return contents + row * n;
+        }
+
+        Mat<T>& operator=(std::initializer_list<std::initializer_list<T>> values) {
+            if(values.size() != m || values.begin()->size() != n) {
+                throw std::invalid_argument("Matrix dimensions aren't equal");
+            }
+
+            std::size_t i = 0;
+            for(const auto &row : values) {
+                if(row.size() != n) {
+                    throw std::invalid_argument("Matrix initializer lists must be rectangular!");
+                }
+                std::copy(row.begin(), row.end(), (*this)[i++]);
+            }
         }
 
         void eliminate() {

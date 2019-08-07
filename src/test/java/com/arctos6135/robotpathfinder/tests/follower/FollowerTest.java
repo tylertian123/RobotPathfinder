@@ -13,6 +13,8 @@ import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
 import com.arctos6135.robotpathfinder.follower.Follower;
 import com.arctos6135.robotpathfinder.follower.TankDriveFollower;
+import com.arctos6135.robotpathfinder.follower.TankDriveFollower.TankDriveGains;
+import com.arctos6135.robotpathfinder.follower.TankDriveFollower.TankDriveRobot;
 import com.arctos6135.robotpathfinder.math.MathUtils;
 import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalTankDriveProfile;
 import com.arctos6135.robotpathfinder.tests.TestHelper;
@@ -127,8 +129,10 @@ public class FollowerTest {
         TankDriveTrajectory traj = new TankDriveTrajectory(robotSpecs, params);
 
         FakeTimer timer = new FakeTimer();
-        Follower<TankDriveMoment> follower = new TankDriveFollower(traj, new FakeMotor(), new FakeMotor(),
-                new FakeEncoder(), new FakeEncoder(), timer, new FakeGyro(), 0, 0, 0, 0, 0, 0);
+        TankDriveGains gains = new TankDriveGains();
+        TankDriveRobot robot = new TankDriveRobot(new FakeMotor(), new FakeMotor(), new FakeEncoder(),
+                new FakeEncoder(), timer, new FakeGyro());
+        Follower<TankDriveMoment> follower = new TankDriveFollower(traj, robot, gains);
         // Assertion: Follower is not finished or running initially
         assertThat(follower.isFinished(), is(false));
         assertThat(follower.isRunning(), is(false));
@@ -194,8 +198,9 @@ public class FollowerTest {
         FakeTimer timer = new FakeTimer();
         FakeMotor motor = new FakeMotor();
         FakeEncoder encoder = new FakeEncoder();
-        TankDriveFollower follower = new TankDriveFollower(profile, motor, motor, encoder, encoder, timer, kV,
-                kA, kP, kI, kD);
+        TankDriveGains gains = new TankDriveGains(kV, kA, kP, kI, kD, 0);
+        TankDriveRobot robot = new TankDriveRobot(motor, motor, encoder, encoder, timer, null);
+        TankDriveFollower follower = new TankDriveFollower(profile, robot, gains);
 
         follower.initialize();
         timer.value = profile.totalTime();
@@ -203,7 +208,13 @@ public class FollowerTest {
         assertThat(motor.value, not(closeTo(0.0, MathUtils.getFloatCompareThreshold())));
 
         follower.stop();
-        follower.setGains(1, 0, kP, 0, 0, 0);
+        gains.kV = 1;
+        gains.kA = 0;
+        gains.kP = kP;
+        gains.kI = 0;
+        gains.kD = 0;
+        gains.kDP = 0;
+        follower.setGains(gains);
         timer.value = 0;
         follower.initialize();
         timer.value = checkTime;
@@ -213,7 +224,13 @@ public class FollowerTest {
                 closeTo(profile.get(checkTime).getLeftVelocity(), MathUtils.getFloatCompareThreshold()));
 
         follower.stop();
-        follower.setGains(0, 1, kP, 0, 0, 0);
+        gains.kV = 0;
+        gains.kA = 1;
+        gains.kP = kP;
+        gains.kI = 0;
+        gains.kD = 0;
+        gains.kDP = 0;
+        follower.setGains(gains);
         timer.value = 0;
         encoder.value = 0;
         follower.initialize();

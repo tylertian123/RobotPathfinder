@@ -28,9 +28,9 @@ import com.arctos6135.robotpathfinder.math.MathUtils;
  * </p>
  * 
  * @author Tyler Tian
- * @since 3.0.0
  * @see BasicMoment
  * @see TankDriveMoment
+ * @since 3.0.0
  */
 public abstract class Moment implements Cloneable {
 

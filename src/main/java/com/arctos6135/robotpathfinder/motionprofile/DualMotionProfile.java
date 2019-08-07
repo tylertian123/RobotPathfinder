@@ -9,10 +9,10 @@ package com.arctos6135.robotpathfinder.motionprofile;
  * and together.
  * </p>
  * 
- * @param <T> The type of {@link MotionProfile} used
  * @author Tyler Tian
- * @since 3.0.0
+ * @param <T> The type of {@link MotionProfile} used
  * @see MotionProfile
+ * @since 3.0.0
  */
 public class DualMotionProfile<T extends MotionProfile> {
 

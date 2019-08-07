@@ -15,7 +15,7 @@ import com.arctos6135.robotpathfinder.math.MathUtils;
  * {@link Follower}, {@link TankDriveFollower}s also have a fifth term&mdash;the
  * "directional-proportional" (DP) term. This term takes the error between the
  * angle the robot is supposed to be facing and the angle it's actually facing,
- * multiplies the error by a constant, and subtracts it from the left wheels
+ * multiplies the error by a constant, and subtracts it from the left wheel's
  * output while adding it to the right wheel's output in order to correct the
  * overall direction the robot is facing.
  * </p>
@@ -24,8 +24,8 @@ import com.arctos6135.robotpathfinder.math.MathUtils;
  * </p>
  * 
  * @author Tyler Tian
- * @since 3.0.0
  * @see Follower
+ * @since 3.0.0
  */
 public class TankDriveFollower extends Follower<TankDriveMoment> {
 
@@ -50,6 +50,170 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	protected TankDriveMoment lastMoment;
 
 	/**
+	 * A class that represents a set of gains for PIDVA control, specialized for
+	 * tank drive robots.
+	 * <p>
+	 * In addition to the 5 terms in {@link Gains}, this class also includes a fifth
+	 * term, the directional-proportional term. For more information, see the
+	 * documentation for {@link #kDP the field}.
+	 * </p>
+	 * 
+	 * @author Tyler Tian
+	 * @see Gains
+	 * @since 3.0.0
+	 */
+	public static class TankDriveGains extends Gains {
+
+		/**
+		 * The directional-proportional term.
+		 * <p>
+		 * This term is multiplied by the error between the angle the robot is supposed
+		 * to be facing and the angle it's actually facing, and is subtracted from the
+		 * left wheel's output and added to the right wheel's output in order to correct
+		 * the overall direction the robot is facing.
+		 * </p>
+		 * <p>
+		 * The default value for this term is 0.
+		 * </p>
+		 */
+		public double kDP = 0;
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public TankDriveGains clone() {
+			TankDriveGains gains = new TankDriveGains();
+			gains.kV = kV;
+			gains.kA = kA;
+			gains.kP = kP;
+			gains.kI = kI;
+			gains.kD = kD;
+			gains.kDP = kDP;
+
+			return gains;
+		}
+
+		/**
+		 * Constructs a new set of gains with each gain set to 0.
+		 */
+		public TankDriveGains() {
+		}
+
+		/**
+		 * Constructs a new set of gains with each gain set to the specified value.
+		 * 
+		 * @param kV  The {@link #kV velocity feedforward}
+		 * @param kA  The {@link #kA acceleration feedforward}
+		 * @param kP  The {@link #kP proportional feedback}
+		 * @param kI  The {@link #kI integral feedback}
+		 * @param kD  The {@link #kD derivative feedback}
+		 * @param kDP The {@link #kDP directional-proportional feedback}
+		 */
+		public TankDriveGains(double kV, double kA, double kP, double kI, double kD, double kDP) {
+			this.kV = kV;
+			this.kA = kA;
+			this.kP = kP;
+			this.kI = kI;
+			this.kD = kD;
+			this.kDP = kDP;
+		}
+	}
+
+	/**
+	 * A class that represents a tank drive robot, including motors and sensors.
+	 * 
+	 * @author Tyler Tian
+	 * @since 3.0.0
+	 */
+	public static class TankDriveRobot implements Cloneable {
+
+		/**
+		 * The motor that controls the left side's wheels on the robot.
+		 * 
+		 * @see Motor
+		 * @see Motor#set(double)
+		 */
+		public Motor leftMotor;
+
+		/**
+		 * The motor that controls the right side's wheels on the robot.
+		 * 
+		 * @see Motor
+		 * @see Motor#set(double)
+		 */
+		public Motor rightMotor;
+
+		/**
+		 * A {@link PositionSource} for the left side's wheels on the robot.
+		 * 
+		 * @see PositionSource
+		 * @see PositionSource#getPosition()
+		 */
+		public PositionSource leftPositionSource;
+
+		/**
+		 * A {@link PositionSource} for the right side's wheels on the robot.
+		 * 
+		 * @see PositionSource
+		 * @see PositionSource#getPosition()
+		 */
+		public PositionSource rightPositionSource;
+
+		/**
+		 * A {@link TimestampSource} for the robot to get time data from.
+		 * 
+		 * @see TimestampSource
+		 * @see TimestampSource#getTimestamp()
+		 */
+		public TimestampSource timestampSource;
+
+		/**
+		 * A {@link DirectionSource} for the robot to get directional data from. Usually
+		 * optional.
+		 * 
+		 * @see DirectionSource
+		 * @see DirectionSource#getDirection()
+		 */
+		public DirectionSource directionSource;
+
+		/**
+		 * Creates an identical copy of this {@link TankDriveRobot} object.
+		 */
+		@Override
+		public TankDriveRobot clone() {
+			return new TankDriveRobot(leftMotor, rightMotor, leftPositionSource, rightPositionSource, timestampSource,
+					directionSource);
+		}
+
+		/**
+		 * Constructs a new object with everything set to {@code null}.
+		 */
+		public TankDriveRobot() {
+		}
+
+		/**
+		 * Constructs a new object with the specified values.
+		 * 
+		 * @param lMotor  The {@link #leftMotor left motor}
+		 * @param rMotor  The {@link #rightMotor right motor}
+		 * @param lPosSrc The {@link #leftPositionSource left position source}
+		 * @param rPosSrc The {@link #rightPositionSource right position source}
+		 * @param timeSrc The {@link #timestampSource timestamp source}
+		 * @param dirSrc  The {@link #directionSource direction source}
+		 */
+		public TankDriveRobot(Motor lMotor, Motor rMotor, PositionSource lPosSrc, PositionSource rPosSrc,
+				TimestampSource timeSrc, DirectionSource dirSrc) {
+			leftMotor = lMotor;
+			rightMotor = rMotor;
+			leftPositionSource = lPosSrc;
+			rightPositionSource = rPosSrc;
+			timestampSource = timeSrc;
+			directionSource = dirSrc;
+		}
+	}
+
+	/**
 	 * Constructs a new tank drive follower only using the feedforward terms (VA).
 	 * <p>
 	 * This constructor does not require any sensors for distance/position or
@@ -64,7 +228,10 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param timer  A {@link TimestampSource} to get the current time from
 	 * @param kV     The velocity feedforward
 	 * @param kA     The acceleration feedforward
+	 * @deprecated Use {@link #TankDriveFollower(Followable, TankDriveRobot, Gains)}
+	 *             instead.
 	 */
+	@Deprecated
 	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, TimestampSource timer,
 			double kV, double kA) {
 		setGains(kV, kA, 0, 0, 0, 0);
@@ -96,7 +263,10 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param kP       The proportional gain
 	 * @param kI       The integral gain
 	 * @param kD       The derivative gain
+	 * @deprecated Use {@link #TankDriveFollower(Followable, TankDriveRobot, Gains)}
+	 *             instead.
 	 */
+	@Deprecated
 	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, PositionSource lDistSrc,
 			PositionSource rDistSrc, TimestampSource timer, double kV, double kA, double kP, double kI, double kD) {
 		setGains(kV, kA, kP, kI, kD, 0);
@@ -127,7 +297,10 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param kV     The velocity feedforward
 	 * @param kA     The acceleration feedforward
 	 * @param kDP    The directional-proportional gain
+	 * @deprecated Use {@link #TankDriveFollower(Followable, TankDriveRobot, Gains)}
+	 *             instead.
 	 */
+	@Deprecated
 	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, TimestampSource timer,
 			DirectionSource dirSrc, double kV, double kA, double kDP) {
 		setGains(kV, kA, 0, 0, 0, kDP);
@@ -160,7 +333,10 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param kI       The integral gain
 	 * @param kD       The derivative gain
 	 * @param kDP      The directional-proportional gain
+	 * @deprecated Use {@link #TankDriveFollower(Followable, TankDriveRobot, Gains)}
+	 *             instead.
 	 */
+	@Deprecated
 	public TankDriveFollower(Followable<TankDriveMoment> target, Motor lMotor, Motor rMotor, PositionSource lDistSrc,
 			PositionSource rDistSrc, TimestampSource timer, DirectionSource dirSrc, double kV, double kA, double kP,
 			double kI, double kD, double kDP) {
@@ -175,6 +351,108 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	}
 
 	/**
+	 * Constructs a new tank drive follower.
+	 * <p>
+	 * If any of {@link TankDriveRobot#leftMotor robot.leftMotor},
+	 * {@link TankDriveRobot#rightMotor robot.rightMotor} or
+	 * {@link TankDriveRobot#timestampSource robot.timestampSource} is {@code null},
+	 * this constructor will throw an {@link IllegalArgumentException}.
+	 * </p>
+	 * <p>
+	 * If any of {@link TankDriveRobot#leftPositionSource robot.leftPositionSource}
+	 * or {@link TankDriveRobot#rightPositionSource robot.rightPositionSource} is
+	 * {@code null}, the proportional, integral and derivative terms will not be
+	 * used.
+	 * </p>
+	 * <p>
+	 * If {@link TankDriveRobot#directionSource robot.directionSource} is
+	 * {@code null}, the directional-proportional term will not be used.
+	 * </p>
+	 * 
+	 * @param target The target {@link Followable} to follow
+	 * @param robot  A {@link TankDriveRobot} object containing the necessary motors
+	 *               and sensors
+	 * @param gains  A set of all the gains used in the control loop
+	 * @throws IllegalArgumentException If any of {@link TankDriveRobot#leftMotor
+	 *                                  robot.leftMotor},
+	 *                                  {@link TankDriveRobot#rightMotor
+	 *                                  robot.rightMotor} or
+	 *                                  {@link TankDriveRobot#timestampSource
+	 *                                  robot.timestampSource} is {@code null}.
+	 */
+	public TankDriveFollower(Followable<TankDriveMoment> target, TankDriveRobot robot, Gains gains) {
+		setGains(gains);
+		this.target = target;
+
+		// Verify motors are nonnull
+		if (robot.leftMotor == null || robot.rightMotor == null) {
+			throw new IllegalArgumentException("Motors cannot be null!");
+		}
+		// Verify timer is nonnull
+		if (robot.timestampSource == null) {
+			throw new IllegalArgumentException("Timestamp source cannot be null!");
+		}
+		lMotor = robot.leftMotor;
+		rMotor = robot.rightMotor;
+		lDistSrc = robot.leftPositionSource;
+		rDistSrc = robot.rightPositionSource;
+		timer = robot.timestampSource;
+		directionSrc = robot.directionSource;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * <p>
+	 * Note that if the object passed in is an instance of {@link TankDriveGains},
+	 * this method will call {@link #setGains(TankDriveGains)}.
+	 * </p>
+	 */
+	@Override
+	public void setGains(Gains gains) {
+		if (gains instanceof TankDriveGains) {
+			setGains((TankDriveGains) gains);
+		} else {
+			super.setGains(gains);
+		}
+	}
+
+	/**
+	 * Sets the gains of the feedback control loop.
+	 * 
+	 * @param gains A {@link TankDriveGains} object containing the gains to set.
+	 */
+	public void setGains(TankDriveGains gains) {
+		super.setGains((Gains) gains);
+		kDP = gains.kDP;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public TankDriveGains getGains() {
+		return new TankDriveGains(kV, kA, kP, kI, kD, kDP);
+	}
+
+	/**
+	 * Sets the gains of the feedback loop.
+	 * 
+	 * @param kV  The velocity feedforward
+	 * @param kA  The acceleration feedforward
+	 * @param kP  The proportional gain
+	 * @param kI  The integral gain
+	 * @param kD  The derivative gain
+	 * @param kDP The directional-proportional gain
+	 * @deprecated Use {@link #setGains(TankDriveGains)} instead.
+	 */
+	@Deprecated
+	public void setGains(double kV, double kA, double kP, double kI, double kD, double kDP) {
+		setGains(kV, kA, kP, kI, kD);
+		setDP(kDP);
+	}
+
+	/**
 	 * Sets the directional-proportional gain of the feedback loop.
 	 * <p>
 	 * This term takes the error between the angle the robot is supposed to be
@@ -185,7 +463,9 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * </p>
 	 * 
 	 * @param kDP The directional-proportional gain
+	 * @deprecated Use {@link #setGains(TankDriveGains)} instead.
 	 */
+	@Deprecated
 	public void setDP(double kDP) {
 		this.kDP = kDP;
 	}
@@ -201,24 +481,11 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * </p>
 	 * 
 	 * @return The directional-proportional gain
+	 * @deprecated Use {@link #getGains()} instead.
 	 */
+	@Deprecated
 	public double getDP() {
 		return kDP;
-	}
-
-	/**
-	 * Sets the gains of the feedback loop.
-	 * 
-	 * @param kV  The velocity feedforward
-	 * @param kA  The acceleration feedforward
-	 * @param kP  The proportional gain
-	 * @param kI  The integral gain
-	 * @param kD  The derivative gain
-	 * @param kDP The directional-proportional gain
-	 */
-	public void setGains(double kV, double kA, double kP, double kI, double kD, double kDP) {
-		setGains(kV, kA, kP, kI, kD);
-		setDP(kDP);
 	}
 
 	/**
@@ -226,7 +493,9 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * 
 	 * @param timer The timestamp source
 	 * @throws IllegalStateException If the follower is running
+	 * @deprecated This method should not be used. Create a new object instead.
 	 */
+	@Deprecated
 	public void setTimestampSource(TimestampSource timer) {
 		if (running) {
 			throw new IllegalStateException("Timestamp Source cannot be changed when follower is running");
@@ -240,7 +509,9 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param lMotor The left motor
 	 * @param rMotor The right motor
 	 * @throws IllegalStateException If the follower is running
+	 * @deprecated This method should not be used. Create a new object instead.
 	 */
+	@Deprecated
 	public void setMotors(Motor lMotor, Motor rMotor) {
 		if (running) {
 			throw new IllegalStateException("Motors cannot be changed when follower is running");
@@ -255,7 +526,9 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 	 * @param lDistSrc The left position source
 	 * @param rDistSrc The right position source
 	 * @throws IllegalStateException If the follower is running
+	 * @deprecated This method should not be used. Create a new object instead.
 	 */
+	@Deprecated
 	public void setDistanceSources(PositionSource lDistSrc, PositionSource rDistSrc) {
 		if (running) {
 			throw new IllegalStateException("Position Sources cannot be changed when follower is running");

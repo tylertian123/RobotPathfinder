@@ -14,11 +14,11 @@ import com.arctos6135.robotpathfinder.motionprofile.DualMotionProfile;
  * the robot spin in place to reach a specified angle.
  * </p>
  * 
- * @param <T> The type of {@link DualMotionProfile} used
  * @author Tyler Tian
- * @since 3.0.0
+ * @param <T> The type of {@link DualMotionProfile} used
  * @see com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalTankDriveRotationProfile
  *      TrapezoidalTankDriveRotationProfile
+ * @since 3.0.0
  */
 public abstract class TankDriveFollowableRotationMotionProfile<T extends DualMotionProfile<?>>
         extends FollowableMotionProfile<TankDriveMoment> {

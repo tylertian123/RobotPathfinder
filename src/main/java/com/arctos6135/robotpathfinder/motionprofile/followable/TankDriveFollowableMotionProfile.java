@@ -12,11 +12,11 @@ import com.arctos6135.robotpathfinder.motionprofile.DualMotionProfile;
  * {@link TankDriveMoment}s for a given time.
  * </p>
  * 
- * @param <T> The type of {@link DualMotionProfile} used
  * @author Tyler Tian
- * @since 3.0.0
+ * @param <T> The type of {@link DualMotionProfile} used
  * @see com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalTankDriveProfile
  *      TrapezoidalTankDriveProfile
+ * @since 3.0.0
  */
 public abstract class TankDriveFollowableMotionProfile<T extends DualMotionProfile<?>>
         extends FollowableMotionProfile<TankDriveMoment> {

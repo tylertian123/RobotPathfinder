@@ -29,42 +29,35 @@ namespace rpf {
             if(n < m) {
                 throw std::invalid_argument("Cannot eliminate: There are more rows than columns!");
             }
-            // Forward elimination
-            for(std::size_t i = 0; i < m; i ++) {
-                // Pivot is 0, so try to swap it with another row below
-                if((*this)[i][i] == 0) {
-                    // Find a row with a nonezero value in this column
-                    std::size_t j;
-                    for(j = i + 1; j < m; j ++) {
-                        // If found, swap the rows
-                        if((*this)[j][i] != 0) {
-                            row_swap(i, j);
+
+            for(std::size_t i = 0, j = 0; i < m && j < n; j ++) {
+                // Zero pivot
+                if((*this)[i][j] == 0) {
+                    std::size_t k = i;
+                    // Swap with row below if found
+                    for(; k < m; k ++) {
+                        if((*this)[k][j] != 0) {
+                            row_swap(i, k);
                             break;
                         }
                     }
-                    // If nothing is found, the matrix is singular
-                    if(i == m) {
+                    // If search finished without anything being found the matrix is singular
+                    if(k == m) {
                         throw std::invalid_argument("Cannot eliminate: The matrix is singular!");
                     }
                 }
-
-                double pivot = (*this)[i][i];
-                // Now the pivot should be nonzero
-                // Eliminate this column in all rows below
-                for(std::size_t j = i + 1; j < m; j ++) {
-                    row_add(j, i, -((*this)[j][i] / pivot));
-                }
-            }
-            // Back substitution
-            for(std::size_t i = m; i --> 0;) {
                 // Make the pivot 1
-                row_mult(i, 1 / (*this)[i][i]);
-                // Eliminate this column in all rows above
-                if(i != 0) {
-                    for(std::size_t j = i; j --> 0;) {
-                        row_add(j, i, -(*this)[j][i]);
+                row_mult(i, 1 / (*this)[i][j]);
+                // Eliminate the column
+                for(std::size_t k = 0; k < m; k ++) {
+                    if(i == k) {
+                        continue;
                     }
+
+                    row_add(k, i, -(*this)[k][j]);
                 }
+
+                i++;
             }
         }
 

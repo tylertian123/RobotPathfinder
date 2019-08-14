@@ -223,7 +223,7 @@ namespace rpf {
         return p;
     }
 
-    std::shared_ptr<Path> Path::update(double t, const Vec2D &p, const Vec2D &v, const Vec2D &a) {
+    void Path::update(double t, const Vec2D &p, const Vec2D &v, const Vec2D &a) {
         if(waypoints.size() > 2) {
             throw std::invalid_argument("update() is not supported on paths with multiple segments!");
         }

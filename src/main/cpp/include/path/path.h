@@ -63,7 +63,7 @@ namespace rpf {
         std::shared_ptr<Path> mirror_lr() const;
         std::shared_ptr<Path> retrace() const;
 
-        std::shared_ptr<Path> update(double, const Vec2D&, const Vec2D&, const Vec2D&);
+        void update(double, const Vec2D&, const Vec2D&, const Vec2D&);
 
     protected:
         std::vector<Waypoint> waypoints;

@@ -51,6 +51,8 @@ namespace rpf {
                 }
                 std::copy(row.begin(), row.end(), (*this)[i++]);
             }
+
+            return *this;
         }
 
         void eliminate() {

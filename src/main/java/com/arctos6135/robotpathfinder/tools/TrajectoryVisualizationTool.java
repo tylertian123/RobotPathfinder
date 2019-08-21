@@ -1135,6 +1135,7 @@ public class TrajectoryVisualizationTool {
 		}
 		return true;
 	}
+
 	static boolean setNimbusLookAndFeel() {
 		try {
 			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
@@ -1150,22 +1151,21 @@ public class TrajectoryVisualizationTool {
 		}
 		return true;
 	}
+
 	static void setLookAndFeel(String lf) {
 		boolean success;
 
-		if(lf.equals("nimbus")) {
-			if(!setNimbusLookAndFeel()) {
-				System.err.println("Error: Cannot set look and feel to Nimbus. Falling back to System look and feel...");
+		if (lf.equals("nimbus")) {
+			if (!setNimbusLookAndFeel()) {
+				System.err
+						.println("Error: Cannot set look and feel to Nimbus. Falling back to System look and feel...");
 				success = setSystemLookAndFeel();
-			}
-			else {
+			} else {
 				success = true;
 			}
-		}
-		else if(lf.equals("system")) {
+		} else if (lf.equals("system")) {
 			success = setSystemLookAndFeel();
-		}
-		else {
+		} else {
 			try {
 				UIManager.setLookAndFeel(lf);
 				success = true;
@@ -1175,18 +1175,16 @@ public class TrajectoryVisualizationTool {
 			}
 		}
 
-		if(!success) {
+		if (!success) {
 			System.err.println("Failed to set look and feel to '" + lf + "'!");
 		}
 	}
 
-	static final String HELP_MESSAGE = 
-			"Options:\n" +
-				"\t--library-path=LIBRARY_PATH\n\n" +
-					"\t\tLoads the RobotPathfinder dynamic shared library from the specified path.\n\n" +
-				"\t--lf=LOOK_AND_FEEL\n\n" +
-					"\t\tSets the look and feel of the application. This can either be the fully-qualified class name " +
-					"of the look and feel, or 'nimbus' or 'system'. The default is 'nimbus'.\n";
+	static final String HELP_MESSAGE = "Options:\n" + "\t--library-path=LIBRARY_PATH\n\n"
+			+ "\t\tLoads the RobotPathfinder dynamic shared library from the specified path.\n\n"
+			+ "\t--lf=LOOK_AND_FEEL\n\n"
+			+ "\t\tSets the look and feel of the application. This can either be the fully-qualified class name "
+			+ "of the look and feel, or 'nimbus' or 'system'. The default is 'nimbus'.\n";
 
 	static String lookAndFeel = "nimbus";
 
@@ -1206,16 +1204,14 @@ public class TrajectoryVisualizationTool {
 					System.out.println(HELP_MESSAGE);
 					System.exit(0);
 				}
-			} 
-			else if(arg.startsWith("--lf=")) {
+			} else if (arg.startsWith("--lf=")) {
 				try {
 					lookAndFeel = arg.substring("--lf=".length());
 				} catch (StringIndexOutOfBoundsException e) {
 					System.out.println(HELP_MESSAGE);
 					System.exit(0);
 				}
-			}
-			else {
+			} else {
 				System.out.println(HELP_MESSAGE);
 				System.exit(0);
 			}

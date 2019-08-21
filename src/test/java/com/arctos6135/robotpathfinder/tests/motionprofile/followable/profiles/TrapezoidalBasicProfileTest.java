@@ -33,7 +33,7 @@ public class TrapezoidalBasicProfileTest {
     @Test
     public void testTrapezoidalBasicProfile() {
         TestHelper helper = TestHelper.getInstance(getClass());
-        
+
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
         double distance = helper.getDouble("distance", 1000);
@@ -62,7 +62,7 @@ public class TrapezoidalBasicProfileTest {
     @Test
     public void testTrapezoidalBasicProfileReversed() {
         TestHelper helper = TestHelper.getInstance(getClass());
-        
+
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
         double distance = helper.getDouble("distance", -1000, 0);
@@ -104,13 +104,18 @@ public class TrapezoidalBasicProfileTest {
         double dt = f.totalTime() / 1000;
         for (double t = 0; t < f.totalTime(); t += dt) {
             BasicMoment m = f.get(t);
-            assertThat(m.getPosition(), either(lessThan(distance)).or(closeTo(distance, MathUtils.getFloatCompareThreshold())));
-            assertThat(m.getPosition(), either(greaterThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
+            assertThat(m.getPosition(),
+                    either(lessThan(distance)).or(closeTo(distance, MathUtils.getFloatCompareThreshold())));
+            assertThat(m.getPosition(),
+                    either(greaterThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(m.getVelocity(), either(lessThan((maxV))).or(closeTo((maxV), MathUtils.getFloatCompareThreshold())));
-            assertThat(m.getVelocity(), either(greaterThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
+            assertThat(m.getVelocity(),
+                    either(lessThan((maxV))).or(closeTo((maxV), MathUtils.getFloatCompareThreshold())));
+            assertThat(m.getVelocity(),
+                    either(greaterThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(Math.abs(m.getAcceleration()), either(lessThan((maxA))).or(closeTo((maxA), MathUtils.getFloatCompareThreshold())));
+            assertThat(Math.abs(m.getAcceleration()),
+                    either(lessThan((maxA))).or(closeTo((maxA), MathUtils.getFloatCompareThreshold())));
         }
     }
 
@@ -137,13 +142,18 @@ public class TrapezoidalBasicProfileTest {
         double dt = f.totalTime() / 1000;
         for (double t = 0; t < f.totalTime(); t += dt) {
             BasicMoment m = f.get(t);
-            assertThat(m.getPosition(), either(greaterThan((distance))).or(closeTo((distance), MathUtils.getFloatCompareThreshold())));
-            assertThat(m.getPosition(), either(lessThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
+            assertThat(m.getPosition(),
+                    either(greaterThan((distance))).or(closeTo((distance), MathUtils.getFloatCompareThreshold())));
+            assertThat(m.getPosition(),
+                    either(lessThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(-m.getVelocity(), either(lessThan((maxV))).or(closeTo((maxV), MathUtils.getFloatCompareThreshold())));
-            assertThat(m.getVelocity(), either(lessThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
+            assertThat(-m.getVelocity(),
+                    either(lessThan((maxV))).or(closeTo((maxV), MathUtils.getFloatCompareThreshold())));
+            assertThat(m.getVelocity(),
+                    either(lessThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(Math.abs(m.getAcceleration()), either(lessThan((maxA))).or(closeTo((maxA), MathUtils.getFloatCompareThreshold())));
+            assertThat(Math.abs(m.getAcceleration()),
+                    either(lessThan((maxA))).or(closeTo((maxA), MathUtils.getFloatCompareThreshold())));
         }
     }
 }

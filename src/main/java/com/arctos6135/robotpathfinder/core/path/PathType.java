@@ -46,8 +46,8 @@ public enum PathType {
 	 * <b><em>This method is intended for internal use only. Use at your own
 	 * risk.</em></b>
 	 * </p>
-     * 
-     * @return The native enum value for this {@link PathType}
+	 * 
+	 * @return The native enum value for this {@link PathType}
 	 */
 	public int getJNIID() {
 		switch (this) {

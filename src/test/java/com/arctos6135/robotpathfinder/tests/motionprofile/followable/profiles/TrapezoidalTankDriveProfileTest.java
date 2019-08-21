@@ -33,7 +33,7 @@ public class TrapezoidalTankDriveProfileTest {
     @Test
     public void testTrapezoidalTankDriveProfile() {
         TestHelper helper = TestHelper.getInstance(getClass());
-        
+
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
         double distance = helper.getDouble("distance", 1000);
@@ -69,7 +69,7 @@ public class TrapezoidalTankDriveProfileTest {
     @Test
     public void testTrapezoidalTankDriveProfileReversed() {
         TestHelper helper = TestHelper.getInstance(getClass());
-        
+
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
         double distance = helper.getDouble("distance", -1000, 0);
@@ -106,7 +106,7 @@ public class TrapezoidalTankDriveProfileTest {
     @Test
     public void testTrapezoidalTankDriveProfileAdvanced() {
         TestHelper helper = TestHelper.getInstance(getClass());
-        
+
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
         double distance = helper.getDouble("distance", 1000);
@@ -118,21 +118,31 @@ public class TrapezoidalTankDriveProfileTest {
         double dt = f.totalTime() / 1000;
         for (double t = 0; t < f.totalTime(); t += dt) {
             TankDriveMoment m = f.get(t);
-            assertThat(m.getLeftPosition(), either(lessThan(distance)).or(closeTo(distance, MathUtils.getFloatCompareThreshold())));
-            assertThat(m.getLeftPosition(), either(greaterThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
+            assertThat(m.getLeftPosition(),
+                    either(lessThan(distance)).or(closeTo(distance, MathUtils.getFloatCompareThreshold())));
+            assertThat(m.getLeftPosition(),
+                    either(greaterThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(m.getLeftVelocity(), either(lessThan((maxV))).or(closeTo((maxV), MathUtils.getFloatCompareThreshold())));
-            assertThat(m.getLeftVelocity(), either(greaterThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
+            assertThat(m.getLeftVelocity(),
+                    either(lessThan((maxV))).or(closeTo((maxV), MathUtils.getFloatCompareThreshold())));
+            assertThat(m.getLeftVelocity(),
+                    either(greaterThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(Math.abs(m.getLeftAcceleration()), either(lessThan((maxA))).or(closeTo((maxA), MathUtils.getFloatCompareThreshold())));
+            assertThat(Math.abs(m.getLeftAcceleration()),
+                    either(lessThan((maxA))).or(closeTo((maxA), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(m.getRightPosition(), either(lessThan(distance)).or(closeTo(distance, MathUtils.getFloatCompareThreshold())));
-            assertThat(m.getRightPosition(), either(greaterThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
+            assertThat(m.getRightPosition(),
+                    either(lessThan(distance)).or(closeTo(distance, MathUtils.getFloatCompareThreshold())));
+            assertThat(m.getRightPosition(),
+                    either(greaterThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(m.getRightVelocity(), either(lessThan((maxV))).or(closeTo((maxV), MathUtils.getFloatCompareThreshold())));
-            assertThat(m.getRightVelocity(), either(greaterThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
+            assertThat(m.getRightVelocity(),
+                    either(lessThan((maxV))).or(closeTo((maxV), MathUtils.getFloatCompareThreshold())));
+            assertThat(m.getRightVelocity(),
+                    either(greaterThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(Math.abs(m.getRightAcceleration()), either(lessThan((maxA))).or(closeTo((maxA), MathUtils.getFloatCompareThreshold())));
+            assertThat(Math.abs(m.getRightAcceleration()),
+                    either(lessThan((maxA))).or(closeTo((maxA), MathUtils.getFloatCompareThreshold())));
         }
     }
 
@@ -147,7 +157,7 @@ public class TrapezoidalTankDriveProfileTest {
     @Test
     public void testTrapezoidalTankDriveProfileAdvancedReversed() {
         TestHelper helper = TestHelper.getInstance(getClass());
-        
+
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
         double distance = helper.getDouble("distance", -1000, 0);
@@ -159,21 +169,31 @@ public class TrapezoidalTankDriveProfileTest {
         double dt = f.totalTime() / 1000;
         for (double t = 0; t < f.totalTime(); t += dt) {
             TankDriveMoment m = f.get(t);
-            assertThat(m.getLeftPosition(), either(greaterThan((distance))).or(closeTo((distance), MathUtils.getFloatCompareThreshold())));
-            assertThat(m.getLeftPosition(), either(lessThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
+            assertThat(m.getLeftPosition(),
+                    either(greaterThan((distance))).or(closeTo((distance), MathUtils.getFloatCompareThreshold())));
+            assertThat(m.getLeftPosition(),
+                    either(lessThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(-m.getLeftVelocity(), either(lessThan((maxV))).or(closeTo((maxV), MathUtils.getFloatCompareThreshold())));
-            assertThat(m.getLeftVelocity(), either(lessThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
+            assertThat(-m.getLeftVelocity(),
+                    either(lessThan((maxV))).or(closeTo((maxV), MathUtils.getFloatCompareThreshold())));
+            assertThat(m.getLeftVelocity(),
+                    either(lessThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(Math.abs(m.getLeftAcceleration()), either(lessThan((maxA))).or(closeTo((maxA), MathUtils.getFloatCompareThreshold())));
+            assertThat(Math.abs(m.getLeftAcceleration()),
+                    either(lessThan((maxA))).or(closeTo((maxA), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(m.getRightPosition(), either(greaterThan((distance))).or(closeTo((distance), MathUtils.getFloatCompareThreshold())));
-            assertThat(m.getRightPosition(), either(lessThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
+            assertThat(m.getRightPosition(),
+                    either(greaterThan((distance))).or(closeTo((distance), MathUtils.getFloatCompareThreshold())));
+            assertThat(m.getRightPosition(),
+                    either(lessThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(-m.getRightVelocity(), either(lessThan((maxV))).or(closeTo((maxV), MathUtils.getFloatCompareThreshold())));
-            assertThat(m.getRightVelocity(), either(lessThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
+            assertThat(-m.getRightVelocity(),
+                    either(lessThan((maxV))).or(closeTo((maxV), MathUtils.getFloatCompareThreshold())));
+            assertThat(m.getRightVelocity(),
+                    either(lessThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(Math.abs(m.getRightAcceleration()), either(lessThan((maxA))).or(closeTo((maxA), MathUtils.getFloatCompareThreshold())));
+            assertThat(Math.abs(m.getRightAcceleration()),
+                    either(lessThan((maxA))).or(closeTo((maxA), MathUtils.getFloatCompareThreshold())));
         }
     }
 }

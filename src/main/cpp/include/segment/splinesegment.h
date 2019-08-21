@@ -9,4 +9,4 @@ namespace rpf {
         virtual Vec2D deriv_at(double) const = 0;
         virtual Vec2D second_deriv_at(double) const = 0;
     };
-}
+} // namespace rpf

@@ -1,12 +1,12 @@
 #pragma once
 
-#include "waypoint.h"
 #include "segments.h"
-#include <memory>
-#include <vector>
-#include <limits>
-#include <utility>
+#include "waypoint.h"
 #include <cmath>
+#include <limits>
+#include <memory>
+#include <utility>
+#include <vector>
 
 namespace rpf {
     enum PathType : int {
@@ -30,7 +30,7 @@ namespace rpf {
         Vec2D deriv_at(double) const;
         Vec2D second_deriv_at(double) const;
         std::pair<Vec2D, Vec2D> wheels_at(double) const;
-        
+
         double compute_len(int);
 
         inline double get_len() const {
@@ -46,10 +46,10 @@ namespace rpf {
         inline PathType get_type() const {
             return type;
         }
-        inline std::vector<Waypoint>& get_waypoints() {
+        inline std::vector<Waypoint> &get_waypoints() {
             return waypoints;
         }
-        inline const std::vector<Waypoint>& get_waypoints() const {
+        inline const std::vector<Waypoint> &get_waypoints() const {
             return waypoints;
         }
         inline bool get_backwards() const {
@@ -63,18 +63,18 @@ namespace rpf {
         std::shared_ptr<Path> mirror_lr() const;
         std::shared_ptr<Path> retrace() const;
 
-        void update(double, const Vec2D&, const Vec2D&, const Vec2D&);
+        void update(double, const Vec2D &, const Vec2D &, const Vec2D &);
 
     protected:
         std::vector<Waypoint> waypoints;
         double alpha;
         std::vector<std::unique_ptr<SplineSegment>> segments;
         PathType type;
-        
+
         double total_len = std::numeric_limits<double>::quiet_NaN();
         std::vector<std::pair<double, double>> s2t_table;
-        
+
         bool backwards = false;
         double base_radius;
     };
-}
+} // namespace rpf

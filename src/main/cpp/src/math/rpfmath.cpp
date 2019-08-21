@@ -8,14 +8,14 @@ namespace rpf {
     }
 
     double rangle(double angle) {
-        if(angle <= pi && angle > -pi) {
+        if (angle <= pi && angle > -pi) {
             return angle;
         }
-        while(angle > pi) {
+        while (angle > pi) {
             angle -= pi;
             angle -= pi;
         }
-        while(angle <= -pi) {
+        while (angle <= -pi) {
             angle += pi;
             angle += pi;
         }
@@ -41,4 +41,4 @@ namespace rpf {
     double curvature(double dx, double ddx, double dy, double ddy) {
         return (dx * ddy - dy * ddx) / std::pow(dx * dx + dy * dy, 3.0 / 2.0);
     }
-}
+} // namespace rpf

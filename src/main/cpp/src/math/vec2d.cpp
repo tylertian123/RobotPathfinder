@@ -1,6 +1,6 @@
 #include "math/vec2d.h"
-#include <cmath>
 #include "math/rpfmath.h"
+#include <cmath>
 
 namespace rpf {
 
@@ -35,7 +35,7 @@ namespace rpf {
     Vec2D Vec2D::operator+(const Vec2D &other) const {
         return Vec2D(x + other.x, y + other.y);
     }
-    Vec2D& Vec2D::operator+=(const Vec2D &other) {
+    Vec2D &Vec2D::operator+=(const Vec2D &other) {
         x += other.x;
         y += other.y;
         return *this;
@@ -43,7 +43,7 @@ namespace rpf {
     Vec2D Vec2D::operator-(const Vec2D &other) const {
         return Vec2D(x - other.x, y - other.y);
     }
-    Vec2D& Vec2D::operator-=(const Vec2D &other) {
+    Vec2D &Vec2D::operator-=(const Vec2D &other) {
         x -= other.x;
         y -= other.y;
         return *this;
@@ -54,7 +54,7 @@ namespace rpf {
     Vec2D operator*(double scalar, const Vec2D &vec) {
         return Vec2D(vec.x * scalar, vec.y * scalar);
     }
-    Vec2D& Vec2D::operator*=(double scalar) {
+    Vec2D &Vec2D::operator*=(double scalar) {
         x *= scalar;
         y *= scalar;
         return *this;
@@ -62,9 +62,9 @@ namespace rpf {
     Vec2D Vec2D::operator/(double scalar) const {
         return Vec2D(x / scalar, y / scalar);
     }
-    Vec2D& Vec2D::operator/=(double scalar) {
+    Vec2D &Vec2D::operator/=(double scalar) {
         x /= scalar;
         y /= scalar;
         return *this;
     }
-}
+} // namespace rpf

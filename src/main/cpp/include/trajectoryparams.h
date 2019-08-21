@@ -1,9 +1,9 @@
 #pragma once
 
-#include "waypoint.h"
 #include "paths.h"
-#include <vector>
+#include "waypoint.h"
 #include <limits>
+#include <vector>
 
 namespace rpf {
     struct TrajectoryParams {
@@ -13,4 +13,4 @@ namespace rpf {
         bool is_tank;
         PathType type;
     };
-}
+} // namespace rpf

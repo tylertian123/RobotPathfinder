@@ -40,9 +40,7 @@ Java_com_arctos6135_robotpathfinder_core_trajectory_TankDriveTrajectory__1constr
         rpf::set_obj_ptr(env, obj, t);
     }
     catch (const std::exception &e) {
-        jclass exclass = env->FindClass(
-                "com/arctos6135/robotpathfinder/core/trajectory/TrajectoryGenerationException");
-        env->ThrowNew(exclass, e.what());
+        rpf::throw_exception(env, rpf::EX_TrajectoryGenerationException, e.what());
     }
 }
 
@@ -60,7 +58,7 @@ Java_com_arctos6135_robotpathfinder_core_trajectory_TankDriveTrajectory__1getMom
         JNIEnv *env, jobject obj) {
     auto ptr = rpf::get_obj_ptr<rpf::TankDriveTrajectory>(env, obj);
     if (!rpf::check_instance(ttinstances, ttinstances_mutex, ptr)) {
-        rpf::throw_IllegalStateException(env, "This object has already been freed");
+        rpf::throw_exception(env, rpf::EX_IllegalStateException, "This object has already been freed");
     }
     else {
         auto &moments = ptr->get_moments();
@@ -90,7 +88,7 @@ Java_com_arctos6135_robotpathfinder_core_trajectory_TankDriveTrajectory__1get(
         JNIEnv *env, jobject obj, jdouble t) {
     auto ptr = rpf::get_obj_ptr<rpf::TankDriveTrajectory>(env, obj);
     if (!rpf::check_instance(ttinstances, ttinstances_mutex, ptr)) {
-        rpf::throw_IllegalStateException(env, "This object has already been freed");
+        rpf::throw_exception(env, rpf::EX_IllegalStateException, "This object has already been freed");
         return NULL;
     }
     else {
@@ -109,7 +107,7 @@ Java_com_arctos6135_robotpathfinder_core_trajectory_TankDriveTrajectory__1getPat
         JNIEnv *env, jobject obj) {
     auto p = rpf::get_obj_ptr<rpf::TankDriveTrajectory>(env, obj);
     if (!rpf::check_instance(ttinstances, ttinstances_mutex, p)) {
-        rpf::throw_IllegalStateException(env, "This object has already been freed");
+        rpf::throw_exception(env, rpf::EX_IllegalStateException, "This object has already been freed");
         return 0;
     }
     else {
@@ -124,7 +122,7 @@ Java_com_arctos6135_robotpathfinder_core_trajectory_TankDriveTrajectory_totalTim
         JNIEnv *env, jobject obj) {
     auto ptr = rpf::get_obj_ptr<rpf::TankDriveTrajectory>(env, obj);
     if (!rpf::check_instance(ttinstances, ttinstances_mutex, ptr)) {
-        rpf::throw_IllegalStateException(env, "This object has already been freed");
+        rpf::throw_exception(env, rpf::EX_IllegalStateException, "This object has already been freed");
         return 0;
     }
     else {
@@ -137,7 +135,7 @@ Java_com_arctos6135_robotpathfinder_core_trajectory_TankDriveTrajectory__1mirror
         JNIEnv *env, jobject obj) {
     auto p = rpf::get_obj_ptr<rpf::TankDriveTrajectory>(env, obj);
     if (!rpf::check_instance(ttinstances, ttinstances_mutex, p)) {
-        rpf::throw_IllegalStateException(env, "This object has already been freed");
+        rpf::throw_exception(env, rpf::EX_IllegalStateException, "This object has already been freed");
         return 0;
     }
     else {
@@ -156,7 +154,7 @@ Java_com_arctos6135_robotpathfinder_core_trajectory_TankDriveTrajectory__1mirror
         JNIEnv *env, jobject obj) {
     auto p = rpf::get_obj_ptr<rpf::TankDriveTrajectory>(env, obj);
     if (!rpf::check_instance(ttinstances, ttinstances_mutex, p)) {
-        rpf::throw_IllegalStateException(env, "This object has already been freed");
+        rpf::throw_exception(env, rpf::EX_IllegalStateException, "This object has already been freed");
         return 0;
     }
     else {
@@ -175,7 +173,7 @@ Java_com_arctos6135_robotpathfinder_core_trajectory_TankDriveTrajectory__1retrac
         JNIEnv *env, jobject obj) {
     auto p = rpf::get_obj_ptr<rpf::TankDriveTrajectory>(env, obj);
     if (!rpf::check_instance(ttinstances, ttinstances_mutex, p)) {
-        rpf::throw_IllegalStateException(env, "This object has already been freed");
+        rpf::throw_exception(env, rpf::EX_IllegalStateException, "This object has already been freed");
         return 0;
     }
     else {
@@ -194,7 +192,7 @@ Java_com_arctos6135_robotpathfinder_core_trajectory_TankDriveTrajectory__1getMom
         JNIEnv *env, jobject obj) {
     auto ptr = rpf::get_obj_ptr<rpf::TankDriveTrajectory>(env, obj);
     if (!rpf::check_instance(ttinstances, ttinstances_mutex, ptr)) {
-        rpf::throw_IllegalStateException(env, "This object has already been freed");
+        rpf::throw_exception(env, rpf::EX_IllegalStateException, "This object has already been freed");
         return 0;
     }
     else {

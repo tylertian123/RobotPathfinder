@@ -62,5 +62,9 @@ namespace rpf {
         return it != instances.end();
     }
 
-    void throw_IllegalStateException(JNIEnv *, const char *);
+    constexpr const char * const EX_IllegalStateException = "java/lang/IllegalStateException";
+    constexpr const char * const EX_IllegalArgumentException = "java/lang/IllegalArgumentException";
+    constexpr const char * const EX_TrajectoryGenerationException = "com/arctos6135/robotpathfinder/core/trajectory/TrajectoryGenerationException";
+
+    void throw_exception(JNIEnv *env, const char *ex, const char *msg);
 } // namespace rpf

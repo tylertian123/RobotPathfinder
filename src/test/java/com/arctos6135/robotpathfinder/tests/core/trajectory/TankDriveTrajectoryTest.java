@@ -113,8 +113,10 @@ public class TankDriveTrajectoryTest {
             assertThat(m0.getRightPosition(), closeTo(m1.getRightPosition(), MathUtils.getFloatCompareThreshold()));
             assertThat(m0.getLeftVelocity(), closeTo(m1.getLeftVelocity(), MathUtils.getFloatCompareThreshold()));
             assertThat(m0.getRightVelocity(), closeTo(m1.getRightVelocity(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getLeftAcceleration(), closeTo(m1.getLeftAcceleration(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getRightAcceleration(), closeTo(m1.getRightAcceleration(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getLeftAcceleration(),
+                    closeTo(m1.getLeftAcceleration(), MathUtils.getFloatCompareThreshold()));
+            assertThat(m0.getRightAcceleration(),
+                    closeTo(m1.getRightAcceleration(), MathUtils.getFloatCompareThreshold()));
             assertThat(m0.getHeading(), closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
         }
 

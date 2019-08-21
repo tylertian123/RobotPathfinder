@@ -71,8 +71,7 @@ public final class GlobalLibraryLoader {
             System.load(new File(fileName).getAbsolutePath());
             loaded = true;
             System.out.println("Library loaded successfully.");
-        }
-        catch(UnsatisfiedLinkError ule) {
+        } catch (UnsatisfiedLinkError ule) {
             System.err.println("Failed to load " + fileName + "!");
         }
     }

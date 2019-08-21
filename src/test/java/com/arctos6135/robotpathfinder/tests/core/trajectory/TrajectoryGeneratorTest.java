@@ -66,8 +66,10 @@ public class TrajectoryGeneratorTest {
         RobotSpecs specs = new RobotSpecs(maxV, maxA, baseWidth);
         TankDriveTrajectory traj = TrajectoryGenerator.generateStraightTank(specs, distance);
 
-        assertThat(traj.get(traj.totalTime()).getLeftPosition(), closeTo(distance, MathUtils.getFloatCompareThreshold()));
-        assertThat(traj.get(traj.totalTime()).getRightPosition(), closeTo(distance, MathUtils.getFloatCompareThreshold()));
+        assertThat(traj.get(traj.totalTime()).getLeftPosition(),
+                closeTo(distance, MathUtils.getFloatCompareThreshold()));
+        assertThat(traj.get(traj.totalTime()).getRightPosition(),
+                closeTo(distance, MathUtils.getFloatCompareThreshold()));
         traj.close();
     }
 
@@ -92,10 +94,12 @@ public class TrajectoryGeneratorTest {
         TankDriveTrajectory traj1 = TrajectoryGenerator.generateRotationTank(specs, angle1);
         TankDriveTrajectory traj2 = TrajectoryGenerator.generateRotationTank(specs, angle2);
 
-        assertThat(Math.abs(MathUtils.angleDiff(traj1.get(traj1.totalTime()).getFacingRelative(),
-                MathUtils.restrictAngle(angle1))), lessThan(MathUtils.getFloatCompareThreshold()));
-        assertThat(Math.abs(MathUtils.angleDiff(traj2.get(traj2.totalTime()).getFacingRelative(),
-                MathUtils.restrictAngle(angle2))), lessThan(MathUtils.getFloatCompareThreshold()));
+        assertThat(Math.abs(
+                MathUtils.angleDiff(traj1.get(traj1.totalTime()).getFacingRelative(), MathUtils.restrictAngle(angle1))),
+                lessThan(MathUtils.getFloatCompareThreshold()));
+        assertThat(Math.abs(
+                MathUtils.angleDiff(traj2.get(traj2.totalTime()).getFacingRelative(), MathUtils.restrictAngle(angle2))),
+                lessThan(MathUtils.getFloatCompareThreshold()));
         traj1.close();
         traj2.close();
     }

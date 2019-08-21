@@ -147,7 +147,7 @@ repositories {
     jcenter()
 }
 
-project.version = '3.0.0-alpha.1'
+project.version = '3.0.0-alpha.1.1-dev'
 
 // Setup for Gradle-JNI
 // Thanks to @ThadHouse

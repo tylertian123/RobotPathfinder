@@ -20,4 +20,4 @@ namespace rpf {
     double curvature(double, double, double, double);
     // The constant pi
     constexpr double pi = 3.141592653589793238462643383279502884;
-}
+} // namespace rpf

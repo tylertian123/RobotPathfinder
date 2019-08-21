@@ -1,23 +1,23 @@
 #pragma once
 
+#include <algorithm>
 #include <jni.h>
 #include <list>
 #include <memory>
-#include <algorithm>
 #include <mutex>
 
 namespace rpf {
     template <typename T>
-    T* get_obj_ptr(JNIEnv *env, jobject obj) {
+    T *get_obj_ptr(JNIEnv *env, jobject obj) {
         jfieldID fid = env->GetFieldID(env->GetObjectClass(obj), "_nativePtr", "J");
-        return reinterpret_cast<T*>(env->GetLongField(obj, fid));
+        return reinterpret_cast<T *>(env->GetLongField(obj, fid));
     }
     template <typename T>
-    void set_obj_ptr(JNIEnv *env, jobject obj, T* ptr) {
+    void set_obj_ptr(JNIEnv *env, jobject obj, T *ptr) {
         jfieldID fid = env->GetFieldID(env->GetObjectClass(obj), "_nativePtr", "J");
         env->SetLongField(obj, fid, reinterpret_cast<jlong>(ptr));
     }
-    
+
     template <typename T>
     T get_field(JNIEnv *env, jobject obj, const char *fname);
     template <>
@@ -38,11 +38,13 @@ namespace rpf {
     jdouble get_field<jdouble>(JNIEnv *env, jobject obj, const char *fname);
 
     template <typename T>
-    bool remove_instance(std::list<std::shared_ptr<T>> &instances, std::mutex &instances_mutex, T *ptr) {
+    bool remove_instance(
+            std::list<std::shared_ptr<T>> &instances, std::mutex &instances_mutex, T *ptr) {
         // Acquire lock to the mutex
         std::lock_guard<std::mutex> lock(instances_mutex);
-        auto it = std::find_if(instances.begin(), instances.end(), [&](const auto &p){ return p.get() == ptr; });
-        if(it != instances.end()) {
+        auto it = std::find_if(
+                instances.begin(), instances.end(), [&](const auto &p) { return p.get() == ptr; });
+        if (it != instances.end()) {
             instances.erase(it);
             return true;
         }
@@ -51,13 +53,14 @@ namespace rpf {
         }
     }
     template <typename T>
-    bool check_instance(std::list<std::shared_ptr<T>> &instances, std::mutex &instances_mutex, T *ptr) {
+    bool check_instance(
+            std::list<std::shared_ptr<T>> &instances, std::mutex &instances_mutex, T *ptr) {
         // Acquire lock to the mutex
         std::lock_guard<std::mutex> lock(instances_mutex);
-        auto it = std::find_if(instances.begin(), instances.end(), [&](const auto &p){ return p.get() == ptr; });
+        auto it = std::find_if(
+                instances.begin(), instances.end(), [&](const auto &p) { return p.get() == ptr; });
         return it != instances.end();
     }
-    
-    void throw_IllegalStateException(JNIEnv *, const char *);
-}
 
+    void throw_IllegalStateException(JNIEnv *, const char *);
+} // namespace rpf

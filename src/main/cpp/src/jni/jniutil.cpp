@@ -46,4 +46,4 @@ namespace rpf {
         jclass clazz = env->FindClass("java/lang/IllegalStateException");
         env->ThrowNew(clazz, msg);
     }
-}
+} // namespace rpf

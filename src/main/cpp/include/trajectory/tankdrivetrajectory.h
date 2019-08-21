@@ -1,15 +1,15 @@
 #pragma once
 
-#include "paths.h"
-#include "trajectory/tankdrivemoment.h"
-#include "robotspecs.h"
-#include "trajectoryparams.h"
-#include "math/vec2d.h"
-#include "math/rpfmath.h"
 #include "basictrajectory.h"
+#include "math/rpfmath.h"
+#include "math/vec2d.h"
+#include "paths.h"
+#include "robotspecs.h"
+#include "trajectory/tankdrivemoment.h"
+#include "trajectoryparams.h"
 #include <memory>
-#include <vector>
 #include <stdexcept>
+#include <vector>
 
 namespace rpf {
     class TankDriveTrajectory {
@@ -22,29 +22,29 @@ namespace rpf {
         inline std::shared_ptr<const Path> get_path() const {
             return path;
         }
-        inline std::vector<TankDriveMoment>& get_moments() {
+        inline std::vector<TankDriveMoment> &get_moments() {
             return moments;
         }
-        inline const std::vector<TankDriveMoment>& get_moments() const {
+        inline const std::vector<TankDriveMoment> &get_moments() const {
             return moments;
         }
         inline double get_init_facing() const {
             return init_facing;
         }
 
-        inline RobotSpecs& get_specs() {
+        inline RobotSpecs &get_specs() {
             return specs;
         }
-        inline const RobotSpecs& get_specs() const {
+        inline const RobotSpecs &get_specs() const {
             return specs;
         }
-        inline TrajectoryParams& get_params() {
+        inline TrajectoryParams &get_params() {
             return params;
         }
-        inline const TrajectoryParams& get_params() const {
+        inline const TrajectoryParams &get_params() const {
             return params;
         }
-        
+
         inline double total_time() const {
             return moments[moments.size() - 1].time;
         }
@@ -56,10 +56,11 @@ namespace rpf {
         std::shared_ptr<TankDriveTrajectory> retrace() const;
 
     protected:
-
-        TankDriveTrajectory(std::shared_ptr<Path> path, std::vector<TankDriveMoment> &&moments, 
+        TankDriveTrajectory(std::shared_ptr<Path> path, std::vector<TankDriveMoment> &&moments,
                 bool backwards, const RobotSpecs &specs, const TrajectoryParams &params)
-                : path(path), moments(moments), backwards(backwards), specs(specs), params(params), init_facing(moments[0].init_facing) {}
+                : path(path), moments(moments), backwards(backwards), specs(specs), params(params),
+                  init_facing(moments[0].init_facing) {
+        }
 
         std::shared_ptr<Path> path;
         std::vector<TankDriveMoment> moments;
@@ -71,4 +72,4 @@ namespace rpf {
 
         double init_facing;
     };
-}
+} // namespace rpf

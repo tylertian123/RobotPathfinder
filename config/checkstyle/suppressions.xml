@@ -1,10 +1,13 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <!DOCTYPE suppressions PUBLIC
-	"-//Puppy Crawl//DTD Suppressions 1.1//EN"
-	"http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
+    "-//Checkstyle//DTD SuppressionFilter Configuration 1.0//EN"
+    "https://checkstyle.org/dtds/suppressions_1_0.dtd">
 
 <suppressions>
+	<!-- Skip all checks for DebugTests.java, which is a temporary file -->
+	<!-- that is used exclusively for running code for bug fixes -->
 	<suppress files="DebugTests\.java" checks="[a-zA-Z0-9]*"/>
+	<!-- Skip member variable Javadoc tests for all test classes -->
 	<suppress files="src[\\\/]test[\\\/]java" checks="JavadocVariable"/>
 </suppressions>

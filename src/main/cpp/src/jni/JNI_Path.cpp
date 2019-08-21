@@ -41,7 +41,8 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1setB
         JNIEnv *env, jobject obj, jdouble radius) {
     auto ptr = rpf::get_obj_ptr<rpf::Path>(env, obj);
     if (!rpf::check_instance(pinstances, pinstances_mutex, ptr)) {
-        rpf::throw_exception(env, rpf::EX_IllegalStateException, "This object has already been freed");
+        rpf::throw_exception(
+                env, rpf::EX_IllegalStateException, "This object has already been freed");
     }
     else {
         ptr->set_base(radius);
@@ -51,7 +52,8 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1setB
         JNIEnv *env, jobject obj, jboolean backwards) {
     auto ptr = rpf::get_obj_ptr<rpf::Path>(env, obj);
     if (!rpf::check_instance(pinstances, pinstances_mutex, ptr)) {
-        rpf::throw_exception(env, rpf::EX_IllegalStateException, "This object has already been freed");
+        rpf::throw_exception(
+                env, rpf::EX_IllegalStateException, "This object has already been freed");
     }
     else {
         ptr->set_backwards(backwards);
@@ -62,7 +64,8 @@ JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path_at(
         JNIEnv *env, jobject obj, jdouble t) {
     auto ptr = rpf::get_obj_ptr<rpf::Path>(env, obj);
     if (!rpf::check_instance(pinstances, pinstances_mutex, ptr)) {
-        rpf::throw_exception(env, rpf::EX_IllegalStateException, "This object has already been freed");
+        rpf::throw_exception(
+                env, rpf::EX_IllegalStateException, "This object has already been freed");
         return NULL;
     }
     else {
@@ -78,7 +81,8 @@ JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path_der
         JNIEnv *env, jobject obj, jdouble t) {
     auto ptr = rpf::get_obj_ptr<rpf::Path>(env, obj);
     if (!rpf::check_instance(pinstances, pinstances_mutex, ptr)) {
-        rpf::throw_exception(env, rpf::EX_IllegalStateException, "This object has already been freed");
+        rpf::throw_exception(
+                env, rpf::EX_IllegalStateException, "This object has already been freed");
         return NULL;
     }
     else {
@@ -93,7 +97,8 @@ JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path_sec
         JNIEnv *env, jobject obj, jdouble t) {
     auto ptr = rpf::get_obj_ptr<rpf::Path>(env, obj);
     if (!rpf::check_instance(pinstances, pinstances_mutex, ptr)) {
-        rpf::throw_exception(env, rpf::EX_IllegalStateException, "This object has already been freed");
+        rpf::throw_exception(
+                env, rpf::EX_IllegalStateException, "This object has already been freed");
         return NULL;
     }
     else {
@@ -109,7 +114,8 @@ JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path_whe
         JNIEnv *env, jobject obj, jdouble t) {
     auto ptr = rpf::get_obj_ptr<rpf::Path>(env, obj);
     if (!rpf::check_instance(pinstances, pinstances_mutex, ptr)) {
-        rpf::throw_exception(env, rpf::EX_IllegalStateException, "This object has already been freed");
+        rpf::throw_exception(
+                env, rpf::EX_IllegalStateException, "This object has already been freed");
         return NULL;
     }
     else {
@@ -132,7 +138,8 @@ JNIEXPORT jdouble JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1c
         JNIEnv *env, jobject obj, jint points) {
     auto ptr = rpf::get_obj_ptr<rpf::Path>(env, obj);
     if (!rpf::check_instance(pinstances, pinstances_mutex, ptr)) {
-        rpf::throw_exception(env, rpf::EX_IllegalStateException, "This object has already been freed");
+        rpf::throw_exception(
+                env, rpf::EX_IllegalStateException, "This object has already been freed");
         return 0;
     }
     else {
@@ -143,7 +150,8 @@ JNIEXPORT jdouble JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1s
         JNIEnv *env, jobject obj, jdouble s) {
     auto ptr = rpf::get_obj_ptr<rpf::Path>(env, obj);
     if (!rpf::check_instance(pinstances, pinstances_mutex, ptr)) {
-        rpf::throw_exception(env, rpf::EX_IllegalStateException, "This object has already been freed");
+        rpf::throw_exception(
+                env, rpf::EX_IllegalStateException, "This object has already been freed");
         return 0;
     }
     else {
@@ -154,7 +162,8 @@ JNIEXPORT jdouble JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1t
         JNIEnv *env, jobject obj, jdouble t) {
     auto ptr = rpf::get_obj_ptr<rpf::Path>(env, obj);
     if (!rpf::check_instance(pinstances, pinstances_mutex, ptr)) {
-        rpf::throw_exception(env, rpf::EX_IllegalStateException, "This object has already been freed");
+        rpf::throw_exception(
+                env, rpf::EX_IllegalStateException, "This object has already been freed");
         return 0;
     }
     else {
@@ -166,7 +175,8 @@ JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1mir
         JNIEnv *env, jobject obj) {
     auto p = rpf::get_obj_ptr<rpf::Path>(env, obj);
     if (!rpf::check_instance(pinstances, pinstances_mutex, p)) {
-        rpf::throw_exception(env, rpf::EX_IllegalStateException, "This object has already been freed");
+        rpf::throw_exception(
+                env, rpf::EX_IllegalStateException, "This object has already been freed");
         return 0;
     }
     else {
@@ -183,7 +193,8 @@ JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1mir
         JNIEnv *env, jobject obj) {
     auto p = rpf::get_obj_ptr<rpf::Path>(env, obj);
     if (!rpf::check_instance(pinstances, pinstances_mutex, p)) {
-        rpf::throw_exception(env, rpf::EX_IllegalStateException, "This object has already been freed");
+        rpf::throw_exception(
+                env, rpf::EX_IllegalStateException, "This object has already been freed");
         return 0;
     }
     else {
@@ -200,7 +211,8 @@ JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1ret
         JNIEnv *env, jobject obj) {
     auto p = rpf::get_obj_ptr<rpf::Path>(env, obj);
     if (!rpf::check_instance(pinstances, pinstances_mutex, p)) {
-        rpf::throw_exception(env, rpf::EX_IllegalStateException, "This object has already been freed");
+        rpf::throw_exception(
+                env, rpf::EX_IllegalStateException, "This object has already been freed");
         return 0;
     }
     else {
@@ -218,7 +230,8 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1upda
         JNIEnv *env, jobject obj) {
     auto p = rpf::get_obj_ptr<rpf::Path>(env, obj);
     if (!rpf::check_instance(pinstances, pinstances_mutex, p)) {
-        rpf::throw_exception(env, rpf::EX_IllegalStateException, "This object has already been freed");
+        rpf::throw_exception(
+                env, rpf::EX_IllegalStateException, "This object has already been freed");
     }
     else {
         auto &wp = p->get_waypoints();
@@ -235,5 +248,17 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1upda
                     wpclass, constructor_mid, wp[i].x, wp[i].y, wp[i].heading, wp[i].velocity);
             env->SetObjectArrayElement(*arr, i, w);
         }
+    }
+}
+
+JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1update(JNIEnv *env,
+        jobject obj, jdouble t, jdouble px, jdouble py, jdouble vx, jdouble vy, jdouble ax,
+        jdouble ay) {
+    auto p = rpf::get_obj_ptr<rpf::Path>(env, obj);
+    try {
+        p->update(t, rpf::Vec2D(px, py), rpf::Vec2D(vx, vy), rpf::Vec2D(ax, ay));
+    }
+    catch(std::invalid_argument &e) {
+        rpf::throw_exception(env, rpf::EX_IllegalArgumentException, e.what());
     }
 }

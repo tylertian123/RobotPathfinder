@@ -410,4 +410,10 @@ public class Path extends JNIObject {
         p._updateWaypoints();
         return p;
     }
+
+    private native void _update(double t, double px, double py, double vx, double vy, double ax, double ay);
+
+    public void update(double t, Vec2D p, Vec2D v, Vec2D a) {
+        _update(t, p.getX(), p.getY(), v.getX(), v.getY(), a.getX(), a.getY());
+    }
 }

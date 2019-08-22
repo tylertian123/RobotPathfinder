@@ -126,6 +126,12 @@ abstract public class Follower<T extends Moment> {
 			return gains;
 		}
 
+		@Override
+		public String toString() {
+			return "{" + " kA='" + kA + "'" + ", kV='" + kV + "'" + ", kP='" + kP + "'" + ", kI='" + kI + "'" + ", kD='"
+					+ kD + "'" + "}";
+		}
+
 		/**
 		 * Constructs a new set of gains with each gain set to 0.
 		 */

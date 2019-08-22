@@ -1,5 +1,7 @@
 package com.arctos6135.robotpathfinder.core;
 
+import java.util.Objects;
+
 /**
  * A class representing the specifications for a robot. Robot specifications
  * consist of a maximum velocity and acceleration, and in the case of tank drive
@@ -20,6 +22,29 @@ public class RobotSpecs {
 
 	protected double baseWidth = Double.NaN;
 	protected double maxVelocity, maxAcceleration;
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == this)
+			return true;
+		if (!(o instanceof RobotSpecs)) {
+			return false;
+		}
+		RobotSpecs robotSpecs = (RobotSpecs) o;
+		return baseWidth == robotSpecs.baseWidth && maxVelocity == robotSpecs.maxVelocity
+				&& maxAcceleration == robotSpecs.maxAcceleration;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(baseWidth, maxVelocity, maxAcceleration);
+	}
+
+	@Override
+	public String toString() {
+		return "{" + " baseWidth='" + getBaseWidth() + "'" + ", maxVelocity='" + getMaxVelocity() + "'"
+				+ ", maxAcceleration='" + getMaxAcceleration() + "'" + "}";
+	}
 
 	/**
 	 * Constructs a new robot specification object with the specified values. The

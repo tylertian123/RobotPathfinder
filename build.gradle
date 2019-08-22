@@ -1,4 +1,5 @@
 import org.apache.tools.ant.taskdefs.condition.Os
+import java.nio.file.Files
 
 plugins {
     id 'base'
@@ -268,10 +269,36 @@ dependencies {
 }
 
 task updateJNIHeaders(type: Copy, group: 'Development', description: 'Copies JNI generated headers into the JNI headers directory.') {
-    dependsOn assemble
+    dependsOn compileJava
 
-    from 'build/jniinclude/compileJava'
+    String srcDir = 'build/jniinclude/compileJava/'
+
+    from srcDir
     into 'src/main/cpp/include/jni'
+
+    // For each generated file, prepend "// clang-format off" to turn off clang-format for it
+    eachFile { details ->
+        File header = new File(srcDir + details.getSourcePath())
+        // Create temp file
+        File tmp = File.createTempFile("temp", ".tmp")
+        tmp.deleteOnExit()
+        // Write to temp file
+        tmp.withWriter { writer ->
+            // Comment to turn off formatter
+            writer.writeLine "// clang-format off"
+            // Write the rest of the file
+            header.eachLine { line ->
+                writer.writeLine line
+            }
+        }
+        // Copy temp file
+        header.withWriter { writer ->
+            tmp.eachLine { line ->
+                writer.writeLine line
+            }
+            writer.writeLine "// clang-format on"
+        }
+    }
 }
 
 task copyLibLinuxx8664Debug(type: Copy, group: 'Development', description: 'Copies the dynamic library for linux x86-64 debug to the root of the project.') {

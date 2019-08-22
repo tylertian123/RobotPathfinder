@@ -92,3 +92,4 @@ JNIEXPORT jlong JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_Tank
 }
 #endif
 #endif
+// clang-format on

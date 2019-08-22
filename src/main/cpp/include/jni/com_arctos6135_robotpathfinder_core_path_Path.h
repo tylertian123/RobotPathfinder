@@ -132,3 +132,4 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_path_Path__1upda
 }
 #endif
 #endif
+// clang-format on

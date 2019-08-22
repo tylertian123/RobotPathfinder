@@ -94,6 +94,12 @@ public class TankDriveFollower extends Follower<TankDriveMoment> {
 			return gains;
 		}
 
+		@Override
+		public String toString() {
+			return "{" + " kA='" + kA + "'" + ", kV='" + kV + "'" + ", kP='" + kP + "'" + ", kI='" + kI + "'" + ", kD='"
+					+ kD + "'" + ", kDP='" + kDP + "'" + "}";
+		}
+
 		/**
 		 * Constructs a new set of gains with each gain set to 0.
 		 */

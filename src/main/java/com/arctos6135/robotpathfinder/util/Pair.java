@@ -1,5 +1,7 @@
 package com.arctos6135.robotpathfinder.util;
 
+import java.util.Objects;
+
 /**
  * A class that holds a pair of values.
  *
@@ -12,6 +14,27 @@ public class Pair<T, U> {
 
 	protected T first;
 	protected U second;
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == this)
+			return true;
+		if (!(o instanceof Pair)) {
+			return false;
+		}
+		Pair<?, ?> pair = (Pair<?, ?>) o;
+		return Objects.equals(first, pair.first) && Objects.equals(second, pair.second);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(first, second);
+	}
+
+	@Override
+	public String toString() {
+		return "{" + " first='" + getFirst() + "'" + ", second='" + getSecond() + "'" + "}";
+	}
 
 	/**
 	 * Creates a new {@link Pair} object with both elements {@code null}.

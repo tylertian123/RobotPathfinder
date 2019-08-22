@@ -1,5 +1,8 @@
 package com.arctos6135.robotpathfinder.core;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 import com.arctos6135.robotpathfinder.core.path.PathType;
 
 /**
@@ -60,6 +63,29 @@ public class TrajectoryParams implements Cloneable {
 		tp.sampleCount = this.sampleCount;
 		tp.pathType = this.pathType;
 		return tp;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == this)
+			return true;
+		if (!(o instanceof TrajectoryParams)) {
+			return false;
+		}
+		TrajectoryParams t = (TrajectoryParams) o;
+		return Arrays.equals(waypoints, t.waypoints) && alpha == t.alpha && sampleCount == t.sampleCount
+				&& pathType == t.pathType;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(waypoints, alpha, sampleCount, pathType);
+	}
+
+	@Override
+	public String toString() {
+		return "{" + " waypoints='" + waypoints + "'" + ", alpha='" + alpha + "'" + ", sampleCount='" + sampleCount
+				+ "'" + ", pathType='" + pathType + "'" + "}";
 	}
 
 	/**

@@ -20,3 +20,4 @@ JNIEXPORT void JNICALL Java_com_arctos6135_robotpathfinder_core_lifecycle_JNIObj
 }
 #endif
 #endif
+// clang-format on

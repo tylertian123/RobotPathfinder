@@ -20,3 +20,4 @@ JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_Tr
 }
 #endif
 #endif
+// clang-format on

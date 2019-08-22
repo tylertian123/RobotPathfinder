@@ -265,6 +265,18 @@ public final class Grapher {
 		maxX = -Double.MAX_VALUE;
 		maxY = -Double.MAX_VALUE;
 
+		Waypoint[] waypoints = path.getWaypoints();
+		double[][] xy = new double[waypoints.length][2];
+		for (int j = 0; j < waypoints.length; j++) {
+			xy[j][0] = waypoints[j].getX();
+			xy[j][1] = waypoints[j].getY();
+
+			minX = Math.min(minX, waypoints[j].getX());
+			minY = Math.min(minY, waypoints[j].getY());
+			maxX = Math.max(maxX, waypoints[j].getX());
+			maxY = Math.max(maxY, waypoints[j].getY());
+		}
+
 		int i = 0;
 		for (double t = 0; t <= 1 && i < elemCount; t += dt) {
 			// Collect data
@@ -316,22 +328,7 @@ public final class Grapher {
 				plot.addLinePlot("Left Wheel", leftX, leftY);
 				plot.addLinePlot("Right Wheel", rightX, rightY);
 			}
-
-			Waypoint[] waypoints = path.getWaypoints();
-			// Fixes a bug with JMathPlot
-			double[][] xy = new double[2][waypoints.length > 2 ? waypoints.length : 3];
-			for (int j = 0; j < path.getWaypoints().length; j++) {
-				xy[0][j] = waypoints[j].getX();
-				xy[1][j] = waypoints[j].getY();
-			}
-			if (waypoints.length < 3) {
-				if (waypoints.length < 2) {
-					xy[0][1] = -Double.MAX_VALUE;
-					xy[1][1] = -Double.MAX_VALUE;
-				}
-				xy[0][2] = -Double.MAX_VALUE;
-				xy[1][2] = -Double.MAX_VALUE;
-			}
+			
 			plot.addScatterPlot("Waypoints", Color.BLACK, xy);
 
 			// Take the longer of the two differences

@@ -14,7 +14,9 @@ import com.arctos6135.robotpathfinder.math.MathUtils;
 import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalTankDriveProfile;
 import com.arctos6135.robotpathfinder.tests.TestHelper;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 /**
  * This class contains tests for {@link TrapezoidalTankDriveProfile}.
@@ -22,6 +24,9 @@ import org.junit.Test;
  * @author Tyler Tian
  */
 public class TrapezoidalTankDriveProfileTest {
+
+    @Rule
+    public TestName testName = new TestName();
 
     /**
      * Performs basic testing on {@link TrapezoidalTankDriveProfile}.
@@ -33,7 +38,7 @@ public class TrapezoidalTankDriveProfileTest {
      */
     @Test
     public void testTrapezoidalTankDriveProfile() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -69,7 +74,7 @@ public class TrapezoidalTankDriveProfileTest {
      */
     @Test
     public void testTrapezoidalTankDriveProfileReversed() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -106,7 +111,7 @@ public class TrapezoidalTankDriveProfileTest {
      */
     @Test
     public void testTrapezoidalTankDriveProfileAdvanced() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -157,7 +162,7 @@ public class TrapezoidalTankDriveProfileTest {
      */
     @Test
     public void testTrapezoidalTankDriveProfileAdvancedReversed() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -207,7 +212,7 @@ public class TrapezoidalTankDriveProfileTest {
      */
     @Test
     public void testTrapezoidalTankDriveProfileCopy() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);

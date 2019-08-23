@@ -15,7 +15,9 @@ import com.arctos6135.robotpathfinder.motionprofile.TrapezoidalMotionProfile;
 import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalBasicProfile;
 import com.arctos6135.robotpathfinder.tests.TestHelper;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 /**
  * This class contains tests for {@link TrapezoidalMotionProfile}.
@@ -23,6 +25,9 @@ import org.junit.Test;
  * @author Tyler Tian
  */
 public class TrapezoidalMotionProfileTest {
+
+    @Rule
+    public TestName testName = new TestName();
 
     /**
      * Performs basic testing on {@link TrapezoidalMotionProfile}.
@@ -34,7 +39,7 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfile() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -61,7 +66,7 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfileReversed() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -89,7 +94,7 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfileAdvanced() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -126,7 +131,7 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfileAdvancedReversed() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -167,7 +172,7 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfileUpdate() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -205,7 +210,7 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfileUpdateReversed() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -248,7 +253,7 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfileUpdateOvershoot() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -284,7 +289,7 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfileUpdateOvershootReversed() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -320,7 +325,7 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfileCopy() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);

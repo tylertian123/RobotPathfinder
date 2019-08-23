@@ -6,9 +6,14 @@ import com.arctos6135.robotpathfinder.motionprofile.DynamicMotionProfile;
 import com.arctos6135.robotpathfinder.motionprofile.TrapezoidalMotionProfile;
 import com.arctos6135.robotpathfinder.tests.TestHelper;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 public class DynamicDualMotionProfileTest {
+
+    @Rule
+    public TestName testName = new TestName();
 
     /**
      * Performs full testing on {@link DynamicDualMotionProfile#copy()}.
@@ -19,7 +24,7 @@ public class DynamicDualMotionProfileTest {
      */
     @Test
     public void testDynamicDualMotionProfileCopy() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);

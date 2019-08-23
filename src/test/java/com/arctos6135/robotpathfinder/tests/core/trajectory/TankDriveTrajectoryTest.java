@@ -15,7 +15,9 @@ import com.arctos6135.robotpathfinder.core.trajectory.TrajectoryGenerationExcept
 import com.arctos6135.robotpathfinder.math.MathUtils;
 import com.arctos6135.robotpathfinder.tests.TestHelper;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 /**
  * This class contains tests for {@link TankDriveTrajectory}.
@@ -23,6 +25,9 @@ import org.junit.Test;
  * @author Tyler Tian
  */
 public class TankDriveTrajectoryTest {
+
+    @Rule
+    public TestName testName = new TestName();
 
     /**
      * Performs velocity limit testing on a {@link TankDriveTrajectory}.
@@ -36,7 +41,7 @@ public class TankDriveTrajectoryTest {
      */
     @Test
     public void testVelocityLimitTank() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -78,7 +83,7 @@ public class TankDriveTrajectoryTest {
      */
     @Test
     public void testTankDriveTrajectoryMirrorLeftRight() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -134,7 +139,7 @@ public class TankDriveTrajectoryTest {
      */
     @Test
     public void testTankDriveTrajectoryMirrorFrontBack() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -188,7 +193,7 @@ public class TankDriveTrajectoryTest {
      */
     @Test
     public void testTankDriveTrajectoryRetrace() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -254,7 +259,7 @@ public class TankDriveTrajectoryTest {
      */
     @Test
     public void testTankDriveTrajectoryMultipleMirroring() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -318,7 +323,7 @@ public class TankDriveTrajectoryTest {
      */
     @Test(expected = TrajectoryGenerationException.class)
     public void testTankDriveTrajectoryGenerationException() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);

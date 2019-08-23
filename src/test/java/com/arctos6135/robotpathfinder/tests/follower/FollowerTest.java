@@ -19,7 +19,9 @@ import com.arctos6135.robotpathfinder.math.MathUtils;
 import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalTankDriveProfile;
 import com.arctos6135.robotpathfinder.tests.TestHelper;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 /**
  * This class contains tests for the followers of RobotPathfinder.
@@ -27,6 +29,9 @@ import org.junit.Test;
  * @author Tyler Tian
  */
 public class FollowerTest {
+
+    @Rule
+    public TestName testName = new TestName();
 
     /**
      * A fake {@link Follower.TimestampSource} used for testing.
@@ -107,7 +112,7 @@ public class FollowerTest {
      */
     @Test
     public void testTankDriveFollowerState() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -179,7 +184,7 @@ public class FollowerTest {
      */
     @Test
     public void testTankDriveFollowerMotorOutput() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1.0);
         double maxA = helper.getDouble("maxA", 1.0);

@@ -14,7 +14,9 @@ import com.arctos6135.robotpathfinder.core.trajectory.TrajectoryGenerationExcept
 import com.arctos6135.robotpathfinder.math.MathUtils;
 import com.arctos6135.robotpathfinder.tests.TestHelper;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 /**
  * This class contains tests for {@link BasicTrajectory}.
@@ -22,6 +24,9 @@ import org.junit.Test;
  * @author Tyler Tian
  */
 public class BasicTrajectoryTest {
+
+    @Rule
+    public TestName testName = new TestName();
 
     /**
      * Performs velocity and acceleration limit testing on a
@@ -33,7 +38,7 @@ public class BasicTrajectoryTest {
      */
     @Test
     public void testVelocityAndAccelerationLimitBasic() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -74,7 +79,7 @@ public class BasicTrajectoryTest {
      */
     @Test
     public void testBeginningAndEndWaypointEx() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -122,7 +127,7 @@ public class BasicTrajectoryTest {
      */
     @Test
     public void testBasicTrajectoryMirrorLeftRight() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -171,7 +176,7 @@ public class BasicTrajectoryTest {
      */
     @Test
     public void testBasicTrajectoryMirrorFrontBack() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -219,7 +224,7 @@ public class BasicTrajectoryTest {
      */
     @Test
     public void testBasicTrajectoryRetrace() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -279,7 +284,7 @@ public class BasicTrajectoryTest {
      */
     @Test
     public void testBasicTrajectoryMultipleMirroring() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -336,7 +341,7 @@ public class BasicTrajectoryTest {
      */
     @Test(expected = TrajectoryGenerationException.class)
     public void testBasicTrajectoryGenerationException() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);

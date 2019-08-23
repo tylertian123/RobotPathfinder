@@ -1,11 +1,15 @@
 package com.arctos6135.robotpathfinder.tests;
 
+import static org.junit.Assert.fail;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,15 +29,18 @@ public final class TestHelper {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
-                try {
-                    flushAll();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
+                // If the TRAVIS environment variable is set, then we're on Travis CI
+                // Print out all the logs since we can't retrieve the files from a CI build
                 String TRAVIS = System.getenv("TRAVIS");
                 if (TRAVIS != null && TRAVIS.equals("true")) {
                     printAll();
+                } else {
+                    // Otherwise try to flush all log buffers
+                    try {
+                        flushAll();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -492,5 +499,111 @@ public final class TestHelper {
         }
 
         reader.close();
+    }
+
+    /**
+     * Asserts that all fields in two objects are equal.
+     * <p>
+     * This method uses reflection to find out all fields of an object, and compares
+     * each of the fields, regardless of visibility. If the field's type does not
+     * override {@link Object#equals(Object)}, then this method will recurse on that
+     * field to compare it. If the values of any field aren't equal in the two
+     * objects, the {@link org.junit.Assert#fail() fail()} method from JUnit will be
+     * called.
+     * </p>
+     * <p>
+     * Note that this method does <em>NOT</em> handle endless loops properly.
+     * </p>
+     * 
+     * @param a Any object
+     * @param b An object to compare it with
+     */
+    public static void assertAllFieldsEqual(Object a, Object b) {
+        assertAllFieldsEqual(a, b, 255);
+    }
+
+    /**
+     * Asserts that all fields in two objects are equal.
+     * <p>
+     * This method uses reflection to find out all fields of an object, and compares
+     * each of the fields, regardless of visibility. If the field's type does not
+     * override {@link Object#equals(Object)}, then this method will recurse on that
+     * field to compare it. If the values of any field aren't equal in the two
+     * objects, the {@link org.junit.Assert#fail() fail()} method from JUnit will be
+     * called.
+     * </p>
+     * <p>
+     * Note that this method does <em>NOT</em> handle endless loops properly.
+     * </p>
+     * 
+     * @param a Any object
+     * @param b An object to compare it with
+     * @param maxRecursionDepth The maximum allowed recursion depth
+     */
+    public static void assertAllFieldsEqual(Object a, Object b, int maxRecursionDepth) {
+        assertAllFieldsEqual(a, b, maxRecursionDepth, 0);
+    }
+
+    private static void assertAllFieldsEqual(Object a, Object b, int maxRecursionDepth, int recursionDepth) {
+        Class<?> clazz = a.getClass();
+        // Make sure the two classes are equal
+        if (!clazz.equals(b.getClass())) {
+            fail("The two objects being compared have different classes (" + clazz.getName() + " vs "
+                    + b.getClass().getName() + ")!");
+        }
+        // Get all declared fields and compare them
+        Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
+            // This field is inserted by jacoco
+            // skip it
+            if (field.getName().equals("$jacocoData")) {
+                continue;
+            }
+            field.setAccessible(true);
+            try {
+                Object aValue = field.get(a);
+                Object bValue = field.get(b);
+                // Test for reference equality first to handle nulls and simple cases
+                if (aValue != bValue) {
+                    // Now see if Object.equals() was overridden
+                    Class<?> fieldClass = field.getType();
+                    Method equals = null;
+                    boolean isPrimitive = false;
+                    try {
+                        equals = fieldClass.getMethod("equals", Object.class);
+                    } catch (NoSuchMethodException e) {
+                        // All classes inherit from Object and thus will have the equals method
+                        // If this throws a NoSuchMethodException, then the only explanation is that the
+                        // field is a primitive
+                        isPrimitive = true;
+                    }
+                    // Test to see if equals() was indeed implemented
+                    if (isPrimitive || equals.getDeclaringClass() == fieldClass) {
+                        // If it is, then use it
+                        if (!aValue.equals(bValue)) {
+                            fail("The field '" + field.getName() + "' is not equal: " + aValue + " vs " + bValue);
+                        }
+                    } else {
+                        // If equals() was not implemented, then recurse if allowed
+                        if (recursionDepth >= maxRecursionDepth) {
+                            fail("Max recursion depth for field comparison reached on class: " + fieldClass.getName());
+                        }
+
+                        try {
+                            // Recurse
+                            assertAllFieldsEqual(aValue, bValue, maxRecursionDepth, recursionDepth + 1);
+                        }
+                        // Catch the exception thrown by possible test failures
+                        // Report more relevant field names instead
+                        catch (Throwable t) {
+                            fail("The field '" + field.getName() + "' is not equal: " + aValue + " vs " + bValue);
+                        }
+                    }
+                }
+            } catch (IllegalAccessException e) {
+                // Should never happen
+                fail("IllegalAccessException: " + e.getMessage());
+            }
+        }
     }
 }

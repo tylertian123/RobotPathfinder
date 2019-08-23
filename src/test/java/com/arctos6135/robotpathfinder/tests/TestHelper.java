@@ -8,10 +8,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -501,6 +505,50 @@ public final class TestHelper {
         reader.close();
     }
 
+    private static boolean overridesEquals(Class<?> clazz) {
+        if (clazz.isPrimitive()) {
+            return true;
+        }
+        Method equals = null;
+        try {
+            equals = clazz.getMethod("equals", Object.class);
+        } catch (NoSuchMethodException e) {
+            // This should never happen
+            e.printStackTrace();
+            return false;
+        }
+
+        return equals.getDeclaringClass().equals(clazz);
+    }
+
+    private static final class ObjectPairReference {
+
+        Object refA;
+        Object refB;
+
+        public ObjectPairReference(Object referenceA, Object referenceB) {
+            refA = referenceA;
+            refB = referenceB;
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (other == this) {
+                return true;
+            }
+            if (!(other instanceof ObjectPairReference)) {
+                return false;
+            }
+            ObjectPairReference o = (ObjectPairReference) other;
+            return refA == o.refA && refB == o.refB;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(System.identityHashCode(refA), System.identityHashCode(refB));
+        }
+    }
+
     /**
      * Asserts that all fields in two objects are equal.
      * <p>
@@ -512,7 +560,13 @@ public final class TestHelper {
      * called.
      * </p>
      * <p>
-     * Note that this method does <em>NOT</em> handle endless loops properly.
+     * If the objects given override {@link Object#equals(Object)}, it will be used
+     * instead.
+     * </p>
+     * <p>
+     * This is equivalent to calling
+     * {@link #assertAllFieldsEqual(Object, Object, int)} with a max recursion depth
+     * of 255.
      * </p>
      * 
      * @param a Any object
@@ -533,23 +587,92 @@ public final class TestHelper {
      * called.
      * </p>
      * <p>
-     * Note that this method does <em>NOT</em> handle endless loops properly.
+     * If the objects given override {@link Object#equals(Object)}, it will be used
+     * instead.
      * </p>
      * 
-     * @param a Any object
-     * @param b An object to compare it with
+     * @param a                 Any object
+     * @param b                 An object to compare it with
      * @param maxRecursionDepth The maximum allowed recursion depth
      */
     public static void assertAllFieldsEqual(Object a, Object b, int maxRecursionDepth) {
-        assertAllFieldsEqual(a, b, maxRecursionDepth, 0);
+        assertAllFieldsEqual(a, b, maxRecursionDepth, 0, new HashSet<>());
     }
 
-    private static void assertAllFieldsEqual(Object a, Object b, int maxRecursionDepth, int recursionDepth) {
+    private static void assertAllFieldsEqual(Object a, Object b, int maxRecursionDepth, int recursionDepth,
+            Set<ObjectPairReference> visited) {
+        // Test for reference equality first as the simple case
+        // Also handles nulls
+        if (a == b) {
+            return;
+        }
+
+        // Test to see if this exact pair of values has already been visited
+        ObjectPairReference ref = new ObjectPairReference(a, b);
+        if(visited.contains(ref)) {
+            // Skip if already visited to avoid infinite loops
+            return;
+        }
+        // Otherwise add the pair to the set
+        visited.add(ref);
+
         Class<?> clazz = a.getClass();
         // Make sure the two classes are equal
         if (!clazz.equals(b.getClass())) {
             fail("The two objects being compared have different classes (" + clazz.getName() + " vs "
                     + b.getClass().getName() + ")!");
+        }
+        // First check if equals() was already overridden
+        if (overridesEquals(clazz)) {
+            // Directly compare with equals()
+            // This can avoid illegal reflection operations on native stuff like strings and
+            // arrays
+            if (a.equals(b)) {
+                return;
+            } else {
+                fail("The two objects being compared are not equal!");
+            }
+        }
+
+        // Next, check for arrays
+        if (clazz.isArray()) {
+            // Check if it's a primitive array
+            Class<?> componentType = clazz.getComponentType();
+            if (componentType.isPrimitive()) {
+                // Use the Array class to deal with primitive arrays
+                int len = Array.getLength(a);
+                if (len != Array.getLength(b)) {
+                    fail("The length of the two arrays aren't equal (" + len + " vs " + Array.getLength(b) + ")!");
+                }
+                for (int i = 0; i < len; i++) {
+                    Object aElem = Array.get(a, i);
+                    Object bElem = Array.get(b, i);
+                    // Directly use equals() for comparison
+                    if (!aElem.equals(bElem)) {
+                        fail("Elements at index " + i + " aren't equal (" + aElem + " vs " + bElem + ")!");
+                    }
+                }
+            } else {
+                // Directly cast to object array
+                Object[] aArr = (Object[]) a;
+                Object[] bArr = (Object[]) b;
+
+                if (aArr.length != bArr.length) {
+                    fail("The length of the two arrays aren't equal (" + aArr.length + " vs " + bArr.length + ")!");
+                }
+                for (int i = 0; i < aArr.length; i++) {
+                    try {
+                        // Recurse
+                        assertAllFieldsEqual(aArr[i], bArr[i], maxRecursionDepth, recursionDepth + 1, visited);
+                    }
+                    // Catch the exception thrown by possible test failures
+                    // Report more relevant info instead
+                    catch (Throwable t) {
+                        fail("Elements at index " + i + " aren't equal (" + aArr[i] + " vs " + bArr[i] + ")!");
+                    }
+                }
+            }
+            return;
         }
         // Get all declared fields and compare them
         Field[] fields = clazz.getDeclaredFields();
@@ -567,18 +690,8 @@ public final class TestHelper {
                 if (aValue != bValue) {
                     // Now see if Object.equals() was overridden
                     Class<?> fieldClass = field.getType();
-                    Method equals = null;
-                    boolean isPrimitive = false;
-                    try {
-                        equals = fieldClass.getMethod("equals", Object.class);
-                    } catch (NoSuchMethodException e) {
-                        // All classes inherit from Object and thus will have the equals method
-                        // If this throws a NoSuchMethodException, then the only explanation is that the
-                        // field is a primitive
-                        isPrimitive = true;
-                    }
                     // Test to see if equals() was indeed implemented
-                    if (isPrimitive || equals.getDeclaringClass() == fieldClass) {
+                    if (overridesEquals(fieldClass)) {
                         // If it is, then use it
                         if (!aValue.equals(bValue)) {
                             fail("The field '" + field.getName() + "' is not equal: " + aValue + " vs " + bValue);
@@ -591,7 +704,7 @@ public final class TestHelper {
 
                         try {
                             // Recurse
-                            assertAllFieldsEqual(aValue, bValue, maxRecursionDepth, recursionDepth + 1);
+                            assertAllFieldsEqual(aValue, bValue, maxRecursionDepth, recursionDepth + 1, visited);
                         }
                         // Catch the exception thrown by possible test failures
                         // Report more relevant field names instead

@@ -29,7 +29,16 @@ import com.arctos6135.robotpathfinder.motionprofile.followable.TankDriveFollowab
  */
 public class TrapezoidalTankDriveProfile
         extends TankDriveFollowableMotionProfile<DynamicDualMotionProfile<TrapezoidalMotionProfile>>
-        implements DynamicFollowable<TankDriveMoment> {
+        implements DynamicFollowable<TankDriveMoment>, Cloneable {
+    
+    /**
+     * Constructs a new object of this type without initializing any values.
+     * <p>
+     * This constructor should only ever be used internally.
+     * </p>
+     */
+    private TrapezoidalTankDriveProfile() {
+    }
 
     /**
      * Constructs a new profile with the specifications and distance.
@@ -64,5 +73,25 @@ public class TrapezoidalTankDriveProfile
     public void update(TankDriveMoment m) {
         profile.updateLeft(m.getTime(), m.getLeftPosition(), m.getLeftVelocity(), m.getLeftAcceleration());
         profile.updateRight(m.getTime(), m.getRightPosition(), m.getRightVelocity(), m.getRightAcceleration());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public TrapezoidalTankDriveProfile clone() {
+        return copy();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public TrapezoidalTankDriveProfile copy() {
+        TrapezoidalTankDriveProfile ttdp = new TrapezoidalTankDriveProfile();
+        ttdp.profile = profile.copy();
+        ttdp.initialFacing = initialFacing;
+
+        return ttdp;
     }
 }

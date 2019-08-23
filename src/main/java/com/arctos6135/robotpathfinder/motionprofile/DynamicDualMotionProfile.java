@@ -11,6 +11,11 @@ package com.arctos6135.robotpathfinder.motionprofile;
  * {@link DynamicMotionProfile#update(double, double, double, double) update()}
  * method of the internal motion profiles.
  * </p>
+ * <p>
+ * As always, calling the update methods mentioned above will modify the object
+ * itself. To use the object multiple times, consider using {@link #copy()} to
+ * create an identical copy, while maintaining the original object.
+ * </p>
  * 
  * @author Tyler Tian
  * @param <T> The type of {@link MotionProfile} used; must be a subclass of
@@ -36,6 +41,11 @@ public class DynamicDualMotionProfile<T extends DynamicMotionProfile> extends Du
      * Calls the {@link DynamicMotionProfile#update(double, double, double, double)
      * update()} method of the left motion profile.
      * <p>
+     * As always, calling this method will modify the object itself. To use the
+     * object multiple times, consider using {@link #copy()} to create an identical
+     * copy, while maintaining the original object.
+     * </p>
+     * <p>
      * For more information, see the documentation for
      * {@link DynamicMotionProfile#update(double, double, double, double)}.
      * <p>
@@ -54,6 +64,11 @@ public class DynamicDualMotionProfile<T extends DynamicMotionProfile> extends Du
      * Calls the {@link DynamicMotionProfile#update(double, double, double, double)
      * update()} method of the right motion profile.
      * <p>
+     * As always, calling this method will modify the object itself. To use the
+     * object multiple times, consider using {@link #copy()} to create an identical
+     * copy, while maintaining the original object.
+     * </p>
+     * <p>
      * For more information, see the documentation for
      * {@link DynamicMotionProfile#update(double, double, double, double)}.
      * <p>
@@ -66,5 +81,19 @@ public class DynamicDualMotionProfile<T extends DynamicMotionProfile> extends Du
      */
     public boolean updateRight(double currentTime, double currentPos, double currentVel, double currentAccel) {
         return rightProfile.update(currentTime, currentPos, currentVel, currentAccel);
+    }
+
+    /**
+     * Creates an identical deep copy of this {@link DynamicDualMotionProfile}
+     * object.
+     * 
+     * @return An identical copy of this object
+     */
+    @SuppressWarnings("unchecked")
+    public DynamicDualMotionProfile<T> copy() {
+        // This unchecked cast should always work, unless the copy() methods weren't
+        // implemented correctly, in which case a ClassCastException would be
+        // appropriate anyways
+        return new DynamicDualMotionProfile<T>((T) leftProfile.copy(), (T) rightProfile.copy());
     }
 }

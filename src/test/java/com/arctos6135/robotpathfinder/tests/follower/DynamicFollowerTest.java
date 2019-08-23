@@ -58,6 +58,10 @@ public class DynamicFollowerTest {
             updateCalled = true;
         }
 
+        @Override
+        public FakeDynamicFollowable copy() {
+            throw new UnsupportedOperationException();
+        }
     }
 
     /**

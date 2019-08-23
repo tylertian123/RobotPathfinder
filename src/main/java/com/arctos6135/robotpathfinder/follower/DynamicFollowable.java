@@ -14,6 +14,12 @@ import com.arctos6135.robotpathfinder.core.trajectory.Moment;
  * by a moment of type {@link T}), and updates/re-generates the object to better
  * match those conditions.
  * </p>
+ * <p>
+ * Note that calling the method {@link #update(Moment)} will modify the
+ * {@link DynamicFollowable} itself. If the dynamic followable object needs to
+ * be reused, the {@link #copy()} method can be used to create an identical
+ * copy, while maintaining the original object.
+ * </p>
  * 
  * @author Tyler Tian
  * @param <T> The type of moment used by this {@link DynamicFollowable}; must be
@@ -27,10 +33,23 @@ public interface DynamicFollowable<T extends Moment> extends Followable<T> {
      * robot (represented by a moment of type {@link T}), and updates/re-generates
      * the object to better match those conditions.
      * <p>
+     * Note that calling this method will modify the {@link DynamicFollowable}
+     * itself. If the dynamic followable object needs to be reused, the
+     * {@link #copy()} method can be used to create an identical copy, while
+     * maintaining the original object.
+     * </p>
+     * <p>
      * For more information, see the class Javadoc for this class.
      * <p>
      * 
      * @param m The real life conditions of the robot
      */
     public void update(T m);
+
+    /**
+     * Creates an identical deep copy of this {@link DynamicFollowable} object.
+     * 
+     * @return An identical copy of this object
+     */
+    public DynamicFollowable<T> copy();
 }

@@ -9,6 +9,7 @@ import static org.junit.Assert.assertThat;
 
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.math.MathUtils;
+import com.arctos6135.robotpathfinder.motionprofile.DynamicMotionProfile;
 import com.arctos6135.robotpathfinder.motionprofile.MotionProfile;
 import com.arctos6135.robotpathfinder.motionprofile.TrapezoidalMotionProfile;
 import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalBasicProfile;
@@ -173,7 +174,7 @@ public class TrapezoidalMotionProfileTest {
         double distance = helper.getDouble("distance", 1000);
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
-        TrapezoidalMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
+        DynamicMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
 
         // Generate fake update parameters
         double updateTime = helper.getDouble("updateTime", profile.totalTime());
@@ -212,7 +213,7 @@ public class TrapezoidalMotionProfileTest {
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
-        TrapezoidalMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
+        DynamicMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
 
         // Generate fake update parameters
         double updateTime = helper.getDouble("updateTime", profile.totalTime());
@@ -255,7 +256,7 @@ public class TrapezoidalMotionProfileTest {
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
-        TrapezoidalMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
+        DynamicMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
 
         // Generate fake update parameters
         double updateTime = helper.getDouble("updateTime", profile.totalTime());
@@ -291,7 +292,7 @@ public class TrapezoidalMotionProfileTest {
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
-        TrapezoidalMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
+        DynamicMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
 
         // Generate fake update parameters
         double updateTime = helper.getDouble("updateTime", profile.totalTime());
@@ -307,5 +308,29 @@ public class TrapezoidalMotionProfileTest {
         double overshootDist = -(updateVel * updateVel) / (2 * maxA);
         assertThat(profile.position(totalTime),
                 closeTo(distance + overshootDist, MathUtils.getFloatCompareThreshold()));
+    }
+
+    /**
+     * Performs full testing on {@link TrapezoidalMotionProfile#copy()}.
+     * 
+     * This test constructs a {@link TrapezoidalMotionProfile}, and calls
+     * {@link TrapezoidalMotionProfile#copy()} on it to create a copy. It then uses
+     * {@link TestHelper#assertAllFieldsEqual(Object, Object)} to compare the two
+     * objects for equality.
+     */
+    @Test
+    public void testTrapezoidalMotionProfileCopy() {
+        TestHelper helper = TestHelper.getInstance(getClass());
+
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double distance = helper.getDouble("distance", 0, 1000);
+
+        RobotSpecs specs = new RobotSpecs(maxV, maxA);
+
+        DynamicMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
+        DynamicMotionProfile copiedProfile = profile.copy();
+
+        TestHelper.assertAllFieldsEqual(profile, copiedProfile);
     }
 }

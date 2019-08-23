@@ -8,6 +8,7 @@ import static org.junit.Assert.assertThat;
 
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
+import com.arctos6135.robotpathfinder.follower.DynamicFollowable;
 import com.arctos6135.robotpathfinder.follower.Followable;
 import com.arctos6135.robotpathfinder.math.MathUtils;
 import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalTankDriveRotationProfile;
@@ -224,5 +225,21 @@ public class TrapezoidalTankDriveRotationProfileTest {
             assertThat(m.getFacingRelative(),
                     either(greaterThan(angle)).or(closeTo(angle, MathUtils.getFloatCompareThreshold())));
         }
+    }
+
+    @Test
+    public void testTrapezoidalTankDriveRotationProfileCopy() {
+        TestHelper helper = TestHelper.getInstance(getClass());
+
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double angle = helper.getDouble("angle", Math.PI);
+        double baseWidth = helper.getDouble("baseWidth", 1000);
+
+        RobotSpecs specs = new RobotSpecs(maxV, maxA, baseWidth);
+
+        DynamicFollowable<TankDriveMoment> f = new TrapezoidalTankDriveRotationProfile(specs, angle);
+
+        TestHelper.assertAllFieldsEqual(f, f.copy());
     }
 }

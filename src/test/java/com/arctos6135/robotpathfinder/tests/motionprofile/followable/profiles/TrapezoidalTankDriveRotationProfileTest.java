@@ -232,6 +232,13 @@ public class TrapezoidalTankDriveRotationProfileTest {
         }
     }
 
+    /**
+     * Performs full testing on {@link TrapezoidalTankDriveRotationProfile#copy()}.
+     * 
+     * This test constructs an instance, and calls the copy method on it to create a
+     * copy. It then uses {@link TestHelper#assertAllFieldsEqual(Object, Object)} to
+     * compare the two objects for equality.
+     */
     @Test
     public void testTrapezoidalTankDriveRotationProfileCopy() {
         TestHelper helper = new TestHelper(getClass(), testName);

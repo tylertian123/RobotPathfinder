@@ -73,10 +73,24 @@ public final class TestHelper {
     // The logs for this test
     private StringBuilder log = new StringBuilder();
 
+    /**
+     * Creates a new instance based on the test class and test name.
+     * 
+     * @param testClass The test's class
+     * @param testName  The test's name
+     */
     public TestHelper(Class<?> testClass, TestName testName) {
         this(testClass, testName.getMethodName());
     }
 
+    /**
+     * Creates a new instance based on the test class and test name.
+     * 
+     * @param testClass The test's class
+     * @param testName  The test's name
+     * @throws IllegalArgumentException If default replicate last test was set, but
+     *                                  the loading of this test's logs failed
+     */
     public TestHelper(Class<?> testClass, String testName) {
         replicateLastTest = defaultReplicateLastTest;
 
@@ -97,10 +111,27 @@ public final class TestHelper {
         instances.add(this);
     }
 
+    /**
+     * Retrieves whether {@link TestHelper}s are to replicate the last test by
+     * default.
+     * <p>
+     * For more information, see {@link #getReplicateLastTest()}.
+     * </p>
+     * 
+     * @return Whether to replicate the last test by default
+     */
     public static boolean getDefaultReplicateLastTest() {
         return defaultReplicateLastTest;
     }
 
+    /**
+     * Sets whether {@link TestHelper}s are to replicate the last test by default.
+     * <p>
+     * For more information, see {@link #getReplicateLastTest()}.
+     * </p>
+     * 
+     * @param replicate Whether to replicate the last test by default
+     */
     public static void setDefaultReplicateLastTest(boolean replicate) {
         defaultReplicateLastTest = replicate;
     }
@@ -282,6 +313,11 @@ public final class TestHelper {
         log.append("[MESSAGE] " + message + "\n");
     }
 
+    /**
+     * Writes this test's logs to disk.
+     * 
+     * @throws IOException If the writing failed
+     */
     public void write() throws IOException {
         // Don't overwrite the log file if replicateLastTest is true
         if (replicateLastTest) {
@@ -382,7 +418,7 @@ public final class TestHelper {
             if (line.length() == 0) {
                 continue;
             }
-            
+
             try {
                 // Find where the label ends
                 int labelEnd = line.indexOf(']');

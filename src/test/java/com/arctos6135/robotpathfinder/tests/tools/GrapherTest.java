@@ -193,8 +193,8 @@ public class GrapherTest {
          * See docs for {@link Path#Path(Waypoint[], double, PathType)}.
          * 
          * @param waypoints See docs for {@link Path#Path(Waypoint[], double, PathType)}
-         * @param alpha See docs for {@link Path#Path(Waypoint[], double, PathType)}
-         * @param pathType See docs for {@link Path#Path(Waypoint[], double, PathType)}
+         * @param alpha     See docs for {@link Path#Path(Waypoint[], double, PathType)}
+         * @param pathType  See docs for {@link Path#Path(Waypoint[], double, PathType)}
          */
         public TestPath(Waypoint[] waypoints, double alpha, PathType pathType) {
             super(waypoints, alpha, pathType);
@@ -294,8 +294,7 @@ public class GrapherTest {
     }
 
     /**
-     * Performs basic testing on
-     * {@link Grapher#graphPath(Path, double)}.
+     * Performs basic testing on {@link Grapher#graphPath(Path, double)}.
      * <p>
      * This test tests for whether the difference in time between two samples is
      * correct during graphing. After graphing, it tests if the returned frame has a
@@ -319,7 +318,6 @@ public class GrapherTest {
         double dt = helper.getDouble("dt", 0.001, 1);
         path.atCallback = (t) -> {
             assertThat(t, lessThanOrEqualTo(1.0));
-            System.out.println(t);
             if (!Double.isNaN(atWrapper.lastTime)) {
                 assertThat(t,
                         either(closeTo(atWrapper.lastTime + dt, MathUtils.getFloatCompareThreshold())).or(is(1.0)));
@@ -328,7 +326,6 @@ public class GrapherTest {
         };
         path.wheelsAtCallback = (t) -> {
             assertThat(t, lessThanOrEqualTo(1.0));
-            System.out.println(t);
             if (!Double.isNaN(wheelsAtWrapper.lastTime)) {
                 assertThat(t, either(closeTo(wheelsAtWrapper.lastTime + dt, MathUtils.getFloatCompareThreshold()))
                         .or(is(1.0)));

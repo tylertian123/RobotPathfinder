@@ -2,6 +2,9 @@ language: java
 
 dist: xenial
 
+services:
+  - xvfb
+
 # Encrypted Ryver Webhook URL
 env:
   global:
@@ -28,7 +31,7 @@ install:
   - ./gradlew installRoboRioToolchain
 
 script:
-  - ./gradlew build --scan -s --rerun-tasks
+  - ./gradlew build --scan -s --rerun-tasks --info
 
 # Enable gradle cache
 before_cache:

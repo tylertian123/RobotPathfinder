@@ -27,7 +27,16 @@ import com.arctos6135.robotpathfinder.motionprofile.followable.BasicFollowableMo
  * @since 3.0.0
  */
 public class TrapezoidalBasicProfile extends BasicFollowableMotionProfile<TrapezoidalMotionProfile>
-        implements DynamicFollowable<BasicMoment> {
+        implements DynamicFollowable<BasicMoment>, Cloneable {
+
+    /**
+     * Constructs a new object of this type without initializing any values.
+     * <p>
+     * This constructor should only ever be used internally.
+     * </p>
+     */
+    private TrapezoidalBasicProfile() {
+    }
 
     /**
      * Constructs a new profile with the specifications and distance.
@@ -60,5 +69,25 @@ public class TrapezoidalBasicProfile extends BasicFollowableMotionProfile<Trapez
     @Override
     public void update(BasicMoment m) {
         profile.update(m.getTime(), m.getPosition(), m.getVelocity(), m.getAcceleration());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public TrapezoidalBasicProfile clone() {
+        return copy();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public TrapezoidalBasicProfile copy() {
+        TrapezoidalBasicProfile tbp = new TrapezoidalBasicProfile();
+        tbp.profile = profile.copy();
+        tbp.initialFacing = initialFacing;
+        
+        return tbp;
     }
 }

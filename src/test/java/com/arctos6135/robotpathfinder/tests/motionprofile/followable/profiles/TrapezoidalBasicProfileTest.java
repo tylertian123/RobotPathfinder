@@ -8,12 +8,15 @@ import static org.junit.Assert.assertThat;
 
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicMoment;
+import com.arctos6135.robotpathfinder.follower.DynamicFollowable;
 import com.arctos6135.robotpathfinder.follower.Followable;
 import com.arctos6135.robotpathfinder.math.MathUtils;
 import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalBasicProfile;
 import com.arctos6135.robotpathfinder.tests.TestHelper;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 /**
  * This class contains tests for {@link TrapezoidalBasicProfile}.
@@ -21,6 +24,9 @@ import org.junit.Test;
  * @author Tyler Tian
  */
 public class TrapezoidalBasicProfileTest {
+
+    @Rule
+    public TestName testName = new TestName();
 
     /**
      * Performs basic testing on {@link TrapezoidalBasicProfile}.
@@ -32,7 +38,7 @@ public class TrapezoidalBasicProfileTest {
      */
     @Test
     public void testTrapezoidalBasicProfile() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -61,7 +67,7 @@ public class TrapezoidalBasicProfileTest {
      */
     @Test
     public void testTrapezoidalBasicProfileReversed() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -91,7 +97,7 @@ public class TrapezoidalBasicProfileTest {
      */
     @Test
     public void testTrapezoidalBasicProfileAdvanced() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -129,7 +135,7 @@ public class TrapezoidalBasicProfileTest {
      */
     @Test
     public void testTrapezoidalBasicProfileAdvancedReversed() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -155,5 +161,27 @@ public class TrapezoidalBasicProfileTest {
             assertThat(Math.abs(m.getAcceleration()),
                     either(lessThan((maxA))).or(closeTo((maxA), MathUtils.getFloatCompareThreshold())));
         }
+    }
+
+    /**
+     * Performs full testing on {@link TrapezoidalBasicProfile#copy()}.
+     * 
+     * This test constructs an instance, and calls the copy method on it to create a
+     * copy. It then uses {@link TestHelper#assertAllFieldsEqual(Object, Object)} to
+     * compare the two objects for equality.
+     */
+    @Test
+    public void testTrapezoidalBasicProfileCopy() {
+        TestHelper helper = new TestHelper(getClass(), testName);
+
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double distance = helper.getDouble("distance", 1000);
+
+        RobotSpecs specs = new RobotSpecs(maxV, maxA);
+
+        DynamicFollowable<BasicMoment> f = new TrapezoidalBasicProfile(specs, distance);
+
+        TestHelper.assertAllFieldsEqual(f, f.copy());
     }
 }

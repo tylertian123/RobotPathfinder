@@ -26,7 +26,7 @@ import com.arctos6135.robotpathfinder.math.MathUtils;
  * @author Tyler Tian
  * @since 3.0.0
  */
-public class TrapezoidalMotionProfile implements DynamicMotionProfile {
+public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable {
 
     protected double initVel;
     protected double initDist = 0, initTime = 0;
@@ -39,6 +39,15 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile {
     protected double accelDist, cruiseDist;
 
     protected boolean reverse = false;
+
+    /**
+     * Constructs a new object of this type without initializing any values.
+     * <p>
+     * This constructor should only ever be used internally.
+     * </p>
+     */
+    private TrapezoidalMotionProfile() {
+    }
 
     /**
      * Constructs a new trapezoidal motion profile with a set distance.
@@ -280,5 +289,40 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile {
         initTime = currentTime;
         initDist = currentDist;
         return construct(maxVel, maxAcl, (reverse ? -distance : distance) - currentDist, currentVel);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public TrapezoidalMotionProfile clone() {
+        return copy();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public TrapezoidalMotionProfile copy() {
+        TrapezoidalMotionProfile profile = new TrapezoidalMotionProfile();
+        profile.initVel = initVel;
+        profile.initDist = initDist;
+        profile.initTime = initTime;
+        
+        profile.distance = distance;
+        profile.maxAcl = maxAcl;
+        profile.maxVel = maxVel;
+        profile.cruiseVel = cruiseVel;
+        
+        profile.tAccel = tAccel;
+        profile.tCruise = tCruise;
+        profile.tTotal = tTotal;
+
+        profile.accelDist = accelDist;
+        profile.cruiseDist = cruiseDist;
+
+        profile.reverse = reverse;
+
+        return profile;
     }
 }

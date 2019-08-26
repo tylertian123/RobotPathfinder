@@ -11,7 +11,9 @@ import com.arctos6135.robotpathfinder.core.trajectory.TrajectoryGenerator;
 import com.arctos6135.robotpathfinder.math.MathUtils;
 import com.arctos6135.robotpathfinder.tests.TestHelper;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 /**
  * This class contains tests for {@link TrajectoryGenerator}.
@@ -24,6 +26,9 @@ import org.junit.Test;
 @SuppressWarnings("deprecation")
 public class TrajectoryGeneratorTest {
 
+    @Rule
+    public TestName testName = new TestName();
+
     /**
      * Performs basic testing on
      * {@link TrajectoryGenerator#generateStraightBasic(RobotSpecs, double)}.
@@ -33,7 +38,7 @@ public class TrajectoryGeneratorTest {
      */
     @Test
     public void testGenerateStraightBasic() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -56,7 +61,7 @@ public class TrajectoryGeneratorTest {
      */
     @Test
     public void testGenerateStraightTank() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -82,7 +87,7 @@ public class TrajectoryGeneratorTest {
      */
     @Test
     public void testGenerateRotationTank() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);

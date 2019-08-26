@@ -21,7 +21,9 @@ import com.arctos6135.robotpathfinder.tests.follower.FollowerTest.FakeGyro;
 import com.arctos6135.robotpathfinder.tests.follower.FollowerTest.FakeMotor;
 import com.arctos6135.robotpathfinder.tests.follower.FollowerTest.FakeTimer;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 /**
  * This class contains tests for the dynamic followers of RobotPathfinder.
@@ -29,6 +31,9 @@ import org.junit.Test;
  * @author Tyler Tian
  */
 public class DynamicFollowerTest {
+
+    @Rule
+    public TestName testName = new TestName();
 
     /**
      * A fake {@link DynamicFollowable} used for testing.
@@ -58,6 +63,10 @@ public class DynamicFollowerTest {
             updateCalled = true;
         }
 
+        @Override
+        public FakeDynamicFollowable copy() {
+            throw new UnsupportedOperationException();
+        }
     }
 
     /**
@@ -76,7 +85,7 @@ public class DynamicFollowerTest {
      */
     @Test
     public void testDynamicTankDriveFollowerUpdateTrigger() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double updateDelay = helper.getDouble("updateDelay", 1000);
 
@@ -133,7 +142,7 @@ public class DynamicFollowerTest {
      */
     @Test
     public void testDynamicTankDriveFollowerMotorOutput() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1.0);
         double maxA = helper.getDouble("maxA", 1.0);

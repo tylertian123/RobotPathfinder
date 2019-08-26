@@ -9,12 +9,15 @@ import static org.junit.Assert.assertThat;
 
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.math.MathUtils;
+import com.arctos6135.robotpathfinder.motionprofile.DynamicMotionProfile;
 import com.arctos6135.robotpathfinder.motionprofile.MotionProfile;
 import com.arctos6135.robotpathfinder.motionprofile.TrapezoidalMotionProfile;
 import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalBasicProfile;
 import com.arctos6135.robotpathfinder.tests.TestHelper;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 /**
  * This class contains tests for {@link TrapezoidalMotionProfile}.
@@ -22,6 +25,9 @@ import org.junit.Test;
  * @author Tyler Tian
  */
 public class TrapezoidalMotionProfileTest {
+
+    @Rule
+    public TestName testName = new TestName();
 
     /**
      * Performs basic testing on {@link TrapezoidalMotionProfile}.
@@ -33,7 +39,7 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfile() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -60,7 +66,7 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfileReversed() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -88,7 +94,7 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfileAdvanced() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -125,7 +131,7 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfileAdvancedReversed() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -166,14 +172,14 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfileUpdate() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
         double distance = helper.getDouble("distance", 1000);
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
-        TrapezoidalMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
+        DynamicMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
 
         // Generate fake update parameters
         double updateTime = helper.getDouble("updateTime", profile.totalTime());
@@ -204,7 +210,7 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfileUpdateReversed() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -212,7 +218,7 @@ public class TrapezoidalMotionProfileTest {
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
-        TrapezoidalMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
+        DynamicMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
 
         // Generate fake update parameters
         double updateTime = helper.getDouble("updateTime", profile.totalTime());
@@ -247,7 +253,7 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfileUpdateOvershoot() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -255,7 +261,7 @@ public class TrapezoidalMotionProfileTest {
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
-        TrapezoidalMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
+        DynamicMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
 
         // Generate fake update parameters
         double updateTime = helper.getDouble("updateTime", profile.totalTime());
@@ -283,7 +289,7 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfileUpdateOvershootReversed() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -291,7 +297,7 @@ public class TrapezoidalMotionProfileTest {
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
-        TrapezoidalMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
+        DynamicMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
 
         // Generate fake update parameters
         double updateTime = helper.getDouble("updateTime", profile.totalTime());
@@ -307,5 +313,29 @@ public class TrapezoidalMotionProfileTest {
         double overshootDist = -(updateVel * updateVel) / (2 * maxA);
         assertThat(profile.position(totalTime),
                 closeTo(distance + overshootDist, MathUtils.getFloatCompareThreshold()));
+    }
+
+    /**
+     * Performs full testing on {@link TrapezoidalMotionProfile#copy()}.
+     * 
+     * This test constructs a {@link TrapezoidalMotionProfile}, and calls
+     * {@link TrapezoidalMotionProfile#copy()} on it to create a copy. It then uses
+     * {@link TestHelper#assertAllFieldsEqual(Object, Object)} to compare the two
+     * objects for equality.
+     */
+    @Test
+    public void testTrapezoidalMotionProfileCopy() {
+        TestHelper helper = new TestHelper(getClass(), testName);
+
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double distance = helper.getDouble("distance", 0, 1000);
+
+        RobotSpecs specs = new RobotSpecs(maxV, maxA);
+
+        DynamicMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
+        DynamicMotionProfile copiedProfile = profile.copy();
+
+        TestHelper.assertAllFieldsEqual(profile, copiedProfile);
     }
 }

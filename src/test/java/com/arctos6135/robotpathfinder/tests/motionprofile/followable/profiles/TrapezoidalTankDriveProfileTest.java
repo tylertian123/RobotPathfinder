@@ -8,12 +8,15 @@ import static org.junit.Assert.assertThat;
 
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
+import com.arctos6135.robotpathfinder.follower.DynamicFollowable;
 import com.arctos6135.robotpathfinder.follower.Followable;
 import com.arctos6135.robotpathfinder.math.MathUtils;
 import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalTankDriveProfile;
 import com.arctos6135.robotpathfinder.tests.TestHelper;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 /**
  * This class contains tests for {@link TrapezoidalTankDriveProfile}.
@@ -21,6 +24,9 @@ import org.junit.Test;
  * @author Tyler Tian
  */
 public class TrapezoidalTankDriveProfileTest {
+
+    @Rule
+    public TestName testName = new TestName();
 
     /**
      * Performs basic testing on {@link TrapezoidalTankDriveProfile}.
@@ -32,7 +38,7 @@ public class TrapezoidalTankDriveProfileTest {
      */
     @Test
     public void testTrapezoidalTankDriveProfile() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -68,7 +74,7 @@ public class TrapezoidalTankDriveProfileTest {
      */
     @Test
     public void testTrapezoidalTankDriveProfileReversed() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -105,7 +111,7 @@ public class TrapezoidalTankDriveProfileTest {
      */
     @Test
     public void testTrapezoidalTankDriveProfileAdvanced() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -156,7 +162,7 @@ public class TrapezoidalTankDriveProfileTest {
      */
     @Test
     public void testTrapezoidalTankDriveProfileAdvancedReversed() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -195,5 +201,27 @@ public class TrapezoidalTankDriveProfileTest {
             assertThat(Math.abs(m.getRightAcceleration()),
                     either(lessThan((maxA))).or(closeTo((maxA), MathUtils.getFloatCompareThreshold())));
         }
+    }
+
+    /**
+     * Performs full testing on {@link TrapezoidalTankDriveProfile#copy()}.
+     * 
+     * This test constructs an instance, and calls the copy method on it to create a
+     * copy. It then uses {@link TestHelper#assertAllFieldsEqual(Object, Object)} to
+     * compare the two objects for equality.
+     */
+    @Test
+    public void testTrapezoidalTankDriveProfileCopy() {
+        TestHelper helper = new TestHelper(getClass(), testName);
+
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double distance = helper.getDouble("distance", 1000);
+
+        RobotSpecs specs = new RobotSpecs(maxV, maxA);
+
+        DynamicFollowable<TankDriveMoment> f = new TrapezoidalTankDriveProfile(specs, distance);
+
+        TestHelper.assertAllFieldsEqual(f, f.copy());
     }
 }

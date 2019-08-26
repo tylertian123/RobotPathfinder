@@ -117,7 +117,7 @@ public class TankDriveTrajectory extends Trajectory<TankDriveMoment> {
      * @param params The parameters of this trajectory
      * @param ptr    A pointer to the native resource
      */
-    public TankDriveTrajectory(RobotSpecs specs, TrajectoryParams params, long ptr) {
+    private TankDriveTrajectory(RobotSpecs specs, TrajectoryParams params, long ptr) {
         this.specs = specs;
         this.params = params;
         _nativePtr = ptr;

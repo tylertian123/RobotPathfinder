@@ -10,6 +10,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
+/**
+ * This class contains tests for {@link DynamicDualMotionProfile}.
+ * 
+ * @author Tyler Tian
+ */
 public class DynamicDualMotionProfileTest {
 
     @Rule

@@ -125,7 +125,7 @@ public class BasicTrajectory extends Trajectory<BasicMoment> {
      * @param params The parameters of this trajectory
      * @param ptr    A pointer to the native resource
      */
-    public BasicTrajectory(RobotSpecs specs, TrajectoryParams params, long ptr) {
+    private BasicTrajectory(RobotSpecs specs, TrajectoryParams params, long ptr) {
         this.specs = specs;
         this.params = params;
         _nativePtr = ptr;

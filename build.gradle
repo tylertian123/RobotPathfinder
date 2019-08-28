@@ -121,7 +121,7 @@ final JAVADOC_FIX_SEARCH_STR = '\n\n' +
 ' ***********************************************************************/\n' +
 'getURLPrefix = function(ui) {\n' +
 '    return \'\';\n' +
-'}\n'
+'};\n'
 
 tasks.withType(Javadoc) {
     // Link to external docs for all the builtin classes
@@ -184,7 +184,10 @@ model {
         }
     }
 }
-// Compiler options
+
+// Configure Compiler options
+def gccCompilerOptions = [ '-Wall', '-Wextra', '-ffast-math', '-fno-finite-math-only' ]
+def msvcCompilerOptions = [ '/W3', '/fp:fast' ]
 // Windows
 if(os == 'windows') {
     model {
@@ -192,13 +195,11 @@ if(os == 'windows') {
             all {
                 // For roborio (gcc)
                 if (targetPlatform.name == wpi.platforms.roborio) {
-                    // All warnings, fast math but keep infinite math and NaNs
-                    cppCompiler.args << '-Wall' << '-Wextra' << '-ffast-math' << '-fno-finite-math-only'
+                    cppCompiler.args.addAll gccCompilerOptions
                 }
-                // For desktop (VC++)
+                // For desktop (MSVC)
                 else if (targetPlatform.name == wpi.platforms.desktop) {
-                    // All warnings
-                    cppCompiler.args << '/W3'
+                    cppCompiler.args.addAll msvcCompilerOptions
                 }
             }
         }
@@ -209,15 +210,10 @@ else {
     model {
         binaries {
             all {
-                // For roborio (gcc)
-                if (targetPlatform.name == wpi.platforms.roborio) {
-                    // All warnings, fast math but keep infinite math and NaNs
-                    cppCompiler.args << '-Wall' << '-Wextra' << '-ffast-math' << '-fno-finite-math-only'
-                }
-                // For desktop (gcc)
-                else if (targetPlatform.name == wpi.platforms.desktop) {
-                    // All warnings, fast math but keep infinite math and NaNs
-                    cppCompiler.args << '-Wall' << '-Wextra' << '-ffast-math' << '-fno-finite-math-only'
+                // For roborio and desktop (gcc)
+                if (targetPlatform.name == wpi.platforms.roborio
+                        || targetPlatform.name == wpi.platforms.desktop) {
+                    cppCompiler.args.addAll gccCompilerOptions
                 }
             }
         }

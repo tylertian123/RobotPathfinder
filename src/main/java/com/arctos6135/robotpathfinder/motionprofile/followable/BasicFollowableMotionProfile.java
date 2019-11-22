@@ -5,7 +5,8 @@ import com.arctos6135.robotpathfinder.motionprofile.MotionProfile;
 
 /**
  * This abstract class is a wrapper around a {@link MotionProfile} that also
- * implements {@link Followable}.
+ * implements {@link com.arctos6135.robotpathfinder.follower.Followable
+ * Followable}.
  * <p>
  * It contains an internal motion profile, and uses it to generate
  * {@link BasicMoment}s for a given time.

@@ -287,8 +287,9 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable
     @Override
     public boolean update(double currentTime, double currentDist, double currentVel, double currentAccel) {
         initTime = currentTime;
+        double prevInitDist = initDist;
         initDist = currentDist;
-        return construct(maxVel, maxAcl, (reverse ? -distance : distance) - currentDist, currentVel);
+        return construct(maxVel, maxAcl, (reverse ? -distance : distance) + prevInitDist - currentDist, currentVel);
     }
 
     /**
@@ -308,12 +309,12 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable
         profile.initVel = initVel;
         profile.initDist = initDist;
         profile.initTime = initTime;
-        
+
         profile.distance = distance;
         profile.maxAcl = maxAcl;
         profile.maxVel = maxVel;
         profile.cruiseVel = cruiseVel;
-        
+
         profile.tAccel = tAccel;
         profile.tCruise = tCruise;
         profile.tTotal = tTotal;

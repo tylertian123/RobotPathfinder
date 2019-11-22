@@ -40,6 +40,14 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable
 
     protected boolean reverse = false;
 
+    @Override
+    public String toString() {
+        return "\u001b[92m[\u001b[4mTMP" + this.hashCode() + "\u001b[24m with initVel=" + initVel + ", initDist=" + initDist + ", initTime=" + initTime
+                + ", distance=" + distance + ", maxAcl=" + maxAcl + ", maxVel=" + maxVel + ", cruiseVel=" + cruiseVel
+                + ", tAccel=" + tAccel + ", tCruise=" + tCruise + ", tTotal=" + tTotal + ", accelDist=" + accelDist
+                + ", cruiseDist=" + cruiseDist + ", reverse=" + reverse + "]\u001b[0m";
+    }
+
     /**
      * Constructs a new object of this type without initializing any values.
      * <p>
@@ -87,20 +95,25 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable
      * @return Whether or not the motion profile overshoots
      */
     private boolean construct(double maxVel, double maxAccel, double dist, double initVel) {
+        System.out.printf(
+                "\u001b[94mconstructing\u001b[0m %s \u001b[94mwith maxVel=%f, maxAccel=%f, dist=%f and initVel=%f\u001b[0m\n",
+                this.toString(), maxVel, maxAccel, dist, initVel);
         if (dist < 0) {
             reverse = true;
             dist = -dist;
             initVel = -initVel;
         }
         distance = dist;
+        maxVel = Math.max(maxVel, Math.abs(initVel));
         this.maxAcl = maxAccel;
         this.maxVel = maxVel;
         this.initVel = initVel;
 
-        // Use MathUtils functions to compare floats
-        if (MathUtils.floatGt(Math.abs(initVel), maxVel)) {
-            throw new IllegalArgumentException("Initial velocity too high!");
-        }
+        // // Use MathUtils functions to compare floats
+        // if (MathUtils.floatGt(Math.abs(initVel), maxVel)) {
+        //     throw new IllegalArgumentException("Initial velocity too high!");
+        // }
+
         // Calculate the distance covered when accelerating and decelerating
         // Formula can be derived from the fourth kinematic formula
         double dAccel = dist / 2 - initVel * initVel / (4 * maxAcl);
@@ -140,6 +153,7 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable
         // tTotal is the total time in the range of this motion profile
         // It does not include initTime
         tTotal = tAccel + tCruise + tDecel;
+        System.out.println("\u001b[93mAfter construction: " + this);
         return overshoot;
     }
 
@@ -175,7 +189,7 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable
     public double position(double time) {
         if (MathUtils.floatLt(time, initTime)) {
             throw new IllegalArgumentException(
-                    String.format("Time out of range (%f \u2209 [%f, %f])!", time, initTime, tTotal));
+                    String.format("Time out of range (%f not in [%f, %f])!", time, initTime, initTime + tTotal));
         }
         time -= initTime;
         double result = 0;
@@ -198,7 +212,7 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable
             result = accelDist + cruiseDist + t * cruiseVel - t * t * maxAcl * 0.5;
         } else {
             throw new IllegalArgumentException(
-                    String.format("Time out of range (%f \u2209 [%f, %f])!", time, initTime, tTotal));
+                    String.format("Time out of range (%f not in [%f, %f])!", time, initTime, initTime + tTotal));
         }
         return (reverse ? -result : result) + initDist;
     }
@@ -218,7 +232,7 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable
     public double velocity(double time) {
         if (MathUtils.floatLt(time, initTime)) {
             throw new IllegalArgumentException(
-                    String.format("Time out of range (%f \u2209 [%f, %f])!", time, initTime, tTotal));
+                    String.format("Time out of range (%f not in [%f, %f])!", time, initTime, initTime + tTotal));
         }
         time -= initTime;
         double result = 0;
@@ -239,7 +253,7 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable
             result = cruiseVel - (time - tAccel - tCruise) * maxAcl;
         } else {
             throw new IllegalArgumentException(
-                    String.format("Time out of range (%f \u2209 [%f, %f])!", time, initTime, tTotal));
+                    String.format("Time out of range (%f not in [%f, %f])!", time, initTime, initTime + tTotal));
         }
         return reverse ? -result : result;
     }
@@ -259,7 +273,7 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable
     public double acceleration(double time) {
         if (MathUtils.floatLt(time, initTime)) {
             throw new IllegalArgumentException(
-                    String.format("Time out of range (%f \u2209 [%f, %f])!", time, initTime, tTotal));
+                    String.format("Time out of range (%f not in [%f, %f])!", time, initTime, initTime + tTotal));
         }
         time -= initTime;
         double result = 0;
@@ -276,7 +290,7 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable
             result = -maxAcl;
         } else {
             throw new IllegalArgumentException(
-                    String.format("Time out of range (%f \u2209 [%f, %f])!", time, initTime, tTotal));
+                    String.format("Time out of range (%f not in [%f, %f])!", time, initTime, initTime + tTotal));
         }
         return reverse ? -result : result;
     }
@@ -286,6 +300,9 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable
      */
     @Override
     public boolean update(double currentTime, double currentDist, double currentVel, double currentAccel) {
+        System.out.printf(
+                "%s \u001b[91mupdating with currentTime=%f, currentDist=%f, currentVel=%f and currentAccel=%f\u001b[0m\n",
+                this.toString(), currentTime, currentDist, currentVel, currentAccel);
         initTime = currentTime;
         double prevInitDist = initDist;
         initDist = currentDist;

@@ -261,4 +261,27 @@ public class TankDriveTrajectoryTest {
         TankDriveTrajectory traj = new TankDriveTrajectory(specs, params);
         traj.close();
     }
+
+    @Test
+    public void testTankDriveTrajectoryGetPosition() {
+        TestHelper helper = new TestHelper(getClass(), testName);
+
+        RobotSpecs specs = TrajectoryTestingUtils.getRandomRobotSpecs(helper, true);
+        Waypoint[] waypoints = TrajectoryTestingUtils.getRandomWaypoints(helper, 2);
+        TrajectoryParams params = TrajectoryTestingUtils.getRandomTrajectoryParams(helper, waypoints);
+
+        TankDriveTrajectory traj = new TankDriveTrajectory(specs, params);
+
+        Waypoint pos = traj.getPosition(0);
+        assertThat(pos.getX(), closeTo(waypoints[0].getX(), MathUtils.getFloatCompareThreshold()));
+        assertThat(pos.getY(), closeTo(waypoints[0].getY(), MathUtils.getFloatCompareThreshold()));
+        assertThat(pos.getHeading(), closeTo(waypoints[0].getHeading(), MathUtils.getFloatCompareThreshold()));
+        
+        pos = traj.getPosition(traj.totalTime());
+        assertThat(pos.getX(), closeTo(waypoints[1].getX(), MathUtils.getFloatCompareThreshold()));
+        assertThat(pos.getY(), closeTo(waypoints[1].getY(), MathUtils.getFloatCompareThreshold()));
+        assertThat(pos.getHeading(), closeTo(waypoints[1].getHeading(), MathUtils.getFloatCompareThreshold()));
+        
+        traj.close();
+    }
 }

@@ -4,6 +4,8 @@ import static org.hamcrest.Matchers.closeTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.TrajectoryParams;
 import com.arctos6135.robotpathfinder.core.Waypoint;
@@ -272,6 +274,29 @@ public class BasicTrajectoryTest {
         params.waypoints[1] = new Waypoint(mid.getX(), mid.getY(), mid.getHeading(), midVel);
 
         BasicTrajectory traj = new BasicTrajectory(specs, params);
+        traj.close();
+    }
+
+    @Test
+    public void testBasicTrajectoryGetPosition() throws IOException {
+        TestHelper helper = new TestHelper(getClass(), testName);
+
+        RobotSpecs specs = TrajectoryTestingUtils.getRandomRobotSpecs(helper, false);
+        Waypoint[] waypoints = TrajectoryTestingUtils.getRandomWaypoints(helper, 2);
+        TrajectoryParams params = TrajectoryTestingUtils.getRandomTrajectoryParams(helper, waypoints);
+
+        BasicTrajectory traj = new BasicTrajectory(specs, params);
+
+        Waypoint pos = traj.getPosition(0);
+        assertThat(pos.getX(), closeTo(waypoints[0].getX(), MathUtils.getFloatCompareThreshold()));
+        assertThat(pos.getY(), closeTo(waypoints[0].getY(), MathUtils.getFloatCompareThreshold()));
+        assertThat(pos.getHeading(), closeTo(waypoints[0].getHeading(), MathUtils.getFloatCompareThreshold()));
+        
+        pos = traj.getPosition(traj.totalTime());
+        assertThat(pos.getX(), closeTo(waypoints[1].getX(), MathUtils.getFloatCompareThreshold()));
+        assertThat(pos.getY(), closeTo(waypoints[1].getY(), MathUtils.getFloatCompareThreshold()));
+        assertThat(pos.getHeading(), closeTo(waypoints[1].getHeading(), MathUtils.getFloatCompareThreshold()));
+        
         traj.close();
     }
 }

@@ -132,6 +132,7 @@ namespace rpf {
 
                 double t = path->s2t(ds * i);
                 Vec2D d = path->deriv_at(t);
+                patht->push_back(t);
                 // Even if the trajectory is not for tank drive robots, the heading still needs to
                 // be calculated
                 headings.push_back(std::atan2(d.y, d.x));

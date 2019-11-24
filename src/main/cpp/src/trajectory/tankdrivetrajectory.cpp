@@ -3,7 +3,7 @@
 namespace rpf {
 
     TankDriveTrajectory::TankDriveTrajectory(const BasicTrajectory &traj)
-            : path(traj.path), specs(traj.specs), params(traj.params),
+            : path(traj.path), patht(traj.patht), specs(traj.specs), params(traj.params),
               init_facing(traj.init_facing) {
         if (!params.is_tank) {
             throw std::invalid_argument("Base trajectory must be tank");
@@ -14,7 +14,7 @@ namespace rpf {
         // Initialize first moment
         if (!std::isnan(params.waypoints[0].velocity)) {
             double v = traj.moments[0].vel;
-            double d = v / traj.pathr[0] * specs.base_width / 2;
+            double d = v / (*traj.pathr)[0] * specs.base_width / 2;
             // Apply the velocity formula (derived below) to find the wheel velocities for the two
             // wheels
             moments.push_back(
@@ -30,7 +30,7 @@ namespace rpf {
         moments[0].init_facing = traj.init_facing;
         for (size_t i = 1; i < traj.moments.size(); i++) {
             // First find where the wheels are at this moment and integrate the length
-            auto wheels = path->wheels_at(traj.patht[i]);
+            auto wheels = path->wheels_at((*traj.patht)[i]);
             double dl = init.first.dist(wheels.first);
             double dr = init.second.dist(wheels.second);
             double dt = traj.moments[i].time - traj.moments[i - 1].time;
@@ -55,7 +55,7 @@ namespace rpf {
              * unlike the distance difference which is always positive.
              */
             init = wheels;
-            double d = traj.moments[i].vel / traj.pathr[i] * (specs.base_width / 2);
+            double d = traj.moments[i].vel / (*traj.pathr)[i] * (specs.base_width / 2);
             double lv = traj.moments[i].vel - d;
             double rv = traj.moments[i].vel + d;
 
@@ -134,6 +134,29 @@ namespace rpf {
             moment.backwards = backwards;
             return moment;
         }
+    }
+
+    Waypoint TankDriveTrajectory::get_pos(double t) const {
+        auto m = search_moments(t);
+        // Calculate path time using lookup table
+        double pt;
+        if (m.first == m.second) {
+            // Exact match
+            pt = (*patht)[m.first];
+        }
+        else {
+            // Otherwise linearly interpolate
+            double t1 = (*patht)[m.first];
+            double t2 = (*patht)[m.second];
+            double f =
+                    (t - moments[m.first].time) / (moments[m.second].time - moments[m.first].time);
+            pt = lerp(t1, t2, f);
+        }
+
+        auto pos = path->at(pt);
+        auto deriv = path->deriv_at(pt);
+        // From the derivative calculate the heading
+        return Waypoint(pos, std::atan2(deriv.y, deriv.x));
     }
 
     std::shared_ptr<TankDriveTrajectory> TankDriveTrajectory::mirror_lr() const {

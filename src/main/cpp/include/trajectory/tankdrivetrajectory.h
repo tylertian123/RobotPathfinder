@@ -51,6 +51,7 @@ namespace rpf {
         }
 
         TankDriveMoment get(double t) const;
+        Waypoint get_pos(double t) const;
 
         std::shared_ptr<TankDriveTrajectory> mirror_lr() const;
         std::shared_ptr<TankDriveTrajectory> mirror_fb() const;
@@ -71,6 +72,8 @@ namespace rpf {
 
         std::shared_ptr<Path> path;
         std::vector<TankDriveMoment> moments;
+
+        std::shared_ptr<std::vector<double>> patht;
 
         bool backwards = false;
 

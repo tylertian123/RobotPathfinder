@@ -69,6 +69,12 @@ namespace rpf {
                   init_facing(moments[0].init_facing) {
         }
 
+        /**
+         * Performs a binary search on all the moments.
+         * Returns the indexes of the two moments with a time closest to the argument.
+         */
+        std::pair<std::size_t, std::size_t> search_moments(double t) const;
+
         std::shared_ptr<Path> path = nullptr;
         std::vector<BasicMoment> moments;
 

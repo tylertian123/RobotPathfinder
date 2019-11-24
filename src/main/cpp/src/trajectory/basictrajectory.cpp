@@ -285,44 +285,59 @@ namespace rpf {
         }
     }
 
-    BasicMoment BasicTrajectory::get(double time) const {
-        size_t start = 0;
-        size_t end = moments.size() - 1;
-        size_t mid;
+    std::pair<std::size_t, std::size_t> BasicTrajectory::search_moments(double t) const {
+        std::size_t start = 0;
+        std::size_t end = moments.size() - 1;
+        std::size_t mid;
 
-        if (time >= total_time()) {
-            return moments[moments.size() - 1];
+        // Time out of range - take the last moment
+        if (t >= total_time()) {
+            return std::make_pair(moments.size() - 1, moments.size() - 1);
         }
 
         while (true) {
             mid = (start + end) / 2;
             double mid_time = moments[mid].time;
-
-            if (mid_time == time || mid == moments.size() - 1) {
-                return moments[mid];
+            // Exact match
+            if (mid_time == t || mid == moments.size() - 1) {
+                return std::make_pair(mid, mid);
             }
-
+            // Time is sandwiched between two moments
             double next_time = moments[mid + 1].time;
-            if (mid_time <= time && next_time >= time) {
-                double f = (time - mid_time) / (next_time - mid_time);
-                auto &current = moments[mid];
-                auto &next = moments[mid + 1];
-                BasicMoment m(rpf::lerp(current.pos, next.pos, f),
-                        rpf::lerp(current.vel, next.vel, f),
-                        rpf::lerp(current.accel, next.accel, f),
-                        rpf::langle(current.heading, next.heading, f), time, init_facing);
-                m.backwards = backwards;
-                return m;
+            if (mid_time <= t && next_time >= t) {
+                return std::make_pair(mid, mid + 1);
             }
+            // Time out of range - take the first moment
             if (mid == 0) {
-                return moments[mid];
+                return std::make_pair(0, 0);
             }
-            if (mid_time < time) {
+            if (mid_time < t) {
                 start = mid;
             }
             else {
                 end = mid;
             }
+        }
+    }
+
+    BasicMoment BasicTrajectory::get(double t) const {
+        auto m = search_moments(t);
+        // Exact match - return it
+        if (m.first == m.second) {
+            return moments[m.first];
+        }
+        else {
+            // Otherwise linearly interpolate
+            double f =
+                    (t - moments[m.first].time) / (moments[m.second].time - moments[m.first].time);
+            auto &current = moments[m.first];
+            auto &next = moments[m.second];
+
+            BasicMoment moment(rpf::lerp(current.pos, next.pos, f),
+                    rpf::lerp(current.vel, next.vel, f), rpf::lerp(current.accel, next.accel, f),
+                    rpf::langle(current.heading, next.heading, f), t, init_facing);
+            moment.backwards = backwards;
+            return moment;
         }
     }
 

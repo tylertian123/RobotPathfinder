@@ -8,14 +8,14 @@ namespace rpf {
     // Linear Interpolation
     double lerp(double a, double b, double f);
     // Restrict Angle
-    double rangle(double angle);
+    double restrict_angle(double angle);
     // Mirror Angle
-    double mangle(double angle, double ref);
+    double mirror_angle(double angle, double ref);
     // Linearly interpolates between angles
-    double langle(double a, double b, double f);
-    double langle(Vec2D a, Vec2D b, double f);
+    double lerp_angle(double a, double b, double f);
+    double lerp_angle(Vec2D a, Vec2D b, double f);
     // Restrict absolute value
-    double rabs(double x, double m);
+    double restrict_abs(double x, double m);
     // Computes curvature
     double curvature(double dx, double ddx, double dy, double ddy);
     // The constant pi

@@ -152,7 +152,7 @@ namespace rpf {
 
         for (auto wp : waypoints) {
             w.push_back(Waypoint(static_cast<Vec2D>(wp).reflect(ref),
-                    rpf::mangle(wp.heading, waypoints[0].heading)));
+                    rpf::mirror_angle(wp.heading, waypoints[0].heading)));
         }
         auto p = std::make_shared<Path>(w, alpha, type);
         p->set_base(base_radius);
@@ -165,7 +165,7 @@ namespace rpf {
 
         for (auto wp : waypoints) {
             w.push_back(Waypoint(static_cast<Vec2D>(wp).reflect(ref),
-                    rpf::mangle(wp.heading, waypoints[0].heading + rpf::pi / 2)));
+                    rpf::mirror_angle(wp.heading, waypoints[0].heading + rpf::pi / 2)));
         }
         auto p = std::make_shared<Path>(w, alpha, type);
         p->set_base(base_radius);
@@ -178,7 +178,7 @@ namespace rpf {
 
         for (auto rit = waypoints.rbegin(); rit != waypoints.rend(); ++rit) {
             Waypoint wp = *rit;
-            w.push_back(Waypoint(wp.x, wp.y, rpf::rangle(wp.heading + rpf::pi)));
+            w.push_back(Waypoint(wp.x, wp.y, rpf::restrict_angle(wp.heading + rpf::pi)));
         }
         auto p = std::make_shared<Path>(w, alpha, type);
         p->set_base(base_radius);

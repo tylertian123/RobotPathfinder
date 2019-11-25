@@ -32,7 +32,7 @@ namespace rpf {
             return backwards ? -heading : heading;
         }
         double get_rfacing() {
-            return rangle(get_afacing() - init_facing);
+            return restrict_angle(get_afacing() - init_facing);
         }
     };
 } // namespace rpf

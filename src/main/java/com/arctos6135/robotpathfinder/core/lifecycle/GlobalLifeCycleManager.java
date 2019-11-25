@@ -87,4 +87,13 @@ public final class GlobalLifeCycleManager {
         JNIObjectReference ref = new JNIObjectReference(obj, referenceQueue);
         references.add(ref);
     }
+
+    /**
+     * Deregisters an object from the {@link GlobalLifeCycleManager}.
+     * 
+     * @param obj The object to be deregistered
+     */
+    public static void deregister(JNIObject obj) {
+        references.remove(obj.reference);
+    }
 }

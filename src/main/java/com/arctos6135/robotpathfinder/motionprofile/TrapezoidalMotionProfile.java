@@ -42,10 +42,11 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable
 
     @Override
     public String toString() {
-        return "\u001b[92m[\u001b[4mTMP" + this.hashCode() + "\u001b[24m with initVel=" + initVel + ", initDist=" + initDist + ", initTime=" + initTime
-                + ", distance=" + distance + ", maxAcl=" + maxAcl + ", maxVel=" + maxVel + ", cruiseVel=" + cruiseVel
-                + ", tAccel=" + tAccel + ", tCruise=" + tCruise + ", tTotal=" + tTotal + ", accelDist=" + accelDist
-                + ", cruiseDist=" + cruiseDist + ", reverse=" + reverse + "]\u001b[0m";
+        return "\u001b[92m[\u001b[4mTMP" + this.hashCode() + "\u001b[24m with initVel=" + initVel + ", initDist="
+                + initDist + ", initTime=" + initTime + ", distance=" + distance + ", maxAcl=" + maxAcl + ", maxVel="
+                + maxVel + ", cruiseVel=" + cruiseVel + ", tAccel=" + tAccel + ", tCruise=" + tCruise + ", tTotal="
+                + tTotal + ", accelDist=" + accelDist + ", cruiseDist=" + cruiseDist + ", reverse=" + reverse
+                + "]\u001b[0m";
     }
 
     /**
@@ -111,26 +112,35 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable
 
         // // Use MathUtils functions to compare floats
         // if (MathUtils.floatGt(Math.abs(initVel), maxVel)) {
-        //     throw new IllegalArgumentException("Initial velocity too high!");
+        // throw new IllegalArgumentException("Initial velocity too high!");
         // }
 
         // Calculate the distance covered when accelerating and decelerating
-        // Formula can be derived from the fourth kinematic formula
+        // Formula is derived from the kinematic formula relating velocities, distance
+        // and acceleration, and the fact that dAccel + dDecel = dist
+        // Assumes there is no maximum cap on velocity
         double dAccel = dist / 2 - initVel * initVel / (4 * maxAcl);
         double dDecel;
         // If the acceleration distance is less than 0, the distance is not enough to
         // decelerate back to 0
-        // Change the distance so that we can
+        // Change the maximum acceleration so that we can
         boolean overshoot = false;
         if (dAccel < 0) {
-            dDecel = initVel * initVel / (2 * maxAcl);
-            dist = dDecel;
+            // Unless the distance left is 0
+            // In which case we promptly give up and call it a day
+            if(dist == 0) {
+                System.err.println("WTF");
+                tAccel = tCruise = tTotal = 0;
+                return true;
+            }
+            // This value should make dAccel equal to 0
+            this.maxAcl = initVel * initVel / (2 * dist);
+            dDecel = dist;
             overshoot = true;
         } else {
             dDecel = dist - dAccel;
         }
         // Calculate cruise velocity
-        // Formula derived from the fourth kinematic formula
         double vc = Math.sqrt(2 * maxAcl * dDecel);
         cruiseVel = Math.min(vc, maxVel);
 

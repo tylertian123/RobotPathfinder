@@ -339,7 +339,7 @@ namespace rpf {
 
             BasicMoment moment(rpf::lerp(current.pos, next.pos, f),
                     rpf::lerp(current.vel, next.vel, f), rpf::lerp(current.accel, next.accel, f),
-                    rpf::langle(current.heading, next.heading, f), t, init_facing);
+                    rpf::lerp_angle(current.heading, next.heading, f), t, init_facing);
             moment.backwards = backwards;
             return moment;
         }
@@ -377,7 +377,7 @@ namespace rpf {
 
         for (size_t i = 0; i < moments.size(); i++) {
             BasicMoment moment(moments[i]);
-            moment.heading = rpf::mangle(moment.heading, ref);
+            moment.heading = rpf::mirror_angle(moment.heading, ref);
             moment.init_facing = params.waypoints[0].heading;
             m.push_back(moment);
         }
@@ -392,7 +392,7 @@ namespace rpf {
         m.reserve(moments.size());
         for (size_t i = 0; i < moments.size(); i++) {
             BasicMoment moment(-moments[i].pos, -moments[i].vel, moments[i].accel,
-                    rpf::mangle(moments[i].heading, ref), moments[i].time);
+                    rpf::mirror_angle(moments[i].heading, ref), moments[i].time);
             moment.init_facing = params.waypoints[0].heading;
             moment.backwards = true;
             m.push_back(moment);

@@ -36,7 +36,7 @@ Java_com_arctos6135_robotpathfinder_core_trajectory_TrajectoryGenerator__1genera
             m.l_pos *= -1;
             m.l_vel *= -1;
             m.l_accel *= -1;
-            m.heading = rpf::rangle(m.r_pos / base_radius + m.init_facing);
+            m.heading = rpf::restrict_angle(m.r_pos / base_radius + m.init_facing);
         }
     }
     else {
@@ -44,7 +44,7 @@ Java_com_arctos6135_robotpathfinder_core_trajectory_TrajectoryGenerator__1genera
             m.r_pos *= -1;
             m.r_vel *= -1;
             m.r_accel *= -1;
-            m.heading = rpf::rangle(-m.l_pos / base_radius + m.init_facing);
+            m.heading = rpf::restrict_angle(-m.l_pos / base_radius + m.init_facing);
         }
     }
 

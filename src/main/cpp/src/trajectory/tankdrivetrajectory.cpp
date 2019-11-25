@@ -130,7 +130,7 @@ namespace rpf {
                     rpf::lerp(current.r_vel, next.r_vel, f),
                     rpf::lerp(current.l_accel, next.l_accel, f),
                     rpf::lerp(current.r_accel, next.r_accel, f),
-                    rpf::langle(current.heading, next.heading, f), t, init_facing);
+                    rpf::lerp_angle(current.heading, next.heading, f), t, init_facing);
             moment.backwards = backwards;
             return moment;
         }
@@ -167,7 +167,7 @@ namespace rpf {
         m.reserve(moments.size());
         for (const auto &moment : moments) {
             TankDriveMoment nm(moment.r_pos, moment.l_pos, moment.r_vel, moment.l_vel,
-                    moment.r_accel, moment.l_accel, rpf::mangle(moment.heading, ref), moment.time,
+                    moment.r_accel, moment.l_accel, rpf::mirror_angle(moment.heading, ref), moment.time,
                     moment.init_facing);
             nm.backwards = backwards;
             m.push_back(nm);
@@ -178,13 +178,13 @@ namespace rpf {
     }
     std::shared_ptr<TankDriveTrajectory> TankDriveTrajectory::mirror_fb() const {
         auto p = path->mirror_fb();
-        double ref = rpf::rangle(params.waypoints[0].heading + rpf::pi / 2);
+        double ref = rpf::restrict_angle(params.waypoints[0].heading + rpf::pi / 2);
 
         std::vector<TankDriveMoment> m;
         m.reserve(moments.size());
         for (const auto &moment : moments) {
             TankDriveMoment nm(-moment.l_pos, -moment.r_pos, -moment.l_vel, -moment.r_vel,
-                    -moment.l_accel, -moment.r_accel, rpf::mangle(moment.heading, ref), moment.time,
+                    -moment.l_accel, -moment.r_accel, rpf::mirror_angle(moment.heading, ref), moment.time,
                     moment.init_facing);
             nm.backwards = !backwards;
             m.push_back(nm);

@@ -328,7 +328,7 @@ public final class Grapher {
 				plot.addLinePlot("Left Wheel", leftX, leftY);
 				plot.addLinePlot("Right Wheel", rightX, rightY);
 			}
-			
+
 			plot.addScatterPlot("Waypoints", Color.BLACK, xy);
 
 			// Take the longer of the two differences
@@ -378,12 +378,35 @@ public final class Grapher {
 	 * setVisible()} needs to be called explicitly in order to show the window.
 	 * </p>
 	 * 
-	 * @param p  The motion profile to graph
-	 * @param dt The time increment between samples
+	 * @param p        The motion profile to graph
+	 * @param dt       The time increment between samples
 	 * @return The graphed motion profile in a {@link JFrame}
 	 */
 	public static JFrame graphMotionProfile(MotionProfile p, double dt) {
-		int elemCount = (int) Math.ceil(p.totalTime() / dt);
+		return graphMotionProfile(p, dt, 0);
+	}
+
+	/**
+	 * Graphs a {@link MotionProfile} in a {@link JFrame}.
+	 * <p>
+	 * A parameter {@code initTime} can be used to set the time to start graphing
+	 * at. This allows the graphing of updated motion profiles, which can have a
+	 * time range not starting at zero.
+	 * </p>
+	 * <p>
+	 * In addition to graphing, this method also sets the {@link JFrame}'s default
+	 * close operation to be {@link WindowConstants#DISPOSE_ON_CLOSE}. Note that
+	 * this method does not show the window; {@link JFrame#setVisible(boolean)
+	 * setVisible()} needs to be called explicitly in order to show the window.
+	 * </p>
+	 * 
+	 * @param p        The motion profile to graph
+	 * @param dt       The time increment between samples
+	 * @param initTime The time to start graphing at
+	 * @return The graphed motion profile in a {@link JFrame}
+	 */
+	public static JFrame graphMotionProfile(MotionProfile p, double dt, double initTime) {
+		int elemCount = (int) Math.ceil((p.totalTime() - initTime) / dt);
 
 		double[] time = new double[elemCount];
 		double[] pos = new double[elemCount];
@@ -391,7 +414,7 @@ public final class Grapher {
 		double[] acl = new double[elemCount];
 
 		int i = 0;
-		for (double t = 0; t <= p.totalTime() && i < elemCount; t += dt) {
+		for (double t = initTime; t <= p.totalTime() && i < elemCount; t += dt) {
 			// Collect data
 			time[i] = t;
 			pos[i] = p.position(t);

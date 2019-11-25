@@ -8,16 +8,12 @@ namespace rpf {
     }
 
     double rangle(double angle) {
-        if (angle <= pi && angle > -pi) {
-            return angle;
+        angle = std::fmod(angle, pi * 2);
+        if(angle <= -pi) {
+            angle += pi * 2;
         }
-        while (angle > pi) {
-            angle -= pi;
-            angle -= pi;
-        }
-        while (angle <= -pi) {
-            angle += pi;
-            angle += pi;
+        else if(angle > pi) {
+            angle -= pi * 2;
         }
         return angle;
     }
@@ -27,7 +23,10 @@ namespace rpf {
     }
 
     double langle(double a, double b, double f) {
-        return langle(Vec2D(std::cos(a), std::sin(a)), Vec2D(std::cos(b), std::sin(b)), f);
+        // Magic
+        // https://stackoverflow.com/questions/2708476/rotation-interpolation
+        double theta = std::fmod(std::fmod(a - b, pi * 2) + pi * 3, pi * 2) - pi;
+        return rangle(a + f * theta);
     }
     double langle(Vec2D a, Vec2D b, double f) {
         auto angle = Vec2D::lerp(a, b, f);

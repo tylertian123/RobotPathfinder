@@ -3,7 +3,7 @@
 namespace rpf {
 
     TankDriveTrajectory::TankDriveTrajectory(const BasicTrajectory &traj)
-            : path(traj.path), specs(traj.specs), params(traj.params),
+            : path(traj.path), patht(traj.patht), specs(traj.specs), params(traj.params),
               init_facing(traj.init_facing) {
         if (!params.is_tank) {
             throw std::invalid_argument("Base trajectory must be tank");
@@ -14,7 +14,7 @@ namespace rpf {
         // Initialize first moment
         if (!std::isnan(params.waypoints[0].velocity)) {
             double v = traj.moments[0].vel;
-            double d = v / traj.pathr[0] * specs.base_width / 2;
+            double d = v / (*traj.pathr)[0] * specs.base_width / 2;
             // Apply the velocity formula (derived below) to find the wheel velocities for the two
             // wheels
             moments.push_back(
@@ -30,7 +30,7 @@ namespace rpf {
         moments[0].init_facing = traj.init_facing;
         for (size_t i = 1; i < traj.moments.size(); i++) {
             // First find where the wheels are at this moment and integrate the length
-            auto wheels = path->wheels_at(traj.patht[i]);
+            auto wheels = path->wheels_at((*traj.patht)[i]);
             double dl = init.first.dist(wheels.first);
             double dr = init.second.dist(wheels.second);
             double dt = traj.moments[i].time - traj.moments[i - 1].time;
@@ -55,7 +55,7 @@ namespace rpf {
              * unlike the distance difference which is always positive.
              */
             init = wheels;
-            double d = traj.moments[i].vel / traj.pathr[i] * (specs.base_width / 2);
+            double d = traj.moments[i].vel / (*traj.pathr)[i] * (specs.base_width / 2);
             double lv = traj.moments[i].vel - d;
             double rv = traj.moments[i].vel + d;
 
@@ -76,49 +76,87 @@ namespace rpf {
         }
     }
 
-    TankDriveMoment TankDriveTrajectory::get(double time) const {
-        size_t start = 0;
-        size_t end = moments.size() - 1;
-        size_t mid;
+    std::pair<std::size_t, std::size_t> TankDriveTrajectory::search_moments(double t) const {
+        std::size_t start = 0;
+        std::size_t end = moments.size() - 1;
+        std::size_t mid;
 
-        if (time >= total_time()) {
-            return moments[moments.size() - 1];
+        // Time out of range - take the last moment
+        if (t >= total_time()) {
+            return std::make_pair(moments.size() - 1, moments.size() - 1);
         }
 
         while (true) {
             mid = (start + end) / 2;
             double mid_time = moments[mid].time;
-
-            if (mid_time == time || mid == moments.size() - 1) {
-                return moments[mid];
+            // Exact match
+            if (mid_time == t || mid == moments.size() - 1) {
+                return std::make_pair(mid, mid);
             }
-
+            // Time is sandwiched between two moments
             double next_time = moments[mid + 1].time;
-            if (mid_time <= time && next_time >= time) {
-                double f = (time - mid_time) / (next_time - mid_time);
-                auto &current = moments[mid];
-                auto &next = moments[mid + 1];
-
-                TankDriveMoment m(rpf::lerp(current.l_pos, next.l_pos, f),
-                        rpf::lerp(current.r_pos, next.r_pos, f),
-                        rpf::lerp(current.l_vel, next.l_vel, f),
-                        rpf::lerp(current.r_vel, next.r_vel, f),
-                        rpf::lerp(current.l_accel, next.l_accel, f),
-                        rpf::lerp(current.r_accel, next.r_accel, f),
-                        rpf::langle(current.heading, next.heading, f), time, init_facing);
-                m.backwards = backwards;
-                return m;
+            if (mid_time <= t && next_time >= t) {
+                return std::make_pair(mid, mid + 1);
             }
+            // Time out of range - take the first moment
             if (mid == 0) {
-                return moments[mid];
+                return std::make_pair(0, 0);
             }
-            if (mid_time < time) {
+            if (mid_time < t) {
                 start = mid;
             }
             else {
                 end = mid;
             }
         }
+    }
+
+    TankDriveMoment TankDriveTrajectory::get(double t) const {
+        auto m = search_moments(t);
+        // Exact match - return it
+        if (m.first == m.second) {
+            return moments[m.first];
+        }
+        else {
+            // Otherwise linearly interpolate
+            double f =
+                    (t - moments[m.first].time) / (moments[m.second].time - moments[m.first].time);
+            auto &current = moments[m.first];
+            auto &next = moments[m.second];
+
+            TankDriveMoment moment(rpf::lerp(current.l_pos, next.l_pos, f),
+                    rpf::lerp(current.r_pos, next.r_pos, f),
+                    rpf::lerp(current.l_vel, next.l_vel, f),
+                    rpf::lerp(current.r_vel, next.r_vel, f),
+                    rpf::lerp(current.l_accel, next.l_accel, f),
+                    rpf::lerp(current.r_accel, next.r_accel, f),
+                    rpf::lerp_angle(current.heading, next.heading, f), t, init_facing);
+            moment.backwards = backwards;
+            return moment;
+        }
+    }
+
+    Waypoint TankDriveTrajectory::get_pos(double t) const {
+        auto m = search_moments(t);
+        // Calculate path time using lookup table
+        double pt;
+        if (m.first == m.second) {
+            // Exact match
+            pt = (*patht)[m.first];
+        }
+        else {
+            // Otherwise linearly interpolate
+            double t1 = (*patht)[m.first];
+            double t2 = (*patht)[m.second];
+            double f =
+                    (t - moments[m.first].time) / (moments[m.second].time - moments[m.first].time);
+            pt = lerp(t1, t2, f);
+        }
+
+        auto pos = path->at(pt);
+        auto deriv = path->deriv_at(pt);
+        // From the derivative calculate the heading
+        return Waypoint(pos, std::atan2(deriv.y, deriv.x));
     }
 
     std::shared_ptr<TankDriveTrajectory> TankDriveTrajectory::mirror_lr() const {
@@ -129,7 +167,7 @@ namespace rpf {
         m.reserve(moments.size());
         for (const auto &moment : moments) {
             TankDriveMoment nm(moment.r_pos, moment.l_pos, moment.r_vel, moment.l_vel,
-                    moment.r_accel, moment.l_accel, rpf::mangle(moment.heading, ref), moment.time,
+                    moment.r_accel, moment.l_accel, rpf::mirror_angle(moment.heading, ref), moment.time,
                     moment.init_facing);
             nm.backwards = backwards;
             m.push_back(nm);
@@ -140,13 +178,13 @@ namespace rpf {
     }
     std::shared_ptr<TankDriveTrajectory> TankDriveTrajectory::mirror_fb() const {
         auto p = path->mirror_fb();
-        double ref = rpf::rangle(params.waypoints[0].heading + rpf::pi / 2);
+        double ref = rpf::restrict_angle(params.waypoints[0].heading + rpf::pi / 2);
 
         std::vector<TankDriveMoment> m;
         m.reserve(moments.size());
         for (const auto &moment : moments) {
             TankDriveMoment nm(-moment.l_pos, -moment.r_pos, -moment.l_vel, -moment.r_vel,
-                    -moment.l_accel, -moment.r_accel, rpf::mangle(moment.heading, ref), moment.time,
+                    -moment.l_accel, -moment.r_accel, rpf::mirror_angle(moment.heading, ref), moment.time,
                     moment.init_facing);
             nm.backwards = !backwards;
             m.push_back(nm);

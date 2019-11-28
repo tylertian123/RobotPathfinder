@@ -54,7 +54,8 @@ namespace rpf {
             return params.is_tank;
         }
 
-        BasicMoment get(double) const;
+        BasicMoment get(double t) const;
+        Waypoint get_pos(double t) const;
 
         std::shared_ptr<BasicTrajectory> mirror_lr() const;
         std::shared_ptr<BasicTrajectory> mirror_fb() const;
@@ -69,6 +70,12 @@ namespace rpf {
                   init_facing(moments[0].init_facing) {
         }
 
+        /**
+         * Performs a binary search on all the moments.
+         * Returns the indexes of the two moments with a time closest to the argument.
+         */
+        std::pair<std::size_t, std::size_t> search_moments(double t) const;
+
         std::shared_ptr<Path> path = nullptr;
         std::vector<BasicMoment> moments;
 
@@ -79,7 +86,7 @@ namespace rpf {
 
         double init_facing;
 
-        std::vector<double> patht;
-        std::vector<double> pathr;
+        std::shared_ptr<std::vector<double>> patht = std::make_shared<std::vector<double>>();
+        std::shared_ptr<std::vector<double>> pathr;
     };
 } // namespace rpf

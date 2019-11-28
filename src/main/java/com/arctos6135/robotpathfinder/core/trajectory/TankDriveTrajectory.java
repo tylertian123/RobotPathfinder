@@ -167,6 +167,9 @@ public class TankDriveTrajectory extends Trajectory<TankDriveMoment> {
     }
 
     @Override
+    protected native Waypoint _getPosition(double t);
+
+    @Override
     protected native long _getPath();
 
     /**

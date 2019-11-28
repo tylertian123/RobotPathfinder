@@ -6,6 +6,47 @@
 
 namespace rpf {
 
+    Path::Path(const std::vector<Waypoint> &waypoints, double alpha, PathType type)
+                : waypoints(waypoints), alpha(alpha), type(type) {
+        if (waypoints.size() < 2) {
+            throw std::invalid_argument("Not enough waypoints");
+        }
+        segments.reserve(waypoints.size() - 1);
+        switch (type) {
+        case PathType::BEZIER:
+            for (size_t i = 0; i < waypoints.size() - 1; i++) {
+                segments.push_back(std::make_unique<BezierSegment>(BezierSegment::from_hermite(
+                        static_cast<Vec2D>(waypoints[i]), static_cast<Vec2D>(waypoints[i + 1]),
+                        Vec2D(std::cos(waypoints[i].heading) * alpha,
+                                std::sin(waypoints[i].heading) * alpha),
+                        Vec2D(std::cos(waypoints[i + 1].heading) * alpha,
+                                std::sin(waypoints[i + 1].heading) * alpha))));
+            }
+            break;
+        case PathType::CUBIC_HERMITE:
+            for (size_t i = 0; i < waypoints.size() - 1; i++) {
+                segments.push_back(std::make_unique<CubicSegment>(
+                        static_cast<Vec2D>(waypoints[i]), static_cast<Vec2D>(waypoints[i + 1]),
+                        Vec2D(std::cos(waypoints[i].heading) * alpha,
+                                std::sin(waypoints[i].heading) * alpha),
+                        Vec2D(std::cos(waypoints[i + 1].heading) * alpha,
+                                std::sin(waypoints[i + 1].heading) * alpha)));
+            }
+            break;
+        case PathType::QUINTIC_HERMITE:
+            for (size_t i = 0; i < waypoints.size() - 1; i++) {
+                segments.push_back(std::make_unique<QuinticSegment>(
+                        static_cast<Vec2D>(waypoints[i]), static_cast<Vec2D>(waypoints[i + 1]),
+                        Vec2D(std::cos(waypoints[i].heading) * alpha,
+                                std::sin(waypoints[i].heading) * alpha),
+                        Vec2D(std::cos(waypoints[i + 1].heading) * alpha,
+                                std::sin(waypoints[i + 1].heading) * alpha),
+                        Vec2D(0, 0), Vec2D(0, 0)));
+            }
+            break;
+        }
+    }
+
     Vec2D Path::at(double t) const {
         if (t >= 1) {
             return segments[segments.size() - 1]->at(1);
@@ -152,7 +193,7 @@ namespace rpf {
 
         for (auto wp : waypoints) {
             w.push_back(Waypoint(static_cast<Vec2D>(wp).reflect(ref),
-                    rpf::mangle(wp.heading, waypoints[0].heading)));
+                    rpf::mirror_angle(wp.heading, waypoints[0].heading)));
         }
         auto p = std::make_shared<Path>(w, alpha, type);
         p->set_base(base_radius);
@@ -165,7 +206,7 @@ namespace rpf {
 
         for (auto wp : waypoints) {
             w.push_back(Waypoint(static_cast<Vec2D>(wp).reflect(ref),
-                    rpf::mangle(wp.heading, waypoints[0].heading + rpf::pi / 2)));
+                    rpf::mirror_angle(wp.heading, waypoints[0].heading + rpf::pi / 2)));
         }
         auto p = std::make_shared<Path>(w, alpha, type);
         p->set_base(base_radius);
@@ -178,7 +219,7 @@ namespace rpf {
 
         for (auto rit = waypoints.rbegin(); rit != waypoints.rend(); ++rit) {
             Waypoint wp = *rit;
-            w.push_back(Waypoint(wp.x, wp.y, rpf::rangle(wp.heading + rpf::pi)));
+            w.push_back(Waypoint(wp.x, wp.y, rpf::restrict_angle(wp.heading + rpf::pi)));
         }
         auto p = std::make_shared<Path>(w, alpha, type);
         p->set_base(base_radius);

@@ -68,10 +68,13 @@ namespace rpf {
         std::vector<double> headings;
         headings.reserve(params.sample_count);
         // patht and pathr are accessed by the TankDriveTrajectory constructor later
+        // patht is also used to find the position given a time later
         // They store the t and radius of each of the sample points along the path
+        patht->reserve(params.sample_count);
         if (params.is_tank) {
-            patht.reserve(params.sample_count);
-            pathr.reserve(params.sample_count);
+            // Note that pathr is not initialized
+            pathr = std::make_shared<std::vector<double>>();
+            pathr->reserve(params.sample_count);
         }
         /*
          * "Moments" represent a moment in time.
@@ -88,7 +91,7 @@ namespace rpf {
                 // Call s2T to translate between length and time
                 double t = path->s2t(ds * i);
                 // Store a value into patht for use by TankDriveTrajectory later
-                patht.push_back(t);
+                patht->push_back(t);
 
                 auto d = path->deriv_at(t);
                 auto dd = path->second_deriv_at(t);
@@ -98,7 +101,7 @@ namespace rpf {
                 // The heading is generated as a by-product
                 headings.push_back(std::atan2(d.y, d.x));
                 // Store a value into pathr for use by TankDriveTrajectory later
-                pathr.push_back(1 / curvature);
+                pathr->push_back(1 / curvature);
                 /*
                  * The maximum speed for the entire robot is computed with a formula. Derivation
                  * here: Start with the equations:
@@ -118,7 +121,7 @@ namespace rpf {
                  * 6. Now solve for V: 2Vmax - (V / R)b = 2V, 2V + (V / R)b = 2Vmax, V(2 + b / R) =
                  * 2Vmax, V = 2Vmax / (2 + b / R), V = Vmax / (1 + b / (2R))
                  */
-                mv.push_back(specs.max_v / (1 + specs.base_width / (2 * std::abs(pathr[i]))));
+                mv.push_back(specs.max_v / (1 + specs.base_width / (2 * std::abs((*pathr)[i]))));
             }
         }
         else {
@@ -129,6 +132,7 @@ namespace rpf {
 
                 double t = path->s2t(ds * i);
                 Vec2D d = path->deriv_at(t);
+                patht->push_back(t);
                 // Even if the trajectory is not for tank drive robots, the heading still needs to
                 // be calculated
                 headings.push_back(std::atan2(d.y, d.x));
@@ -285,45 +289,83 @@ namespace rpf {
         }
     }
 
-    BasicMoment BasicTrajectory::get(double time) const {
-        size_t start = 0;
-        size_t end = moments.size() - 1;
-        size_t mid;
+    std::pair<std::size_t, std::size_t> BasicTrajectory::search_moments(double t) const {
+        std::size_t start = 0;
+        std::size_t end = moments.size() - 1;
+        std::size_t mid;
 
-        if (time >= total_time()) {
-            return moments[moments.size() - 1];
+        // Time out of range - take the last moment
+        if (t >= total_time()) {
+            return std::make_pair(moments.size() - 1, moments.size() - 1);
         }
 
         while (true) {
             mid = (start + end) / 2;
             double mid_time = moments[mid].time;
-
-            if (mid_time == time || mid == moments.size() - 1) {
-                return moments[mid];
+            // Exact match
+            if (mid_time == t || mid == moments.size() - 1) {
+                return std::make_pair(mid, mid);
             }
-
+            // Time is sandwiched between two moments
             double next_time = moments[mid + 1].time;
-            if (mid_time <= time && next_time >= time) {
-                double f = (time - mid_time) / (next_time - mid_time);
-                auto &current = moments[mid];
-                auto &next = moments[mid + 1];
-                BasicMoment m(rpf::lerp(current.pos, next.pos, f),
-                        rpf::lerp(current.vel, next.vel, f),
-                        rpf::lerp(current.accel, next.accel, f),
-                        rpf::langle(current.heading, next.heading, f), time, init_facing);
-                m.backwards = backwards;
-                return m;
+            if (mid_time <= t && next_time >= t) {
+                return std::make_pair(mid, mid + 1);
             }
+            // Time out of range - take the first moment
             if (mid == 0) {
-                return moments[mid];
+                return std::make_pair(0, 0);
             }
-            if (mid_time < time) {
+            if (mid_time < t) {
                 start = mid;
             }
             else {
                 end = mid;
             }
         }
+    }
+
+    BasicMoment BasicTrajectory::get(double t) const {
+        auto m = search_moments(t);
+        // Exact match - return it
+        if (m.first == m.second) {
+            return moments[m.first];
+        }
+        else {
+            // Otherwise linearly interpolate
+            double f =
+                    (t - moments[m.first].time) / (moments[m.second].time - moments[m.first].time);
+            auto &current = moments[m.first];
+            auto &next = moments[m.second];
+
+            BasicMoment moment(rpf::lerp(current.pos, next.pos, f),
+                    rpf::lerp(current.vel, next.vel, f), rpf::lerp(current.accel, next.accel, f),
+                    rpf::lerp_angle(current.heading, next.heading, f), t, init_facing);
+            moment.backwards = backwards;
+            return moment;
+        }
+    }
+
+    Waypoint BasicTrajectory::get_pos(double t) const {
+        auto m = search_moments(t);
+        // Calculate path time using lookup table
+        double pt;
+        if (m.first == m.second) {
+            // Exact match
+            pt = (*patht)[m.first];
+        }
+        else {
+            // Otherwise linearly interpolate
+            double t1 = (*patht)[m.first];
+            double t2 = (*patht)[m.second];
+            double f =
+                    (t - moments[m.first].time) / (moments[m.second].time - moments[m.first].time);
+            pt = lerp(t1, t2, f);
+        }
+
+        auto pos = path->at(pt);
+        auto deriv = path->deriv_at(pt);
+        // From the derivative calculate the heading
+        return Waypoint(pos, std::atan2(deriv.y, deriv.x));
     }
 
     std::shared_ptr<BasicTrajectory> BasicTrajectory::mirror_lr() const {
@@ -335,7 +377,7 @@ namespace rpf {
 
         for (size_t i = 0; i < moments.size(); i++) {
             BasicMoment moment(moments[i]);
-            moment.heading = rpf::mangle(moment.heading, ref);
+            moment.heading = rpf::mirror_angle(moment.heading, ref);
             moment.init_facing = params.waypoints[0].heading;
             m.push_back(moment);
         }
@@ -350,7 +392,7 @@ namespace rpf {
         m.reserve(moments.size());
         for (size_t i = 0; i < moments.size(); i++) {
             BasicMoment moment(-moments[i].pos, -moments[i].vel, moments[i].accel,
-                    rpf::mangle(moments[i].heading, ref), moments[i].time);
+                    rpf::mirror_angle(moments[i].heading, ref), moments[i].time);
             moment.init_facing = params.waypoints[0].heading;
             moment.backwards = true;
             m.push_back(moment);

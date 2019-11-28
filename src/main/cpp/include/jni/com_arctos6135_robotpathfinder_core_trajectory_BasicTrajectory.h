@@ -50,6 +50,14 @@ JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_Ba
 
 /*
  * Class:     com_arctos6135_robotpathfinder_core_trajectory_BasicTrajectory
+ * Method:    _getPosition
+ * Signature: (D)Lcom/arctos6135/robotpathfinder/core/Waypoint;
+ */
+JNIEXPORT jobject JNICALL Java_com_arctos6135_robotpathfinder_core_trajectory_BasicTrajectory__1getPosition
+  (JNIEnv *, jobject, jdouble);
+
+/*
+ * Class:     com_arctos6135_robotpathfinder_core_trajectory_BasicTrajectory
  * Method:    _getPath
  * Signature: ()J
  */

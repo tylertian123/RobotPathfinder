@@ -10,6 +10,7 @@
 #include <memory>
 #include <stdexcept>
 #include <vector>
+#include <utility>
 
 namespace rpf {
     class TankDriveTrajectory {
@@ -49,7 +50,8 @@ namespace rpf {
             return moments[moments.size() - 1].time;
         }
 
-        TankDriveMoment get(double) const;
+        TankDriveMoment get(double t) const;
+        Waypoint get_pos(double t) const;
 
         std::shared_ptr<TankDriveTrajectory> mirror_lr() const;
         std::shared_ptr<TankDriveTrajectory> mirror_fb() const;
@@ -62,8 +64,16 @@ namespace rpf {
                   init_facing(moments[0].init_facing) {
         }
 
+        /**
+         * Performs a binary search on all the moments.
+         * Returns the indexes of the two moments with a time closest to the argument.
+         */
+        std::pair<std::size_t, std::size_t> search_moments(double t) const;
+
         std::shared_ptr<Path> path;
         std::vector<TankDriveMoment> moments;
+
+        std::shared_ptr<std::vector<double>> patht;
 
         bool backwards = false;
 

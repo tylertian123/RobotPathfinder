@@ -2,6 +2,7 @@ package com.arctos6135.robotpathfinder.core.trajectory;
 
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.TrajectoryParams;
+import com.arctos6135.robotpathfinder.core.Waypoint;
 import com.arctos6135.robotpathfinder.core.lifecycle.JNIObject;
 import com.arctos6135.robotpathfinder.core.path.Path;
 import com.arctos6135.robotpathfinder.follower.Followable;
@@ -139,6 +140,28 @@ public abstract class Trajectory<T extends Moment> extends JNIObject implements 
             throw new IllegalArgumentException("Time must be finite and not NaN");
         }
         return _get(t);
+    }
+
+    // Native
+    abstract protected Waypoint _getPosition(double t);
+
+    /**
+     * Retrieves the robot's position and heading at the specified time.
+     * <p>
+     * This is done internally using a lookup table and linear interpolation.
+     * </p>
+     * 
+     * @param t The time
+     * @return The position and heading of the robot at the specified time
+     * @throws IllegalArgumentException If the specified time is infinite or NaN
+     * @throws IllegalStateException    If the native resource has already been
+     *                                  freed (see class Javadoc)
+     */
+    public Waypoint getPosition(double t) {
+        if (Double.isNaN(t) || !Double.isFinite(t)) {
+            throw new IllegalArgumentException("Time must be finite and not NaN");
+        }
+        return _getPosition(t);
     }
 
     // Native

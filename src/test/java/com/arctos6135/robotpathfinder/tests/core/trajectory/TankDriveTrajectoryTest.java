@@ -252,7 +252,8 @@ public class TankDriveTrajectoryTest {
         TestHelper helper = new TestHelper(getClass(), testName);
 
         RobotSpecs specs = TrajectoryTestingUtils.getRandomRobotSpecs(helper, true);
-        TrajectoryParams params = TrajectoryTestingUtils.getRandomTrajectoryParams(helper, TrajectoryTestingUtils.getRandomWaypoints(helper, 3));
+        TrajectoryParams params = TrajectoryTestingUtils.getRandomTrajectoryParams(helper,
+                TrajectoryTestingUtils.getRandomWaypoints(helper, 3));
 
         double midVel = helper.getDouble("midVel", specs.getMaxVelocity() * 1.1, specs.getMaxVelocity() * 5);
         Waypoint mid = params.waypoints[1];
@@ -262,6 +263,12 @@ public class TankDriveTrajectoryTest {
         traj.close();
     }
 
+    /**
+     * Performs basic testing on {@link TankDriveTrajectory#getPosition(double)}.
+     * 
+     * This test calls the method for both the starting and ending times to make
+     * sure it is equal to the position of the waypoints.
+     */
     @Test
     public void testTankDriveTrajectoryGetPosition() {
         TestHelper helper = new TestHelper(getClass(), testName);
@@ -276,12 +283,12 @@ public class TankDriveTrajectoryTest {
         assertThat(pos.getX(), closeTo(waypoints[0].getX(), MathUtils.getFloatCompareThreshold()));
         assertThat(pos.getY(), closeTo(waypoints[0].getY(), MathUtils.getFloatCompareThreshold()));
         assertThat(pos.getHeading(), closeTo(waypoints[0].getHeading(), MathUtils.getFloatCompareThreshold()));
-        
+
         pos = traj.getPosition(traj.totalTime());
         assertThat(pos.getX(), closeTo(waypoints[1].getX(), MathUtils.getFloatCompareThreshold()));
         assertThat(pos.getY(), closeTo(waypoints[1].getY(), MathUtils.getFloatCompareThreshold()));
         assertThat(pos.getHeading(), closeTo(waypoints[1].getHeading(), MathUtils.getFloatCompareThreshold()));
-        
+
         traj.close();
     }
 }

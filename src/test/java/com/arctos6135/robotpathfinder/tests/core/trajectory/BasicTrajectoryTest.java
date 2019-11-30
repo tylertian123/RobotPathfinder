@@ -4,8 +4,6 @@ import static org.hamcrest.Matchers.closeTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-import java.io.IOException;
-
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.TrajectoryParams;
 import com.arctos6135.robotpathfinder.core.Waypoint;
@@ -277,8 +275,14 @@ public class BasicTrajectoryTest {
         traj.close();
     }
 
+    /**
+     * Performs basic testing on {@link BasicTrajectory#getPosition(double)}.
+     * 
+     * This test calls the method for both the starting and ending times to make
+     * sure it is equal to the position of the waypoints.
+     */
     @Test
-    public void testBasicTrajectoryGetPosition() throws IOException {
+    public void testBasicTrajectoryGetPosition() {
         TestHelper helper = new TestHelper(getClass(), testName);
 
         RobotSpecs specs = TrajectoryTestingUtils.getRandomRobotSpecs(helper, false);

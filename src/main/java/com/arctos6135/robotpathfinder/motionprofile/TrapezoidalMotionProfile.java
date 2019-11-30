@@ -101,9 +101,6 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable
      * @return Whether or not the motion profile overshoots
      */
     private boolean construct(RobotSpecs specs, double dist, double initVel) {
-        System.out.printf(
-                "\u001b[94mconstructing\u001b[0m %s \u001b[94mwith maxVel=%f, maxAccel=%f, dist=%f and initVel=%f\u001b[0m\n",
-                this.toString(), specs.getMaxVelocity(), specs.getMaxAcceleration(), dist, initVel);
         if (dist < 0) {
             reverse = true;
             dist = -dist;
@@ -167,7 +164,6 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable
         // tTotal is the total time in the range of this motion profile
         // It does not include initTime
         tTotal = tAccel + tCruise + tDecel;
-        System.out.println("\u001b[93mAfter construction: " + this);
         return overshoot;
     }
 
@@ -314,9 +310,6 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable
      */
     @Override
     public boolean update(double currentTime, double currentDist, double currentVel, double currentAccel) {
-        System.out.printf(
-                "%s \u001b[91mupdating with currentTime=%f, currentDist=%f, currentVel=%f and currentAccel=%f\u001b[0m\n",
-                this.toString(), currentTime, currentDist, currentVel, currentAccel);
         initTime = currentTime;
         double prevInitDist = initDist;
         initDist = currentDist;

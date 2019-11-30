@@ -56,27 +56,29 @@ public class FollowerRunnerTest {
         runCalled = false;
         while (!runCalled) {
             try {
-                Thread.sleep(1);
+                // Sleep half a millisecond at a time
+                Thread.sleep(0, 500000);
             } catch (InterruptedException e) {
                 runner.stop();
                 throw new RuntimeException("Interrupted!", e);
             }
         }
-        long start = System.currentTimeMillis();
+        long start = System.nanoTime();
         runCalled = false;
         while (!runCalled) {
-            if (System.currentTimeMillis() - start > 100) {
+            if (System.nanoTime() - start > 100000000L) {
                 runner.stop();
                 fail("Follower.run() was not called within 100ms!");
             }
             try {
-                Thread.sleep(1);
+                // Sleep half a millisecond at a time
+                Thread.sleep(0, 500000);
             } catch (InterruptedException e) {
                 runner.stop();
                 throw new RuntimeException("Interrupted!", e);
             }
         }
-        assertThat("run() should be called within the correct time period", (int) (System.currentTimeMillis() - start),
+        assertThat("run() should be called within the correct time period", (int) ((System.nanoTime() - start) / 1000000),
                 both(greaterThanOrEqualTo(19)).and(lessThanOrEqualTo(21)));
 
         // Test stop

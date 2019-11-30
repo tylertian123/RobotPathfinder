@@ -85,15 +85,20 @@ public class TankDriveTrajectoryTest {
             TankDriveMoment m0 = original.get(dt * i);
             TankDriveMoment m1 = mirrored.get(dt * i);
 
-            assertThat(m0.getLeftPosition(), closeTo(m1.getLeftPosition(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getRightPosition(), closeTo(m1.getRightPosition(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getLeftVelocity(), closeTo(m1.getLeftVelocity(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getRightVelocity(), closeTo(m1.getRightVelocity(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getLeftAcceleration(),
+            assertThat("Left position should be the same in both trajectories", m0.getLeftPosition(),
+                    closeTo(m1.getLeftPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Right position should be the same in both trajectories", m0.getRightPosition(),
+                    closeTo(m1.getRightPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Left velocity should be the same in both trajectories", m0.getLeftVelocity(),
+                    closeTo(m1.getLeftVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Right velocity should be the same in both trajectories", m0.getRightVelocity(),
+                    closeTo(m1.getRightVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Left acceleration should be the same in both trajectories", m0.getLeftAcceleration(),
                     closeTo(m1.getLeftAcceleration(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getRightAcceleration(),
+            assertThat("Right acceleration should be the same in both trajectories", m0.getRightAcceleration(),
                     closeTo(m1.getRightAcceleration(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getHeading(), closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Heading should be the same in both trajectories", m0.getHeading(),
+                    closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
         }
 
         original.close();
@@ -125,15 +130,20 @@ public class TankDriveTrajectoryTest {
             TankDriveMoment m0 = original.get(dt * i);
             TankDriveMoment m1 = mirrored.get(dt * i);
 
-            assertThat(m0.getLeftPosition(), closeTo(m1.getLeftPosition(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getRightPosition(), closeTo(m1.getRightPosition(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getLeftVelocity(), closeTo(m1.getLeftVelocity(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getRightVelocity(), closeTo(m1.getRightVelocity(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getLeftAcceleration(),
+            assertThat("Left position should be the same in both trajectories", m0.getLeftPosition(),
+                    closeTo(m1.getLeftPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Right position should be the same in both trajectories", m0.getRightPosition(),
+                    closeTo(m1.getRightPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Left velocity should be the same in both trajectories", m0.getLeftVelocity(),
+                    closeTo(m1.getLeftVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Right velocity should be the same in both trajectories", m0.getRightVelocity(),
+                    closeTo(m1.getRightVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Left acceleration should be the same in both trajectories", m0.getLeftAcceleration(),
                     closeTo(m1.getLeftAcceleration(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getRightAcceleration(),
+            assertThat("Right acceleration should be the same in both trajectories", m0.getRightAcceleration(),
                     closeTo(m1.getRightAcceleration(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getHeading(), closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Heading should be the same in both trajectories", m0.getHeading(),
+                    closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
         }
 
         original.close();
@@ -164,15 +174,20 @@ public class TankDriveTrajectoryTest {
             TankDriveMoment m0 = original.get(dt * i);
             TankDriveMoment m1 = mirrored.get(dt * i);
 
-            assertThat(m0.getLeftPosition(), closeTo(m1.getLeftPosition(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getRightPosition(), closeTo(m1.getRightPosition(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getLeftVelocity(), closeTo(m1.getLeftVelocity(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getRightVelocity(), closeTo(m1.getRightVelocity(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getLeftAcceleration(),
+            assertThat("Left position should be the same in both trajectories", m0.getLeftPosition(),
+                    closeTo(m1.getLeftPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Right position should be the same in both trajectories", m0.getRightPosition(),
+                    closeTo(m1.getRightPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Left velocity should be the same in both trajectories", m0.getLeftVelocity(),
+                    closeTo(m1.getLeftVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Right velocity should be the same in both trajectories", m0.getRightVelocity(),
+                    closeTo(m1.getRightVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Left acceleration should be the same in both trajectories", m0.getLeftAcceleration(),
                     closeTo(m1.getLeftAcceleration(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getRightAcceleration(),
+            assertThat("Right acceleration should be the same in both trajectories", m0.getRightAcceleration(),
                     closeTo(m1.getRightAcceleration(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getHeading(), closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Heading should be the same in both trajectories", m0.getHeading(),
+                    closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
         }
 
         original.close();
@@ -224,15 +239,20 @@ public class TankDriveTrajectoryTest {
             TankDriveMoment m0 = original.get(dt * i);
             TankDriveMoment m1 = mirrored.get(dt * i);
 
-            assertThat(m0.getLeftPosition(), closeTo(m1.getLeftPosition(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getRightPosition(), closeTo(m1.getRightPosition(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getLeftVelocity(), closeTo(m1.getLeftVelocity(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getRightVelocity(), closeTo(m1.getRightVelocity(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getLeftAcceleration(),
+            assertThat("Left position should be the same in both trajectories", m0.getLeftPosition(),
+                    closeTo(m1.getLeftPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Right position should be the same in both trajectories", m0.getRightPosition(),
+                    closeTo(m1.getRightPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Left velocity should be the same in both trajectories", m0.getLeftVelocity(),
+                    closeTo(m1.getLeftVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Right velocity should be the same in both trajectories", m0.getRightVelocity(),
+                    closeTo(m1.getRightVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Left acceleration should be the same in both trajectories", m0.getLeftAcceleration(),
                     closeTo(m1.getLeftAcceleration(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getRightAcceleration(),
+            assertThat("Right acceleration should be the same in both trajectories", m0.getRightAcceleration(),
                     closeTo(m1.getRightAcceleration(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getHeading(), closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Heading should be the same in both trajectories", m0.getHeading(),
+                    closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
         }
 
         original.close();
@@ -280,14 +300,20 @@ public class TankDriveTrajectoryTest {
         TankDriveTrajectory traj = new TankDriveTrajectory(specs, params);
 
         Waypoint pos = traj.getPosition(0);
-        assertThat(pos.getX(), closeTo(waypoints[0].getX(), MathUtils.getFloatCompareThreshold()));
-        assertThat(pos.getY(), closeTo(waypoints[0].getY(), MathUtils.getFloatCompareThreshold()));
-        assertThat(pos.getHeading(), closeTo(waypoints[0].getHeading(), MathUtils.getFloatCompareThreshold()));
+        assertThat("The x should be the same for the first waypoint", pos.getX(),
+                closeTo(waypoints[0].getX(), MathUtils.getFloatCompareThreshold()));
+        assertThat("The y should be the same for the first waypoint", pos.getY(),
+                closeTo(waypoints[0].getY(), MathUtils.getFloatCompareThreshold()));
+        assertThat("The heading should be the same for the first waypoint", pos.getHeading(),
+                closeTo(waypoints[0].getHeading(), MathUtils.getFloatCompareThreshold()));
 
         pos = traj.getPosition(traj.totalTime());
-        assertThat(pos.getX(), closeTo(waypoints[1].getX(), MathUtils.getFloatCompareThreshold()));
-        assertThat(pos.getY(), closeTo(waypoints[1].getY(), MathUtils.getFloatCompareThreshold()));
-        assertThat(pos.getHeading(), closeTo(waypoints[1].getHeading(), MathUtils.getFloatCompareThreshold()));
+        assertThat("The x should be the same for the second waypoint", pos.getX(),
+                closeTo(waypoints[1].getX(), MathUtils.getFloatCompareThreshold()));
+        assertThat("The y should be the same for the second waypoint", pos.getY(),
+                closeTo(waypoints[1].getY(), MathUtils.getFloatCompareThreshold()));
+        assertThat("The heading should be the same for the second waypoint", pos.getHeading(),
+                closeTo(waypoints[1].getHeading(), MathUtils.getFloatCompareThreshold()));
 
         traj.close();
     }

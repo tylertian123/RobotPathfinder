@@ -240,9 +240,10 @@ public class GrapherTest {
         };
         double dt = helper.getDouble("dt", followable.fakeTotalTime / 1000, followable.fakeTotalTime);
         followable.getCallback = (t) -> {
-            assertThat(t, lessThan(followable.fakeTotalTime));
+            assertThat("The get() call should have a time within range", t, lessThan(followable.fakeTotalTime));
             if (!Double.isNaN(wrapper.lastTime)) {
-                assertThat(t - wrapper.lastTime, closeTo(dt, MathUtils.getFloatCompareThreshold()));
+                assertThat("The difference in times should be as specified", t - wrapper.lastTime,
+                        closeTo(dt, MathUtils.getFloatCompareThreshold()));
             }
             wrapper.lastTime = t;
 
@@ -251,9 +252,11 @@ public class GrapherTest {
 
         JFrame frame = Grapher.graphBasicFollowable(followable, dt);
 
-        assertThat(frame.getContentPane(), instanceOf(Plot2DPanel.class));
-        assertThat(frame.getDefaultCloseOperation(), is(JFrame.DISPOSE_ON_CLOSE));
-        assertThat(frame.isVisible(), is(false));
+        assertThat("The returned JFrame should have a correct content pane", frame.getContentPane(),
+                instanceOf(Plot2DPanel.class));
+        assertThat("The returned JFrame should have a default close operation of DESTROY_ON_CLOSE",
+                frame.getDefaultCloseOperation(), is(JFrame.DISPOSE_ON_CLOSE));
+        assertThat("The returned JFrame should not be visible", frame.isVisible(), is(false));
     }
 
     /**
@@ -277,9 +280,10 @@ public class GrapherTest {
         };
         double dt = helper.getDouble("dt", followable.fakeTotalTime / 1000, followable.fakeTotalTime);
         followable.getCallback = (t) -> {
-            assertThat(t, lessThan(followable.fakeTotalTime));
+            assertThat("The get() call should have a time within range", t, lessThan(followable.fakeTotalTime));
             if (!Double.isNaN(wrapper.lastTime)) {
-                assertThat(t - wrapper.lastTime, closeTo(dt, MathUtils.getFloatCompareThreshold()));
+                assertThat("The difference in times should be as specified", t - wrapper.lastTime,
+                        closeTo(dt, MathUtils.getFloatCompareThreshold()));
             }
             wrapper.lastTime = t;
 
@@ -288,9 +292,11 @@ public class GrapherTest {
 
         JFrame frame = Grapher.graphTankDriveFollowable(followable, dt);
 
-        assertThat(frame.getContentPane(), instanceOf(Plot2DPanel.class));
-        assertThat(frame.getDefaultCloseOperation(), is(JFrame.DISPOSE_ON_CLOSE));
-        assertThat(frame.isVisible(), is(false));
+        assertThat("The returned JFrame should have a correct content pane", frame.getContentPane(),
+                instanceOf(Plot2DPanel.class));
+        assertThat("The returned JFrame should have a default close operation of DESTROY_ON_CLOSE",
+                frame.getDefaultCloseOperation(), is(JFrame.DISPOSE_ON_CLOSE));
+        assertThat("The returned JFrame should not be visible", frame.isVisible(), is(false));
     }
 
     /**
@@ -317,27 +323,30 @@ public class GrapherTest {
         };
         double dt = helper.getDouble("dt", 0.001, 1);
         path.atCallback = (t) -> {
-            assertThat(t, lessThanOrEqualTo(1.0));
+            assertThat("The at() call should have a time within range", t, lessThanOrEqualTo(1.0));
             if (!Double.isNaN(atWrapper.lastTime)) {
-                assertThat(t,
+                assertThat("The difference in times should be as specified", t,
                         either(closeTo(atWrapper.lastTime + dt, MathUtils.getFloatCompareThreshold())).or(is(1.0)));
             }
             atWrapper.lastTime = t;
         };
         path.wheelsAtCallback = (t) -> {
-            assertThat(t, lessThanOrEqualTo(1.0));
+            assertThat("The wheelsAt() call should have a time within range", t, lessThanOrEqualTo(1.0));
             if (!Double.isNaN(wheelsAtWrapper.lastTime)) {
-                assertThat(t, either(closeTo(wheelsAtWrapper.lastTime + dt, MathUtils.getFloatCompareThreshold()))
-                        .or(is(1.0)));
+                assertThat("The difference in times should be as specified", t,
+                        either(closeTo(wheelsAtWrapper.lastTime + dt, MathUtils.getFloatCompareThreshold()))
+                                .or(is(1.0)));
             }
             wheelsAtWrapper.lastTime = t;
         };
 
         JFrame frame = Grapher.graphPath(path, dt);
 
-        assertThat(frame.getContentPane(), instanceOf(Plot2DPanel.class));
-        assertThat(frame.getDefaultCloseOperation(), is(JFrame.DISPOSE_ON_CLOSE));
-        assertThat(frame.isVisible(), is(false));
+        assertThat("The returned JFrame should have a correct content pane", frame.getContentPane(),
+                instanceOf(Plot2DPanel.class));
+        assertThat("The returned JFrame should have a default close operation of DESTROY_ON_CLOSE",
+                frame.getDefaultCloseOperation(), is(JFrame.DISPOSE_ON_CLOSE));
+        assertThat("The returned JFrame should not be visible", frame.isVisible(), is(false));
     }
 
     /**
@@ -367,27 +376,30 @@ public class GrapherTest {
         };
         double dt = helper.getDouble("dt", profile.fakeTotalTime / 1000, profile.fakeTotalTime);
         profile.positionCallback = (t) -> {
-            assertThat(t, lessThan(profile.fakeTotalTime));
+            assertThat("The position() call should have a time within range", t, lessThan(profile.fakeTotalTime));
             if (!Double.isNaN(posWrapper.lastTime)) {
-                assertThat(t - posWrapper.lastTime, closeTo(dt, MathUtils.getFloatCompareThreshold()));
+                assertThat("The difference in times should be as specified", t - posWrapper.lastTime,
+                        closeTo(dt, MathUtils.getFloatCompareThreshold()));
             }
             posWrapper.lastTime = t;
 
             return 0.0;
         };
         profile.velocityCallback = (t) -> {
-            assertThat(t, lessThan(profile.fakeTotalTime));
+            assertThat("The velocity() call should have a time within range", t, lessThan(profile.fakeTotalTime));
             if (!Double.isNaN(velWrapper.lastTime)) {
-                assertThat(t - velWrapper.lastTime, closeTo(dt, MathUtils.getFloatCompareThreshold()));
+                assertThat("The difference in times should be as specified", t - velWrapper.lastTime,
+                        closeTo(dt, MathUtils.getFloatCompareThreshold()));
             }
             velWrapper.lastTime = t;
 
             return 0.0;
         };
         profile.accelerationCallback = (t) -> {
-            assertThat(t, lessThan(profile.fakeTotalTime));
+            assertThat("The acceleration() call should have a time within range", t, lessThan(profile.fakeTotalTime));
             if (!Double.isNaN(accelWrapper.lastTime)) {
-                assertThat(t - accelWrapper.lastTime, closeTo(dt, MathUtils.getFloatCompareThreshold()));
+                assertThat("The difference in times should be as specified", t - accelWrapper.lastTime,
+                        closeTo(dt, MathUtils.getFloatCompareThreshold()));
             }
             accelWrapper.lastTime = t;
 
@@ -396,8 +408,10 @@ public class GrapherTest {
 
         JFrame frame = Grapher.graphMotionProfile(profile, dt);
 
-        assertThat(frame.getContentPane(), instanceOf(Plot2DPanel.class));
-        assertThat(frame.getDefaultCloseOperation(), is(JFrame.DISPOSE_ON_CLOSE));
-        assertThat(frame.isVisible(), is(false));
+        assertThat("The returned JFrame should have a correct content pane", frame.getContentPane(),
+                instanceOf(Plot2DPanel.class));
+        assertThat("The returned JFrame should have a default close operation of DESTROY_ON_CLOSE",
+                frame.getDefaultCloseOperation(), is(JFrame.DISPOSE_ON_CLOSE));
+        assertThat("The returned JFrame should not be visible", frame.isVisible(), is(false));
     }
 }

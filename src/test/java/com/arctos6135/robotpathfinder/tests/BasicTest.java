@@ -51,18 +51,24 @@ public class BasicTest {
         Path cubicPath = new Path(waypoints, 30, PathType.CUBIC_HERMITE);
         Path quinticPath = new Path(waypoints, 30, PathType.QUINTIC_HERMITE);
 
-        assertThat(bezierPath.computeLen(100), is(not(Double.NaN)));
-        assertNotNull(bezierPath.at(0));
-        assertNotNull(bezierPath.derivAt(0));
-        assertNotNull(bezierPath.secondDerivAt(0));
+        assertThat("Path.computeLen() shouldn't return NaN", bezierPath.computeLen(100), is(not(Double.NaN)));
+        assertNotNull("Path.at() shouldn't return null", bezierPath.at(0));
+        assertNotNull("Path.derivAt() shouldn't return null", bezierPath.derivAt(0));
+        assertNotNull("Path.secondDerivAt() shouldn't return null", bezierPath.secondDerivAt(0));
         bezierPath.setBaseRadius(1);
         bezierPath.setDrivingBackwards(true);
-        assertThat(bezierPath.t2S(0), is(not(Double.NaN)));
-        assertThat(bezierPath.s2T(0), is(not(Double.NaN)));
+        assertThat("Path.t2S shouldn't return NaN", bezierPath.t2S(0), is(not(Double.NaN)));
+        assertThat("Path.s2T shouldn't return NaN", bezierPath.s2T(0), is(not(Double.NaN)));
         bezierPath._updateWaypoints();
-        assertNotNull(bezierPath.mirrorLeftRight());
-        assertNotNull(bezierPath.mirrorFrontBack());
-        assertNotNull(bezierPath.retrace());
+        Path lrMirrored = bezierPath.mirrorLeftRight();
+        assertNotNull("Path.mirrorLeftRight shouldn't return null", lrMirrored);
+        Path fbMirrored = bezierPath.mirrorFrontBack();
+        assertNotNull("Path.mirrorFrontBack shouldn't return null", fbMirrored);
+        Path retraced = bezierPath.retrace();
+        assertNotNull("Path.retrace() shouldn't return null", retraced);
+        lrMirrored.close();
+        fbMirrored.close();
+        retraced.close();
 
         bezierPath.close();
         cubicPath.close();
@@ -96,12 +102,20 @@ public class BasicTest {
         params.sampleCount = 1000;
 
         TankDriveTrajectory traj = new TankDriveTrajectory(specs, params);
-        assertNotNull(traj.getMoments());
-        assertNotNull(traj.get(0));
-        assertNotNull(traj.getPath());
-        assertNotNull(traj.mirrorFrontBack());
-        assertNotNull(traj.mirrorLeftRight());
-        assertNotNull(traj.retrace());
+        assertNotNull("TankDriveTrajectory.getMoments() shouldn't return null", traj.getMoments());
+        assertNotNull("TankDriveTrajectory.get() shouldn't return null", traj.get(0));
+        Path path = traj.getPath();
+        assertNotNull("TankDriveTrajectory.getPath() shouldn't return null", path);
+        TankDriveTrajectory fbMirrored = traj.mirrorFrontBack();
+        assertNotNull("TankDriveTrajectory.mirrorFrontBack() shouldn't return null", fbMirrored);
+        TankDriveTrajectory lrMirrored = traj.mirrorLeftRight();
+        assertNotNull("TankDriveTrajectory.mirrorLeftRight() shouldn't return null", lrMirrored);
+        TankDriveTrajectory retraced = traj.retrace();
+        assertNotNull("TankDriveTrajectory.retrace() shouldn't return null", retraced);
+        path.close();
+        fbMirrored.close();
+        lrMirrored.close();
+        retraced.close();
         traj.close();
     }
 
@@ -132,12 +146,20 @@ public class BasicTest {
         params.sampleCount = 1000;
 
         BasicTrajectory traj = new BasicTrajectory(specs, params);
-        assertNotNull(traj.getMoments());
-        assertNotNull(traj.get(0));
-        assertNotNull(traj.getPath());
-        assertNotNull(traj.mirrorFrontBack());
-        assertNotNull(traj.mirrorLeftRight());
-        assertNotNull(traj.retrace());
+        assertNotNull("BasicTrajectory.getMoments() shouldn't return null", traj.getMoments());
+        assertNotNull("BasicTrajectory.get() shouldn't return null", traj.get(0));
+        Path path = traj.getPath();
+        assertNotNull("BasicTrajectory.getPath() shouldn't return null", path);
+        BasicTrajectory fbMirrored = traj.mirrorFrontBack();
+        assertNotNull("BasicTrajectory.mirrorFrontBack() shouldn't return null", fbMirrored);
+        BasicTrajectory lrMirrored = traj.mirrorLeftRight();
+        assertNotNull("BasicTrajectory.mirrorLeftRight() shouldn't return null", lrMirrored);
+        BasicTrajectory retraced = traj.retrace();
+        assertNotNull("BasicTrajectory.retrace() shouldn't return null", retraced);
+        path.close();
+        fbMirrored.close();
+        lrMirrored.close();
+        retraced.close();
         traj.close();
     }
 
@@ -145,28 +167,21 @@ public class BasicTest {
      * Tests that {@code Path} methods throw an {@link IllegalStateException} if the
      * object has already been freed.
      */
-    @Test
+    @Test(expected = IllegalStateException.class)
     public void testPathIllegalStateException() {
         Waypoint[] waypoints = new Waypoint[] { new Waypoint(0, 0, 0), new Waypoint(10, 10, 0),
                 new Waypoint(12.34, 5.67, Math.PI), };
         Path path = new Path(waypoints, 30, PathType.BEZIER);
         Path p = path;
         path.close();
-
-        boolean exception = false;
-        try {
-            p.at(0);
-        } catch (IllegalStateException e) {
-            exception = true;
-        }
-        assertThat(exception, is(true));
+        p.at(0);
     }
 
     /**
      * Tests that {@code BasicTrajectory} methods throw an
      * {@link IllegalStateException} if the object has already been freed.
      */
-    @Test
+    @Test(expected = IllegalStateException.class)
     public void testBasicTrajectoryIllegalStateException() {
         RobotSpecs specs = new RobotSpecs(5, 3, 1);
         TrajectoryParams params = new TrajectoryParams();
@@ -179,21 +194,14 @@ public class BasicTest {
         BasicTrajectory traj = new BasicTrajectory(specs, params);
         BasicTrajectory t = traj;
         traj.close();
-
-        boolean exception = false;
-        try {
-            t.get(0);
-        } catch (IllegalStateException e) {
-            exception = true;
-        }
-        assertThat(exception, is(true));
+        t.get(0);
     }
 
     /**
      * Tests that {@code TankDriveTrajectory} methods throw an
      * {@link IllegalStateException} if the object has already been freed.
      */
-    @Test
+    @Test(expected = IllegalStateException.class)
     public void testTankDriveTrajectoryIllegalStateException() {
         RobotSpecs specs = new RobotSpecs(5, 3, 1);
         TrajectoryParams params = new TrajectoryParams();
@@ -206,13 +214,6 @@ public class BasicTest {
         TankDriveTrajectory traj = new TankDriveTrajectory(specs, params);
         TankDriveTrajectory t = traj;
         traj.close();
-
-        boolean exception = false;
-        try {
-            t.get(0);
-        } catch (IllegalStateException e) {
-            exception = true;
-        }
-        assertThat(exception, is(true));
+        t.get(0);
     }
 }

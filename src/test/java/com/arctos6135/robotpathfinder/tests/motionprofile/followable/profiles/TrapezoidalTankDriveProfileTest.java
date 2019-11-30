@@ -49,19 +49,31 @@ public class TrapezoidalTankDriveProfileTest {
         Followable<TankDriveMoment> f = new TrapezoidalTankDriveProfile(specs, distance);
         TankDriveMoment begin = f.get(0);
         TankDriveMoment end = f.get(f.totalTime());
-        assertThat(begin.getLeftPosition(), closeTo(0.0, MathUtils.getFloatCompareThreshold()));
-        assertThat(end.getLeftPosition(), closeTo(distance, MathUtils.getFloatCompareThreshold()));
-        assertThat(begin.getLeftVelocity(), closeTo(0.0, MathUtils.getFloatCompareThreshold()));
-        assertThat(end.getLeftVelocity(), closeTo(0.0, MathUtils.getFloatCompareThreshold()));
-        assertThat(begin.getLeftAcceleration(), closeTo(maxA, MathUtils.getFloatCompareThreshold()));
-        assertThat(end.getLeftAcceleration(), closeTo(-maxA, MathUtils.getFloatCompareThreshold()));
+        assertThat("Left Position at end time should be close to the specified position", begin.getLeftPosition(),
+                closeTo(0.0, MathUtils.getFloatCompareThreshold()));
+        assertThat("Left Position at the start time should be 0", end.getLeftPosition(),
+                closeTo(distance, MathUtils.getFloatCompareThreshold()));
+        assertThat("Left Velocity at the start time should be 0", begin.getLeftVelocity(),
+                closeTo(0.0, MathUtils.getFloatCompareThreshold()));
+        assertThat("Left Velocity at the end time should be 0", end.getLeftVelocity(),
+                closeTo(0.0, MathUtils.getFloatCompareThreshold()));
+        assertThat("Left Acceleration at the start time should be max acceleration", begin.getLeftAcceleration(),
+                closeTo(maxA, MathUtils.getFloatCompareThreshold()));
+        assertThat("Left Acceleration at the end time should be negative max acceleration", end.getLeftAcceleration(),
+                closeTo(-maxA, MathUtils.getFloatCompareThreshold()));
 
-        assertThat(begin.getRightPosition(), closeTo(0.0, MathUtils.getFloatCompareThreshold()));
-        assertThat(end.getRightPosition(), closeTo(distance, MathUtils.getFloatCompareThreshold()));
-        assertThat(begin.getRightVelocity(), closeTo(0.0, MathUtils.getFloatCompareThreshold()));
-        assertThat(end.getRightVelocity(), closeTo(0.0, MathUtils.getFloatCompareThreshold()));
-        assertThat(begin.getRightAcceleration(), closeTo(maxA, MathUtils.getFloatCompareThreshold()));
-        assertThat(end.getRightAcceleration(), closeTo(-maxA, MathUtils.getFloatCompareThreshold()));
+        assertThat("Right Position at end time should be close to the specified position", begin.getRightPosition(),
+                closeTo(0.0, MathUtils.getFloatCompareThreshold()));
+        assertThat("Right Position at the start time should be 0", end.getRightPosition(),
+                closeTo(distance, MathUtils.getFloatCompareThreshold()));
+        assertThat("Right Velocity at the start time should be 0", begin.getRightVelocity(),
+                closeTo(0.0, MathUtils.getFloatCompareThreshold()));
+        assertThat("Right Velocity at the end time should be 0", end.getRightVelocity(),
+                closeTo(0.0, MathUtils.getFloatCompareThreshold()));
+        assertThat("Right Acceleration at the start time should be max acceleration", begin.getRightAcceleration(),
+                closeTo(maxA, MathUtils.getFloatCompareThreshold()));
+        assertThat("Right Acceleration at the end time should be negative max acceleration", end.getRightAcceleration(),
+                closeTo(-maxA, MathUtils.getFloatCompareThreshold()));
     }
 
     /**
@@ -85,19 +97,31 @@ public class TrapezoidalTankDriveProfileTest {
         Followable<TankDriveMoment> f = new TrapezoidalTankDriveProfile(specs, distance);
         TankDriveMoment begin = f.get(0);
         TankDriveMoment end = f.get(f.totalTime());
-        assertThat(begin.getLeftPosition(), closeTo(0.0, MathUtils.getFloatCompareThreshold()));
-        assertThat(end.getLeftPosition(), closeTo(distance, MathUtils.getFloatCompareThreshold()));
-        assertThat(begin.getLeftVelocity(), closeTo(0.0, MathUtils.getFloatCompareThreshold()));
-        assertThat(end.getLeftVelocity(), closeTo(0.0, MathUtils.getFloatCompareThreshold()));
-        assertThat(begin.getLeftAcceleration(), closeTo(-maxA, MathUtils.getFloatCompareThreshold()));
-        assertThat(end.getLeftAcceleration(), closeTo(maxA, MathUtils.getFloatCompareThreshold()));
+        assertThat("Left Position at end time should be close to the specified position", begin.getLeftPosition(),
+                closeTo(0.0, MathUtils.getFloatCompareThreshold()));
+        assertThat("Left Position at the start time should be 0", end.getLeftPosition(),
+                closeTo(distance, MathUtils.getFloatCompareThreshold()));
+        assertThat("Left Velocity at the start time should be 0", begin.getLeftVelocity(),
+                closeTo(0.0, MathUtils.getFloatCompareThreshold()));
+        assertThat("Left Velocity at the end time should be 0", end.getLeftVelocity(),
+                closeTo(0.0, MathUtils.getFloatCompareThreshold()));
+        assertThat("Left Acceleration at the start time should be negative max acceleration",
+                begin.getLeftAcceleration(), closeTo(-maxA, MathUtils.getFloatCompareThreshold()));
+        assertThat("Left Acceleration at the end time should be max acceleration", end.getLeftAcceleration(),
+                closeTo(maxA, MathUtils.getFloatCompareThreshold()));
 
-        assertThat(begin.getRightPosition(), closeTo(0.0, MathUtils.getFloatCompareThreshold()));
-        assertThat(end.getRightPosition(), closeTo(distance, MathUtils.getFloatCompareThreshold()));
-        assertThat(begin.getRightVelocity(), closeTo(0.0, MathUtils.getFloatCompareThreshold()));
-        assertThat(end.getRightVelocity(), closeTo(0.0, MathUtils.getFloatCompareThreshold()));
-        assertThat(begin.getRightAcceleration(), closeTo(-maxA, MathUtils.getFloatCompareThreshold()));
-        assertThat(end.getRightAcceleration(), closeTo(maxA, MathUtils.getFloatCompareThreshold()));
+        assertThat("Right Position at end time should be close to the specified position", begin.getRightPosition(),
+                closeTo(0.0, MathUtils.getFloatCompareThreshold()));
+        assertThat("Right Position at the start time should be 0", end.getRightPosition(),
+                closeTo(distance, MathUtils.getFloatCompareThreshold()));
+        assertThat("Right Velocity at the start time should be 0", begin.getRightVelocity(),
+                closeTo(0.0, MathUtils.getFloatCompareThreshold()));
+        assertThat("Right Velocity at the end time should be 0", end.getRightVelocity(),
+                closeTo(0.0, MathUtils.getFloatCompareThreshold()));
+        assertThat("Right Acceleration at the start time should be negative max acceleration",
+                begin.getRightAcceleration(), closeTo(-maxA, MathUtils.getFloatCompareThreshold()));
+        assertThat("Right Acceleration at the end time should be max acceleration", end.getRightAcceleration(),
+                closeTo(maxA, MathUtils.getFloatCompareThreshold()));
     }
 
     /**
@@ -124,30 +148,30 @@ public class TrapezoidalTankDriveProfileTest {
         double dt = f.totalTime() / 1000;
         for (double t = 0; t < f.totalTime(); t += dt) {
             TankDriveMoment m = f.get(t);
-            assertThat(m.getLeftPosition(),
+            assertThat("Left position should be within the expected range", m.getLeftPosition(),
                     either(lessThan(distance)).or(closeTo(distance, MathUtils.getFloatCompareThreshold())));
-            assertThat(m.getLeftPosition(),
+            assertThat("Left position should be within the expected range", m.getLeftPosition(),
                     either(greaterThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(m.getLeftVelocity(),
+            assertThat("Left velocity should be within the expected range", m.getLeftVelocity(),
                     either(lessThan((maxV))).or(closeTo((maxV), MathUtils.getFloatCompareThreshold())));
-            assertThat(m.getLeftVelocity(),
+            assertThat("Left velocity should be within the expected range", m.getLeftVelocity(),
                     either(greaterThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(Math.abs(m.getLeftAcceleration()),
+            assertThat("Left acceleration should be within the expected range", Math.abs(m.getLeftAcceleration()),
                     either(lessThan((maxA))).or(closeTo((maxA), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(m.getRightPosition(),
+            assertThat("Right position should be within the expected range", m.getRightPosition(),
                     either(lessThan(distance)).or(closeTo(distance, MathUtils.getFloatCompareThreshold())));
-            assertThat(m.getRightPosition(),
+            assertThat("Right position should be within the expected range", m.getRightPosition(),
                     either(greaterThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(m.getRightVelocity(),
+            assertThat("Right velocity should be within the expected range", m.getRightVelocity(),
                     either(lessThan((maxV))).or(closeTo((maxV), MathUtils.getFloatCompareThreshold())));
-            assertThat(m.getRightVelocity(),
+            assertThat("Right velocity should be within the expected range", m.getRightVelocity(),
                     either(greaterThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(Math.abs(m.getRightAcceleration()),
+            assertThat("Right acceleration should be within the expected range", Math.abs(m.getRightAcceleration()),
                     either(lessThan((maxA))).or(closeTo((maxA), MathUtils.getFloatCompareThreshold())));
         }
     }
@@ -175,30 +199,30 @@ public class TrapezoidalTankDriveProfileTest {
         double dt = f.totalTime() / 1000;
         for (double t = 0; t < f.totalTime(); t += dt) {
             TankDriveMoment m = f.get(t);
-            assertThat(m.getLeftPosition(),
+            assertThat("Left position should be within the expected range", m.getLeftPosition(),
                     either(greaterThan((distance))).or(closeTo((distance), MathUtils.getFloatCompareThreshold())));
-            assertThat(m.getLeftPosition(),
+            assertThat("Left position should be within the expected range", m.getLeftPosition(),
                     either(lessThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(-m.getLeftVelocity(),
+            assertThat("Left velocity should be within the expected range", -m.getLeftVelocity(),
                     either(lessThan((maxV))).or(closeTo((maxV), MathUtils.getFloatCompareThreshold())));
-            assertThat(m.getLeftVelocity(),
+            assertThat("Left velocity should be within the expected range", m.getLeftVelocity(),
                     either(lessThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(Math.abs(m.getLeftAcceleration()),
+            assertThat("Left acceleration should be within the expected range", Math.abs(m.getLeftAcceleration()),
                     either(lessThan((maxA))).or(closeTo((maxA), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(m.getRightPosition(),
+            assertThat("Right position should be within the expected range", m.getRightPosition(),
                     either(greaterThan((distance))).or(closeTo((distance), MathUtils.getFloatCompareThreshold())));
-            assertThat(m.getRightPosition(),
+            assertThat("Right position should be within the expected range", m.getRightPosition(),
                     either(lessThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(-m.getRightVelocity(),
+            assertThat("Right velocity should be within the expected range", -m.getRightVelocity(),
                     either(lessThan((maxV))).or(closeTo((maxV), MathUtils.getFloatCompareThreshold())));
-            assertThat(m.getRightVelocity(),
+            assertThat("Right velocity should be within the expected range", m.getRightVelocity(),
                     either(lessThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(Math.abs(m.getRightAcceleration()),
+            assertThat("Right acceleration should be within the expected range", Math.abs(m.getRightAcceleration()),
                     either(lessThan((maxA))).or(closeTo((maxA), MathUtils.getFloatCompareThreshold())));
         }
     }

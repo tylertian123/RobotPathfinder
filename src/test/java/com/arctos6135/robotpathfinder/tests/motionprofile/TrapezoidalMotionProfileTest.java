@@ -48,12 +48,18 @@ public class TrapezoidalMotionProfileTest {
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
         MotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
-        assertThat(profile.position(profile.totalTime()), closeTo(distance, MathUtils.getFloatCompareThreshold()));
-        assertThat(profile.position(0), closeTo(0.0, MathUtils.getFloatCompareThreshold()));
-        assertThat(profile.velocity(0), closeTo(0.0, MathUtils.getFloatCompareThreshold()));
-        assertThat(profile.velocity(profile.totalTime()), closeTo(0.0, MathUtils.getFloatCompareThreshold()));
-        assertThat(profile.acceleration(0), closeTo(maxA, MathUtils.getFloatCompareThreshold()));
-        assertThat(profile.acceleration(profile.totalTime()), closeTo(-maxA, MathUtils.getFloatCompareThreshold()));
+        assertThat("Position at end time should be close to the specified position",
+                profile.position(profile.totalTime()), closeTo(distance, MathUtils.getFloatCompareThreshold()));
+        assertThat("Position at the start time should be 0", profile.position(0),
+                closeTo(0.0, MathUtils.getFloatCompareThreshold()));
+        assertThat("Velocity at the start time should be 0", profile.velocity(0),
+                closeTo(0.0, MathUtils.getFloatCompareThreshold()));
+        assertThat("Velocity at the end time should be 0", profile.velocity(profile.totalTime()),
+                closeTo(0.0, MathUtils.getFloatCompareThreshold()));
+        assertThat("Acceleration at the start time should be max acceleration", profile.acceleration(0),
+                closeTo(maxA, MathUtils.getFloatCompareThreshold()));
+        assertThat("Acceleration at the end time should be negative max acceleration",
+                profile.acceleration(profile.totalTime()), closeTo(-maxA, MathUtils.getFloatCompareThreshold()));
     }
 
     /**
@@ -75,12 +81,18 @@ public class TrapezoidalMotionProfileTest {
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
         MotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
-        assertThat(profile.position(profile.totalTime()), closeTo(distance, MathUtils.getFloatCompareThreshold()));
-        assertThat(profile.position(0), closeTo(0.0, MathUtils.getFloatCompareThreshold()));
-        assertThat(profile.velocity(0), closeTo(0.0, MathUtils.getFloatCompareThreshold()));
-        assertThat(profile.velocity(profile.totalTime()), closeTo(0.0, MathUtils.getFloatCompareThreshold()));
-        assertThat(profile.acceleration(0), closeTo(-maxA, MathUtils.getFloatCompareThreshold()));
-        assertThat(profile.acceleration(profile.totalTime()), closeTo(maxA, MathUtils.getFloatCompareThreshold()));
+        assertThat("Position at end time should be close to the specified position",
+                profile.position(profile.totalTime()), closeTo(distance, MathUtils.getFloatCompareThreshold()));
+        assertThat("Position at the start time should be 0", profile.position(0),
+                closeTo(0.0, MathUtils.getFloatCompareThreshold()));
+        assertThat("Velocity at the start time should be 0", profile.velocity(0),
+                closeTo(0.0, MathUtils.getFloatCompareThreshold()));
+        assertThat("Velocity at the end time should be 0", profile.velocity(profile.totalTime()),
+                closeTo(0.0, MathUtils.getFloatCompareThreshold()));
+        assertThat("Acceleration at the start time should be negative max acceleration", profile.acceleration(0),
+                closeTo(-maxA, MathUtils.getFloatCompareThreshold()));
+        assertThat("Acceleration at the end time should be max acceleration", profile.acceleration(profile.totalTime()),
+                closeTo(maxA, MathUtils.getFloatCompareThreshold()));
     }
 
     /**
@@ -106,17 +118,17 @@ public class TrapezoidalMotionProfileTest {
 
         double dt = profile.totalTime() / 1000;
         for (double t = 0; t < profile.totalTime(); t += dt) {
-            assertThat(profile.position(t),
+            assertThat("position should be within the expected range", profile.position(t),
                     either(lessThan(distance)).or(closeTo(distance, MathUtils.getFloatCompareThreshold())));
-            assertThat(profile.position(t),
+            assertThat("position should be within the expected range", profile.position(t),
                     either(greaterThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(profile.velocity(t),
+            assertThat("velocity should be within the expected range", profile.velocity(t),
                     either(lessThan((maxV))).or(closeTo((maxV), MathUtils.getFloatCompareThreshold())));
-            assertThat(profile.velocity(t),
+            assertThat("velocity should be within the expected range", profile.velocity(t),
                     either(greaterThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(Math.abs(profile.acceleration(t)),
+            assertThat("acceleration should be within the expected range", Math.abs(profile.acceleration(t)),
                     either(lessThan((maxA))).or(closeTo((maxA), MathUtils.getFloatCompareThreshold())));
         }
     }
@@ -143,17 +155,17 @@ public class TrapezoidalMotionProfileTest {
 
         double dt = profile.totalTime() / 1000;
         for (double t = 0; t < profile.totalTime(); t += dt) {
-            assertThat(profile.position(t),
+            assertThat("position should be within the expected range", profile.position(t),
                     either(greaterThan((distance))).or(closeTo((distance), MathUtils.getFloatCompareThreshold())));
-            assertThat(profile.position(t),
+            assertThat("position should be within the expected range", profile.position(t),
                     either(lessThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(-profile.velocity(t),
+            assertThat("velocity should be within the expected range", -profile.velocity(t),
                     either(lessThan((maxV))).or(closeTo((maxV), MathUtils.getFloatCompareThreshold())));
-            assertThat(profile.velocity(t),
+            assertThat("velocity should be within the expected range", profile.velocity(t),
                     either(lessThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(Math.abs(profile.acceleration(t)),
+            assertThat("acceleration should be within the expected range", Math.abs(profile.acceleration(t)),
                     either(lessThan((maxA))).or(closeTo((maxA), MathUtils.getFloatCompareThreshold())));
         }
     }
@@ -192,8 +204,8 @@ public class TrapezoidalMotionProfileTest {
         profile.update(updateTime, updatePos, updateVel, 0);
 
         double totalTime = profile.totalTime();
-        assertThat(profile.velocity(totalTime), closeTo(0, MathUtils.getFloatCompareThreshold()));
-        assertThat(profile.position(totalTime), closeTo(distance, MathUtils.getFloatCompareThreshold()));
+        assertThat("Final velocity should be 0", profile.velocity(totalTime), closeTo(0, MathUtils.getFloatCompareThreshold()));
+        assertThat("Final position should be as specified", profile.position(totalTime), closeTo(distance, MathUtils.getFloatCompareThreshold()));
     }
 
     /**
@@ -227,8 +239,8 @@ public class TrapezoidalMotionProfileTest {
         profile.update(updateTime, updatePos, updateVel, 0);
 
         double totalTime = profile.totalTime();
-        assertThat(profile.velocity(totalTime), closeTo(0, MathUtils.getFloatCompareThreshold()));
-        assertThat(profile.position(totalTime), closeTo(distance, MathUtils.getFloatCompareThreshold()));
+        assertThat("Final velocity should be 0", profile.velocity(totalTime), closeTo(0, MathUtils.getFloatCompareThreshold()));
+        assertThat("Final position should be as specified", profile.position(totalTime), closeTo(distance, MathUtils.getFloatCompareThreshold()));
     }
 
     /**
@@ -260,7 +272,7 @@ public class TrapezoidalMotionProfileTest {
 
         boolean overshoot = profile.update(updateTime, distance, updateVel, 0);
 
-        assertThat(overshoot, is(true));
+        assertThat("overshoot should be true", overshoot, is(true));
     }
 
     /**
@@ -289,7 +301,7 @@ public class TrapezoidalMotionProfileTest {
 
         boolean overshoot = profile.update(updateTime, distance, updateVel, 0);
 
-        assertThat(overshoot, is(true));
+        assertThat("overshoot should be true", overshoot, is(true));
     }
 
     /**

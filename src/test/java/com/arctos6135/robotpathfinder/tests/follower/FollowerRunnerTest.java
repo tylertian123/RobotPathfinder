@@ -21,6 +21,14 @@ public class FollowerRunnerTest {
     private volatile boolean stopCalled = false;
     private volatile boolean initializeCalled = false;
 
+    /**
+     * Tests a {@link FollowerRunner}.
+     * 
+     * This will perform tests on all the methods of the {@link FollowerRunner},
+     * making sure that the follower's methods are being called correctly.
+     * 
+     * @param runner The {@link FollowerRunner} to test
+     */
     public void testFollowerRunner(FollowerRunner runner) {
         Follower<?> f = new Follower<Moment>() {
 
@@ -78,7 +86,8 @@ public class FollowerRunnerTest {
                 throw new RuntimeException("Interrupted!", e);
             }
         }
-        assertThat("run() should be called within the correct time period", (int) ((System.nanoTime() - start) / 1000000),
+        assertThat("run() should be called within the correct time period",
+                (int) ((System.nanoTime() - start) / 1000000),
                 both(greaterThanOrEqualTo(19)).and(lessThanOrEqualTo(21)));
 
         // Test stop
@@ -96,11 +105,21 @@ public class FollowerRunnerTest {
         assertThat("run() should no longer be called after the follower is stopped", runCalled, is(false));
     }
 
+    /**
+     * Tests {@link SimpleFollowerRunner}.
+     * 
+     * This tests all the methods of {@link SimpleFollowerRunner}.
+     */
     @Test
     public void testSimpleFollowerRunner() {
         testFollowerRunner(new SimpleFollowerRunner());
     }
 
+    /**
+     * Tests {@link TimedFollowerRunner}.
+     * 
+     * This tests all the methods of {@link TimedFollowerRunner}.
+     */
     @Test
     public void testTimedFollowerRunner() {
         testFollowerRunner(new TimedFollowerRunner());

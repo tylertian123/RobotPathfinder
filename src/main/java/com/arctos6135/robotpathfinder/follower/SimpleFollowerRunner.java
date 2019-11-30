@@ -7,11 +7,13 @@ package com.arctos6135.robotpathfinder.follower;
  * <p>
  * Note that since {@link Thread#sleep(long)} is used to delay between control
  * loop executions, the frequency will not be exact as it does not take into
- * account the execution time of the control loop.
+ * account the execution time of the control loop. For precise timing, use a
+ * {@link TimedFollowerRunner}.
  * </p>
  * 
  * @author Tyler Tian
  * @see FollowerRunner
+ * @see TimedFollowerRunner
  * @since 3.0.0
  */
 public class SimpleFollowerRunner implements FollowerRunner {
@@ -53,7 +55,8 @@ public class SimpleFollowerRunner implements FollowerRunner {
      * stopped.
      * </p>
      * 
-     * @throws IllegalArgumentException If interrupted
+     * @throws IllegalStateException If interrupted while waiting for the control
+     *                               loop thread to finish
      */
     @Override
     public void stop() {
@@ -65,11 +68,11 @@ public class SimpleFollowerRunner implements FollowerRunner {
                 runner.join();
             } catch (InterruptedException e) {
                 throw new IllegalStateException("Thread.join() was interrupted!", e);
+            } finally {
+                runner = null;
+                follower = null;
+                delay = 0;
             }
-
-            runner = null;
-            follower = null;
-            delay = 0;
         }
     }
 

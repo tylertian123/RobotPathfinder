@@ -25,8 +25,8 @@ gradle.properties
 *.zip
 *.tar.gz
 
-# VM Crash Logs
-hs_err_pid*.log
+# Logs
+*.log
 
 # Debug test file
 /src/test/java/DebugTests.java

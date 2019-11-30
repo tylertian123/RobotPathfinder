@@ -189,15 +189,11 @@ public class TrapezoidalMotionProfileTest {
         // TrapezoidalMotionProfiles completely ignore the acceleration when updating
         // since theres no constraint on how fast it changes
         // Just use 0 here as a placeholder
-        boolean overshoot = profile.update(updateTime, updatePos, updateVel, 0);
+        profile.update(updateTime, updatePos, updateVel, 0);
 
         double totalTime = profile.totalTime();
         assertThat(profile.velocity(totalTime), closeTo(0, MathUtils.getFloatCompareThreshold()));
-        if (overshoot) {
-            assertThat(profile.position(totalTime), greaterThan(distance));
-        } else {
-            assertThat(profile.position(totalTime), closeTo(distance, MathUtils.getFloatCompareThreshold()));
-        }
+        assertThat(profile.position(totalTime), closeTo(distance, MathUtils.getFloatCompareThreshold()));
     }
 
     /**
@@ -228,16 +224,11 @@ public class TrapezoidalMotionProfileTest {
         // TrapezoidalMotionProfiles completely ignore the acceleration when updating
         // since theres no constraint on how fast it changes
         // Just use 0 here as a placeholder
-        boolean overshoot = profile.update(updateTime, updatePos, updateVel, 0);
+        profile.update(updateTime, updatePos, updateVel, 0);
 
         double totalTime = profile.totalTime();
         assertThat(profile.velocity(totalTime), closeTo(0, MathUtils.getFloatCompareThreshold()));
-        if (overshoot) {
-            // Assert that it is more negative than the distance
-            assertThat(profile.position(totalTime), lessThan(distance));
-        } else {
-            assertThat(profile.position(totalTime), closeTo(distance, MathUtils.getFloatCompareThreshold()));
-        }
+        assertThat(profile.position(totalTime), closeTo(distance, MathUtils.getFloatCompareThreshold()));
     }
 
     /**
@@ -268,15 +259,8 @@ public class TrapezoidalMotionProfileTest {
         double updateVel = helper.getDouble("updateVel", maxV);
 
         boolean overshoot = profile.update(updateTime, distance, updateVel, 0);
-        double totalTime = profile.totalTime();
 
         assertThat(overshoot, is(true));
-        assertThat(profile.velocity(totalTime), closeTo(0, MathUtils.getFloatCompareThreshold()));
-
-        // Calculate the overshoot distance using kinematic forumlas
-        double overshootDist = -(updateVel * updateVel) / (2 * -maxA);
-        assertThat(profile.position(totalTime),
-                closeTo(distance + overshootDist, MathUtils.getFloatCompareThreshold()));
     }
 
     /**
@@ -304,15 +288,8 @@ public class TrapezoidalMotionProfileTest {
         double updateVel = helper.getDouble("updateVel", -maxV, 0);
 
         boolean overshoot = profile.update(updateTime, distance, updateVel, 0);
-        double totalTime = profile.totalTime();
 
         assertThat(overshoot, is(true));
-        assertThat(profile.velocity(totalTime), closeTo(0, MathUtils.getFloatCompareThreshold()));
-
-        // Calculate the overshoot distance using kinematic forumlas
-        double overshootDist = -(updateVel * updateVel) / (2 * maxA);
-        assertThat(profile.position(totalTime),
-                closeTo(distance + overshootDist, MathUtils.getFloatCompareThreshold()));
     }
 
     /**

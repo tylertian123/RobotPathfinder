@@ -29,7 +29,7 @@ import com.arctos6135.robotpathfinder.math.MathUtils;
 public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable {
 
     protected double initVel;
-    protected double initDist = 0, initTime = 0;
+    protected double initDist, initTime;
 
     protected double distance;
     protected double maxAcl, maxVel;
@@ -40,13 +40,25 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable
 
     protected boolean reverse = false;
 
+    protected final RobotSpecs specs;
+
+    @Override
+    public String toString() {
+        return "\u001b[92m[\u001b[4mTMP" + this.hashCode() + "\u001b[24m with initVel=" + initVel + ", initDist="
+                + initDist + ", initTime=" + initTime + ", distance=" + distance + ", maxAcl=" + maxAcl + ", maxVel="
+                + maxVel + ", cruiseVel=" + cruiseVel + ", tAccel=" + tAccel + ", tCruise=" + tCruise + ", tTotal="
+                + tTotal + ", accelDist=" + accelDist + ", cruiseDist=" + cruiseDist + ", reverse=" + reverse
+                + "]\u001b[0m";
+    }
+
     /**
      * Constructs a new object of this type without initializing any values.
      * <p>
      * This constructor should only ever be used internally.
      * </p>
      */
-    private TrapezoidalMotionProfile() {
+    private TrapezoidalMotionProfile(RobotSpecs specs) {
+        this.specs = specs;
     }
 
     /**
@@ -57,7 +69,8 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable
      *              for backwards motion
      */
     public TrapezoidalMotionProfile(RobotSpecs specs, double dist) {
-        construct(specs.getMaxVelocity(), specs.getMaxAcceleration(), dist, 0);
+        this.specs = specs;
+        construct(specs, dist, 0);
     }
 
     /**
@@ -71,7 +84,8 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable
      * @param initVel The velocity of the robot at t=0
      */
     public TrapezoidalMotionProfile(RobotSpecs specs, double dist, double initVel) {
-        construct(specs.getMaxVelocity(), specs.getMaxAcceleration(), dist, initVel);
+        this.specs = specs;
+        construct(specs, dist, initVel);
     }
 
     /**
@@ -86,38 +100,48 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable
      * @param initVel  The initial velocity
      * @return Whether or not the motion profile overshoots
      */
-    private boolean construct(double maxVel, double maxAccel, double dist, double initVel) {
+    private boolean construct(RobotSpecs specs, double dist, double initVel) {
         if (dist < 0) {
             reverse = true;
             dist = -dist;
             initVel = -initVel;
         }
         distance = dist;
-        this.maxAcl = maxAccel;
-        this.maxVel = maxVel;
+        maxAcl = specs.getMaxAcceleration();
+        maxVel = Math.max(specs.getMaxVelocity(), Math.abs(initVel));
         this.initVel = initVel;
 
-        // Use MathUtils functions to compare floats
-        if (MathUtils.floatGt(Math.abs(initVel), maxVel)) {
-            throw new IllegalArgumentException("Initial velocity too high!");
-        }
+        // // Use MathUtils functions to compare floats
+        // if (MathUtils.floatGt(Math.abs(initVel), maxVel)) {
+        // throw new IllegalArgumentException("Initial velocity too high!");
+        // }
+
         // Calculate the distance covered when accelerating and decelerating
-        // Formula can be derived from the fourth kinematic formula
+        // Formula is derived from the kinematic formula relating velocities, distance
+        // and acceleration, and the fact that dAccel + dDecel = dist
+        // Assumes there is no maximum cap on velocity
         double dAccel = dist / 2 - initVel * initVel / (4 * maxAcl);
         double dDecel;
         // If the acceleration distance is less than 0, the distance is not enough to
         // decelerate back to 0
-        // Change the distance so that we can
+        // Change the maximum acceleration so that we can
         boolean overshoot = false;
         if (dAccel < 0) {
-            dDecel = initVel * initVel / (2 * maxAcl);
-            dist = dDecel;
+            // Unless the distance left is 0
+            // In which case we promptly give up and call it a day
+            if (dist == 0) {
+                System.err.println("WTF");
+                tAccel = tCruise = tTotal = 0;
+                return true;
+            }
+            // This value should make dAccel equal to 0
+            this.maxAcl = initVel * initVel / (2 * dist);
+            dDecel = dist;
             overshoot = true;
         } else {
             dDecel = dist - dAccel;
         }
         // Calculate cruise velocity
-        // Formula derived from the fourth kinematic formula
         double vc = Math.sqrt(2 * maxAcl * dDecel);
         cruiseVel = Math.min(vc, maxVel);
 
@@ -175,7 +199,7 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable
     public double position(double time) {
         if (MathUtils.floatLt(time, initTime)) {
             throw new IllegalArgumentException(
-                    String.format("Time out of range (%f \u2209 [%f, %f])!", time, initTime, tTotal));
+                    String.format("Time out of range (%f not in [%f, %f])!", time, initTime, initTime + tTotal));
         }
         time -= initTime;
         double result = 0;
@@ -197,8 +221,8 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable
             double t = time - tAccel - tCruise;
             result = accelDist + cruiseDist + t * cruiseVel - t * t * maxAcl * 0.5;
         } else {
-            throw new IllegalArgumentException(
-                    String.format("Time out of range (%f \u2209 [%f, %f])!", time, initTime, tTotal));
+            throw new IllegalArgumentException(String.format("Time out of range (%f not in [%f, %f])!", time + initTime,
+                    initTime, initTime + tTotal));
         }
         return (reverse ? -result : result) + initDist;
     }
@@ -218,7 +242,7 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable
     public double velocity(double time) {
         if (MathUtils.floatLt(time, initTime)) {
             throw new IllegalArgumentException(
-                    String.format("Time out of range (%f \u2209 [%f, %f])!", time, initTime, tTotal));
+                    String.format("Time out of range (%f not in [%f, %f])!", time, initTime, initTime + tTotal));
         }
         time -= initTime;
         double result = 0;
@@ -238,8 +262,8 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable
             // decelerating
             result = cruiseVel - (time - tAccel - tCruise) * maxAcl;
         } else {
-            throw new IllegalArgumentException(
-                    String.format("Time out of range (%f \u2209 [%f, %f])!", time, initTime, tTotal));
+            throw new IllegalArgumentException(String.format("Time out of range (%f not in [%f, %f])!", time + initTime,
+                    initTime, initTime + tTotal));
         }
         return reverse ? -result : result;
     }
@@ -259,7 +283,7 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable
     public double acceleration(double time) {
         if (MathUtils.floatLt(time, initTime)) {
             throw new IllegalArgumentException(
-                    String.format("Time out of range (%f \u2209 [%f, %f])!", time, initTime, tTotal));
+                    String.format("Time out of range (%f not in [%f, %f])!", time, initTime, initTime + tTotal));
         }
         time -= initTime;
         double result = 0;
@@ -275,8 +299,8 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable
         else if (MathUtils.floatLtEq(time, tTotal)) {
             result = -maxAcl;
         } else {
-            throw new IllegalArgumentException(
-                    String.format("Time out of range (%f \u2209 [%f, %f])!", time, initTime, tTotal));
+            throw new IllegalArgumentException(String.format("Time out of range (%f not in [%f, %f])!", time + initTime,
+                    initTime, initTime + tTotal));
         }
         return reverse ? -result : result;
     }
@@ -287,8 +311,9 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable
     @Override
     public boolean update(double currentTime, double currentDist, double currentVel, double currentAccel) {
         initTime = currentTime;
+        double prevInitDist = initDist;
         initDist = currentDist;
-        return construct(maxVel, maxAcl, (reverse ? -distance : distance) - currentDist, currentVel);
+        return construct(specs, (reverse ? -distance : distance) + prevInitDist - currentDist, currentVel);
     }
 
     /**
@@ -304,16 +329,16 @@ public class TrapezoidalMotionProfile implements DynamicMotionProfile, Cloneable
      */
     @Override
     public TrapezoidalMotionProfile copy() {
-        TrapezoidalMotionProfile profile = new TrapezoidalMotionProfile();
+        TrapezoidalMotionProfile profile = new TrapezoidalMotionProfile(specs);
         profile.initVel = initVel;
         profile.initDist = initDist;
         profile.initTime = initTime;
-        
+
         profile.distance = distance;
         profile.maxAcl = maxAcl;
         profile.maxVel = maxVel;
         profile.cruiseVel = cruiseVel;
-        
+
         profile.tAccel = tAccel;
         profile.tCruise = tCruise;
         profile.tTotal = tTotal;

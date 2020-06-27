@@ -1,4 +1,5 @@
 import org.apache.tools.ant.taskdefs.condition.Os
+import java.nio.file.Files
 
 plugins {
     id 'base'
@@ -120,7 +121,7 @@ final JAVADOC_FIX_SEARCH_STR = '\n\n' +
 ' ***********************************************************************/\n' +
 'getURLPrefix = function(ui) {\n' +
 '    return \'\';\n' +
-'}\n'
+'};\n'
 
 tasks.withType(Javadoc) {
     // Link to external docs for all the builtin classes
@@ -147,7 +148,7 @@ repositories {
     jcenter()
 }
 
-project.version = '3.0.0-alpha.1'
+project.version = '3.0.0-alpha.1.1-dev'
 
 // Setup for Gradle-JNI
 // Thanks to @ThadHouse
@@ -183,7 +184,10 @@ model {
         }
     }
 }
-// Compiler options
+
+// Configure Compiler options
+def gccCompilerOptions = [ '-Wall', '-Wextra', '-ffast-math', '-fno-finite-math-only' ]
+def msvcCompilerOptions = [ '/W3', '/fp:fast' ]
 // Windows
 if(os == 'windows') {
     model {
@@ -191,13 +195,11 @@ if(os == 'windows') {
             all {
                 // For roborio (gcc)
                 if (targetPlatform.name == wpi.platforms.roborio) {
-                    // All warnings, fast math but keep infinite math and NaNs
-                    cppCompiler.args << '-Wall' << '-Wextra' << '-ffast-math' << '-fno-finite-math-only'
+                    cppCompiler.args.addAll gccCompilerOptions
                 }
-                // For desktop (VC++)
+                // For desktop (MSVC)
                 else if (targetPlatform.name == wpi.platforms.desktop) {
-                    // All warnings
-                    cppCompiler.args << '/W3'
+                    cppCompiler.args.addAll msvcCompilerOptions
                 }
             }
         }
@@ -208,15 +210,10 @@ else {
     model {
         binaries {
             all {
-                // For roborio (gcc)
-                if (targetPlatform.name == wpi.platforms.roborio) {
-                    // All warnings, fast math but keep infinite math and NaNs
-                    cppCompiler.args << '-Wall' << '-Wextra' << '-ffast-math' << '-fno-finite-math-only'
-                }
-                // For desktop (gcc)
-                else if (targetPlatform.name == wpi.platforms.desktop) {
-                    // All warnings, fast math but keep infinite math and NaNs
-                    cppCompiler.args << '-Wall' << '-Wextra' << '-ffast-math' << '-fno-finite-math-only'
+                // For roborio and desktop (gcc)
+                if (targetPlatform.name == wpi.platforms.roborio
+                        || targetPlatform.name == wpi.platforms.desktop) {
+                    cppCompiler.args.addAll gccCompilerOptions
                 }
             }
         }
@@ -268,10 +265,36 @@ dependencies {
 }
 
 task updateJNIHeaders(type: Copy, group: 'Development', description: 'Copies JNI generated headers into the JNI headers directory.') {
-    dependsOn assemble
+    dependsOn compileJava
 
-    from 'build/jniinclude/compileJava'
+    String srcDir = 'build/jniinclude/compileJava/'
+
+    from srcDir
     into 'src/main/cpp/include/jni'
+
+    // For each generated file, prepend "// clang-format off" to turn off clang-format for it
+    eachFile { details ->
+        File header = new File(srcDir + details.getSourcePath())
+        // Create temp file
+        File tmp = File.createTempFile("temp", ".tmp")
+        tmp.deleteOnExit()
+        // Write to temp file
+        tmp.withWriter { writer ->
+            // Comment to turn off formatter
+            writer.writeLine "// clang-format off"
+            // Write the rest of the file
+            header.eachLine { line ->
+                writer.writeLine line
+            }
+        }
+        // Copy temp file
+        header.withWriter { writer ->
+            tmp.eachLine { line ->
+                writer.writeLine line
+            }
+            writer.writeLine "// clang-format on"
+        }
+    }
 }
 
 task copyLibLinuxx8664Debug(type: Copy, group: 'Development', description: 'Copies the dynamic library for linux x86-64 debug to the root of the project.') {

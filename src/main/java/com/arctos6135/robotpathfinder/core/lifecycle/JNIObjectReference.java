@@ -37,6 +37,7 @@ public class JNIObjectReference extends PhantomReference<JNIObject> {
     public JNIObjectReference(JNIObject obj, ReferenceQueue<? super JNIObject> refQueue) {
         super(obj, refQueue);
         objNativePtr = obj._nativePtr;
+        obj.reference = this;
     }
 
     /**

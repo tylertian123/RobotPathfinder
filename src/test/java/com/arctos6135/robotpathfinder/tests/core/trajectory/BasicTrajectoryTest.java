@@ -7,14 +7,15 @@ import static org.junit.Assert.fail;
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.TrajectoryParams;
 import com.arctos6135.robotpathfinder.core.Waypoint;
-import com.arctos6135.robotpathfinder.core.path.PathType;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicMoment;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.TrajectoryGenerationException;
 import com.arctos6135.robotpathfinder.math.MathUtils;
 import com.arctos6135.robotpathfinder.tests.TestHelper;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 /**
  * This class contains tests for {@link BasicTrajectory}.
@@ -22,6 +23,9 @@ import org.junit.Test;
  * @author Tyler Tian
  */
 public class BasicTrajectoryTest {
+
+    @Rule
+    public TestName testName = new TestName();
 
     /**
      * Performs velocity and acceleration limit testing on a
@@ -33,31 +37,17 @@ public class BasicTrajectoryTest {
      */
     @Test
     public void testVelocityAndAccelerationLimitBasic() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
-        double maxV = helper.getDouble("maxV", 1000);
-        double maxA = helper.getDouble("maxA", 1000);
-        double startX = helper.getDouble("startX", 1000);
-        double startY = helper.getDouble("startY", 1000);
-        double endX = helper.getDouble("endX", 1000);
-        double endY = helper.getDouble("endY", 1000);
-        double startHeading = helper.getDouble("startHeading", Math.PI * 2);
-        double endHeading = helper.getDouble("endHeading", Math.PI * 2);
-
-        RobotSpecs robotSpecs = new RobotSpecs(maxV, maxA);
-        TrajectoryParams params = new TrajectoryParams();
-        params.waypoints = new Waypoint[] { new Waypoint(startX, startY, startHeading),
-                new Waypoint(endX, endY, endHeading), };
-        params.alpha = Math.sqrt((startX - endX) * (startX - endX) + (startY - endY) * (startY - endY));
-        params.sampleCount = 1000;
-        params.pathType = PathType.QUINTIC_HERMITE;
-        BasicTrajectory trajectory = new BasicTrajectory(robotSpecs, params);
+        RobotSpecs specs = TrajectoryTestingUtils.getRandomRobotSpecs(helper, false);
+        TrajectoryParams params = TrajectoryTestingUtils.getRandomTrajectoryParams(helper);
+        BasicTrajectory trajectory = new BasicTrajectory(specs, params);
 
         for (BasicMoment m : trajectory.getMoments()) {
-            if (MathUtils.floatGt(Math.abs(m.getVelocity()), maxV)) {
+            if (MathUtils.floatGt(Math.abs(m.getVelocity()), specs.getMaxVelocity())) {
                 fail("The BasicTrajectory exceeded the velocity limit at time " + m.getTime());
             }
-            if (MathUtils.floatGt(Math.abs(m.getAcceleration()), maxA)) {
+            if (MathUtils.floatGt(Math.abs(m.getAcceleration()), specs.getMaxAcceleration())) {
                 fail("The BasicTrajectory exceeded the acceleration limit at time " + m.getTime());
             }
         }
@@ -74,30 +64,22 @@ public class BasicTrajectoryTest {
      */
     @Test
     public void testBeginningAndEndWaypointEx() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
-        double maxV = helper.getDouble("maxV", 1000);
-        double maxA = helper.getDouble("maxA", 1000);
-        double startX = helper.getDouble("startX", 1000);
-        double startY = helper.getDouble("startY", 1000);
-        double endX = helper.getDouble("endX", 1000);
-        double endY = helper.getDouble("endY", 1000);
-        double startHeading = helper.getDouble("startHeading", Math.PI * 2);
-        double endHeading = helper.getDouble("endHeading", Math.PI * 2);
-        double startVel = helper.getDouble("startVel", maxV);
-        double endVel = helper.getDouble("endVel", maxV);
+        RobotSpecs specs = TrajectoryTestingUtils.getRandomRobotSpecs(helper, false);
+        TrajectoryParams params = TrajectoryTestingUtils.getRandomTrajectoryParams(helper);
 
-        RobotSpecs robotSpecs = new RobotSpecs(maxV, maxA);
-        TrajectoryParams params = new TrajectoryParams();
-        params.waypoints = new Waypoint[] { new Waypoint(startX, startY, startHeading, startVel),
-                new Waypoint(endX, endY, endHeading, endVel), };
-        params.alpha = Math.sqrt((startX - endX) * (startX - endX) + (startY - endY) * (startY - endY));
-        params.sampleCount = 1000;
-        params.pathType = PathType.QUINTIC_HERMITE;
+        double startVel = helper.getDouble("startVel", specs.getMaxVelocity());
+        double endVel = helper.getDouble("endVel", specs.getMaxVelocity());
+
+        Waypoint start = params.waypoints[0];
+        Waypoint end = params.waypoints[params.waypoints.length - 1];
+        params.waypoints[0] = new Waypoint(start.getX(), start.getY(), start.getHeading(), startVel);
+        params.waypoints[params.waypoints.length - 1] = new Waypoint(end.getX(), end.getY(), end.getHeading(), endVel);
 
         BasicTrajectory trajectory;
         try {
-            trajectory = new BasicTrajectory(robotSpecs, params);
+            trajectory = new BasicTrajectory(specs, params);
         } catch (TrajectoryGenerationException e) {
             // Oops! Looks like our randomly generated values were too harsh with their
             // requirements and the trajectory is impossible.
@@ -106,8 +88,9 @@ public class BasicTrajectoryTest {
             return;
         }
 
-        assertThat(trajectory.get(0).getVelocity(), closeTo(startVel, MathUtils.getFloatCompareThreshold()));
-        assertThat(trajectory.get(trajectory.totalTime()).getVelocity(),
+        assertThat("Starting velocity should match", trajectory.get(0).getVelocity(),
+                closeTo(startVel, MathUtils.getFloatCompareThreshold()));
+        assertThat("Ending velocity should match", trajectory.get(trajectory.totalTime()).getVelocity(),
                 closeTo(endVel, MathUtils.getFloatCompareThreshold()));
         trajectory.close();
     }
@@ -122,26 +105,12 @@ public class BasicTrajectoryTest {
      */
     @Test
     public void testBasicTrajectoryMirrorLeftRight() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
-        double maxV = helper.getDouble("maxV", 1000);
-        double maxA = helper.getDouble("maxA", 1000);
-        double startX = helper.getDouble("startX", 1000);
-        double startY = helper.getDouble("startY", 1000);
-        double endX = helper.getDouble("endX", 1000);
-        double endY = helper.getDouble("endY", 1000);
-        double startHeading = helper.getDouble("startHeading", Math.PI * 2);
-        double endHeading = helper.getDouble("endHeading", Math.PI * 2);
+        RobotSpecs specs = TrajectoryTestingUtils.getRandomRobotSpecs(helper, false);
+        TrajectoryParams params = TrajectoryTestingUtils.getRandomTrajectoryParams(helper);
 
-        RobotSpecs robotSpecs = new RobotSpecs(maxV, maxA);
-        TrajectoryParams params = new TrajectoryParams();
-        params.waypoints = new Waypoint[] { new Waypoint(startX, startY, startHeading),
-                new Waypoint(endX, endY, endHeading), };
-        params.alpha = Math.sqrt((startX - endX) * (startX - endX) + (startY - endY) * (startY - endY));
-        params.sampleCount = 1000;
-        params.pathType = PathType.QUINTIC_HERMITE;
-
-        BasicTrajectory original = new BasicTrajectory(robotSpecs, params);
+        BasicTrajectory original = new BasicTrajectory(specs, params);
         BasicTrajectory t = original.mirrorLeftRight();
         BasicTrajectory mirrored = t.mirrorLeftRight();
         t.close();
@@ -151,10 +120,14 @@ public class BasicTrajectoryTest {
             BasicMoment m0 = original.get(dt * i);
             BasicMoment m1 = mirrored.get(dt * i);
 
-            assertThat(m0.getPosition(), closeTo(m1.getPosition(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getVelocity(), closeTo(m1.getVelocity(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getAcceleration(), closeTo(m1.getAcceleration(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getHeading(), closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Position should be the same in both trajectories", m0.getPosition(),
+                    closeTo(m1.getPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Velocity should be the same in both trajectories", m0.getVelocity(),
+                    closeTo(m1.getVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Acceleration should be the same in both trajectories", m0.getAcceleration(),
+                    closeTo(m1.getAcceleration(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Heading should be the same in both trajectories", m0.getHeading(),
+                    closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
         }
 
         original.close();
@@ -171,26 +144,12 @@ public class BasicTrajectoryTest {
      */
     @Test
     public void testBasicTrajectoryMirrorFrontBack() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
-        double maxV = helper.getDouble("maxV", 1000);
-        double maxA = helper.getDouble("maxA", 1000);
-        double startX = helper.getDouble("startX", 1000);
-        double startY = helper.getDouble("startY", 1000);
-        double endX = helper.getDouble("endX", 1000);
-        double endY = helper.getDouble("endY", 1000);
-        double startHeading = helper.getDouble("startHeading", Math.PI * 2);
-        double endHeading = helper.getDouble("endHeading", Math.PI * 2);
+        RobotSpecs specs = TrajectoryTestingUtils.getRandomRobotSpecs(helper, false);
+        TrajectoryParams params = TrajectoryTestingUtils.getRandomTrajectoryParams(helper);
 
-        RobotSpecs robotSpecs = new RobotSpecs(maxV, maxA);
-        TrajectoryParams params = new TrajectoryParams();
-        params.waypoints = new Waypoint[] { new Waypoint(startX, startY, startHeading),
-                new Waypoint(endX, endY, endHeading), };
-        params.alpha = Math.sqrt((startX - endX) * (startX - endX) + (startY - endY) * (startY - endY));
-        params.sampleCount = 1000;
-        params.pathType = PathType.QUINTIC_HERMITE;
-
-        BasicTrajectory original = new BasicTrajectory(robotSpecs, params);
+        BasicTrajectory original = new BasicTrajectory(specs, params);
         BasicTrajectory t = original.mirrorFrontBack();
         BasicTrajectory mirrored = t.mirrorFrontBack();
         t.close();
@@ -200,10 +159,14 @@ public class BasicTrajectoryTest {
             BasicMoment m0 = original.get(dt * i);
             BasicMoment m1 = mirrored.get(dt * i);
 
-            assertThat(m0.getPosition(), closeTo(m1.getPosition(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getVelocity(), closeTo(m1.getVelocity(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getAcceleration(), closeTo(m1.getAcceleration(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getHeading(), closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Position should be the same in both trajectories", m0.getPosition(),
+                    closeTo(m1.getPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Velocity should be the same in both trajectories", m0.getVelocity(),
+                    closeTo(m1.getVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Acceleration should be the same in both trajectories", m0.getAcceleration(),
+                    closeTo(m1.getAcceleration(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Heading should be the same in both trajectories", m0.getHeading(),
+                    closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
         }
 
         original.close();
@@ -219,26 +182,12 @@ public class BasicTrajectoryTest {
      */
     @Test
     public void testBasicTrajectoryRetrace() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
-        double maxV = helper.getDouble("maxV", 1000);
-        double maxA = helper.getDouble("maxA", 1000);
-        double startX = helper.getDouble("startX", 1000);
-        double startY = helper.getDouble("startY", 1000);
-        double endX = helper.getDouble("endX", 1000);
-        double endY = helper.getDouble("endY", 1000);
-        double startHeading = helper.getDouble("startHeading", Math.PI * 2);
-        double endHeading = helper.getDouble("endHeading", Math.PI * 2);
+        RobotSpecs specs = TrajectoryTestingUtils.getRandomRobotSpecs(helper, false);
+        TrajectoryParams params = TrajectoryTestingUtils.getRandomTrajectoryParams(helper);
 
-        RobotSpecs robotSpecs = new RobotSpecs(maxV, maxA);
-        TrajectoryParams params = new TrajectoryParams();
-        params.waypoints = new Waypoint[] { new Waypoint(startX, startY, startHeading),
-                new Waypoint(endX, endY, endHeading), };
-        params.alpha = Math.sqrt((startX - endX) * (startX - endX) + (startY - endY) * (startY - endY));
-        params.sampleCount = 1000;
-        params.pathType = PathType.QUINTIC_HERMITE;
-
-        BasicTrajectory original = new BasicTrajectory(robotSpecs, params);
+        BasicTrajectory original = new BasicTrajectory(specs, params);
         BasicTrajectory t = original.retrace();
         BasicTrajectory mirrored = t.retrace();
         t.close();
@@ -248,10 +197,14 @@ public class BasicTrajectoryTest {
             BasicMoment m0 = original.get(dt * i);
             BasicMoment m1 = mirrored.get(dt * i);
 
-            assertThat(m0.getPosition(), closeTo(m1.getPosition(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getVelocity(), closeTo(m1.getVelocity(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getAcceleration(), closeTo(m1.getAcceleration(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getHeading(), closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Position should be the same in both trajectories", m0.getPosition(),
+                    closeTo(m1.getPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Velocity should be the same in both trajectories", m0.getVelocity(),
+                    closeTo(m1.getVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Acceleration should be the same in both trajectories", m0.getAcceleration(),
+                    closeTo(m1.getAcceleration(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Heading should be the same in both trajectories", m0.getHeading(),
+                    closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
         }
 
         original.close();
@@ -279,26 +232,12 @@ public class BasicTrajectoryTest {
      */
     @Test
     public void testBasicTrajectoryMultipleMirroring() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
-        double maxV = helper.getDouble("maxV", 1000);
-        double maxA = helper.getDouble("maxA", 1000);
-        double startX = helper.getDouble("startX", 1000);
-        double startY = helper.getDouble("startY", 1000);
-        double endX = helper.getDouble("endX", 1000);
-        double endY = helper.getDouble("endY", 1000);
-        double startHeading = helper.getDouble("startHeading", Math.PI * 2);
-        double endHeading = helper.getDouble("endHeading", Math.PI * 2);
+        RobotSpecs specs = TrajectoryTestingUtils.getRandomRobotSpecs(helper, false);
+        TrajectoryParams params = TrajectoryTestingUtils.getRandomTrajectoryParams(helper);
 
-        RobotSpecs robotSpecs = new RobotSpecs(maxV, maxA);
-        TrajectoryParams params = new TrajectoryParams();
-        params.waypoints = new Waypoint[] { new Waypoint(startX, startY, startHeading),
-                new Waypoint(endX, endY, endHeading), };
-        params.alpha = Math.sqrt((startX - endX) * (startX - endX) + (startY - endY) * (startY - endY));
-        params.sampleCount = 1000;
-        params.pathType = PathType.QUINTIC_HERMITE;
-
-        BasicTrajectory original = new BasicTrajectory(robotSpecs, params);
+        BasicTrajectory original = new BasicTrajectory(specs, params);
         BasicTrajectory t0 = original.mirrorLeftRight();
         BasicTrajectory t1 = t0.mirrorFrontBack();
         BasicTrajectory t2 = t1.retrace();
@@ -317,10 +256,14 @@ public class BasicTrajectoryTest {
             BasicMoment m0 = original.get(dt * i);
             BasicMoment m1 = mirrored.get(dt * i);
 
-            assertThat(m0.getPosition(), closeTo(m1.getPosition(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getVelocity(), closeTo(m1.getVelocity(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getAcceleration(), closeTo(m1.getAcceleration(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getHeading(), closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Position should be the same in both trajectories", m0.getPosition(),
+                    closeTo(m1.getPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Velocity should be the same in both trajectories", m0.getVelocity(),
+                    closeTo(m1.getVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Acceleration should be the same in both trajectories", m0.getAcceleration(),
+                    closeTo(m1.getAcceleration(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Heading should be the same in both trajectories", m0.getHeading(),
+                    closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
         }
 
         original.close();
@@ -336,30 +279,52 @@ public class BasicTrajectoryTest {
      */
     @Test(expected = TrajectoryGenerationException.class)
     public void testBasicTrajectoryGenerationException() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
-        double maxV = helper.getDouble("maxV", 1000);
-        double maxA = helper.getDouble("maxA", 1000);
-        double startX = helper.getDouble("startX", 1000);
-        double startY = helper.getDouble("startY", 1000);
-        double endX = helper.getDouble("endX", 1000);
-        double endY = helper.getDouble("endY", 1000);
-        double startHeading = helper.getDouble("startHeading", Math.PI * 2);
-        double endHeading = helper.getDouble("endHeading", Math.PI * 2);
-        double midX = helper.getDouble("midX", 1000);
-        double midY = helper.getDouble("midY", 1000);
-        double midHeading = helper.getDouble("midHeading", Math.PI * 2);
-        double midVel = helper.getDouble("midVel", maxV * 1.1, maxV * 5);
+        RobotSpecs specs = TrajectoryTestingUtils.getRandomRobotSpecs(helper, false);
+        TrajectoryParams params = TrajectoryTestingUtils.getRandomTrajectoryParams(helper,
+                TrajectoryTestingUtils.getRandomWaypoints(helper, 3));
 
-        RobotSpecs robotSpecs = new RobotSpecs(maxV, maxA);
-        TrajectoryParams params = new TrajectoryParams();
-        params.waypoints = new Waypoint[] { new Waypoint(startX, startY, startHeading),
-                new Waypoint(midX, midY, midHeading, midVel), new Waypoint(endX, endY, endHeading), };
-        params.alpha = Math.sqrt((startX - endX) * (startX - endX) + (startY - endY) * (startY - endY));
-        params.sampleCount = 1000;
-        params.pathType = PathType.QUINTIC_HERMITE;
+        double midVel = helper.getDouble("midVel", specs.getMaxVelocity() * 1.1, specs.getMaxVelocity() * 5);
+        Waypoint mid = params.waypoints[1];
+        params.waypoints[1] = new Waypoint(mid.getX(), mid.getY(), mid.getHeading(), midVel);
 
-        BasicTrajectory traj = new BasicTrajectory(robotSpecs, params);
+        BasicTrajectory traj = new BasicTrajectory(specs, params);
+        traj.close();
+    }
+
+    /**
+     * Performs basic testing on {@link BasicTrajectory#getPosition(double)}.
+     * 
+     * This test calls the method for both the starting and ending times to make
+     * sure it is equal to the position of the waypoints.
+     */
+    @Test
+    public void testBasicTrajectoryGetPosition() {
+        TestHelper helper = new TestHelper(getClass(), testName);
+
+        RobotSpecs specs = TrajectoryTestingUtils.getRandomRobotSpecs(helper, false);
+        Waypoint[] waypoints = TrajectoryTestingUtils.getRandomWaypoints(helper, 2);
+        TrajectoryParams params = TrajectoryTestingUtils.getRandomTrajectoryParams(helper, waypoints);
+
+        BasicTrajectory traj = new BasicTrajectory(specs, params);
+
+        Waypoint pos = traj.getPosition(0);
+        assertThat("The x should be the same for the first waypoint", pos.getX(),
+                closeTo(waypoints[0].getX(), MathUtils.getFloatCompareThreshold()));
+        assertThat("The y should be the same for the first waypoint", pos.getY(),
+                closeTo(waypoints[0].getY(), MathUtils.getFloatCompareThreshold()));
+        assertThat("The heading should be the same for the first waypoint", pos.getHeading(),
+                closeTo(waypoints[0].getHeading(), MathUtils.getFloatCompareThreshold()));
+
+        pos = traj.getPosition(traj.totalTime());
+        assertThat("The x should be the same for the second waypoint", pos.getX(),
+                closeTo(waypoints[1].getX(), MathUtils.getFloatCompareThreshold()));
+        assertThat("The y should be the same for the second waypoint", pos.getY(),
+                closeTo(waypoints[1].getY(), MathUtils.getFloatCompareThreshold()));
+        assertThat("The heading should be the same for the second waypoint", pos.getHeading(),
+                closeTo(waypoints[1].getHeading(), MathUtils.getFloatCompareThreshold()));
+
         traj.close();
     }
 }

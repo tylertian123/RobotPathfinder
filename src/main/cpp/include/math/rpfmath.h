@@ -6,18 +6,18 @@ namespace rpf {
     /* RobotPathfinder Math */
 
     // Linear Interpolation
-    double lerp(double, double, double);
+    double lerp(double a, double b, double f);
     // Restrict Angle
-    double rangle(double);
+    double restrict_angle(double angle);
     // Mirror Angle
-    double mangle(double, double);
+    double mirror_angle(double angle, double ref);
     // Linearly interpolates between angles
-    double langle(double, double, double);
-    double langle(Vec2D, Vec2D, double);
+    double lerp_angle(double a, double b, double f);
+    double lerp_angle(Vec2D a, Vec2D b, double f);
     // Restrict absolute value
-    double rabs(double, double);
+    double restrict_abs(double x, double m);
     // Computes curvature
-    double curvature(double, double, double, double);
+    double curvature(double dx, double ddx, double dy, double ddy);
     // The constant pi
     constexpr double pi = 3.141592653589793238462643383279502884;
-}
+} // namespace rpf

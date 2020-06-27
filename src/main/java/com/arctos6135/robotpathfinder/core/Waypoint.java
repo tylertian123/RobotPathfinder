@@ -1,5 +1,7 @@
 package com.arctos6135.robotpathfinder.core;
 
+import java.util.Objects;
+
 /**
  * Represents a point that the robot must pass through in a path or trajectory.
  * <p>
@@ -28,6 +30,28 @@ public class Waypoint {
     protected double y;
     protected double heading;
     protected double velocity = Double.NaN;
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof Waypoint)) {
+            return false;
+        }
+        Waypoint waypoint = (Waypoint) o;
+        return x == waypoint.x && y == waypoint.y && heading == waypoint.heading && velocity == waypoint.velocity;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y, heading, velocity);
+    }
+
+    @Override
+    public String toString() {
+        return "{" + " x='" + getX() + "'" + ", y='" + getY() + "'" + ", heading='" + getHeading() + "'"
+                + ", velocity='" + getVelocity() + "'" + "}";
+    }
 
     /**
      * Creates a new {@link Waypoint} with all fields set to 0. The velocity is

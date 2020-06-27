@@ -2,6 +2,9 @@ language: java
 
 dist: bionic
 
+services:
+  - xvfb
+
 # Use GCC 7 for C++14 support
 matrix:
   include:
@@ -23,7 +26,7 @@ install:
   - ./gradlew installRoboRioToolchain
 
 script:
-  - ./gradlew build --scan -s --rerun-tasks
+  - ./gradlew build --scan -s --rerun-tasks --info
 
 # Enable gradle cache
 before_cache:

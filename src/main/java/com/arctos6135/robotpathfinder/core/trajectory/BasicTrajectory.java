@@ -64,8 +64,8 @@ import com.arctos6135.robotpathfinder.core.lifecycle.GlobalLifeCycleManager;
  *           // already been freed
  * </pre>
  * 
- * @see TankDriveTrajectory
  * @author Tyler Tian
+ * @see TankDriveTrajectory
  * @since 3.0.0
  */
 public class BasicTrajectory extends Trajectory<BasicMoment> {
@@ -125,7 +125,7 @@ public class BasicTrajectory extends Trajectory<BasicMoment> {
      * @param params The parameters of this trajectory
      * @param ptr    A pointer to the native resource
      */
-    public BasicTrajectory(RobotSpecs specs, TrajectoryParams params, long ptr) {
+    private BasicTrajectory(RobotSpecs specs, TrajectoryParams params, long ptr) {
         this.specs = specs;
         this.params = params;
         _nativePtr = ptr;
@@ -173,6 +173,9 @@ public class BasicTrajectory extends Trajectory<BasicMoment> {
     public BasicMoment get(double t) {
         return (BasicMoment) super.get(t);
     }
+
+    @Override
+    protected native Waypoint _getPosition(double t);
 
     @Override
     protected native long _getPath();

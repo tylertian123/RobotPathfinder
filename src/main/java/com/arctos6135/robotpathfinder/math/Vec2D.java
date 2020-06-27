@@ -1,5 +1,7 @@
 package com.arctos6135.robotpathfinder.math;
 
+import java.util.Objects;
+
 import com.arctos6135.robotpathfinder.core.Waypoint;
 
 /**
@@ -20,6 +22,22 @@ public class Vec2D {
 	@Override
 	public String toString() {
 		return "[" + x + ", " + y + "]";
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == this)
+			return true;
+		if (!(o instanceof Vec2D)) {
+			return false;
+		}
+		Vec2D vec2D = (Vec2D) o;
+		return x == vec2D.x && y == vec2D.y;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(x, y);
 	}
 
 	/**

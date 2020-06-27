@@ -34,9 +34,9 @@ import com.arctos6135.robotpathfinder.math.MathUtils;
  * </p>
  * 
  * @author Tyler Tian
- * @since 3.0.0
  * @see TankDriveFollower
  * @see DynamicFollowable
+ * @since 3.0.0
  */
 public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 
@@ -573,10 +573,11 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 		double rv;
 		double la;
 		double ra;
-		// If using advanced position sources, just cast them and call the methods
+        // If using advanced position sources, just cast them and call the methods
+        // Note to subtract init positions!
 		if (advancedDistSrc) {
-			ld = ((AdvancedPositionSource) lDistSrc).getPosition();
-			rd = ((AdvancedPositionSource) rDistSrc).getPosition();
+			ld = ((AdvancedPositionSource) lDistSrc).getPosition() - lInitDist;
+			rd = ((AdvancedPositionSource) rDistSrc).getPosition() - rInitDist;
 			lv = ((AdvancedPositionSource) lDistSrc).getVelocity();
 			rv = ((AdvancedPositionSource) rDistSrc).getVelocity();
 			la = ((AdvancedPositionSource) lDistSrc).getAcceleration();
@@ -596,7 +597,7 @@ public class DynamicTankDriveFollower extends DynamicFollower<TankDriveMoment> {
 		// Since constructors all take DynamicFollowables, there is no risk of
 		// ClassCastException
 		((DynamicFollowable<TankDriveMoment>) target).update(new TankDriveMoment(ld, rd, lv, rv, la, ra, heading,
-				timer.getTimestamp(), lastMoment.getInitialFacing(), lastMoment.getBackwards()));
+				timer.getTimestamp() - initTime, lastMoment.getInitialFacing(), lastMoment.getBackwards()));
 	}
 
 	/**

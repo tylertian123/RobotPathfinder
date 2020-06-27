@@ -1,7 +1,7 @@
-#include <memory>
-#include <list>
-#include <mutex>
 #include "trajectories.h"
+#include <list>
+#include <memory>
+#include <mutex>
 
 extern std::list<std::shared_ptr<rpf::Path>> pinstances;
 extern std::list<std::shared_ptr<rpf::BasicTrajectory>> btinstances;

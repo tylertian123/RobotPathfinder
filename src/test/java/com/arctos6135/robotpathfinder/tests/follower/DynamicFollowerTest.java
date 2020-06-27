@@ -21,7 +21,9 @@ import com.arctos6135.robotpathfinder.tests.follower.FollowerTest.FakeGyro;
 import com.arctos6135.robotpathfinder.tests.follower.FollowerTest.FakeMotor;
 import com.arctos6135.robotpathfinder.tests.follower.FollowerTest.FakeTimer;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 /**
  * This class contains tests for the dynamic followers of RobotPathfinder.
@@ -29,6 +31,9 @@ import org.junit.Test;
  * @author Tyler Tian
  */
 public class DynamicFollowerTest {
+
+    @Rule
+    public TestName testName = new TestName();
 
     /**
      * A fake {@link DynamicFollowable} used for testing.
@@ -58,6 +63,10 @@ public class DynamicFollowerTest {
             updateCalled = true;
         }
 
+        @Override
+        public FakeDynamicFollowable copy() {
+            throw new UnsupportedOperationException();
+        }
     }
 
     /**
@@ -76,7 +85,7 @@ public class DynamicFollowerTest {
      */
     @Test
     public void testDynamicTankDriveFollowerUpdateTrigger() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double updateDelay = helper.getDouble("updateDelay", 1000);
 
@@ -92,26 +101,26 @@ public class DynamicFollowerTest {
 
         follower.initialize();
         follower.run();
-        assertThat(followable.updateCalled, is(false));
+        assertThat("update() should not be called right after initialization", followable.updateCalled, is(false));
 
         timer.value = updateDelay * 0.5;
         follower.run();
-        assertThat(followable.updateCalled, is(false));
+        assertThat("update() should not be called prematurely", followable.updateCalled, is(false));
 
         // Set to updateDelay plus a small number so that we can make sure rounding
         // errors do not affect it
         timer.value = updateDelay + MathUtils.getFloatCompareThreshold();
         follower.run();
-        assertThat(followable.updateCalled, is(true));
+        assertThat("update() should be called after the update delay has elapsed", followable.updateCalled, is(true));
         followable.updateCalled = false;
 
         timer.value = updateDelay * 1.5;
         follower.run();
-        assertThat(followable.updateCalled, is(false));
+        assertThat("update() should not be called again after 1.5 times the delay", followable.updateCalled, is(false));
 
         timer.value = (updateDelay + MathUtils.getFloatCompareThreshold()) * 2;
         follower.run();
-        assertThat(followable.updateCalled, is(true));
+        assertThat("update() should be called again after twice the delay", followable.updateCalled, is(true));
     }
 
     /**
@@ -133,7 +142,7 @@ public class DynamicFollowerTest {
      */
     @Test
     public void testDynamicTankDriveFollowerMotorOutput() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1.0);
         double maxA = helper.getDouble("maxA", 1.0);
@@ -160,7 +169,8 @@ public class DynamicFollowerTest {
         follower.initialize();
         timer.value = profile.totalTime();
         follower.run();
-        assertThat(motor.value, not(closeTo(0.0, MathUtils.getFloatCompareThreshold())));
+        assertThat("Follower motor output should be nonzero", motor.value,
+                not(closeTo(0.0, MathUtils.getFloatCompareThreshold())));
 
         follower.stop();
         gains.kV = 1;
@@ -175,7 +185,7 @@ public class DynamicFollowerTest {
         timer.value = checkTime;
         encoder.value = profile.get(checkTime).getLeftPosition();
         follower.run();
-        assertThat(motor.value,
+        assertThat("Follower motor output should be as expected", motor.value,
                 closeTo(profile.get(checkTime).getLeftVelocity(), MathUtils.getFloatCompareThreshold()));
 
         follower.stop();
@@ -192,7 +202,7 @@ public class DynamicFollowerTest {
         timer.value = checkTime;
         encoder.value = profile.get(checkTime).getLeftPosition();
         follower.run();
-        assertThat(motor.value,
+        assertThat("Follower motor output should be as expected", motor.value,
                 closeTo(profile.get(checkTime).getLeftAcceleration(), MathUtils.getFloatCompareThreshold()));
     }
 }

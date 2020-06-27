@@ -265,6 +265,18 @@ public final class Grapher {
 		maxX = -Double.MAX_VALUE;
 		maxY = -Double.MAX_VALUE;
 
+		Waypoint[] waypoints = path.getWaypoints();
+		double[][] xy = new double[waypoints.length][2];
+		for (int j = 0; j < waypoints.length; j++) {
+			xy[j][0] = waypoints[j].getX();
+			xy[j][1] = waypoints[j].getY();
+
+			minX = Math.min(minX, waypoints[j].getX());
+			minY = Math.min(minY, waypoints[j].getY());
+			maxX = Math.max(maxX, waypoints[j].getX());
+			maxY = Math.max(maxY, waypoints[j].getY());
+		}
+
 		int i = 0;
 		for (double t = 0; t <= 1 && i < elemCount; t += dt) {
 			// Collect data
@@ -317,21 +329,6 @@ public final class Grapher {
 				plot.addLinePlot("Right Wheel", rightX, rightY);
 			}
 
-			Waypoint[] waypoints = path.getWaypoints();
-			// Fixes a bug with JMathPlot
-			double[][] xy = new double[2][waypoints.length > 2 ? waypoints.length : 3];
-			for (int j = 0; j < path.getWaypoints().length; j++) {
-				xy[0][j] = waypoints[j].getX();
-				xy[1][j] = waypoints[j].getY();
-			}
-			if (waypoints.length < 3) {
-				if (waypoints.length < 2) {
-					xy[0][1] = -Double.MAX_VALUE;
-					xy[1][1] = -Double.MAX_VALUE;
-				}
-				xy[0][2] = -Double.MAX_VALUE;
-				xy[1][2] = -Double.MAX_VALUE;
-			}
 			plot.addScatterPlot("Waypoints", Color.BLACK, xy);
 
 			// Take the longer of the two differences
@@ -381,12 +378,35 @@ public final class Grapher {
 	 * setVisible()} needs to be called explicitly in order to show the window.
 	 * </p>
 	 * 
-	 * @param p  The motion profile to graph
-	 * @param dt The time increment between samples
+	 * @param p        The motion profile to graph
+	 * @param dt       The time increment between samples
 	 * @return The graphed motion profile in a {@link JFrame}
 	 */
 	public static JFrame graphMotionProfile(MotionProfile p, double dt) {
-		int elemCount = (int) Math.ceil(p.totalTime() / dt);
+		return graphMotionProfile(p, dt, 0);
+	}
+
+	/**
+	 * Graphs a {@link MotionProfile} in a {@link JFrame}.
+	 * <p>
+	 * A parameter {@code initTime} can be used to set the time to start graphing
+	 * at. This allows the graphing of updated motion profiles, which can have a
+	 * time range not starting at zero.
+	 * </p>
+	 * <p>
+	 * In addition to graphing, this method also sets the {@link JFrame}'s default
+	 * close operation to be {@link WindowConstants#DISPOSE_ON_CLOSE}. Note that
+	 * this method does not show the window; {@link JFrame#setVisible(boolean)
+	 * setVisible()} needs to be called explicitly in order to show the window.
+	 * </p>
+	 * 
+	 * @param p        The motion profile to graph
+	 * @param dt       The time increment between samples
+	 * @param initTime The time to start graphing at
+	 * @return The graphed motion profile in a {@link JFrame}
+	 */
+	public static JFrame graphMotionProfile(MotionProfile p, double dt, double initTime) {
+		int elemCount = (int) Math.ceil((p.totalTime() - initTime) / dt);
 
 		double[] time = new double[elemCount];
 		double[] pos = new double[elemCount];
@@ -394,7 +414,7 @@ public final class Grapher {
 		double[] acl = new double[elemCount];
 
 		int i = 0;
-		for (double t = 0; t <= p.totalTime() && i < elemCount; t += dt) {
+		for (double t = initTime; t <= p.totalTime() && i < elemCount; t += dt) {
 			// Collect data
 			time[i] = t;
 			pos[i] = p.position(t);

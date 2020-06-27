@@ -42,8 +42,8 @@ namespace rpf {
         return env->GetDoubleField(obj, fid);
     }
 
-    void throw_IllegalStateException(JNIEnv *env, const char *msg) {
-        jclass clazz = env->FindClass("java/lang/IllegalStateException");
+    void throw_exception(JNIEnv *env, const char *ex, const char *msg) {
+        jclass clazz = env->FindClass(ex);
         env->ThrowNew(clazz, msg);
     }
-}
+} // namespace rpf

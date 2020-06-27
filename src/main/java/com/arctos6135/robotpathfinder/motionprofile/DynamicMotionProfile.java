@@ -11,10 +11,16 @@ package com.arctos6135.robotpathfinder.motionprofile;
  * information about the <em>real life</em> conditions of the robot, and
  * updates/re-generates the motion profile to better match those conditions.
  * </p>
+ * <p>
+ * Note that calling the method {@link #update(double, double, double, double)}
+ * will modify the motion profile object itself. If the dynamic motion profile
+ * needs to be reused, the {@link #copy()} method can be used to create an
+ * identical copy, while maintaining the original object.
+ * </p>
  * 
  * @author Tyler Tian
- * @since 3.0.0
  * @see MotionProfile
+ * @since 3.0.0
  */
 public interface DynamicMotionProfile extends MotionProfile {
     /**
@@ -29,6 +35,12 @@ public interface DynamicMotionProfile extends MotionProfile {
      * overshoots, then the method will return true.
      * </p>
      * <p>
+     * Note that calling this method will modify the motion profile object itself.
+     * If the dynamic motion profile needs to be reused, the {@link #copy()} method
+     * can be used to create an identical copy, while maintaining the original
+     * object.
+     * </p>
+     * <p>
      * For more information, see the class Javadoc for this class.
      * </p>
      * 
@@ -39,4 +51,11 @@ public interface DynamicMotionProfile extends MotionProfile {
      * @return Whether the updated motion profile has to overshoot
      */
     public boolean update(double currentTime, double currentPos, double currentVel, double currentAccel);
+
+    /**
+     * Creates an identical deep copy of this {@link DynamicMotionProfile} object.
+     * 
+     * @return An identical copy of this object
+     */
+    public DynamicMotionProfile copy();
 }

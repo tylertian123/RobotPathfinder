@@ -207,7 +207,7 @@ public final class MathUtils {
 	 * <p>
 	 * Note due to possible discontinuities, this method should not be used if
 	 * interpolating between angles; use {@link #lerpAngle(double, double, double)}
-	 * or {@link #lerpAngle(Vec2D, Vec2D, double)} instead.
+	 * instead.
 	 * </p>
 	 * 
 	 * @param a The first number
@@ -225,19 +225,17 @@ public final class MathUtils {
 	 * This method will choose the shortest path around the unit circle, and
 	 * therefore can interpolate between positive and negative angles.
 	 * </p>
-	 * <p>
-	 * If the normalized direction vectors for the angles are already known, the
-	 * faster {@link #lerpAngle(Vec2D, Vec2D, double)} can be used.
-	 * </p>
 	 * 
 	 * @param a The first angle
 	 * @param b The second angle
 	 * @param f The fraction of the way from the first angle to the second angle
 	 * @return The result of the lerp
-	 * @see #lerpAngle(Vec2D, Vec2D, double)
 	 */
 	public static double lerpAngle(double a, double b, double f) {
-		return lerpAngle(new Vec2D(Math.cos(a), Math.sin(a)), new Vec2D(Math.cos(b), Math.sin(b)), f);
+		// Magic
+        // https://stackoverflow.com/questions/2708476/rotation-interpolation
+        double theta = ((a - b) % (Math.PI * 2) + Math.PI * 3) % (Math.PI * 2) - Math.PI;
+        return restrictAngle(a + f * theta);
 	}
 
 	/**
@@ -280,14 +278,11 @@ public final class MathUtils {
 	 * @return The same angle, converted to be in the range (-&pi;, &pi;]
 	 */
 	public static double restrictAngle(double theta) {
-		if (theta <= Math.PI && theta > -Math.PI) {
-			return theta;
-		}
-		while (theta > Math.PI) {
-			theta -= Math.PI * 2;
-		}
-		while (theta <= -Math.PI) {
+		theta %= Math.PI * 2;
+		if (theta <= -Math.PI) {
 			theta += Math.PI * 2;
+		} else if (theta > Math.PI) {
+			theta -= Math.PI * 2;
 		}
 		return theta;
 	}

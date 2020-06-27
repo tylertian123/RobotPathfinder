@@ -5,8 +5,10 @@
 namespace rpf {
     class QuinticSegment : public SplineSegment {
     public:
-        QuinticSegment(const Vec2D &p0, const Vec2D &p1, const Vec2D &v0, const Vec2D &v1, const Vec2D &a0, const Vec2D &a1) 
-                : p0(p0), p1(p1), v0(v0), v1(v1), a0(a0), a1(a1) {}
+        QuinticSegment(const Vec2D &p0, const Vec2D &p1, const Vec2D &v0, const Vec2D &v1,
+                const Vec2D &a0, const Vec2D &a1)
+                : p0(p0), p1(p1), v0(v0), v1(v1), a0(a0), a1(a1) {
+        }
 
         Vec2D at(double) const override;
         Vec2D deriv_at(double) const override;
@@ -36,4 +38,4 @@ namespace rpf {
 
         Vec2D p0, p1, v0, v1, a0, a1;
     };
-}
+} // namespace rpf

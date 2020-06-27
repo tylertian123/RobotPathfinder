@@ -7,8 +7,8 @@ import com.arctos6135.robotpathfinder.core.Waypoint;
 import com.arctos6135.robotpathfinder.core.lifecycle.GlobalLifeCycleManager;
 
 /**
- * A class that represents a trajectory for a tank drive (aka
- * skid-steer or differential drive) robot.
+ * A class that represents a trajectory for a tank drive (aka skid-steer or
+ * differential drive) robot.
  * <p>
  * A trajectory not only defines the path the robot will go through, but also
  * provides information about the position, velocity, acceleration and direction
@@ -31,11 +31,12 @@ import com.arctos6135.robotpathfinder.core.lifecycle.GlobalLifeCycleManager;
  * method must be called to free the native resource when the object is no
  * longer needed.
  * </p>
- * <p>Note: Almost all RobotPathfinder JNI classes have some kind of reference
+ * <p>
+ * Note: Almost all RobotPathfinder JNI classes have some kind of reference
  * counting. However, this reference count is only increased when an object is
  * created or copied by a method, and not when the reference is copied through
- * assignment.
- * For example:</p>
+ * assignment. For example:
+ * </p>
  * 
  * <pre>
  * Path p0 = someTrajectory.getPath();
@@ -55,8 +56,8 @@ import com.arctos6135.robotpathfinder.core.lifecycle.GlobalLifeCycleManager;
  *           // already been freed
  * </pre>
  * 
- * @see BasicTrajectory
  * @author Tyler Tian
+ * @see BasicTrajectory
  * @since 3.0.0
  */
 public class TankDriveTrajectory extends Trajectory<TankDriveMoment> {
@@ -116,7 +117,7 @@ public class TankDriveTrajectory extends Trajectory<TankDriveMoment> {
      * @param params The parameters of this trajectory
      * @param ptr    A pointer to the native resource
      */
-    public TankDriveTrajectory(RobotSpecs specs, TrajectoryParams params, long ptr) {
+    private TankDriveTrajectory(RobotSpecs specs, TrajectoryParams params, long ptr) {
         this.specs = specs;
         this.params = params;
         _nativePtr = ptr;
@@ -164,6 +165,9 @@ public class TankDriveTrajectory extends Trajectory<TankDriveMoment> {
     public TankDriveMoment get(double t) {
         return (TankDriveMoment) super.get(t);
     }
+
+    @Override
+    protected native Waypoint _getPosition(double t);
 
     @Override
     protected native long _getPath();

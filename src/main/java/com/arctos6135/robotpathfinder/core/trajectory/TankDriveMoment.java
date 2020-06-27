@@ -1,5 +1,7 @@
 package com.arctos6135.robotpathfinder.core.trajectory;
 
+import java.util.Objects;
+
 /**
  * This class contains information about a tank drive robot at a moment in time.
  * <p>
@@ -25,13 +27,38 @@ package com.arctos6135.robotpathfinder.core.trajectory;
  * </p>
  * 
  * @author Tyler Tian
- * @since 3.0.0
  * @see Moment
+ * @since 3.0.0
  */
 public class TankDriveMoment extends Moment {
 
 	double ld, lv, la, rd, rv, ra;
 	double t;
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == this)
+			return true;
+		if (!(o instanceof TankDriveMoment)) {
+			return false;
+		}
+		TankDriveMoment m = (TankDriveMoment) o;
+		return heading == m.heading && initialFacing == m.initialFacing && backwards == m.backwards && ld == m.ld
+				&& lv == m.lv && la == m.la && rd == m.rd && rv == m.rv && ra == m.ra && t == m.t;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(heading, initialFacing, backwards, ld, lv, la, rd, rv, ra, t);
+	}
+
+	@Override
+	public String toString() {
+		return "{" + " leftPosition='" + ld + "'" + ", leftVelocity='" + lv + "'" + ", leftAcceleration='" + la + "'"
+				+ ", rightPosition='" + rd + "'" + ", rightVelocity='" + rv + "'" + ", rightAcceleration='" + ra + "'"
+				+ ", heading='" + heading + "'" + ", initialFacing='" + initialFacing + "'" + ", backwards='"
+				+ backwards + "'" + ", time='" + t + "'" + "}";
+	}
 
 	/**
 	 * Constructs a new moment with all fields set to 0.

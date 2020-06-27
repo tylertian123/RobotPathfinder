@@ -1,5 +1,7 @@
 package com.arctos6135.robotpathfinder.core.trajectory;
 
+import java.util.Objects;
+
 /**
  * This class contains information about a basic robot (see the docs for
  * {@link BasicTrajectory} for definition) at a moment in time.
@@ -26,13 +28,37 @@ package com.arctos6135.robotpathfinder.core.trajectory;
  * </p>
  * 
  * @author Tyler Tian
- * @since 3.0.0
  * @see Moment
+ * @since 3.0.0
  */
 public class BasicMoment extends Moment {
 
 	double d, v, a;
 	double t;
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == this)
+			return true;
+		if (!(o instanceof BasicMoment)) {
+			return false;
+		}
+		BasicMoment m = (BasicMoment) o;
+		return heading == m.heading && initialFacing == m.initialFacing && backwards == m.backwards && d == m.d
+				&& v == m.v && a == m.a && t == m.t;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(heading, initialFacing, backwards, d, v, a, t);
+	}
+
+	@Override
+	public String toString() {
+		return "{" + " position='" + d + "'" + ", velocity='" + v + "'" + ", acceleration='" + a + "'" + ", heading='"
+				+ heading + "'" + ", initialFacing='" + initialFacing + "'" + ", backwards='" + backwards + "'"
+				+ ", time='" + t + "'" + "}";
+	}
 
 	/**
 	 * Constructs a new moment with all fields set to 0.s

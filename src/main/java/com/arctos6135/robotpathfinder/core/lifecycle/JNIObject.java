@@ -13,11 +13,12 @@ import com.arctos6135.robotpathfinder.core.GlobalLibraryLoader;
  * released by the JVM, the {@link #free()} or {@link #close()} method must be
  * called to free the native resource when the object is no longer needed.
  * </p>
- * <p>Note: Almost all RobotPathfinder JNI classes have some kind of reference
+ * <p>
+ * Note: Almost all RobotPathfinder JNI classes have some kind of reference
  * counting. However, this reference count is only increased when an object is
  * created or copied by a method, and not when the reference is copied through
- * assignment. 
- * For example:</p>
+ * assignment. For example:
+ * </p>
  * 
  * <pre>
  * Path p0 = someTrajectory.getPath();
@@ -46,7 +47,16 @@ public abstract class JNIObject implements AutoCloseable {
         GlobalLibraryLoader.load();
     }
 
+    /**
+     * The address of the native resource.
+     */
     protected long _nativePtr;
+
+    /**
+     * The {@link JNIObjectReference} associated with this {@link JNIObject}. Used
+     * to deregister from the {@link GlobalLifeCycleManager}.
+     */
+    protected JNIObjectReference reference;
 
     /**
      * This should be implemented as a native method that frees the resources
@@ -60,6 +70,10 @@ public abstract class JNIObject implements AutoCloseable {
      * implementation.
      */
     public void free() {
+        // Deregister from the GlobalLifeCycleManager as there's no longer a point
+        // This also makes sure that when the same address is reused no strange errors
+        // occur
+        GlobalLifeCycleManager.deregister(this);
         _destroy();
     }
 
@@ -70,6 +84,10 @@ public abstract class JNIObject implements AutoCloseable {
      */
     @Override
     public void close() {
+        // Deregister from the GlobalLifeCycleManager as there's no longer a point
+        // This also makes sure that when the same address is reused no strange errors
+        // occur
+        GlobalLifeCycleManager.deregister(this);
         _destroy();
     }
 }

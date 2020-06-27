@@ -9,12 +9,15 @@ import static org.junit.Assert.assertThat;
 
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.math.MathUtils;
+import com.arctos6135.robotpathfinder.motionprofile.DynamicMotionProfile;
 import com.arctos6135.robotpathfinder.motionprofile.MotionProfile;
 import com.arctos6135.robotpathfinder.motionprofile.TrapezoidalMotionProfile;
 import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalBasicProfile;
 import com.arctos6135.robotpathfinder.tests.TestHelper;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 /**
  * This class contains tests for {@link TrapezoidalMotionProfile}.
@@ -22,6 +25,9 @@ import org.junit.Test;
  * @author Tyler Tian
  */
 public class TrapezoidalMotionProfileTest {
+
+    @Rule
+    public TestName testName = new TestName();
 
     /**
      * Performs basic testing on {@link TrapezoidalMotionProfile}.
@@ -33,7 +39,7 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfile() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -42,12 +48,18 @@ public class TrapezoidalMotionProfileTest {
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
         MotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
-        assertThat(profile.position(profile.totalTime()), closeTo(distance, MathUtils.getFloatCompareThreshold()));
-        assertThat(profile.position(0), closeTo(0.0, MathUtils.getFloatCompareThreshold()));
-        assertThat(profile.velocity(0), closeTo(0.0, MathUtils.getFloatCompareThreshold()));
-        assertThat(profile.velocity(profile.totalTime()), closeTo(0.0, MathUtils.getFloatCompareThreshold()));
-        assertThat(profile.acceleration(0), closeTo(maxA, MathUtils.getFloatCompareThreshold()));
-        assertThat(profile.acceleration(profile.totalTime()), closeTo(-maxA, MathUtils.getFloatCompareThreshold()));
+        assertThat("Position at end time should be close to the specified position",
+                profile.position(profile.totalTime()), closeTo(distance, MathUtils.getFloatCompareThreshold()));
+        assertThat("Position at the start time should be 0", profile.position(0),
+                closeTo(0.0, MathUtils.getFloatCompareThreshold()));
+        assertThat("Velocity at the start time should be 0", profile.velocity(0),
+                closeTo(0.0, MathUtils.getFloatCompareThreshold()));
+        assertThat("Velocity at the end time should be 0", profile.velocity(profile.totalTime()),
+                closeTo(0.0, MathUtils.getFloatCompareThreshold()));
+        assertThat("Acceleration at the start time should be max acceleration", profile.acceleration(0),
+                closeTo(maxA, MathUtils.getFloatCompareThreshold()));
+        assertThat("Acceleration at the end time should be negative max acceleration",
+                profile.acceleration(profile.totalTime()), closeTo(-maxA, MathUtils.getFloatCompareThreshold()));
     }
 
     /**
@@ -60,7 +72,7 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfileReversed() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -69,12 +81,18 @@ public class TrapezoidalMotionProfileTest {
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
         MotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
-        assertThat(profile.position(profile.totalTime()), closeTo(distance, MathUtils.getFloatCompareThreshold()));
-        assertThat(profile.position(0), closeTo(0.0, MathUtils.getFloatCompareThreshold()));
-        assertThat(profile.velocity(0), closeTo(0.0, MathUtils.getFloatCompareThreshold()));
-        assertThat(profile.velocity(profile.totalTime()), closeTo(0.0, MathUtils.getFloatCompareThreshold()));
-        assertThat(profile.acceleration(0), closeTo(-maxA, MathUtils.getFloatCompareThreshold()));
-        assertThat(profile.acceleration(profile.totalTime()), closeTo(maxA, MathUtils.getFloatCompareThreshold()));
+        assertThat("Position at end time should be close to the specified position",
+                profile.position(profile.totalTime()), closeTo(distance, MathUtils.getFloatCompareThreshold()));
+        assertThat("Position at the start time should be 0", profile.position(0),
+                closeTo(0.0, MathUtils.getFloatCompareThreshold()));
+        assertThat("Velocity at the start time should be 0", profile.velocity(0),
+                closeTo(0.0, MathUtils.getFloatCompareThreshold()));
+        assertThat("Velocity at the end time should be 0", profile.velocity(profile.totalTime()),
+                closeTo(0.0, MathUtils.getFloatCompareThreshold()));
+        assertThat("Acceleration at the start time should be negative max acceleration", profile.acceleration(0),
+                closeTo(-maxA, MathUtils.getFloatCompareThreshold()));
+        assertThat("Acceleration at the end time should be max acceleration", profile.acceleration(profile.totalTime()),
+                closeTo(maxA, MathUtils.getFloatCompareThreshold()));
     }
 
     /**
@@ -88,7 +106,7 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfileAdvanced() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -100,17 +118,17 @@ public class TrapezoidalMotionProfileTest {
 
         double dt = profile.totalTime() / 1000;
         for (double t = 0; t < profile.totalTime(); t += dt) {
-            assertThat(profile.position(t),
+            assertThat("position should be within the expected range", profile.position(t),
                     either(lessThan(distance)).or(closeTo(distance, MathUtils.getFloatCompareThreshold())));
-            assertThat(profile.position(t),
+            assertThat("position should be within the expected range", profile.position(t),
                     either(greaterThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(profile.velocity(t),
+            assertThat("velocity should be within the expected range", profile.velocity(t),
                     either(lessThan((maxV))).or(closeTo((maxV), MathUtils.getFloatCompareThreshold())));
-            assertThat(profile.velocity(t),
+            assertThat("velocity should be within the expected range", profile.velocity(t),
                     either(greaterThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(Math.abs(profile.acceleration(t)),
+            assertThat("acceleration should be within the expected range", Math.abs(profile.acceleration(t)),
                     either(lessThan((maxA))).or(closeTo((maxA), MathUtils.getFloatCompareThreshold())));
         }
     }
@@ -125,7 +143,7 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfileAdvancedReversed() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -137,17 +155,17 @@ public class TrapezoidalMotionProfileTest {
 
         double dt = profile.totalTime() / 1000;
         for (double t = 0; t < profile.totalTime(); t += dt) {
-            assertThat(profile.position(t),
+            assertThat("position should be within the expected range", profile.position(t),
                     either(greaterThan((distance))).or(closeTo((distance), MathUtils.getFloatCompareThreshold())));
-            assertThat(profile.position(t),
+            assertThat("position should be within the expected range", profile.position(t),
                     either(lessThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(-profile.velocity(t),
+            assertThat("velocity should be within the expected range", -profile.velocity(t),
                     either(lessThan((maxV))).or(closeTo((maxV), MathUtils.getFloatCompareThreshold())));
-            assertThat(profile.velocity(t),
+            assertThat("velocity should be within the expected range", profile.velocity(t),
                     either(lessThan((0.0))).or(closeTo((0.0), MathUtils.getFloatCompareThreshold())));
 
-            assertThat(Math.abs(profile.acceleration(t)),
+            assertThat("acceleration should be within the expected range", Math.abs(profile.acceleration(t)),
                     either(lessThan((maxA))).or(closeTo((maxA), MathUtils.getFloatCompareThreshold())));
         }
     }
@@ -166,14 +184,14 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfileUpdate() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
         double distance = helper.getDouble("distance", 1000);
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
-        TrapezoidalMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
+        DynamicMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
 
         // Generate fake update parameters
         double updateTime = helper.getDouble("updateTime", profile.totalTime());
@@ -183,15 +201,11 @@ public class TrapezoidalMotionProfileTest {
         // TrapezoidalMotionProfiles completely ignore the acceleration when updating
         // since theres no constraint on how fast it changes
         // Just use 0 here as a placeholder
-        boolean overshoot = profile.update(updateTime, updatePos, updateVel, 0);
+        profile.update(updateTime, updatePos, updateVel, 0);
 
         double totalTime = profile.totalTime();
-        assertThat(profile.velocity(totalTime), closeTo(0, MathUtils.getFloatCompareThreshold()));
-        if (overshoot) {
-            assertThat(profile.position(totalTime), greaterThan(distance));
-        } else {
-            assertThat(profile.position(totalTime), closeTo(distance, MathUtils.getFloatCompareThreshold()));
-        }
+        assertThat("Final velocity should be 0", profile.velocity(totalTime), closeTo(0, MathUtils.getFloatCompareThreshold()));
+        assertThat("Final position should be as specified", profile.position(totalTime), closeTo(distance, MathUtils.getFloatCompareThreshold()));
     }
 
     /**
@@ -204,7 +218,7 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfileUpdateReversed() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -212,7 +226,7 @@ public class TrapezoidalMotionProfileTest {
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
-        TrapezoidalMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
+        DynamicMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
 
         // Generate fake update parameters
         double updateTime = helper.getDouble("updateTime", profile.totalTime());
@@ -222,16 +236,11 @@ public class TrapezoidalMotionProfileTest {
         // TrapezoidalMotionProfiles completely ignore the acceleration when updating
         // since theres no constraint on how fast it changes
         // Just use 0 here as a placeholder
-        boolean overshoot = profile.update(updateTime, updatePos, updateVel, 0);
+        profile.update(updateTime, updatePos, updateVel, 0);
 
         double totalTime = profile.totalTime();
-        assertThat(profile.velocity(totalTime), closeTo(0, MathUtils.getFloatCompareThreshold()));
-        if (overshoot) {
-            // Assert that it is more negative than the distance
-            assertThat(profile.position(totalTime), lessThan(distance));
-        } else {
-            assertThat(profile.position(totalTime), closeTo(distance, MathUtils.getFloatCompareThreshold()));
-        }
+        assertThat("Final velocity should be 0", profile.velocity(totalTime), closeTo(0, MathUtils.getFloatCompareThreshold()));
+        assertThat("Final position should be as specified", profile.position(totalTime), closeTo(distance, MathUtils.getFloatCompareThreshold()));
     }
 
     /**
@@ -247,7 +256,7 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfileUpdateOvershoot() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -255,22 +264,15 @@ public class TrapezoidalMotionProfileTest {
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
-        TrapezoidalMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
+        DynamicMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
 
         // Generate fake update parameters
         double updateTime = helper.getDouble("updateTime", profile.totalTime());
         double updateVel = helper.getDouble("updateVel", maxV);
 
         boolean overshoot = profile.update(updateTime, distance, updateVel, 0);
-        double totalTime = profile.totalTime();
 
-        assertThat(overshoot, is(true));
-        assertThat(profile.velocity(totalTime), closeTo(0, MathUtils.getFloatCompareThreshold()));
-
-        // Calculate the overshoot distance using kinematic forumlas
-        double overshootDist = -(updateVel * updateVel) / (2 * -maxA);
-        assertThat(profile.position(totalTime),
-                closeTo(distance + overshootDist, MathUtils.getFloatCompareThreshold()));
+        assertThat("overshoot should be true", overshoot, is(true));
     }
 
     /**
@@ -283,7 +285,7 @@ public class TrapezoidalMotionProfileTest {
      */
     @Test
     public void testTrapezoidalMotionProfileUpdateOvershootReversed() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
         double maxV = helper.getDouble("maxV", 1000);
         double maxA = helper.getDouble("maxA", 1000);
@@ -291,21 +293,38 @@ public class TrapezoidalMotionProfileTest {
 
         RobotSpecs specs = new RobotSpecs(maxV, maxA);
 
-        TrapezoidalMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
+        DynamicMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
 
         // Generate fake update parameters
         double updateTime = helper.getDouble("updateTime", profile.totalTime());
         double updateVel = helper.getDouble("updateVel", -maxV, 0);
 
         boolean overshoot = profile.update(updateTime, distance, updateVel, 0);
-        double totalTime = profile.totalTime();
 
-        assertThat(overshoot, is(true));
-        assertThat(profile.velocity(totalTime), closeTo(0, MathUtils.getFloatCompareThreshold()));
+        assertThat("overshoot should be true", overshoot, is(true));
+    }
 
-        // Calculate the overshoot distance using kinematic forumlas
-        double overshootDist = -(updateVel * updateVel) / (2 * maxA);
-        assertThat(profile.position(totalTime),
-                closeTo(distance + overshootDist, MathUtils.getFloatCompareThreshold()));
+    /**
+     * Performs full testing on {@link TrapezoidalMotionProfile#copy()}.
+     * 
+     * This test constructs a {@link TrapezoidalMotionProfile}, and calls
+     * {@link TrapezoidalMotionProfile#copy()} on it to create a copy. It then uses
+     * {@link TestHelper#assertAllFieldsEqual(Object, Object)} to compare the two
+     * objects for equality.
+     */
+    @Test
+    public void testTrapezoidalMotionProfileCopy() {
+        TestHelper helper = new TestHelper(getClass(), testName);
+
+        double maxV = helper.getDouble("maxV", 1000);
+        double maxA = helper.getDouble("maxA", 1000);
+        double distance = helper.getDouble("distance", 0, 1000);
+
+        RobotSpecs specs = new RobotSpecs(maxV, maxA);
+
+        DynamicMotionProfile profile = new TrapezoidalMotionProfile(specs, distance);
+        DynamicMotionProfile copiedProfile = profile.copy();
+
+        TestHelper.assertAllFieldsEqual(profile, copiedProfile);
     }
 }

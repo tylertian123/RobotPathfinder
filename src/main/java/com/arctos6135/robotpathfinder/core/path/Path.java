@@ -20,11 +20,13 @@ import com.arctos6135.robotpathfinder.util.Pair;
  * released by the JVM, the {@link #free()} or {@link #close()} method must be
  * called to free the native resource when the object is no longer needed.
  * </p>
- * <p>Note: Almost all RobotPathfinder JNI classes have some kind of reference
+ * <p>
+ * Note: Almost all RobotPathfinder JNI classes have some kind of reference
  * counting. However, this reference count is only increased when an object is
  * created or copied by a method, and not when the reference is copied through
- * assignment.
- * For example:</p>
+ * assignment. For example:
+ * </p>
+ * 
  * <pre>
  * Path p0 = someTrajectory.getPath();
  * Path p1 = someTrajectory.getPath();
@@ -376,8 +378,8 @@ public class Path extends JNIObject {
     }
 
     /**
-     * Constructs a new path, in which the direction of driving is reversed
-     * (i.e. driving forwards is now driving backwards).
+     * Constructs a new path, in which the direction of driving is reversed (i.e.
+     * driving forwards is now driving backwards).
      * 
      * @return The new path
      * @throws IllegalStateException If the native resource has already been freed

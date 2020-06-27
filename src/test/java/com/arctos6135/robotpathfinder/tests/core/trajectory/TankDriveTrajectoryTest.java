@@ -7,7 +7,6 @@ import static org.junit.Assert.fail;
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 import com.arctos6135.robotpathfinder.core.TrajectoryParams;
 import com.arctos6135.robotpathfinder.core.Waypoint;
-import com.arctos6135.robotpathfinder.core.path.PathType;
 import com.arctos6135.robotpathfinder.core.trajectory.BasicTrajectory;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveMoment;
 import com.arctos6135.robotpathfinder.core.trajectory.TankDriveTrajectory;
@@ -15,7 +14,9 @@ import com.arctos6135.robotpathfinder.core.trajectory.TrajectoryGenerationExcept
 import com.arctos6135.robotpathfinder.math.MathUtils;
 import com.arctos6135.robotpathfinder.tests.TestHelper;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 /**
  * This class contains tests for {@link TankDriveTrajectory}.
@@ -23,6 +24,9 @@ import org.junit.Test;
  * @author Tyler Tian
  */
 public class TankDriveTrajectoryTest {
+
+    @Rule
+    public TestName testName = new TestName();
 
     /**
      * Performs velocity limit testing on a {@link TankDriveTrajectory}.
@@ -36,32 +40,18 @@ public class TankDriveTrajectoryTest {
      */
     @Test
     public void testVelocityLimitTank() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
-        double maxV = helper.getDouble("maxV", 1000);
-        double maxA = helper.getDouble("maxA", 1000);
-        double startX = helper.getDouble("startX", 1000);
-        double startY = helper.getDouble("startY", 1000);
-        double endX = helper.getDouble("endX", 1000);
-        double endY = helper.getDouble("endY", 1000);
-        double startHeading = helper.getDouble("startHeading", Math.PI * 2);
-        double endHeading = helper.getDouble("endHeading", Math.PI * 2);
-        double baseWidth = helper.getDouble("baseWidth", 1000);
+        RobotSpecs specs = TrajectoryTestingUtils.getRandomRobotSpecs(helper, true);
+        TrajectoryParams params = TrajectoryTestingUtils.getRandomTrajectoryParams(helper);
 
-        RobotSpecs robotSpecs = new RobotSpecs(maxV, maxA, baseWidth);
-        TrajectoryParams params = new TrajectoryParams();
-        params.waypoints = new Waypoint[] { new Waypoint(startX, startY, startHeading),
-                new Waypoint(endX, endY, endHeading), };
-        params.alpha = Math.sqrt((startX - endX) * (startX - endX) + (startY - endY) * (startY - endY));
-        params.sampleCount = 1000;
-        params.pathType = PathType.QUINTIC_HERMITE;
-        TankDriveTrajectory trajectory = new TankDriveTrajectory(robotSpecs, params);
+        TankDriveTrajectory trajectory = new TankDriveTrajectory(specs, params);
 
         for (TankDriveMoment m : trajectory.getMoments()) {
-            if (MathUtils.floatGt(Math.abs(m.getLeftVelocity()), maxV)) {
+            if (MathUtils.floatGt(Math.abs(m.getLeftVelocity()), specs.getMaxVelocity())) {
                 fail("The left wheel of the TankDriveTrajectory exceeded the velocity limit at time " + m.getTime());
             }
-            if (MathUtils.floatGt(Math.abs(m.getRightVelocity()), maxV)) {
+            if (MathUtils.floatGt(Math.abs(m.getRightVelocity()), specs.getMaxVelocity())) {
                 fail("The right wheel of the TankDriveTrajectory exceeded the velocity limit at time " + m.getTime());
             }
         }
@@ -78,27 +68,13 @@ public class TankDriveTrajectoryTest {
      */
     @Test
     public void testTankDriveTrajectoryMirrorLeftRight() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
-        double maxV = helper.getDouble("maxV", 1000);
-        double maxA = helper.getDouble("maxA", 1000);
-        double startX = helper.getDouble("startX", 1000);
-        double startY = helper.getDouble("startY", 1000);
-        double endX = helper.getDouble("endX", 1000);
-        double endY = helper.getDouble("endY", 1000);
-        double startHeading = helper.getDouble("startHeading", Math.PI * 2);
-        double endHeading = helper.getDouble("endHeading", Math.PI * 2);
-        double baseWidth = helper.getDouble("baseWidth", 1000);
+        RobotSpecs specs = TrajectoryTestingUtils.getRandomRobotSpecs(helper, true);
+        TrajectoryParams params = TrajectoryTestingUtils.getRandomTrajectoryParams(helper);
 
-        RobotSpecs robotSpecs = new RobotSpecs(maxV, maxA, baseWidth);
-        TrajectoryParams params = new TrajectoryParams();
-        params.waypoints = new Waypoint[] { new Waypoint(startX, startY, startHeading),
-                new Waypoint(endX, endY, endHeading), };
-        params.alpha = Math.sqrt((startX - endX) * (startX - endX) + (startY - endY) * (startY - endY));
-        params.sampleCount = 1000;
-        params.pathType = PathType.QUINTIC_HERMITE;
         // Generate and mirror
-        TankDriveTrajectory original = new TankDriveTrajectory(robotSpecs, params);
+        TankDriveTrajectory original = new TankDriveTrajectory(specs, params);
         TankDriveTrajectory t = original.mirrorLeftRight();
         TankDriveTrajectory mirrored = t.mirrorLeftRight();
         // Make sure to close to avoid a memory leak
@@ -109,13 +85,20 @@ public class TankDriveTrajectoryTest {
             TankDriveMoment m0 = original.get(dt * i);
             TankDriveMoment m1 = mirrored.get(dt * i);
 
-            assertThat(m0.getLeftPosition(), closeTo(m1.getLeftPosition(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getRightPosition(), closeTo(m1.getRightPosition(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getLeftVelocity(), closeTo(m1.getLeftVelocity(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getRightVelocity(), closeTo(m1.getRightVelocity(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getLeftAcceleration(), closeTo(m1.getLeftAcceleration(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getRightAcceleration(), closeTo(m1.getRightAcceleration(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getHeading(), closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Left position should be the same in both trajectories", m0.getLeftPosition(),
+                    closeTo(m1.getLeftPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Right position should be the same in both trajectories", m0.getRightPosition(),
+                    closeTo(m1.getRightPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Left velocity should be the same in both trajectories", m0.getLeftVelocity(),
+                    closeTo(m1.getLeftVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Right velocity should be the same in both trajectories", m0.getRightVelocity(),
+                    closeTo(m1.getRightVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Left acceleration should be the same in both trajectories", m0.getLeftAcceleration(),
+                    closeTo(m1.getLeftAcceleration(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Right acceleration should be the same in both trajectories", m0.getRightAcceleration(),
+                    closeTo(m1.getRightAcceleration(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Heading should be the same in both trajectories", m0.getHeading(),
+                    closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
         }
 
         original.close();
@@ -132,27 +115,12 @@ public class TankDriveTrajectoryTest {
      */
     @Test
     public void testTankDriveTrajectoryMirrorFrontBack() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
-        double maxV = helper.getDouble("maxV", 1000);
-        double maxA = helper.getDouble("maxA", 1000);
-        double startX = helper.getDouble("startX", 1000);
-        double startY = helper.getDouble("startY", 1000);
-        double endX = helper.getDouble("endX", 1000);
-        double endY = helper.getDouble("endY", 1000);
-        double startHeading = helper.getDouble("startHeading", Math.PI * 2);
-        double endHeading = helper.getDouble("endHeading", Math.PI * 2);
-        double baseWidth = helper.getDouble("baseWidth", 1000);
+        RobotSpecs specs = TrajectoryTestingUtils.getRandomRobotSpecs(helper, true);
+        TrajectoryParams params = TrajectoryTestingUtils.getRandomTrajectoryParams(helper);
 
-        RobotSpecs robotSpecs = new RobotSpecs(maxV, maxA, baseWidth);
-        TrajectoryParams params = new TrajectoryParams();
-        params.waypoints = new Waypoint[] { new Waypoint(startX, startY, startHeading),
-                new Waypoint(endX, endY, endHeading), };
-        params.alpha = Math.sqrt((startX - endX) * (startX - endX) + (startY - endY) * (startY - endY));
-        params.sampleCount = 1000;
-        params.pathType = PathType.QUINTIC_HERMITE;
-
-        TankDriveTrajectory original = new TankDriveTrajectory(robotSpecs, params);
+        TankDriveTrajectory original = new TankDriveTrajectory(specs, params);
         TankDriveTrajectory t = original.mirrorFrontBack();
         TankDriveTrajectory mirrored = t.mirrorFrontBack();
         t.close();
@@ -162,15 +130,20 @@ public class TankDriveTrajectoryTest {
             TankDriveMoment m0 = original.get(dt * i);
             TankDriveMoment m1 = mirrored.get(dt * i);
 
-            assertThat(m0.getLeftPosition(), closeTo(m1.getLeftPosition(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getRightPosition(), closeTo(m1.getRightPosition(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getLeftVelocity(), closeTo(m1.getLeftVelocity(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getRightVelocity(), closeTo(m1.getRightVelocity(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getLeftAcceleration(),
+            assertThat("Left position should be the same in both trajectories", m0.getLeftPosition(),
+                    closeTo(m1.getLeftPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Right position should be the same in both trajectories", m0.getRightPosition(),
+                    closeTo(m1.getRightPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Left velocity should be the same in both trajectories", m0.getLeftVelocity(),
+                    closeTo(m1.getLeftVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Right velocity should be the same in both trajectories", m0.getRightVelocity(),
+                    closeTo(m1.getRightVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Left acceleration should be the same in both trajectories", m0.getLeftAcceleration(),
                     closeTo(m1.getLeftAcceleration(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getRightAcceleration(),
+            assertThat("Right acceleration should be the same in both trajectories", m0.getRightAcceleration(),
                     closeTo(m1.getRightAcceleration(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getHeading(), closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Heading should be the same in both trajectories", m0.getHeading(),
+                    closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
         }
 
         original.close();
@@ -186,27 +159,12 @@ public class TankDriveTrajectoryTest {
      */
     @Test
     public void testTankDriveTrajectoryRetrace() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
-        double maxV = helper.getDouble("maxV", 1000);
-        double maxA = helper.getDouble("maxA", 1000);
-        double startX = helper.getDouble("startX", 1000);
-        double startY = helper.getDouble("startY", 1000);
-        double endX = helper.getDouble("endX", 1000);
-        double endY = helper.getDouble("endY", 1000);
-        double startHeading = helper.getDouble("startHeading", Math.PI * 2);
-        double endHeading = helper.getDouble("endHeading", Math.PI * 2);
-        double baseWidth = helper.getDouble("baseWidth", 1000);
+        RobotSpecs specs = TrajectoryTestingUtils.getRandomRobotSpecs(helper, true);
+        TrajectoryParams params = TrajectoryTestingUtils.getRandomTrajectoryParams(helper);
 
-        RobotSpecs robotSpecs = new RobotSpecs(maxV, maxA, baseWidth);
-        TrajectoryParams params = new TrajectoryParams();
-        params.waypoints = new Waypoint[] { new Waypoint(startX, startY, startHeading),
-                new Waypoint(endX, endY, endHeading), };
-        params.alpha = Math.sqrt((startX - endX) * (startX - endX) + (startY - endY) * (startY - endY));
-        params.sampleCount = 1000;
-        params.pathType = PathType.QUINTIC_HERMITE;
-
-        TankDriveTrajectory original = new TankDriveTrajectory(robotSpecs, params);
+        TankDriveTrajectory original = new TankDriveTrajectory(specs, params);
         TankDriveTrajectory t = original.retrace();
         TankDriveTrajectory mirrored = t.retrace();
         t.close();
@@ -216,15 +174,20 @@ public class TankDriveTrajectoryTest {
             TankDriveMoment m0 = original.get(dt * i);
             TankDriveMoment m1 = mirrored.get(dt * i);
 
-            assertThat(m0.getLeftPosition(), closeTo(m1.getLeftPosition(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getRightPosition(), closeTo(m1.getRightPosition(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getLeftVelocity(), closeTo(m1.getLeftVelocity(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getRightVelocity(), closeTo(m1.getRightVelocity(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getLeftAcceleration(),
+            assertThat("Left position should be the same in both trajectories", m0.getLeftPosition(),
+                    closeTo(m1.getLeftPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Right position should be the same in both trajectories", m0.getRightPosition(),
+                    closeTo(m1.getRightPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Left velocity should be the same in both trajectories", m0.getLeftVelocity(),
+                    closeTo(m1.getLeftVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Right velocity should be the same in both trajectories", m0.getRightVelocity(),
+                    closeTo(m1.getRightVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Left acceleration should be the same in both trajectories", m0.getLeftAcceleration(),
                     closeTo(m1.getLeftAcceleration(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getRightAcceleration(),
+            assertThat("Right acceleration should be the same in both trajectories", m0.getRightAcceleration(),
                     closeTo(m1.getRightAcceleration(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getHeading(), closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Heading should be the same in both trajectories", m0.getHeading(),
+                    closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
         }
 
         original.close();
@@ -252,27 +215,12 @@ public class TankDriveTrajectoryTest {
      */
     @Test
     public void testTankDriveTrajectoryMultipleMirroring() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
-        double maxV = helper.getDouble("maxV", 1000);
-        double maxA = helper.getDouble("maxA", 1000);
-        double startX = helper.getDouble("startX", 1000);
-        double startY = helper.getDouble("startY", 1000);
-        double endX = helper.getDouble("endX", 1000);
-        double endY = helper.getDouble("endY", 1000);
-        double startHeading = helper.getDouble("startHeading", Math.PI * 2);
-        double endHeading = helper.getDouble("endHeading", Math.PI * 2);
-        double baseWidth = helper.getDouble("baseWidth", 1000);
+        RobotSpecs specs = TrajectoryTestingUtils.getRandomRobotSpecs(helper, true);
+        TrajectoryParams params = TrajectoryTestingUtils.getRandomTrajectoryParams(helper);
 
-        RobotSpecs robotSpecs = new RobotSpecs(maxV, maxA, baseWidth);
-        TrajectoryParams params = new TrajectoryParams();
-        params.waypoints = new Waypoint[] { new Waypoint(startX, startY, startHeading),
-                new Waypoint(endX, endY, endHeading), };
-        params.alpha = Math.sqrt((startX - endX) * (startX - endX) + (startY - endY) * (startY - endY));
-        params.sampleCount = 1000;
-        params.pathType = PathType.QUINTIC_HERMITE;
-
-        TankDriveTrajectory original = new TankDriveTrajectory(robotSpecs, params);
+        TankDriveTrajectory original = new TankDriveTrajectory(specs, params);
         TankDriveTrajectory t0 = original.mirrorLeftRight();
         TankDriveTrajectory t1 = t0.mirrorFrontBack();
         TankDriveTrajectory t2 = t1.retrace();
@@ -291,15 +239,20 @@ public class TankDriveTrajectoryTest {
             TankDriveMoment m0 = original.get(dt * i);
             TankDriveMoment m1 = mirrored.get(dt * i);
 
-            assertThat(m0.getLeftPosition(), closeTo(m1.getLeftPosition(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getRightPosition(), closeTo(m1.getRightPosition(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getLeftVelocity(), closeTo(m1.getLeftVelocity(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getRightVelocity(), closeTo(m1.getRightVelocity(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getLeftAcceleration(),
+            assertThat("Left position should be the same in both trajectories", m0.getLeftPosition(),
+                    closeTo(m1.getLeftPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Right position should be the same in both trajectories", m0.getRightPosition(),
+                    closeTo(m1.getRightPosition(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Left velocity should be the same in both trajectories", m0.getLeftVelocity(),
+                    closeTo(m1.getLeftVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Right velocity should be the same in both trajectories", m0.getRightVelocity(),
+                    closeTo(m1.getRightVelocity(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Left acceleration should be the same in both trajectories", m0.getLeftAcceleration(),
                     closeTo(m1.getLeftAcceleration(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getRightAcceleration(),
+            assertThat("Right acceleration should be the same in both trajectories", m0.getRightAcceleration(),
                     closeTo(m1.getRightAcceleration(), MathUtils.getFloatCompareThreshold()));
-            assertThat(m0.getHeading(), closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
+            assertThat("Heading should be the same in both trajectories", m0.getHeading(),
+                    closeTo(m1.getHeading(), MathUtils.getFloatCompareThreshold()));
         }
 
         original.close();
@@ -316,31 +269,52 @@ public class TankDriveTrajectoryTest {
      */
     @Test(expected = TrajectoryGenerationException.class)
     public void testTankDriveTrajectoryGenerationException() {
-        TestHelper helper = TestHelper.getInstance(getClass());
+        TestHelper helper = new TestHelper(getClass(), testName);
 
-        double maxV = helper.getDouble("maxV", 1000);
-        double maxA = helper.getDouble("maxA", 1000);
-        double startX = helper.getDouble("startX", 1000);
-        double startY = helper.getDouble("startY", 1000);
-        double endX = helper.getDouble("endX", 1000);
-        double endY = helper.getDouble("endY", 1000);
-        double startHeading = helper.getDouble("startHeading", Math.PI * 2);
-        double endHeading = helper.getDouble("endHeading", Math.PI * 2);
-        double midX = helper.getDouble("midX", 1000);
-        double midY = helper.getDouble("midY", 1000);
-        double midHeading = helper.getDouble("midHeading", Math.PI * 2);
-        double midVel = helper.getDouble("midVel", maxV * 1.1, maxV * 5);
-        double baseWidth = helper.getDouble("baseWidth", 1000);
+        RobotSpecs specs = TrajectoryTestingUtils.getRandomRobotSpecs(helper, true);
+        TrajectoryParams params = TrajectoryTestingUtils.getRandomTrajectoryParams(helper,
+                TrajectoryTestingUtils.getRandomWaypoints(helper, 3));
 
-        RobotSpecs robotSpecs = new RobotSpecs(maxV, maxA, baseWidth);
-        TrajectoryParams params = new TrajectoryParams();
-        params.waypoints = new Waypoint[] { new Waypoint(startX, startY, startHeading),
-                new Waypoint(midX, midY, midHeading, midVel), new Waypoint(endX, endY, endHeading), };
-        params.alpha = Math.sqrt((startX - endX) * (startX - endX) + (startY - endY) * (startY - endY));
-        params.sampleCount = 1000;
-        params.pathType = PathType.QUINTIC_HERMITE;
+        double midVel = helper.getDouble("midVel", specs.getMaxVelocity() * 1.1, specs.getMaxVelocity() * 5);
+        Waypoint mid = params.waypoints[1];
+        params.waypoints[1] = new Waypoint(mid.getX(), mid.getY(), mid.getHeading(), midVel);
 
-        TankDriveTrajectory traj = new TankDriveTrajectory(robotSpecs, params);
+        TankDriveTrajectory traj = new TankDriveTrajectory(specs, params);
+        traj.close();
+    }
+
+    /**
+     * Performs basic testing on {@link TankDriveTrajectory#getPosition(double)}.
+     * 
+     * This test calls the method for both the starting and ending times to make
+     * sure it is equal to the position of the waypoints.
+     */
+    @Test
+    public void testTankDriveTrajectoryGetPosition() {
+        TestHelper helper = new TestHelper(getClass(), testName);
+
+        RobotSpecs specs = TrajectoryTestingUtils.getRandomRobotSpecs(helper, true);
+        Waypoint[] waypoints = TrajectoryTestingUtils.getRandomWaypoints(helper, 2);
+        TrajectoryParams params = TrajectoryTestingUtils.getRandomTrajectoryParams(helper, waypoints);
+
+        TankDriveTrajectory traj = new TankDriveTrajectory(specs, params);
+
+        Waypoint pos = traj.getPosition(0);
+        assertThat("The x should be the same for the first waypoint", pos.getX(),
+                closeTo(waypoints[0].getX(), MathUtils.getFloatCompareThreshold()));
+        assertThat("The y should be the same for the first waypoint", pos.getY(),
+                closeTo(waypoints[0].getY(), MathUtils.getFloatCompareThreshold()));
+        assertThat("The heading should be the same for the first waypoint", pos.getHeading(),
+                closeTo(waypoints[0].getHeading(), MathUtils.getFloatCompareThreshold()));
+
+        pos = traj.getPosition(traj.totalTime());
+        assertThat("The x should be the same for the second waypoint", pos.getX(),
+                closeTo(waypoints[1].getX(), MathUtils.getFloatCompareThreshold()));
+        assertThat("The y should be the same for the second waypoint", pos.getY(),
+                closeTo(waypoints[1].getY(), MathUtils.getFloatCompareThreshold()));
+        assertThat("The heading should be the same for the second waypoint", pos.getHeading(),
+                closeTo(waypoints[1].getHeading(), MathUtils.getFloatCompareThreshold()));
+
         traj.close();
     }
 }

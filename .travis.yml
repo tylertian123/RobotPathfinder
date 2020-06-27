@@ -1,11 +1,6 @@
 language: java
 
-dist: xenial
-
-# Encrypted Ryver Webhook URL
-env:
-  global:
-    secure: "kD9iWAbkwy2NT94B++VFkn2nsHONfOT8lev8zC75Pn/kAjxmatgelrg1Focg3sIQDfmdeRBF+hxQVna5hDfGMfBRlwGZGHguXb1Mgx9BavsIzLb+JqkmdsQTGcbacGXDBYuNmazBrATBpgMWQDfEZzxt0MI2hDksz7rwZiAzglsOX+o1JVDSFRkZJkgwQh4rILVAwcNFu4afmay6LXtw6ovK4oD9VG5G+h+1YftjjFruHEf2Mtryp2aezEWIS6Yo332pytTfma+ia9JdS9mmNWOWpx5SmTwGs3+lgDgQUnEeUO9URf9/Jdd8WFVLY/vjAYlGUlLWLUqgVH4g+/sqE6OW0NIuKqDH8SocubGM0RmNIr1KDZSQLf8gtdSTWRk9sDkRLbbotbQTtv2UpFxvNacBHBt3+4CtU/3Ba1dHho5w9951KkoCB2yzIM2qNwv1r4RflFXksQFU0ZgwKHdNelTYH7CtkfzwKyXkyNDmiomipJ5LDBL/b29sZW0hzVBv3c/6aNUTNx/A+RuRsYJXTrkYqD5SQWecdc3h4lIwCdlEf6/CKO1V19NerZSvheuQRpjPxJz97YJxoiFZT8dQoRoSYqgjfzj4UPmP6jmXRk3wkKP+fYlJMUaTlIObBphzSAZCZZ64I5PWcvnojbW4jAE6+JaxeoBAdAoTEEe/DxE="
+dist: bionic
 
 # Use GCC 7 for C++14 support
 matrix:
@@ -39,19 +34,3 @@ cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
-
-after_success:
-  - export SHORT_COMMIT=${TRAVIS_COMMIT:0:7}
-  - >
-    curl --request 'POST' 
-    --header 'Content-Type: text/plain; charset=utf-8' 
-    --data "&#9989; **SUCCESS** &#9989; The latest commit pushed to **RobotPathfinder** (commit *$SHORT_COMMIT* on branch *$TRAVIS_BRANCH*) has [**passed** CI checks]($TRAVIS_JOB_WEB_URL)!"
-    $WEBHOOK_URL
-
-after_failure:
-  - export SHORT_COMMIT=${TRAVIS_COMMIT:0:7}
-  - >
-    curl --request 'POST' 
-    --header 'Content-Type: text/plain; charset=utf-8' 
-    --data "&#10060; **ERROR** &#10060; The latest commit pushed to **RobotPathfinder** (commit *$SHORT_COMMIT* on branch *$TRAVIS_BRANCH*) has [**failed** CI checks]($TRAVIS_JOB_WEB_URL)!" 
-    $WEBHOOK_URL
